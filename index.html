@@ -17,6 +17,8 @@
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -25,8 +27,63 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* 絵文字浮遊アニメーション */
+        .emojis-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .emoji-particle {
+            position: absolute;
+            font-size: 40px; /* 基本サイズ */
+            opacity: 0.8;
+            animation: floatUpEmoji 18s linear infinite;
+        }
+
+        @keyframes floatUpEmoji {
+            0% {
+                bottom: -100px;
+                opacity: 0;
+                transform: translateX(0) rotate(0deg);
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                bottom: 100%;
+                opacity: 0;
+                transform: translateX(80px) rotate(20deg);
+            }
+        }
+
+        /* 各絵文字の個別調整（位置、遅延、サイズ） */
+        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; }
+        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 35px; }
+        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 45px; }
+        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; }
+        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 40px; }
+        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 50px; }
+        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 30px; }
+        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; }
+        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 45px; }
+        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 40px; }
+
+        /* 既存のスタイル（テキスト部分を前景に） */
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
         h1 {
-            font-size: 32px; /* 少し大きくしてインパクトを */
+            font-size: 32px;
             margin-bottom: 20px;
             color: #FF0000;
             opacity: 0;
@@ -57,21 +114,15 @@
             box-shadow: 0 16px 32px rgba(0,0,0,0.15);
         }
 
-        .section:nth-child(3) { animation-delay: 0.3s; } /* 調整 */
-        .section:nth-child(4) { animation-delay: 0.6s; }
+        .section:nth-child(2) { animation-delay: 0.3s; }
+        .section:nth-child(3) { animation-delay: 0.6s; }
 
         @keyframes fadeInDown {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
@@ -91,26 +142,43 @@
     </style>
 </head>
 <body>
-    <h1>メリークリスマス！Elise Vanessaのちょっと本気のリンクページへようこそ🎄</h1>
-    <p>X（@ev0123456789）をご覧いただきありがとうございます。<br>こちらでは、投稿の傾向やご留意いただきたい点についてまとめています。</p>
-
-    <div class="section">
-        <h2>投稿の傾向について</h2>
-        <p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
+    <div class="emojis-container">
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
     </div>
 
-    <div class="section">
-        <h2>ご留意いただきたい点（注意書き）</h2>
-        <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
-           ・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
-           ・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
-           ・異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
-           ・万一、誤った情報があった場合は訂正いたしますので、丁寧なご指摘をいただければ幸いです。</p>
-    </div>
+    <div class="content">
+        <h1>🎅メリークリスマス！Elise Vanessaのちょっと本気のリンクページへようこそ！🎄</h1>
+        <p>X（@ev0123456789）をご覧いただきありがとうございます。<br>こちらでは、投稿の傾向やご留意いただきたい点についてまとめています。</p>
 
-    <footer>
-        <p>ご質問やご意見はXのDMまたはリプライでお気軽にどうぞ。<br>
-        最終更新：2025年12月15日</p>
-    </footer>
+        <div class="section">
+            <h2>投稿の傾向について</h2>
+            <p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
+        </div>
+
+        <div class="section">
+            <h2>ご留意いただきたい点（注意書き）</h2>
+            <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
+               ・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
+               ・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
+               ・異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
+               ・万一、誤った情報があった場合は訂正いたしますので、丁寧なご指摘をいただければ幸いです。</p>
+        </div>
+
+        <footer>
+            <p>ご質問やご意見はXのDMまたはリプライでお気軽にどうぞ。<br>
+            最終更新：2025年12月15日</p>
+        </footer>
+    </div>
+</body>
+</html>
 </body>
 </html>
