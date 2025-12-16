@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elise VanessaのX投稿まとめ</title>
+    <title>Elise VanessaのX投稿まとめ（バズったトップ10）</title>
     <style>
-        /* 修正: bodyからoverflow: hiddenを削除 */
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(-45deg, #228B22, #FF0000, #FFFFFF, #FFD700, #006400);
@@ -19,7 +18,6 @@
             margin: 0 auto;
             text-align: center;
             position: relative;
-            /* overflow: hidden; を削除 */
         }
 
         @keyframes gradientBG {
@@ -28,16 +26,15 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 絵文字浮遊アニメーション（コンテナの高さを100vhに制限） */
         .emojis-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh; /* 追加: 画面高さに制限 */
+            height: 100vh;
             pointer-events: none;
             z-index: 0;
-            overflow: hidden; /* 追加: 絵文字が画面外に出ないよう制限 */
+            overflow: hidden;
         }
 
         .emoji-particle {
@@ -54,7 +51,6 @@
             100% { bottom: 100%; opacity: 0; transform: translateX(80px) rotate(20deg); }
         }
 
-        /* 各絵文字の個別調整（変更なし） */
         .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; }
         .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 35px; }
         .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 45px; }
@@ -66,13 +62,11 @@
         .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 45px; }
         .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 40px; }
 
-        /* テキスト部分（変更なし） */
         .content {
             position: relative;
             z-index: 1;
         }
 
-        /* 以降のスタイル（h1, .post-listなど）は変更なし */
         h1 {
             font-size: 32px;
             margin-bottom: 20px;
@@ -91,6 +85,13 @@
             margin-bottom: 40px;
             padding-bottom: 20px;
             border-bottom: 1px solid #ddd;
+        }
+
+        .post-rank {
+            font-size: 18px;
+            font-weight: bold;
+            color: #228B22;
+            margin-bottom: 10px;
         }
 
         .post-date {
@@ -141,16 +142,83 @@
 
     <div class="content">
         <a href="index.html" class="back-link">← 注意書きページに戻る</a>
-        <h1>Elise VanessaのX投稿まとめ</h1>
-        <p>最近の投稿を抜粋でご紹介します。詳細やメディアはXでご確認ください。</p>
+        <h1>Elise Vanessaのバズった投稿トップ10</h1>
+        <p>これまでに最も反響を呼んだ投稿を、いいね数順にまとめました。詳細はXリンクからご覧ください。</p>
 
-        <!-- 投稿リスト部分（変更なし） -->
         <div class="post-list">
-            <!-- 既存のpost-itemをそのまま -->
+            <div class="post-item">
+                <div class="post-rank">1位（21,136いいね）</div>
+                <div class="post-date">2025年12月9日</div>
+                <div class="post-text">🇯🇵【警告】日本がイスラム化する前に知っておくべき現実（群馬県で実際に起きたこと）...（道路封鎖祈祷事件）</div>
+                <a href="https://x.com/ev0123456789/status/1998384325608472908" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">2位（2,067いいね）</div>
+                <div class="post-date">2025年12月8日</div>
+                <div class="post-text">🇬🇧英国でまた起きた！アフガン亡命少年2人が15歳少女を集団レイプ──これが「多文化共生」の結末です</div>
+                <a href="https://x.com/ev0123456789/status/1998118011908313469" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">3位（3,914いいね）</div>
+                <div class="post-date">2025年12月2日</div>
+                <div class="post-text">🚨🇺🇸トランプ大統領が、偏向報道するフェイクニュース軍団をフルボッコ🤣</div>
+                <a href="https://x.com/ev0123456789/status/1995924054717727002" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">4位（1,434いいね）</div>
+                <div class="post-date">2025年11月29日</div>
+                <div class="post-text">🇺🇸「法律を尊重しないなら来るな　～努力で築いた国をただ乗りさせるな～」</div>
+                <a href="https://x.com/ev0123456789/status/1994887926363427154" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">5位（1,408いいね）</div>
+                <div class="post-date">2025年12月1日</div>
+                <div class="post-text">🇺🇸【トランプ大統領、MRI＋認知テスト結果をドヤ顔公開🔥】</div>
+                <a href="https://x.com/ev0123456789/status/1995281792832795021" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">6位（1,035いいね）</div>
+                <div class="post-date">2025年12月2日</div>
+                <div class="post-text">🇺🇸⛽️トランプ大統領、ガソリン価格の急落を大発表🎉</div>
+                <a href="https://x.com/ev0123456789/status/1995938130290237899" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">7位（1,004いいね）</div>
+                <div class="post-date">2025年12月2日</div>
+                <div class="post-text">🚨🇺🇸トランプ政権、麻薬カルテルに宣戦布告🔥</div>
+                <a href="https://x.com/ev0123456789/status/1995931205246878121" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">8位（1,229いいね）</div>
+                <div class="post-date">2025年12月9日</div>
+                <div class="post-text">🇯🇵【警鐘】日本に「同化しないイスラム教徒」が急増中──もう他人事ではありません😱</div>
+                <a href="https://x.com/ev0123456789/status/1998387121682534637" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">9位（276いいね）</div>
+                <div class="post-date">2025年12月9日</div>
+                <div class="post-text">【トランプ政権の経済爆速実績】🇺🇸</div>
+                <a href="https://x.com/ev0123456789/status/1998394064316834052" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
+
+            <div class="post-item">
+                <div class="post-rank">10位（132いいね）</div>
+                <div class="post-date">2025年12月3日</div>
+                <div class="post-text">🇺🇦【ウクライナ強制徴兵】2025年12月現在、ウクライナでは「動員＝誘拐」と呼ばれる事態が日常化しています。</div>
+                <a href="https://x.com/ev0123456789/status/1996015196067049553" class="post-link" target="_blank">Xで詳細を見る →</a>
+            </div>
         </div>
 
         <footer>
-            <p>最新投稿はX（@ev0123456789）でご確認ください。<br>
+            <p>最新投稿やさらに多くの内容はX（@ev0123456789）でご確認ください。<br>
             最終更新：2025年12月16日</p>
         </footer>
     </div>
