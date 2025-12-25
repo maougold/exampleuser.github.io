@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本メディアと米国報道の構造的問題に関する記録</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(-45deg, #228B22, #FF0000, #FFFFFF, #FFD700, #006400);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            color: #333333;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .emojis-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .emoji-particle {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.8;
+            animation: floatUpEmoji 18s linear infinite;
+        }
+
+        @keyframes floatUpEmoji {
+            0% { bottom: -100px; opacity: 0; transform: translateX(0) rotate(0deg); }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { bottom: 100%; opacity: 0; transform: translateX(80px) rotate(20deg); }
+        }
+
+        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; }
+        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 35px; }
+        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 45px; }
+        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; }
+        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 40px; }
+        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 50px; }
+        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 30px; }
+        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; }
+        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 45px; }
+        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 40px; }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #FF0000;
+            border-left: 5px solid #333;
+            padding-left: 10px;
+            text-align: left;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #228B22;
+            margin-top: 40px;
+            border-left: 5px solid #333;
+            padding-left: 10px;
+            text-align: left;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: left;
+            margin: 1em 0;
+        }
+
+        ul {
+            text-align: left;
+            margin-left: 1.5em;
+        }
+
+        .quote {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-left: 4px solid #999;
+            margin: 30px 0;
+            text-align: left;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .footer {
+            margin-top: 60px;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        a.back-link {
+            display: block;
+            margin-bottom: 30px;
+            color: #1da1f2;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="emojis-container">
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🤣</div>
+    </div>
+
+    <div class="content">
+        <a href="index.html" class="back-link">← 注意書きページに戻る</a>
+        <h1>日本メディアと米国報道の構造的問題に関する記録</h1>
+        <p>
+        本ページは、日本のテレビ・新聞報道における米国政治・経済報道の構造的偏りと、
+        それに対する責任の所在についての問題提起を、将来検証可能な形で記録するためのものである。
+        </p>
+
+        <h2>① 米国でメディア訴訟が成立しやすい理由</h2>
+        <p>
+        米国では、名誉毀損や虚偽報道に対する民事責任が非常に重く、
+        特に「実際の悪意（actual malice）」が認定された場合、
+        メディア企業は巨額の損害賠償や和解を余儀なくされる。
+        </p>
+        <ul>
+          <li>意図的な編集・切り取り</li>
+          <li>事実と異なる断定的報道</li>
+          <li>裏付けのない関係者談の多用</li>
+        </ul>
+        <p>
+        これらはすべて、現実的な訴訟リスクとして機能している。
+        結果として、CNN・MSNBCなどのリベラル系メディアも、
+        FOX Newsのような保守系メディアも、互いに訴訟リスクにさらされる
+        「相互牽制」の構造が成立している。
+        </p>
+
+        <h2>② 日本で同様の抑止が機能しない理由</h2>
+        <p>
+        日本では、名誉毀損における損害賠償額が極めて低く、
+        また「公益性」「論評の自由」が広く解釈されるため、
+        偏向報道・誤報・印象操作に対する法的リスクがほとんど存在しない。
+        </p>
+        <div class="quote">
+        📺 間違っても、切り取っても、煽っても、ほぼノーリスク
+        </div>
+        <p>
+        この環境下では、
+        </p>
+        <ul>
+          <li>CNNなど米国リベラル系メディアの論調を横並びで引用</li>
+          <li>FOX News的視点や反証は事実上排除</li>
+          <li>外れた予測や誤った断定の検証が行われない</li>
+        </ul>
+        <p>
+        という、責任の所在が不明確な評論空間が形成される。
+        </p>
+
+        <h2>③ 日本のメディアに対して訴訟は必要か</h2>
+        <p>
+        理論的には訴訟は可能であるが、現実的な抑止力としては限定的である。
+        </p>
+        <ul>
+          <li>勝訴しても賠償額が小さい</li>
+          <li>時間・費用対効果が見合わない</li>
+          <li>司法が報道の自由を極めて広く解釈する傾向</li>
+        </ul>
+        <p>
+        そのため、日本では訴訟が「罰」として機能しにくい。
+        </p>
+
+        <h2>④ 現状で最も有効な対抗手段</h2>
+        <p>
+        皮肉ではあるが、現状で最も効果を発揮しているのは、
+        </p>
+        <ul>
+          <li>発言や予測の記録化</li>
+          <li>予想と結果の可視化</li>
+          <li>「誰が・いつ・何を言い・どう外したか」の蓄積</li>
+        </ul>
+        <p>
+        である。
+        </p>
+        <p>
+        米国では訴訟がメディアを縛り、
+        日本ではアーカイブと信用失墜が、
+        唯一の抑止として機能している。
+        </p>
+
+        <h2>まとめ</h2>
+        <div class="quote">
+        米国：虚偽は訴訟で裁かれる<br>
+        日本：虚偽は忘れられるのを待つ
+        </div>
+        <p>
+        この構造の違いこそが、
+        保守系メディアが成立する国と、
+        横並び報道が固定化する国との差である。
+        </p>
+
+        <div class="footer">
+          記録作成日：2025年12月25日<br>
+          本ページは将来の検証・引用を目的とした記録である。
+        </div>
+    </div>
+</body>
+</html>
