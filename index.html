@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロフィールリンク | 私の投稿について</title>
     <style>
-        /* 修正: bodyからoverflow: hiddenを削除 */
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(-45deg, #228B22, #FF0000, #FFFFFF, #FFD700, #006400);
+            background: linear-gradient(-45deg, #FF0000, #FFD700, #FF4500, #FFA500, #B8860B);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
             color: #333333;
@@ -19,7 +18,6 @@
             margin: 0 auto;
             text-align: center;
             position: relative;
-            /* overflow: hidden; を削除 */
         }
 
         @keyframes gradientBG {
@@ -28,16 +26,16 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 絵文字浮遊アニメーション（コンテナの高さを100vhに制限） */
+        /* お正月絵文字の多様化 */
         .emojis-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh; /* 追加: 画面高さに制限 */
+            height: 100vh;
             pointer-events: none;
             z-index: 0;
-            overflow: hidden; /* 追加: 絵文字が画面外に出ないよう制限 */
+            overflow: hidden;
         }
 
         .emoji-particle {
@@ -54,16 +52,17 @@
             100% { bottom: 100%; opacity: 0; transform: translateX(80px) rotate(20deg); }
         }
 
-        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; }
-        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 35px; }
-        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 45px; }
-        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; }
-        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 40px; }
-        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 50px; }
-        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 30px; }
-        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; }
-        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 45px; }
-        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 40px; }
+        /* 各絵文字を個別に設定（お正月関連の多様な絵文字） */
+        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; content: "🎍"; } /* 門松 */
+        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 45px; content: "⛩"; } /* 神社 */
+        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 40px; content: "🧧"; } /* お年玉 */
+        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; content: "🍊"; } /* みかん */
+        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 50px; content: "🐍"; } /* 巳年 */
+        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 40px; content: "🎉"; } /* 祝賀 */
+        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 45px; content: "🥮"; } /* 月餅（お正月菓子イメージ） */
+        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; content: "🪭"; } /* 扇子（祝賀） */
+        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 35px; content: "💮"; } /* 梅の花 */
+        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 50px; content: "🀄"; } /* 麻雀（お正月遊びイメージ） */
 
         .content {
             position: relative;
@@ -71,21 +70,24 @@
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 36px;
             margin-bottom: 20px;
-            color: #FF0000;
+            color: #FFD700;
             opacity: 0;
             transform: translateY(-30px);
             animation: fadeInDown 1s ease forwards;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         p {
-            font-size: 16px;
+            font-size: 18px;
             margin-bottom: 20px;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         .section {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 12px;
             margin-bottom: 30px;
@@ -94,12 +96,12 @@
             transform: translateY(30px);
             animation: fadeInUp 1.2s ease forwards;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         .section:hover {
             transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.3);
         }
 
         .section:nth-child(2) { animation-delay: 0.3s; }
@@ -117,13 +119,14 @@
             font-size: 22px;
             margin-top: 0;
             margin-bottom: 20px;
-            color: #228B22;
+            color: #FF0000;
         }
 
         footer {
             margin-top: 50px;
             font-size: 14px;
-            color: #666;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             opacity: 0;
             animation: fadeInUp 1s ease forwards 0.9s;
         }
@@ -131,7 +134,7 @@
         a.post-link {
             display: block;
             margin-top: 20px;
-            color: #1da1f2;
+            color: #FFD700;
             text-decoration: none;
             font-weight: bold;
             font-size: 18px;
@@ -140,21 +143,21 @@
 </head>
 <body>
     <div class="emojis-container">
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
-        <div class="emoji-particle">🤣</div>
+        <div class="emoji-particle">🎍</div>
+        <div class="emoji-particle">⛩</div>
+        <div class="emoji-particle">🧧</div>
+        <div class="emoji-particle">🍊</div>
+        <div class="emoji-particle">🐍</div>
+        <div class="emoji-particle">🎉</div>
+        <div class="emoji-particle">🥮</div>
+        <div class="emoji-particle">🪭</div>
+        <div class="emoji-particle">💮</div>
+        <div class="emoji-particle">🀄</div>
     </div>
 
     <div class="content">
-        <h1>メリークリスマス！Elise Vanessaのちょっと本気のリンクページへようこそ🎄</h1>
-        <p>X（@ev0123456789）をご覧いただきありがとうございます。<br>こちらでは、投稿の傾向やご留意いただきたい点についてまとめています。</p>
+        <h1>あけましておめでとうございます！2026年 Elise Vanessaのリンクページへ🎍</h1>
+        <p>X（@ev0123456789）をご覧いただきありがとうございます。<br>新年の訪れとともに、メディアが隠すニュースを暴く私のページへお越しくださり嬉しいです（ソース探しはご自身でお願いしますよ！）。こちらでは、投稿の傾向やご留意いただきたい点についてまとめています。</p>
 
         <div class="section">
             <h2>投稿の傾向について</h2>
@@ -172,13 +175,11 @@
 
         <footer>
             <p>ご質問やご意見はXのDMまたはリプライでお気軽にどうぞ。<br>
-            最終更新：2025年12月16日</p>
-            <a href="posts.html" class="post-link">私のX投稿まとめページへ →</a>
+            最終更新：2026年1月1日</p>
+               <a href="posts.html" class="post-link">私のX投稿まとめページへ →</a>
             <a href="glossary.html" class="post-link">アメリカ政治用語の超入門ガイド →</a>
             <a href="media-bias.html" class="post-link">日本メディアと米国報道の構造的問題に関する記録 →</a>
         </footer>
     </div>
-</body>
-</html>
 </body>
 </html>
