@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィールリンク | 私の投稿について</title>
+    <title>プロフィールリンク | Valentine Special</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(-45deg, #FF0000, #FFD700, #FF4500, #FFA500, #B8860B);
+            background: linear-gradient(-45deg, #ff5f9e, #ff8fb1, #ffb3c6, #ffd6e0, #c9184a);
             background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
-            color: #333333;
+            animation: gradientBG 18s ease infinite;
+            color: #4a1c2a;
             margin: 0;
             padding: 40px 20px;
-            line-height: 1.6;
+            line-height: 1.7;
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
@@ -26,13 +26,10 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* お正月絵文字の多様化 */
+        /* バレンタイン絵文字 */
         .emojis-container {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            inset: 0;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
@@ -40,29 +37,28 @@
 
         .emoji-particle {
             position: absolute;
-            font-size: 40px;
-            opacity: 0.8;
-            animation: floatUpEmoji 18s linear infinite;
+            font-size: 36px;
+            opacity: 0.85;
+            animation: floatUpEmoji 16s linear infinite;
         }
 
         @keyframes floatUpEmoji {
-            0% { bottom: -100px; opacity: 0; transform: translateX(0) rotate(0deg); }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { bottom: 100%; opacity: 0; transform: translateX(80px) rotate(20deg); }
+            0% { bottom: -120px; opacity: 0; transform: translateX(0) rotate(0deg); }
+            20% { opacity: 0.9; }
+            80% { opacity: 0.9; }
+            100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(15deg); }
         }
 
-        /* 各絵文字を個別に設定（お正月関連の多様な絵文字） */
-        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; content: "🎍"; } /* 門松 */
-        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 45px; content: "⛩"; } /* 神社 */
-        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 40px; content: "🧧"; } /* お年玉 */
-        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; content: "🍊"; } /* みかん */
-        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 50px; content: "🐍"; } /* 巳年 */
-        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 40px; content: "🎉"; } /* 祝賀 */
-        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 45px; content: "🥮"; } /* 月餅（お正月菓子イメージ） */
-        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; content: "🪭"; } /* 扇子（祝賀） */
-        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 35px; content: "💮"; } /* 梅の花 */
-        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 50px; content: "🀄"; } /* 麻雀（お正月遊びイメージ） */
+        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; }
+        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; }
+        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; }
+        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; }
+        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; }
+        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; }
+        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; }
+        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 1s; }
+        .emoji-particle:nth-child(10){ left: 95%; animation-delay: 3s; }
 
         .content {
             position: relative;
@@ -70,38 +66,39 @@
         }
 
         h1 {
-            font-size: 36px;
+            font-size: 34px;
             margin-bottom: 20px;
-            color: #FFD700;
+            color: #fff0f5;
             opacity: 0;
             transform: translateY(-30px);
             animation: fadeInDown 1s ease forwards;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
         }
 
+        /* 説明文（白を廃止） */
         p {
             font-size: 18px;
             margin-bottom: 20px;
-            color: #FFFFFF;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            color: #5a1f33;
+            text-shadow: none;
         }
 
         .section {
             background-color: rgba(255, 255, 255, 0.95);
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 30px;
             text-align: left;
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1.2s ease forwards;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.25);
             transition: transform 0.4s ease, box-shadow 0.4s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         .section:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 18px 38px rgba(0,0,0,0.35);
         }
 
         .section:nth-child(2) { animation-delay: 0.3s; }
@@ -118,55 +115,68 @@
         h2 {
             font-size: 22px;
             margin-top: 0;
-            margin-bottom: 20px;
-            color: #FF0000;
+            margin-bottom: 18px;
+            color: #c9184a;
+        }
+
+        /* セクション内はさらに読みやすく */
+        .section p {
+            color: #4a1c2a;
         }
 
         footer {
             margin-top: 50px;
             font-size: 14px;
-            color: #FFFFFF;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            color: #5a1f33;
             opacity: 0;
             animation: fadeInUp 1s ease forwards 0.9s;
         }
 
         a.post-link {
             display: block;
-            margin-top: 20px;
-            color: #FFD700;
+            margin-top: 18px;
+            color: #7a1f3d;
             text-decoration: none;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 17px;
+        }
+
+        a.post-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="emojis-container">
-        <div class="emoji-particle">🎍</div>
-        <div class="emoji-particle">⛩</div>
-        <div class="emoji-particle">🧧</div>
-        <div class="emoji-particle">🍊</div>
-        <div class="emoji-particle">🐍</div>
-        <div class="emoji-particle">🎉</div>
-        <div class="emoji-particle">🥮</div>
-        <div class="emoji-particle">🪭</div>
-        <div class="emoji-particle">💮</div>
-        <div class="emoji-particle">🀄</div>
+        <div class="emoji-particle">💝</div>
+        <div class="emoji-particle">🍫</div>
+        <div class="emoji-particle">💌</div>
+        <div class="emoji-particle">❤️</div>
+        <div class="emoji-particle">🍓</div>
+        <div class="emoji-particle">💗</div>
+        <div class="emoji-particle">🎀</div>
+        <div class="emoji-particle">🫶</div>
+        <div class="emoji-particle">💞</div>
+        <div class="emoji-particle">🍩</div>
     </div>
 
     <div class="content">
-        <h1>あけましておめでとうございます！2026年 Elise Vanessaのリンクページへ🎍</h1>
-        <p>X（@ev0123456789）をご覧いただきありがとうございます。<br>新年の訪れとともに、メディアが隠すニュースを暴く私のページへお越しくださり嬉しいです（ソース探しはご自身でお願いしますよ！）。こちらでは、投稿の傾向やご留意いただきたい点についてまとめています。</p>
+        <h1>Happy Valentine 💝<br>Elise Vanessa のリンクページへようこそ</h1>
+
+        <p>
+            X（@ev0123456789）をご覧いただきありがとうございます。<br>
+            甘いチョコの季節ですが、ここでは少しビターな話題も扱っています🍫  
+            メディアが語らない出来事や背景を、私なりの視点でまとめています。
+        </p>
 
         <div class="section">
             <h2>投稿の傾向について</h2>
-            <p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
+             <p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
         </div>
 
         <div class="section">
-            <h2>ご留意いただきたい点（注意書き）</h2>
-            <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
+            <h2>ご留意いただきたい点（Love & Respect）</h2>
+             <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
                ・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
                ・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
                ・異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
@@ -174,14 +184,17 @@
         </div>
 
         <footer>
-            <p>ご質問やご意見はXのDMまたはリプライでお気軽にどうぞ。<br>
-            最終更新：2026年1月1日</p>
-               <a href="posts.html" class="post-link">私のX投稿まとめページへ →</a>
+            <p>
+                ご質問やご意見はXのDMやリプライでどうぞ 💌<br>
+                最終更新：2026年2月
+            </p>
+
+            <a href="posts.html" class="post-link">私のX投稿まとめページ →</a>
             <a href="glossary.html" class="post-link">アメリカ政治用語の超入門ガイド →</a>
-            <a href="media-bias.html" class="post-link">日本メディアと米国報道の構造的問題に関する記録 →</a>
+            <a href="media-bias.html" class="post-link">日本メディアと米国報道の構造的問題 →</a>
             <a href="korea-policy-detailed.html" class="post-link">日韓関係・竹島問題の詳細考察 →</a>
-            <a href="charlie-kirk-incident.html" class="post-link">チャーリー・カーク銃撃事件の動機構造分析 →</a>
-            <a href="jhonmaney.html" class="post-link">ジョン・マネーの失敗事例とトランス医療のリスク →</a>
+            <a href="charlie-kirk-incident.html" class="post-link">チャーリー・カーク事件の構造分析 →</a>
+            <a href="jhonmaney.html" class="post-link">ジョン・マネー事例と医療リスク →</a>
         </footer>
     </div>
 </body>
