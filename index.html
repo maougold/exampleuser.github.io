@@ -1,212 +1,284 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>プロフィールリンク | Valentine Special</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィールリンク | Valentine Special</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(-45deg, #ff5f9e, #ff8fb1, #ffb3c6, #ffd6e0, #c9184a);
+            background-size: 400% 400%;
+            animation: gradientBG 18s ease infinite;
+            color: #4a1c2a;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
 
-<style>
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(-45deg, #ff5f9e, #ff8fb1, #ffb3c6, #ffd6e0, #c9184a);
-    background-size: 400% 400%;
-    animation: gradientBG 18s ease infinite;
-    color: #4a1c2a;
-    margin: 0;
-    padding: 40px 20px;
-    overflow-x: hidden;
-}
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+        /* バレンタイン絵文字 */
+        .emojis-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
 
-/* ===== 絵文字アニメーション ===== */
-.emojis-container {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-}
+        .emoji-particle {
+            position: absolute;
+            font-size: 36px;
+            opacity: 0.85;
+            animation: floatUpEmoji 16s linear infinite;
+        }
 
-.emoji {
-    position: absolute;
-    font-size: 34px;
-    opacity: 0.85;
-    animation: floatUp 16s linear infinite;
-}
+        @keyframes floatUpEmoji {
+            0% { bottom: -120px; opacity: 0; transform: translateX(0) rotate(0deg); }
+            20% { opacity: 0.9; }
+            80% { opacity: 0.9; }
+            100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(15deg); }
+        }
 
-@keyframes floatUp {
-    0% { bottom: -120px; opacity: 0; transform: translateX(0) rotate(0deg); }
-    20% { opacity: 0.9; }
-    80% { opacity: 0.9; }
-    100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(15deg); }
-}
+        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; }
+        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; }
+        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; }
+        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; }
+        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; }
+        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; }
+        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; }
+        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 1s; }
+        .emoji-particle:nth-child(10){ left: 95%; animation-delay: 3s; }
 
-.emoji:nth-child(1){left:5%;animation-delay:0s}
-.emoji:nth-child(2){left:15%;animation-delay:2s}
-.emoji:nth-child(3){left:25%;animation-delay:4s}
-.emoji:nth-child(4){left:35%;animation-delay:6s}
-.emoji:nth-child(5){left:45%;animation-delay:8s}
-.emoji:nth-child(6){left:55%;animation-delay:10s}
-.emoji:nth-child(7){left:65%;animation-delay:12s}
-.emoji:nth-child(8){left:75%;animation-delay:14s}
-.emoji:nth-child(9){left:85%;animation-delay:1s}
-.emoji:nth-child(10){left:95%;animation-delay:3s}
+        .content {
+            position: relative;
+            z-index: 1;
+        }
 
-/* ===== レイアウト ===== */
-.wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 30px;
-    position: relative;
-    z-index: 1;
-}
+        h1 {
+            font-size: 34px;
+            margin-bottom: 20px;
+            color: #fff0f5;
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: fadeInDown 1s ease forwards;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
+        }
 
-main {
-    flex: 1;
-    text-align: center;
-}
+        /* 説明文（白を廃止） */
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #5a1f33;
+            text-shadow: none;
+        }
 
-aside {
-    width: 320px;
-    position: sticky;
-    top: 30px;
-}
+        .section {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1.2s ease forwards;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
 
-/* ===== サイドバー ===== */
-.sidebar {
-    background: rgba(255,255,255,0.93);
+        .section:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 18px 38px rgba(0,0,0,0.35);
+        }
+
+        .section:nth-child(2) { animation-delay: 0.3s; }
+        .section:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes fadeInDown {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 18px;
+            color: #c9184a;
+        }
+
+        /* セクション内はさらに読みやすく */
+        .section p {
+            color: #4a1c2a;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #5a1f33;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        a.post-link {
+            display: block;
+            margin-top: 18px;
+            color: #7a1f3d;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        a.post-link:hover {
+            text-decoration: underline;
+        }
+
+/* ===== リンクまとめ ===== */
+.link-hub {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 36px;
     border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+    margin: 60px 0 40px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+    text-align: left;
 }
 
-.sidebar h3 {
-    margin: 22px 0 12px;
+.link-hub h2 {
+    text-align: center;
     color: #c9184a;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 26px;
+}
+
+.link-category h3 {
+    color: #7a1f3d;
     font-size: 18px;
+    margin-bottom: 14px;
     border-bottom: 1px solid rgba(201,24,74,0.3);
     padding-bottom: 6px;
 }
 
-.sidebar a {
+.link-category a {
     display: block;
-    margin: 8px 0;
-    color: #7a1f3d;
+    margin-bottom: 10px;
+    color: #4a1c2a;
     font-weight: bold;
     text-decoration: none;
     font-size: 15px;
 }
 
-.sidebar a:hover {
+.link-category a:hover {
     text-decoration: underline;
 }
 
-/* ===== メインカード ===== */
-.section {
-    background: rgba(255,255,255,0.95);
-    padding: 30px;
-    border-radius: 18px;
-    margin-bottom: 30px;
-    text-align: left;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.25);
-    transition: transform 0.4s ease;
-}
 
-.section:hover {
-    transform: translateY(-6px);
-}
-
-h1 {
-    font-size: 34px;
-    color: #fff0f5;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
-}
-
-p { font-size: 18px; }
-
-footer {
-    margin-top: 40px;
-    font-size: 14px;
-}
-
-/* ===== モバイル ===== */
-@media (max-width: 900px) {
-    .wrapper { flex-direction: column; }
-    aside { width: 100%; position: static; }
-}
-</style>
+    </style>
 </head>
-
 <body>
+    <div class="emojis-container">
+        <div class="emoji-particle">💝</div>
+        <div class="emoji-particle">🍫</div>
+        <div class="emoji-particle">💌</div>
+        <div class="emoji-particle">❤️</div>
+        <div class="emoji-particle">🍓</div>
+        <div class="emoji-particle">💗</div>
+        <div class="emoji-particle">🎀</div>
+        <div class="emoji-particle">🫶</div>
+        <div class="emoji-particle">💞</div>
+        <div class="emoji-particle">🍩</div>
+    </div>
 
-<!-- 💝 絵文字 -->
-<div class="emojis-container">
-    <div class="emoji">💝</div><div class="emoji">🍫</div><div class="emoji">💌</div>
-    <div class="emoji">❤️</div><div class="emoji">🍓</div><div class="emoji">💗</div>
-    <div class="emoji">🎀</div><div class="emoji">🫶</div><div class="emoji">💞</div><div class="emoji">🍩</div>
+    <div class="content">
+        <h1>Happy Valentine 💝<br>Elise Vanessa のリンクページへようこそ</h1>
+
+        <p>
+            X（@ev0123456789）をご覧いただきありがとうございます。<br>
+            甘いチョコの季節ですが、ここでは少しビターな話題も扱っています🍫  
+            メディアが語らない出来事や背景を、私なりの視点でまとめています。
+        </p>
+
+        <div class="section">
+            <h2>投稿の傾向について</h2>
+             <p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
+        </div>
+
+        <div class="section">
+            <h2>ご留意いただきたい点（Love & Respect）</h2>
+             <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
+               ・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
+               ・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
+               ・異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
+               ・万一、誤った情報があった場合は訂正いたしますので、丁寧なご指摘をいただければ幸いです。</p>
+        </div>
+
+<div class="link-hub">
+    <h2>📌 記事・コンテンツ一覧</h2>
+
+    <div class="link-grid">
+
+        <div class="link-category">
+            <h3>📌 ランキング・まとめ</h3>
+            <a href="posts.html">Elise Vanessaのバズった投稿トップ10</a>
+            <a href="SpecialRanking.html">💘 バズった投稿ランキング TOP10</a>
+        </div>
+
+        <div class="link-category">
+            <h3>📚 用語・基礎解説</h3>
+            <a href="glossary.html">アメリカ政治用語の超入門ガイド</a>
+            <a href="aruaruzen.html">アルゼンチン政治用語・スラング</a>
+            <a href="supe.html">スペイン政治用語・スラング</a>
+        </div>
+
+        <div class="link-category">
+            <h3>🌍 国・地域別分析</h3>
+            <a href="korea-policy-detailed.html">日韓関係・竹島問題の詳細考察</a>
+            <a href="settler-nation.html">「移民の国」は間違いである｜アメリカの本質</a>
+        </div>
+
+        <div class="link-category">
+            <h3>🧠 構造・メディア分析</h3>
+            <a href="media-bias.html">日本メディアと米国報道の構造的問題</a>
+            <a href="usaTrump2gdp.html">メディアの「経済音痴」を解剖する</a>
+            <a href="AIbadlite.html">AIの中立性と保守層離反リスク</a>
+        </div>
+
+        <div class="link-category">
+            <h3>⚠️ 議論・センシティブ</h3>
+            <a href="charlie-kirk-incident.html">チャーリー・カーク事件の構造分析</a>
+            <a href="jhonmaney.html">ジョン・マネー事例と医療リスク</a>
+            <a href="japan_islam.html">日本におけるイスラム教とシャリーア法【第1回】</a>
+        </div>
+
+    </div>
 </div>
 
-<div class="wrapper">
 
-<main>
-<h1>Happy Valentine 💝<br>Elise Vanessa のリンクページへようこそ</h1>
-
-<p>X（@ev0123456789）をご覧いただきありがとうございます。<br>甘いチョコの季節ですが、ここでは少しビターな話題も扱っています🍫 メディアが語らない出来事や背景を、私なりの視点でまとめています。🍫</p>
-
-<div class="section">
-<h2>投稿の傾向について</h2>
-<p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
-</div>
-
-<div class="section">
-<h2>ご留意いただきたい点（Love & Respect）</h2>
-<p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
-・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
-・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
-・異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
-・万一、誤った情報があった場合は訂正いたしますので、丁寧なご指摘をいただければ幸いです。</p>
-</div>
-
-<footer>
-<p>ご質問やご意見はXのDMやリプライでどうぞ  💌<br>最終更新：2026年2月</p>
+       <footer>
+    <p>
+        ご質問やご意見はXのDMやリプライでどうぞ 💌<br>
+        最終更新：2026年2月
+    </p>
 </footer>
-</main>
 
-<aside>
-<div class="sidebar">
-
-<h3>📌 ランキング・まとめ</h3>
-<a href="posts.html">バズった投稿トップ10</a>
-<a href="SpecialRanking.html">投稿ランキングTOP10</a>
-
-<h3>📚 用語・基礎解説</h3>
-<a href="glossary.html">米国政治用語ガイド</a>
-<a href="aruaruzen.html">アルゼンチン政治用語</a>
-<a href="supe.html">スペイン政治用語</a>
-
-<h3>🌍 国・地域別分析</h3>
-<a href="korea-policy-detailed.html">日韓・竹島問題</a>
-<a href="settler-nation.html">「移民の国」は神話</a>
-
-<h3>🧠 構造・メディア分析</h3>
-<a href="media-bias.html">日米メディア構造</a>
-<a href="usaTrump2gdp.html">経済報道の誤謬</a>
-<a href="AIbadlite.html">AIと中立性</a>
-
-<h3>⚠️ 議論・センシティブ</h3>
-<a href="charlie-kirk-incident.html">チャーリー・カーク事件</a>
-<a href="jhonmaney.html">ジョン・マネー事例</a>
-<a href="japan_islam.html">日本とイスラム問題</a>
-
-</div>
-</aside>
-
-</div>
+    </div>
 </body>
 </html>
