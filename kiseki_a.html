@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOADING...</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* 偽の読み込み画面 */
+        #loader {
+            text-align: center;
+            display: block;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #333;
+            border-top: 5px solid #0f0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ルーレット画面（初期は非表示） */
+        #game-container {
+            display: none;
+            text-align: center;
+        }
+
+        h1 { font-size: 1.5rem; color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+
+        #roulette-box {
+            width: 300px;
+            height: 80px;
+            border: 4px solid #fff;
+            position: relative;
+            overflow: hidden;
+            background: #222;
+            margin: 20px auto;
+        }
+
+        #roulette-list {
+            position: absolute;
+            top: 0;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .item {
+            height: 80px; width: 300px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.2rem;
+            border-bottom: 1px solid #444;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: #ff0000; color: #fff;
+            border: none; cursor: pointer;
+            box-shadow: 0 5px 0 #990000;
+        }
+
+        button:active { transform: translateY(5px); box-shadow: none; }
+
+        /* 結果オーバーレイ */
+        #result-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,0,0,0.95);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="spinner"></div>
+    <div id="loading-text">システムデータを構築中...</div>
+</div>
+
+<div id="game-container">
+    <h1>CRITICAL ERROR: コンテンツが消失しました</h1>
+    <p>復旧するには「奇跡」を当選させる必要があります</p>
+    
+    <div id="roulette-box">
+        <ul id="roulette-list"></ul>
+    </div>
+
+    <button id="spin-btn" onclick="startRoulette()">奇跡を信じて回す</button>
+</div>
+
+<div id="result-overlay">
+    <h2 style="font-size: 4rem; margin: 0;">★奇跡当選★</h2>
+    <p style="font-size: 1.5rem;">おめでとうございます！</p>
+    <p>「index.html」へ戻る権利を付与しました。</p>
+    <p id="countdown">3秒後に転送します...</p>
+</div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(freq, type, duration) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // 偽の読み込み演出
+    const loadingTexts = ["ユーザー権限を確認中...", "サーバーの裏側を掃除中...", "期待値を調整中...", "ほぼ完了..."];
+    let ltIdx = 0;
+    const ltInterval = setInterval(() => {
+        if(ltIdx < loadingTexts.length) {
+            document.getElementById('loading-text').innerText = loadingTexts[ltIdx++];
+            playSound(440, 'square', 0.05);
+        } else {
+            clearInterval(ltInterval);
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+        }
+    }, 1500);
+
+    // ルーレットの準備
+    const items = ["再起動", "全データ消去", "ただの無", "明日筋肉痛", "一生ここ", "★奇跡★", "猫になる", "やり直し"];
+    const listEl = document.getElementById('roulette-list');
+    for(let i=0; i<100; i++) {
+        const li = document.createElement('li');
+        li.className = 'item';
+        li.innerText = items[i % items.length];
+        listEl.appendChild(li);
+    }
+
+    function startRoulette() {
+        document.getElementById('spin-btn').style.display = 'none';
+        let pos = 0;
+        let count = 0;
+        
+        const timer = setInterval(() => {
+            pos -= 40;
+            listEl.style.top = pos + 'px';
+            count++;
+            // 回転音
+            playSound(200 + (count % 10) * 50, 'sine', 0.05);
+
+            if (count > 60) {
+                clearInterval(timer);
+                finish();
+            }
+        }, 50);
+    }
+
+    function finish() {
+        // 当選位置へ
+        listEl.style.transition = "top 1s cubic-bezier(0.1, 0, 0.2, 1)";
+        listEl.style.top = "-400px"; // 「★奇跡★」の位置（項目数により調整）
+        
+        setTimeout(() => {
+            // ファンファーレ音
+            [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                setTimeout(() => playSound(f, 'square', 0.5), i * 150);
+            });
+
+            document.getElementById('result-overlay').style.display = 'flex';
+            
+            let sec = 3;
+            const cd = setInterval(() => {
+                sec--;
+                document.getElementById('countdown').innerText = sec + "秒後に転送します...";
+                if(sec <= 0) {
+                    clearInterval(cd);
+                    window.location.href = "index.html"; // index.htmlへ戻る
+                }
+            }, 1000);
+        }, 1200);
+    }
+</script>
+
+</body>
+</html>
