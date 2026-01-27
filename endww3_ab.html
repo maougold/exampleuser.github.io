@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最終警告</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Hiragino Kaku Gothic Pro', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* 画面の震え演出 */
+        @keyframes shake {
+            0% { transform: translate(0,0); }
+            10% { transform: translate(-10px, -10px); }
+            20% { transform: translate(10px, 10px); }
+            30% { transform: translate(-10px, 10px); }
+            40% { transform: translate(10px, -10px); }
+            100% { transform: translate(0,0); }
+        }
+        .shaking { animation: shake 0.1s infinite; }
+
+        /* ノイズ演出 */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 2px);
+            pointer-events: none; opacity: 0;
+        }
+
+        #btn-destroy {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 30px 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff0000;
+            border-radius: 10px;
+        }
+
+        #message {
+            display: none;
+            font-size: 1.5rem;
+            line-height: 2;
+        }
+
+        .fade-out { transition: opacity 2s; opacity: 0; }
+    </style>
+</head>
+<body id="body">
+
+    <div id="ui">
+        <p style="color: #ff0000; font-weight: bold; margin-bottom: 20px;">⚠️ 警告：この操作は取り消せません</p>
+        <button id="btn-destroy" onclick="destroyWorld()">世界を滅ぼす</button>
+    </div>
+
+    <div id="message"></div>
+    <div class="noise" id="noise"></div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(freq, type, duration, volume = 0.1) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function destroyWorld() {
+            // UIを消して演出開始
+            document.getElementById('ui').style.display = 'none';
+            const msg = document.getElementById('message');
+            const body = document.getElementById('body');
+            const noise = document.getElementById('noise');
+            msg.style.display = 'block';
+
+            // 破壊音
+            playSound(100, 'sawtooth', 2, 0.3);
+            body.classList.add('shaking');
+            noise.style.opacity = 1;
+
+            const sequences = [
+                { t: "全システムへの接続を切断中...", d: 1500 },
+                { t: "近所のスーパーのポイントカードを無効化中...", d: 1500 },
+                { t: "全人類の『明日から本気出す』という決意を粉砕中...", d: 2000 },
+                { t: "………滅亡完了。", d: 2000 },
+                { t: "世界が滅んだので、一泊（待機）します。", d: 3000 },
+                { t: "（小鳥のさえずり）", d: 2000 },
+                { t: "そろそろ、新しい世界へ行きましょうか。", d: 2000 }
+            ];
+
+            let totalDelay = 0;
+            sequences.forEach((item, index) => {
+                setTimeout(() => {
+                    msg.innerText = item.t;
+                    playSound(200 + index * 50, 'sine', 0.1);
+                    
+                    // 滅亡完了のタイミングで揺れを止める
+                    if(index === 3) {
+                        body.classList.remove('shaking');
+                        noise.style.opacity = 0;
+                        body.style.backgroundColor = "#fff";
+                        body.style.color = "#000";
+                    }
+                }, totalDelay);
+                totalDelay += item.d;
+            });
+
+            // 一泊してからindex.htmlへ
+            setTimeout(() => {
+                body.classList.add('fade-out');
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 2000);
+            }, totalDelay);
+        }
+    </script>
+</body>
+</html>
