@@ -38,6 +38,70 @@
 </head>
 <body>
 
+<div style="text-align: center; margin: 40px 0;">
+    <button id="roller-coaster-btn" onclick="startRollerCoaster()" style="padding: 15px 30px; background: #000; color: #fff; border: 2px solid #555; cursor: pointer; font-weight: bold;">
+        ⏩ 忙しい人のための「爆速自動スクロール」
+    </button>
+</div>
+
+<style>
+    /* 画面がガクガク揺れるアニメーション */
+    @keyframes super-shake {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(10px, 15px) rotate(2deg); }
+        50% { transform: translate(-10px, -15px) rotate(-2deg); }
+        75% { transform: translate(15px, -10px) rotate(1deg); }
+        100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .riding { animation: super-shake 0.1s infinite; }
+</style>
+
+<script>
+function startRollerCoaster() {
+    const btn = document.getElementById('roller-coaster-btn');
+    const body = document.body;
+    
+    btn.disabled = true;
+    btn.innerText = "うわああああああああ！！";
+    
+    // 画面を揺らす
+    body.classList.add('riding');
+
+    let currentPos = window.scrollY;
+    const targetPos = document.documentElement.scrollHeight;
+    const speed = 50; // スクロールの速さ
+
+    const scrollInterval = setInterval(() => {
+        currentPos += speed;
+        window.scrollTo(0, currentPos);
+
+        // 一番下まで行ったら終了
+        if (currentPos >= targetPos - window.innerHeight) {
+            clearInterval(scrollInterval);
+            finishRollerCoaster();
+        }
+    }, 10);
+}
+
+function finishRollerCoaster() {
+    const body = document.body;
+    body.classList.remove('riding');
+    
+    // 少し遅れて煽りメッセージ
+    setTimeout(() => {
+        alert("【速報】あまりに早すぎて、あなたの脳には何も残りませんでした。");
+        
+        // 追い打ち：一番上まで一瞬で戻す
+        const goBack = confirm("もう一度最初から読み直しますか？（真面目に）");
+        if (goBack) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('roller-coaster-btn').disabled = false;
+            document.getElementById('roller-coaster-btn').innerText = "⏩ もう一度乗る（おすすめしません）";
+        }
+    }, 500);
+}
+</script>
+    
 <div id="container">
     <header>
         <h1>【悲報】玉川徹さん、トランプ関税で「米国は貧しくなる」と予言するも大外れ…経済音痴露呈でスレ民失笑</h1>
