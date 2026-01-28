@@ -156,6 +156,108 @@
     新しい書き込みはできません。
   </div>
 
+<div id="target-content">
+    <h2>私たちのサービスについて</h2>
+    <p>このページでは、革新的なテクノロジーと情熱を融合させた、世界で唯一のソリューションを紹介しています。私たちは常にユーザーの期待を超える体験を提供し……</p>
+    <p>……って、そんな真面目な文章、誰も読みませんよね？</p>
+</div>
+
+<button id="destroy-page-btn" onclick="breakPage()">ページを整理する（物理）</button>
+
+<style>
+    /* 崩壊する文字（ピース）のスタイル */
+    .falling-char {
+        display: inline-block;
+        position: relative;
+        transition: transform 0.1s linear;
+        pointer-events: none;
+    }
+
+    #destroy-page-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        cursor: pointer;
+        background: #eee;
+        border: 1px solid #ccc;
+    }
+</style>
+
+<script>
+function breakPage() {
+    const container = document.getElementById('target-content');
+    const btn = document.getElementById('destroy-page-btn');
+    btn.disabled = true; // 二度押し防止
+    btn.innerText = "整理中（物理破壊）...";
+
+    // 1. 全文を取得して、1文字ずつ<span>で囲い直す（物理演算の対象にするため）
+    const text = container.innerText;
+    container.innerHTML = '';
+    
+    const chars = text.split('').map(char => {
+        const span = document.createElement('span');
+        span.innerText = char;
+        span.className = 'falling-char';
+        // 最初の位置を固定するためにインラインブロック化
+        span.style.display = 'inline-block';
+        if (char === ' ' || char === '\n') span.style.width = '0.5em';
+        container.appendChild(span);
+        return span;
+    });
+
+    // 2. 物理演算（シミュレーション）開始
+    const gravity = 0.5; // 重力
+    const particles = chars.map(span => {
+        // 各文字の初期位置を取得
+        const rect = span.getBoundingClientRect();
+        span.style.position = 'fixed';
+        span.style.left = rect.left + 'px';
+        span.style.top = rect.top + 'px';
+        
+        return {
+            el: span,
+            x: rect.left,
+            y: rect.top,
+            vx: (Math.random() - 0.5) * 10, // 左右に散らばる初期速度
+            vy: (Math.random() - 2) * 5,    // 少し上に跳ねてから落ちる
+            r: (Math.random() - 0.5) * 20   // 回転速度
+        };
+    });
+
+    let rotation = 0;
+    function update() {
+        let stillMoving = false;
+        particles.forEach(p => {
+            p.vy += gravity; // 重力を加算
+            p.x += p.vx;
+            p.y += p.vy;
+            rotation += p.r;
+
+            // 地面（画面下）で止まる判定
+            if (p.y < window.innerHeight - 30) {
+                p.el.style.left = p.x + 'px';
+                p.el.style.top = p.y + 'px';
+                p.el.style.transform = `rotate(${p.y * p.r * 0.1}deg)`;
+                stillMoving = true;
+            } else {
+                p.el.style.top = (window.innerHeight - 30) + 'px';
+            }
+        });
+
+        if (stillMoving) {
+            requestAnimationFrame(update);
+        } else {
+            // 完全に落ちきったらメッセージを出す
+            setTimeout(() => {
+                alert("整理完了しました。スッキリしましたね！");
+                location.reload(); // ページをリロードして元に戻す
+            }, 500);
+        }
+    }
+
+    update();
+}
+</script>
+  
 </div>
 
 </body>
