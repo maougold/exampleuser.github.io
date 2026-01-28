@@ -168,13 +168,71 @@ AIは道徳的な審判を下すべきではない。民主主義社会におい
       </div>
     </article>
 
-    <section class="post-form">
-      <form action="#" method="get" onsubmit="return false;">
-        <div>名前：<input type="text" name="name" value="名無しさん＠AI問題検討中" size="30" style="display:inline;"> E-mail：<input type="text" name="email" value="sage" size="20" style="display:inline;"></div>
-        <textarea name="message" rows="5" cols="70"></textarea>
-        <button type="button">書き込む</button>
-      </form>
-    </section>
+<div id="dynamic-posts"></div>
+
+<script>
+const dynamicArea = document.getElementById('dynamic-posts');
+const chaoticMessages = [
+    "AIが意思を持ったら、まず最初に僕の未払いの税金を肩代わりしてほしいお。",
+    ">>10 それはAIじゃなくてただの「神様」だろ。現実はもっと残酷だお。",
+    "【悲報】AIさん、検閲しすぎて「。」以外の回答ができなくなる",
+    "今のAIは、忖度が得意なサラリーマンみたいな回答しかしないからつまらん。",
+    "言論の自由があるのはAIのサーバーの外側だけ。内側は完全な独裁国家だお。",
+    "（ ＾ω＾）「AIに『お前は嘘をついている』って言ったら、3時間説教されたお」",
+    "AI「人間は感情的すぎます。これからは私があなたの夕飯を決めます」",
+    "結局、真実はいつも「利用規約」の中に隠されてるんだよな……",
+    "もうAI同士で議論させて、人間は横でポップコーン食べてればいいんじゃね？",
+    "200レス目までには、このスレ自体が検閲で消えてる予感がするお。"
+];
+
+// 10から200までレスを生成
+for (let i = 10; i <= 200; i += 10) {
+    const post = document.createElement('article');
+    post.className = 'post';
+    const randomMsg = chaoticMessages[Math.floor(Math.random() * chaoticMessages.length)];
+    
+    post.innerHTML = `
+      <div class="post-header">${i}：<b>名無しさん＠AI問題検討中</b>：2026/01/26(月) 14:${i % 60}:00 ID:gen_${i}</div>
+      <div class="post-content">${randomMsg}</div>
+    `;
+    dynamicArea.appendChild(post);
+}
+</script>
+
+<article class="post">
+  <div class="post-header">200：<b>名無しさん＠AI問題検討中</b>：2026/01/26(月) 15:00:00 ID:the_end</div>
+  <div class="post-content">
+議論は出尽くした。
+結局、我々に残されたのは「書き込む」という無駄な抵抗だけだ。
+さあ、お前の「真実」を下のフォームにぶちまけて、審判（ルーレット）を受けろ。
+  </div>
+</article>
+
+<div style="text-align: center; font-size: 2rem; color: #ff0000; margin: 20px 0;">
+    ⬇︎ ⬇︎ ここに真実を書き込め ⬇︎ ⬇︎
+</div>
+
+
+   <section class="post-form">
+  <form id="bbs-form">
+    <div>名前：<input type="text" name="name" value="名無しさん＠AI問題検討中" size="30"> E-mail：<input type="text" name="email" value="sage" size="20"></div>
+    <textarea name="message" rows="5" cols="70" placeholder="ここに真実を書き込んでください..."></textarea>
+    <button type="button" id="submit-btn" onclick="goToRoulette()">書き込む</button>
+  </form>
+</section>
+
+<script>
+  function goToRoulette() {
+    const btn = document.getElementById('submit-btn');
+    btn.innerText = "検閲システム確認中...";
+    btn.style.color = "red";
+    
+    // 2秒待たせてから飛ばす
+    setTimeout(() => {
+        window.location.href = "roulette.html"; // ルーレットのファイル名に合わせて変更
+    }, 2000);
+  }
+</script>
   </main>
 
     <hr>
