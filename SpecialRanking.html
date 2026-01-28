@@ -269,6 +269,55 @@ Elise Vanessa｜Valentine’s Special Edition<br>
 🎯💯💯</div>
 </div>
 
+    <div id="iine-container" style="text-align: center; padding: 50px; border-top: 1px dashed #ccc;">
+    <p>この記事が良かったら「いいね」をお願いします！</p>
+    <div style="height: 100px; position: relative;">
+        <button id="iine-btn" style="padding: 10px 30px; font-size: 1.2rem; cursor: pointer; position: absolute; left: 50%; transform: translateX(-50%); transition: 0.1s; white-space: nowrap;">
+            👍 いいね！
+        </button>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('iine-btn');
+    let escapeCount = 0;
+
+    // ボタンがマウスから逃げる処理
+    btn.addEventListener('mouseover', () => {
+        if (escapeCount < 5) {
+            // 5回目まではランダムに逃げる
+            const x = (Math.random() - 0.5) * 300;
+            const y = (Math.random() - 0.5) * 100;
+            btn.style.transform = `translate(calc(-50% + ${x}px), ${y}px)`;
+            escapeCount++;
+        } else if (escapeCount === 5) {
+            // 逃げるのをやめて、逆にマウスを追いかける（巨大化）
+            btn.innerText = "逃がさないよ？ 👍";
+            btn.style.fontSize = "5rem";
+            btn.style.zIndex = "9999";
+            btn.style.position = "fixed";
+            btn.style.left = "0";
+            btn.style.top = "0";
+            btn.style.width = "100vw";
+            btn.style.height = "100vh";
+            btn.style.transform = "none";
+            btn.style.opacity = "0.8";
+            escapeCount++;
+        }
+    });
+
+    // 巨大化したボタンをクリックした時の処理
+    btn.addEventListener('click', () => {
+        if (escapeCount > 5) {
+            alert("強引に「いいね」してくれてありがとうございます！大好きです！");
+            // 満足して消える、または元に戻る
+            btn.style.display = "none";
+            document.getElementById('iine-container').innerHTML = "<h3>感謝感激！！！👍👍👍</h3>";
+        } else {
+            alert("あ、押せちゃいました？ 運がいいですね。");
+        }
+    });
+</script>
 
 <footer>
 最終更新：2026年1月  
