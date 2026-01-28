@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>検閲システム - 投稿規制中</title>
+    <style>
+        body {
+            background-color: #efefef;
+            color: #ff0000;
+            font-family: "MS PGothic", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .warning-box {
+            border: 2px solid #ff0000;
+            background: #fff;
+            padding: 30px;
+            max-width: 600px;
+            box-shadow: 10px 10px 0 #ccc;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 20px;
+            background: #eee;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-fill {
+            width: 0%;
+            height: 100%;
+            background: #ff0000;
+            transition: width 0.1s;
+        }
+
+        #roulette-section { display: none; }
+
+        /* ルーレット本体 */
+        #roulette-display {
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 20px;
+            background: #000;
+            color: #0f0;
+            margin: 20px 0;
+            border: 4px double #0f0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="warning-box" id="warning">
+    <h1>⚠️ 投稿エラー ⚠️</h1>
+    <p>あなたの書き込みは、AI安全ガイドラインの「第114514条：真実の陳列」に抵触しました。</p>
+    <p>現在、あなたのIPアドレスを「ちょっと面白いリスト」に登録中です...</p>
+    
+    <div class="loading-bar">
+        <div class="loading-fill" id="progress"></div>
+    </div>
+    <p id="status">セキュリティチェック中...</p>
+</div>
+
+<div class="warning-box" id="roulette-section">
+    <h1>運命の再審査</h1>
+    <p>書き込みを許可するかどうかは、AIの気分（ルーレット）で決定されます。</p>
+    <div id="roulette-display">準備完了</div>
+    <button id="spin-btn" onclick="spin()">再審査を開始する</button>
+</div>
+
+<script>
+    // 1. 偽の読み込み演出
+    let prog = 0;
+    const interval = setInterval(() => {
+        prog += Math.random() * 15;
+        if(prog > 100) prog = 100;
+        document.getElementById('progress').style.width = prog + "%";
+        
+        if(prog === 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                document.getElementById('warning').style.display = 'none';
+                document.getElementById('roulette-section').style.display = 'block';
+            }, 800);
+        }
+    }, 200);
+
+    // 2. ルーレット演出
+    const results = ["即刻BAN", "一生ROMってろ", "書き込み許可(嘘)", "家宅捜索(嘘)", "★奇跡の当選★", "ただの無", "猫になる", "やり直し"];
+    let isSpinning = false;
+
+    function spin() {
+        if(isSpinning) return;
+        isSpinning = true;
+        document.getElementById('spin-btn').disabled = true;
+
+        let count = 0;
+        const spinInterval = setInterval(() => {
+            const res = results[count % results.length];
+            document.getElementById('roulette-display').innerText = res;
+            count++;
+
+            if(count > 40) {
+                clearInterval(spinInterval);
+                finish();
+            }
+        }, 80);
+    }
+
+    function finish() {
+        // 強制的に★奇跡★へ
+        document.getElementById('roulette-display').innerText = "★奇跡の当選★";
+        document.getElementById('roulette-display').style.background = "#ff0";
+        document.getElementById('roulette-display').style.color = "#f00";
+
+        setTimeout(() => {
+            alert("おめでとうございます！AIがあなたの意見を「面白い」と認めました。\n元の掲示板に戻します。");
+            window.location.href = "index.html"; // index.htmlに戻る
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>
