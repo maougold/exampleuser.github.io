@@ -365,9 +365,23 @@
             💌 OFUSEで応援メッセージ
         </a>
 
-        <a href="amazon_kiseki.html" style="background: linear-gradient(45deg, #ffcc00, #ff6600); color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 0 #e67e22;">
-            ✨ 奇跡を信じてAmazonリストへ
-        </a>
+<a href="javascript:void(0);" onclick="tryMiracle()" style="background: linear-gradient(45deg, #ffcc00, #ff6600); color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 0 #e67e22;">
+    ✨ 奇跡を信じてAmazonリストへ
+</a>
+
+<script>
+function tryMiracle() {
+    // 0から100までの乱数を作る
+    const luck = Math.random() * 100;
+    
+    // 【確率設定】 20以下の時（20%）だけ世界滅亡、それ以外（80%）はAmazon
+    if (luck < 20) {
+        window.location.href = "403st.html"; // 世界滅亡へ
+    } else {
+        window.location.href = "amazon_kiseki.html"; // Amazon（奇跡）へ
+    }
+}
+</script>
     </div>
 </section>
 
