@@ -356,7 +356,7 @@
     </div>
 </div>
 
-        <section id="support" style="border: 1px solid rgba(201, 24, 74, 0.3); padding: 25px; text-align: center; margin: 30px 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+       <section id="support" style="border: 1px solid rgba(201, 24, 74, 0.3); padding: 25px; text-align: center; margin: 30px 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
     <h3 style="color: #c9184a; margin-top: 0;">活動へのご支援と奇跡の試練</h3>
     <p style="color: #4a1c2a;">翻訳活動の維持や継続のため、温かいご支援をいただけると励みになります。<br>また、強運をお持ちの方は「奇跡」を掴み取ってください。</p>
     
@@ -365,25 +365,25 @@
             💌 OFUSEで応援メッセージ
         </a>
 
-<a href="javascript:void(0);" onclick="tryMiracle()" style="background: linear-gradient(45deg, #ffcc00, #ff6600); color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 0 #e67e22; display: inline-block;">
-    ✨ 奇跡を信じてAmazonリストへ
-</a>
-
-<script>
+        <a href="javascript:void(0);" onclick="tryMiracle()" style="background: linear-gradient(45deg, #ffcc00, #ff6600); color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 0 #e67e22;">
+            ✨ 奇跡を信じてAmazonリストへ
+        </a>
+    </div>
+</section>
+        <script>
 function tryMiracle() {
     // 連続滅亡回数を取得
     let loseCount = parseInt(localStorage.getItem('extinction_count') || '0');
     
-    // 【確率設定】 20%の確率で滅亡
+    // 【確率設定】 20%の確率で滅亡（必要に応じて数字を調整してください）
     const luck = Math.random() * 100;
     const failRate = 20; 
 
     if (luck < failRate) {
-        // --- 【世界滅亡（ハズレ）】 ---
+        // --- 【ハズレ：世界滅亡】 ---
         loseCount++;
         localStorage.setItem('extinction_count', loseCount);
 
-        // 回数に応じたツンデレメッセージ
         let msg = "";
         if (loseCount === 1) {
             msg = "あら、世界が滅亡しちゃった。…そんな顔しないで、また挑戦すればいいじゃない。";
@@ -395,14 +395,16 @@ function tryMiracle() {
             msg = "…信じられない。4回も滅亡を引くなんて。…あなたのそのしぶとさ、嫌いじゃないわよ。";
         } else if (loseCount >= 5) {
             msg = "【警告：第5種奇跡発生】\n" + loseCount + "回も滅亡を乗り越えるなんて…あなた、もはや人間を超えてるわ。…特別に、次は良いことがあるよう祈ってあげるわ。";
-        } else {
-            msg = "運命の歯車が狂いました。世界は滅亡します。";
         }
         
         alert(msg);
-        window.location.href = "403st.html";
+
+        // ボタンの場所（#support）へ画面を戻す
+        window.location.hash = ""; // 一旦クリア
+        window.location.hash = "support"; 
+        
     } else {
-        // --- 【Amazon（当たり）】 ---
+        // --- 【当たり：Amazonへ】 ---
         if (loseCount >= 5) {
             alert("あら、ついに辿り着いたのね。…不屈の精神に免じて、今日だけは褒めてあげるわ。おめでとう。");
         } else if (loseCount >= 1) {
@@ -411,14 +413,12 @@ function tryMiracle() {
             alert("あら、一発で成功？面白くないけど…まあいいわ、進んでちょうだい。");
         }
         
-        localStorage.setItem('extinction_count', '0'); // 当たったらリセット
+        // カウントをリセットしてAmazonへ飛ばす
+        localStorage.setItem('extinction_count', '0');
         window.location.href = "amazon_kiseki.html";
     }
 }
-    </script>
-
-    </div>
-</section>
+</script>
 
        <footer>
     <p>
