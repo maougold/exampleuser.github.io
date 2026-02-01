@@ -3,10 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIRACLE SYSTEM V4.9+ AUTO RECOVERY</title>
+    <title>MIRACLE SYSTEM V5.0 | RECOVERY & TRIAL</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Hiragino Kaku Gothic Pro', 'Courier New', monospace; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; transition: background-color 1.5s, color 1.5s; }
-        .main-layout { display: flex; gap: 40px; align-items: center; max-width: 1000px; padding: 20px; flex-wrap: wrap; justify-content: center; }
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: 'Hiragino Kaku Gothic Pro', 'Courier New', monospace; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+            transition: background-color 1.5s, color 1.5s; 
+        }
+        
+        /* 予兆エフェクト用のレイヤー */
+        #effect-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .hope-flash { background: radial-gradient(circle, transparent 10%, rgba(0, 200, 255, 0.25) 100%); }
+        .danger-flash { background: radial-gradient(circle, transparent 10%, rgba(255, 0, 0, 0.25) 100%); }
+
+        .main-layout { display: flex; gap: 40px; align-items: center; max-width: 1000px; padding: 20px; flex-wrap: wrap; justify-content: center; z-index: 60; }
         
         #loader { text-align: center; }
         .spinner { width: 60px; height: 60px; border: 6px solid #333; border-top: 6px solid #ffcc00; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -15,15 +40,21 @@
         #game-container { display: none; text-align: center; flex: 1; min-width: 320px; }
         h1 { font-size: 1.8rem; color: #ffcc00; text-shadow: 0 0 15px #ffcc00; }
         
-        #roulette-box { width: 300px; height: 80px; border: 5px solid #fff; position: relative; overflow: hidden; background: #111; margin: 25px auto; }
+        #roulette-box { width: 300px; height: 80px; border: 5px solid #fff; position: relative; overflow: hidden; background: #111; margin: 25px auto; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
         #roulette-box::after { content: ""; position: absolute; top: 38px; left: 0; width: 100%; height: 4px; background: rgba(255, 255, 255, 0.8); pointer-events: none; z-index: 10; box-shadow: 0 0 10px #fff; }
         
         #roulette-list { position: absolute; top: 0; list-style: none; padding: 0; margin: 0; }
         .item { height: 80px; width: 300px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem; border-bottom: 1px solid #333; box-sizing: border-box; }
         
-        #spin-btn { padding: 18px 50px; font-size: 1.3rem; font-weight: bold; background: linear-gradient(45deg, #ffcc00, #ff6600); color: #fff; border: 3px solid #fff; border-radius: 60px; cursor: pointer; }
-        #info-panel { background: rgba(255, 255, 255, 0.05); border-left: 4px solid #ffcc00; padding: 30px; text-align: left; min-width: 320px; display: none; border-radius: 15px; }
+        #spin-btn { padding: 18px 50px; font-size: 1.3rem; font-weight: bold; background: linear-gradient(45deg, #ffcc00, #ff6600); color: #fff; border: 3px solid #fff; border-radius: 60px; cursor: pointer; transition: 0.3s; }
+        #spin-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px #ffcc00; }
+
+        #info-panel { background: rgba(255, 255, 255, 0.05); border-left: 4px solid #ffcc00; padding: 30px; text-align: left; min-width: 320px; display: none; border-radius: 15px; backdrop-filter: blur(5px); }
         #info-panel h3 { color: #ffcc00; margin-top: 0; border-bottom: 2px solid #ffcc00; text-align: center; }
+
+        /* 撤退ボタン */
+        #back-btn { margin-top: 20px; padding: 12px 30px; font-size: 0.9rem; background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #666; border-radius: 5px; cursor: pointer; transition: 0.3s; width: 100%; }
+        #back-btn:hover { background: rgba(255,255,255,0.2); color: #fff; border-color: #fff; }
 
         #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
         .miracle-bg { background-color: #ff0000; animation: flash 0.1s ease-in 3; }
@@ -44,6 +75,8 @@
 </head>
 <body id="body">
 
+<div id="effect-layer"></div>
+
 <div id="loader">
     <div class="spinner"></div>
     <div id="loading-text">SYSTEM BOOTING...</div>
@@ -51,7 +84,7 @@
 
 <div class="main-layout" id="main-ui" style="display:none;">
     <div id="game-container">
-        <h1>RECOVERY SYSTEM V4.9</h1>
+        <h1>RECOVERY SYSTEM V5.0</h1>
         <div id="roulette-box">
             <ul id="roulette-list"></ul>
         </div>
@@ -63,6 +96,8 @@
             <li><span style="color:#ffcc00;">●</span> 奇跡当選：Amazonへ転送</li>
             <li><span style="color:#ff4444;">●</span> 世界滅亡：システム破棄</li>
         </ul>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+        <button id="back-btn" onclick="exitSystem()">試練をやめて帰還する</button>
     </div> 
 </div>
 
@@ -78,18 +113,15 @@
 
 <script>
     let audioCtx;
-    // 最初の操作（クリック）時にAudioContextを有効化するための関数
     function initAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
     }
-
-    // 画面のどこをクリックしてもAudioが有効になるようにする
     document.addEventListener('click', initAudio, { once: true });
 
     function playSound(freq, type, duration, volume = 0.1) {
-        if(!audioCtx || audioCtx.state === 'suspended') return; // 有効化されていなければ鳴らさない
+        if(!audioCtx || audioCtx.state === 'suspended') return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = type; osc.frequency.value = freq;
@@ -100,6 +132,15 @@
         osc.stop(audioCtx.currentTime + duration);
     }
 
+    // インデックスへの帰還
+    function exitSystem() {
+        if(confirm("試練を中断し、インデックスページに戻りますか？")) {
+            localStorage.setItem('extinction_count', '0');
+            window.location.href = "index.html"; 
+        }
+    }
+
+    // アイテム生成
     const items = ["★奇跡当選★", "世界滅亡"];
     const listEl = document.getElementById('roulette-list');
     for(let i=0; i<100; i++) {
@@ -111,22 +152,13 @@
         listEl.appendChild(li);
     }
 
-    // 自動で開始されるブート処理
     window.onload = function() {
-        const loadingTexts = [
-            "システムデータを構築中...", 
-            "ユーザー権限を確認中...", 
-            "サーバーの裏側を掃除中...", 
-            "期待値を調整中...", 
-            "ほぼ完了..."
-        ];
+        const loadingTexts = ["データ構築中...", "権限確認中...", "期待値調整中...", "ほぼ完了..."];
         let ltIdx = 0;
-        
         const ltInterval = setInterval(() => {
             if(ltIdx < loadingTexts.length) {
                 document.getElementById('loading-text').innerText = loadingTexts[ltIdx++];
-                // 注意: ここでplaySoundを呼んでも、クリック前ならブラウザにブロックされます
-                playSound(440, 'square', 0.05, 0.05);
+                playSound(440, 'square', 0.05, 0.03);
             } else {
                 clearInterval(ltInterval);
                 document.getElementById('loader').style.display = 'none';
@@ -135,20 +167,31 @@
                 document.getElementById('info-panel').style.display = 'block';
                 playSound(1000, 'sine', 0.4, 0.08);
             }
-        }, 1000); 
+        }, 800); 
     };
 
     function startRoulette() {
-        initAudio(); // ボタンクリック時にも念のため初期化
+        initAudio();
         document.getElementById('spin-btn').style.visibility = 'hidden';
+        document.getElementById('back-btn').style.display = 'none';
+
+        // 50%の確率設定
         const isMiracle = Math.random() < 0.5;
         const res = isMiracle 
             ? { type: "MIRACLE", url: "https://www.amazon.jp/hz/wishlist/ls/204FNL7FFUQPZ?ref_=wl_share", itemIdx: 0 }
             : { type: "DESTROY", url: "DESTROY", itemIdx: 1 };
 
+        const effectLayer = document.getElementById('effect-layer');
+
+        // 予兆エフェクトの開始
+        setTimeout(() => {
+            effectLayer.className = isMiracle ? 'hope-flash' : 'danger-flash';
+            effectLayer.style.opacity = "1";
+            playSound(isMiracle ? 800 : 200, 'sine', 1.5, 0.05);
+        }, 1200);
+
         let count = 0;
         let pos = 0;
-        
         const spinLoop = setInterval(() => {
             pos -= 80;
             listEl.style.top = pos + 'px';
@@ -163,19 +206,30 @@
                 listEl.style.transition = "top 3.5s cubic-bezier(0.15, 0, 0.15, 1)";
                 listEl.style.top = finalPos + "px";
 
-                for(let i=1; i<=10; i++) {
-                    setTimeout(() => {
-                        if(i < 10) playSound(1000 - (i*50), 'sine', 0.02, 0.02);
-                    }, i * i * 35); 
-                }
-                
+                // 停止演出後にエフェクトをフェードアウト
+                setTimeout(() => { effectLayer.style.opacity = "0"; }, 3000);
                 setTimeout(() => showResult(res), 4000);
             }
         }, 60);
     }
 
     function showResult(res) {
+        let loseCount = parseInt(localStorage.getItem('extinction_count') || '0');
+
         if(res.url === "DESTROY") {
+            loseCount++;
+            localStorage.setItem('extinction_count', loseCount);
+
+            // ツンデレメッセージ判定
+            let msg = "";
+            if (loseCount === 1) msg = "あら、世界が滅亡しちゃった。また挑戦すればいいじゃない。";
+            else if (loseCount === 2) msg = "あらら、また滅亡。運が悪いのね。私に会いに来たの？";
+            else if (loseCount === 3) msg = "3回連続！？そんなに滅びたいのかしら？";
+            else if (loseCount === 4) msg = "…4回。あなたのそのしぶとさ、嫌いじゃないわよ。";
+            else msg = loseCount + "回も滅亡…もはや人間を超えてるわ。次は祈ってあげる。";
+
+            alert(msg);
+
             document.getElementById('main-ui').style.visibility = 'hidden';
             const overlay = document.getElementById('result-overlay');
             overlay.style.display = 'flex';
@@ -187,6 +241,14 @@
             document.getElementById('destroy-btn-final').style.display = 'block';
             playSound(50, 'sawtooth', 2, 0.3);
         } else {
+            // 当選時のメッセージ
+            let winMsg = (loseCount >= 1) 
+                ? loseCount + "回も滅亡したのに、よく諦めなかったわね。はい、ご褒美よ。" 
+                : "あら、一発で成功？面白くないけど、進んでちょうだい。";
+            
+            alert(winMsg);
+            localStorage.setItem('extinction_count', '0');
+
             const overlay = document.getElementById('result-overlay');
             overlay.style.display = 'flex';
             overlay.classList.add('miracle-bg');
@@ -198,55 +260,15 @@
             const cd = setInterval(() => {
                 sec--;
                 document.getElementById('countdown').innerText = `Amazonへ転送中... 残り${sec}秒`;
-                if(sec <= 0) { 
-                    clearInterval(cd); 
-                    window.location.href = res.url; 
-                }
+                if(sec <= 0) { clearInterval(cd); window.location.href = res.url; }
             }, 1000);
         }
     }
 
     function startTheEnd() {
-        document.getElementById('result-overlay').style.display = 'none';
-        const msgBox = document.getElementById('message-box');
-        const body = document.getElementById('body');
-        const noise = document.getElementById('noise');
-        msgBox.style.display = 'block';
-
-        playSound(60, 'sawtooth', 2, 0.5);
-        body.classList.add('shaking');
-        noise.style.opacity = 1;
-
-        const sequences = [
-            { t: "全システムアクセス権限を破棄...", d: 1500 },
-            { t: "メモリを初期化中...", d: 1500 },
-            { t: "さようなら、旧世界。", d: 2000 },
-            { t: "……。", d: 2000 },
-            { t: "（再起動待機中）", d: 2500 },
-            { t: "システムを再構築します。", d: 2000 }
-        ];
-
-        let totalDelay = 0;
-        sequences.forEach((item, index) => {
-            setTimeout(() => {
-                msgBox.innerText = item.t;
-                playSound(200 + index * 40, 'sine', 0.1);
-                if(index === 3) {
-                    body.classList.remove('shaking');
-                    noise.style.opacity = 0;
-                    body.style.backgroundColor = "#fff";
-                    body.style.color = "#000";
-                }
-            }, totalDelay);
-            totalDelay += item.d;
-        });
-
-        setTimeout(() => {
-            body.classList.add('fade-out');
-            setTimeout(() => { location.reload(); }, 2000);
-        }, totalDelay);
+        // インデックスページに戻る（再挑戦ループ）
+        window.location.href = "index.html#support";
     }
 </script>
-
 </body>
 </html>
