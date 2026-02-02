@@ -384,5 +384,38 @@ html { scroll-behavior: smooth; }
 </footer>
 
     </div>
+
+    <div id="secret-area" style="position: fixed; bottom: 10px; left: 10px; z-index: 9999;">
+    <a href="challenge.html" class="secret-trigger">?</a>
+</div>
+
+<style>
+    /* 隠しボタンの見た目 */
+    .secret-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background: rgba(201, 24, 74, 0.05); /* ほとんど透明 */
+        color: rgba(255, 255, 255, 0.2);
+        text-decoration: none;
+        border-radius: 50%;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        transition: all 0.5s ease;
+        border: 1px solid transparent;
+    }
+
+    /* マウスを乗せた時に怪しく光る */
+    .secret-trigger:hover {
+        background: rgba(0, 0, 0, 0.8);
+        color: #0f0; /* ハッカー色 */
+        border: 1px solid #0f0;
+        box-shadow: 0 0 15px #0f0;
+        transform: scale(1.2);
+    }
+</style>
+    
 </body>
 </html>
