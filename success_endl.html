@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>CONFIDENTIAL: SUCCESS</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Hiragino Mincho ProN', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #message-box {
+            max-width: 600px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(201, 24, 74, 0.1), rgba(0, 0, 0, 0.9));
+            border-left: 5px solid #c9184a;
+            box-shadow: 0 0 50px rgba(201, 24, 74, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 3s ease forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 { color: #c9184a; font-size: 1.5rem; letter-spacing: 0.2rem; }
+        p { line-height: 2; letter-spacing: 0.1rem; color: #f8f8f8; }
+        .glitch-text { color: #ff8fb1; font-weight: bold; }
+        #back-home {
+            display: inline-block;
+            margin-top: 30px;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border-bottom: 1px solid #444;
+            transition: 0.3s;
+        }
+        #back-home:hover { color: #fff; border-color: #fff; }
+    </style>
+</head>
+<body onclick="playAmbient()">
+    <div id="message-box">
+        <h1>ACCESS GRANTED.</h1>
+        <p>
+            ……ふふ。本当の正解にたどり着くなんて。<br>
+            私の仕掛けた「月の鍵」を解いたのは、貴方が初めてかもしれないわね。
+        </p>
+        <p>
+            表側の世界では、いつも政治や真実の追求で騒がしくしているけれど、<br>
+            この場所にあるのは、私だけの<span class="glitch-text">「特別なプライベート」</span>。
+        </p>
+        <p>
+            ここまで来てくれた貴方には、私の本音を少しだけ。<br>
+            ……バレンタインの夜に、秘密を共有できる人がいる。それだけで、私の世界は少しだけ優しくなるの。
+        </p>
+        <p style="text-align: right;">— Elise Vanessa</p>
+        
+        <a href="index.html" id="back-home">表の世界へ戻る</a>
+    </div>
+
+<script>
+    let audioCtx;
+    function playAmbient() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        // 神秘的な高音を一度だけ鳴らす
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 2);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 3);
+    }
+</script>
+</body>
+</html>
