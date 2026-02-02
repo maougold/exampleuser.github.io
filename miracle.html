@@ -125,43 +125,30 @@
         osc.type = type; osc.frequency.value = freq;
         osc.connect(gain); gain.connect(audioCtx.destination);
         gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-        osc.start();
+        
+        // 音を滑らかに消す（プチプチ音防止）
         gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.start();
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    function exitSystem() {
-        if(confirm("試練を中断し、インデックスページに戻りますか？")) {
-            localStorage.setItem('extinction_count', '0');
-            window.location.href = "index.html"; 
-        }
-    }
-
-    const items = ["★奇跡当選★", "世界滅亡"];
-    const listEl = document.getElementById('roulette-list');
-    for(let i=0; i<100; i++) {
-        const li = document.createElement('li');
-        li.className = 'item';
-        const text = items[i % items.length];
-        li.innerText = text;
-        li.style.color = text === "★奇跡当選★" ? "#ffcc00" : "#ff4444";
-        listEl.appendChild(li);
-    }
-
+    // 1. ページ読み込み完了時の音
     window.onload = function() {
         const loadingTexts = ["システムデータ構築中...", "ユーザー権限確認中...", "期待値調整中...", "ほぼ完了..."];
         let ltIdx = 0;
         const ltInterval = setInterval(() => {
             if(ltIdx < loadingTexts.length) {
                 document.getElementById('loading-text').innerText = loadingTexts[ltIdx++];
-                playSound(440, 'square', 0.05, 0.03);
+                playSound(880, 'square', 0.05, 0.02); // 読み込み音
             } else {
                 clearInterval(ltInterval);
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('main-ui').style.display = 'flex';
                 document.getElementById('game-container').style.display = 'block';
                 document.getElementById('info-panel').style.display = 'block';
-                playSound(1000, 'sine', 0.4, 0.08);
+                // 完了時の「シャキーン」という音
+                playSound(523, 'sine', 0.1, 0.1);
+                setTimeout(() => playSound(1046, 'sine', 0.4, 0.08), 50);
             }
         }, 800); 
     };
@@ -178,26 +165,40 @@
 
         const effectLayer = document.getElementById('effect-layer');
 
+        // 2. 溜め（予兆）の演出音
         setTimeout(() => {
             effectLayer.className = isMiracle ? 'hope-flash' : 'danger-flash';
             effectLayer.style.opacity = "1";
-            playSound(isMiracle ? 800 : 200, 'sine', 1.5, 0.05);
+            // 徐々に上がる音
+            for(let i=0; i<10; i++) {
+                setTimeout(() => {
+                    playSound(isMiracle ? 400 + (i*100) : 200 - (i*10), 'sine', 0.2, 0.05);
+                }, i * 100);
+            }
         }, 1200);
 
+        // 3. ルーレット回転音
         let count = 0;
         let pos = 0;
         const spinLoop = setInterval(() => {
             pos -= 80;
             listEl.style.top = pos + 'px';
-            playSound(1200, 'sine', 0.02, 0.03); 
+            // 物理的なカチカチ音をシミュレート
+            playSound(1200 - (count * 10), 'triangle', 0.02, 0.04); 
             
             count++;
             if (count > 30) {
                 clearInterval(spinLoop);
                 const targetSet = 40; 
-                const finalPos = -( (targetSet * items.length * 80) + (res.itemIdx * 80) );
-                listEl.style.transition = "top 3.5s cubic-bezier(0.15, 0, 0.15, 1)";
+                const finalPos = -( (targetSet * 2 * 80) + (res.itemIdx * 80) );
                 listEl.style.top = finalPos + "px";
+                listEl.style.transition = "top 3.5s cubic-bezier(0.15, 0, 0.15, 1)";
+                
+                // 4. 停止直前のスローダウン音（ダ・ダ・ダ・・・ダン！）
+                for(let j=0; j<5; j++) {
+                    setTimeout(() => playSound(600, 'sine', 0.1, 0.03), 1500 + (j*400));
+                }
+
                 setTimeout(() => { effectLayer.style.opacity = "0"; }, 3000);
                 setTimeout(() => showResult(res), 4000);
             }
@@ -208,49 +209,36 @@
         let loseCount = parseInt(localStorage.getItem('extinction_count') || '0');
 
         if(res.url === "DESTROY") {
+            // --- 世界滅亡の音 ---
+            playSound(60, 'sawtooth', 2, 0.4); // 轟音
+            playSound(40, 'sine', 3, 0.5);     // 地鳴り
+            
             loseCount++;
             localStorage.setItem('extinction_count', loseCount);
+            if (loseCount === 10) { reachSanctuary(); return; }
 
-            if (loseCount === 10) {
-                reachSanctuary();
-                return;
-            }
-
-            let msg = "";
-            if (loseCount === 1) msg = "あら、世界が滅亡しちゃった。また挑戦すればいいじゃない。";
-            else if (loseCount === 3) msg = "3回連続！？そんなに滅びたいのかしら？";
-            else if (loseCount === 5) msg = "5回も滅亡…もはや人間を超えてるわ。次は祈ってあげる。";
-            else if (loseCount === 7) msg = "7回連続。……ねえ、本当はここに来るのが目的なんじゃないの？";
-            else if (loseCount === 9) msg = "9回。次で「10」よ。……嫌な予感がするわ。もうやめておいたら？";
-            else msg = loseCount + "回目の滅亡ね。運命に嫌われてるのかしら。";
-
-            alert(msg);
-
-            document.getElementById('main-ui').style.visibility = 'hidden';
             const overlay = document.getElementById('result-overlay');
             overlay.style.display = 'flex';
             overlay.classList.add('doom-bg');
             document.getElementById('win-title').innerText = "世界滅亡";
             document.getElementById('win-title').classList.add('doom-text');
             document.getElementById('win-status').innerText = "FATAL ERROR: SYSTEM TERMINATED";
-            document.getElementById('countdown').style.display = 'none';
             document.getElementById('destroy-btn-final').style.display = 'block';
-            playSound(50, 'sawtooth', 2, 0.3);
+            
         } else {
-            let winMsg = (loseCount >= 1) ? loseCount + "回も滅亡したのに、よく諦めなかったわね。はい、ご褒美よ。" : "あら、一発で成功？面白くないけど、進んでちょうだい。";
-            alert(winMsg);
-            localStorage.setItem('extinction_count', '0');
+            // --- 奇跡当選の音（ファンファーレ） ---
+            [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((f, i) => {
+                setTimeout(() => playSound(f, 'square', 0.8, 0.1), i * 120);
+            });
 
             const overlay = document.getElementById('result-overlay');
             overlay.style.display = 'flex';
             overlay.classList.add('miracle-bg');
-            [523, 659, 783, 1046].forEach((f, i) => {
-                setTimeout(() => playSound(f, 'square', 0.6, 0.1), i * 150);
-            });
             
             let sec = 3;
             const cd = setInterval(() => {
                 sec--;
+                playSound(880, 'sine', 0.05, 0.05); // カウントダウン音
                 document.getElementById('countdown').innerText = `Amazonへ転送中... 残り${sec}秒`;
                 if(sec <= 0) { clearInterval(cd); window.location.href = res.url; }
             }, 1000);
@@ -258,6 +246,7 @@
     }
 
     function reachSanctuary() {
+        // --- 聖域の特別な音（神秘的な高音） ---
         document.getElementById('main-ui').style.display = 'none';
         const msgBox = document.getElementById('message-box');
         const body = document.getElementById('body');
@@ -265,32 +254,30 @@
         body.style.backgroundColor = "#fff";
         body.style.color = "#c9184a";
 
-        const sanctuarySequences = [
-            { t: "……警告を無視して10回も滅亡を引くなんて。", d: 2500 },
-            { t: "あなたのその「不屈の不運」、もう放っておけないわ。", d: 2500 },
-            { t: "……特別よ。今回だけ、私がシステムを書き換えてあげたわ。", d: 3000 },
-            { t: "世界は滅びない。その代わり……", d: 2500 },
-            { t: "私からの「特別なギフト」を受け取りなさい。", d: 3000 },
-            { t: "ハッピー・バレンタイン。……愛を込めて。", d: 4000 }
+        const sequences = [
+            { t: "……警告を無視して10回も滅亡を引くなんて。", f: 440 },
+            { t: "あなたのその「不屈の不運」、もう放っておけないわ。", f: 493 },
+            { t: "……特別よ。今回だけ、私がシステムを書き換えてあげたわ。", f: 523 },
+            { t: "世界は滅びない。その代わり……", f: 587 },
+            { t: "私からの「特別なギフト」を受け取りなさい。", f: 659 },
+            { t: "ハッピー・バレンタイン。……愛を込めて。", f: 783 }
         ];
 
         let totalDelay = 0;
-        sanctuarySequences.forEach((item, index) => {
+        sequences.forEach((item, index) => {
             setTimeout(() => {
                 msgBox.innerText = item.t;
-                playSound(400 + index * 100, 'sine', 0.5, 0.1);
+                // メッセージごとにキラキラした音を鳴らす
+                playSound(item.f, 'sine', 1.0, 0.1);
+                playSound(item.f * 2, 'sine', 0.8, 0.05); 
             }, totalDelay);
-            totalDelay += item.d;
+            totalDelay += 2500;
         });
 
         setTimeout(() => {
             localStorage.setItem('extinction_count', '0');
             window.location.href = "https://www.amazon.jp/hz/wishlist/ls/204FNL7FFUQPZ?ref_=wl_share"; 
-        }, totalDelay);
-    }
-
-    function startTheEnd() {
-        window.location.href = "index.html#support";
+        }, totalDelay + 1000);
     }
 </script>
 </body>
