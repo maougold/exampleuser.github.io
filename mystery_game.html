@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TRACE_LOG: DECRYPT</title>
+    <style>
+        body {
+            background: #111;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-shadow: 0 0 5px #0f0;
+            cursor: crosshair;
+        }
+        #console {
+            width: 90%;
+            max-width: 600px;
+            padding: 25px;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+            background: rgba(0, 30, 0, 0.9);
+            position: relative;
+        }
+        #timer {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 1.8rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+        }
+        .line { white-space: pre-wrap; margin-bottom: 5px; font-size: 0.9rem; }
+        .prefix { color: #00ff00; }
+        .data { color: #00cc00; }
+        .input-line { display: flex; align-items: center; margin-top: 20px; }
+        .input-line input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #0f0;
+            color: #0f0;
+            font-size: 1.2rem;
+            outline: none;
+            padding: 5px 0;
+            margin-left: 10px;
+        }
+        #result-msg {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            min-height: 1.5rem;
+        }
+        /* 失敗時のグリッチ演出 */
+        .failed-bg { background: #300 !important; transition: background 0.5s; }
+    </style>
+</head>
+<body id="main-body" onclick="initAudio()">
+
+    <div id="console">
+        <div id="timer">02:00</div>
+        <div class="line"><span class="prefix">[INIT]</span> Decryption module activated.</div>
+        <div class="line"><span class="prefix">[LOG]</span> Incoming data stream from UNKNOWN_SOURCE.</div>
+        <div class="line">-----------------------------------------------------</div>
+        <div class="line"><span class="data">「貴方は見つけてはならないものを...</span></div>
+        <div class="line"><span class="data">最終更新日の『月』と『日』を足せ。</span></div>
+        <div class="line"><span class="data">それが、次の扉を開く鍵となる。</span></div>
+        <div class="line"><span class="data">時間はない。注意せよ。」</span></div>
+        <div class="line">-----------------------------------------------------</div>
+        <div class="line"><span class="prefix">[DECRYPT]</span> Enter numerical key (Press Enter):</div>
+        <div class="input-line">
+            <span class="prefix">>></span> <input type="text" id="key-input" autofocus>
+        </div>
+        <div id="result-msg"></div>
+    </div>
+
+<script>
+    let audioCtx;
+    let timeLeft = 120; // 120秒 (2分)
+    let gameActive = true;
+    const CORRECT_KEY = "8"; // 2月 + 6日 = 8
+
+    // 音声の初期化（ユーザーのクリックで発火）
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playSound(freq, type, duration, vol = 0.1) {
+        if (!audioCtx || audioCtx.state !== 'running') return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq;
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // タイマー処理（ページ読み込みと同時に開始）
+    const timerEl = document.getElementById('timer');
+    const countdownInterval = setInterval(() => {
+        if (!gameActive) return;
+
+        timeLeft--;
+        
+        // 表示更新
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        timerEl.innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+        // 残り30秒からの警告音
+        if (timeLeft <= 30 && timeLeft > 0 && timeLeft % 2 === 0) {
+            playSound(timeLeft < 10 ? 1200 : 800, 'square', 0.1, 0.05);
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            gameOver(false);
+        }
+    }, 1000);
+
+    // 入力チェック（Enterキー押下時）
+    const inputEl = document.getElementById('key-input');
+    inputEl.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            initAudio(); // エンターキーでもオーディオを有効化
+            checkKey();
+        }
+    });
+
+    function checkKey() {
+        if (!gameActive) return;
+        const val = inputEl.value.trim();
+        
+        if (val === CORRECT_KEY) {
+            gameOver(true);
+        } else {
+            playSound(200, 'square', 0.2, 0.1); // 失敗音
+            const msgEl = document.getElementById('result-msg');
+            msgEl.innerText = "ACCESS DENIED.";
+            msgEl.style.color = "#f00";
+            inputEl.value = "";
+            setTimeout(() => { if(gameActive) msgEl.innerText = ""; }, 1000);
+        }
+    }
+
+    function gameOver(isWin) {
+        gameActive = false;
+        clearInterval(countdownInterval);
+        const msgEl = document.getElementById('result-msg');
+        inputEl.disabled = true;
+
+        if (isWin) {
+            msgEl.innerText = "SUCCESS. REDIRECTING...";
+            msgEl.style.color = "#0f0";
+            [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playSound(f, 'sine', 0.5, 0.1), i * 150));
+            setTimeout(() => {
+                window.location.href = "success_end.html"; // ★最終転送先
+            }, 3000);
+        } else {
+            document.getElementById('main-body').classList.add('failed-bg');
+            msgEl.innerText = "CONNECTION LOST. DATA PURGED.";
+            msgEl.style.color = "#f00";
+            playSound(50, 'sawtooth', 2, 0.3);
+            setTimeout(() => {
+                window.location.href = "index.html#secret-area";
+            }, 3000);
+        }
+    }
+</script>
+</body>
+</html>
