@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>GATE_WAY: AUTHENTICATION</title>
+    <style>
+        /* デザイン：より「ハッカーの端末」っぽくしています */
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        #terminal { width: 90%; max-width: 500px; padding: 30px; border: 1px solid #0f0; background: rgba(0, 20, 0, 0.9); box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); position: relative; }
+        #timer { font-size: 3.5rem; color: #ff0000; text-align: center; font-weight: bold; margin-bottom: 10px; }
+        .status-bar { border-bottom: 1px solid #0f0; margin-bottom: 20px; padding-bottom: 5px; font-size: 0.8rem; }
+        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #0f0; color: #0f0; font-size: 2rem; text-align: center; outline: none; caret-color: #0f0; }
+        #msg { margin-top: 20px; text-align: center; min-height: 1.5rem; font-size: 0.9rem; }
+        
+        /* 失敗時の画面の揺れ */
+        .shaking { animation: shake 0.1s infinite; background: #200 !important; }
+        @keyframes shake { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(0); } }
+    </style>
+</head>
+<body onclick="initAudio()">
+
+    <div id="terminal" id="main-box">
+        <div class="status-bar">CONNECTION: SECURE | TARGET: SECRET_PAGE</div>
+        <div id="timer">15.00</div>
+        <div style="text-align:center; margin-bottom:10px;">パスワードを入力してください</div>
+        
+        <input type="text" id="code-input" autocomplete="off" placeholder="********" oninput="checkCode()">
+        
+        <div id="msg">SYSTEM READY...</div>
+    </div>
+
+<script>
+    let audioCtx;
+    let timeLeft = 15.0; // 15秒に設定
+    let gameActive = true;
+    const SECRET_KEY = "XYZ"; // ★ここを好きなキーワードに変えてください
+
+    function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playSound(freq, type, duration, vol = 0.1) {
+        if(!audioCtx || audioCtx.state === 'suspended') return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq;
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    const timerEl = document.getElementById('timer');
+    const countdown = setInterval(() => {
+        if(!gameActive) return;
+        timeLeft -= 0.01;
+        timerEl.innerText = timeLeft.toFixed(2);
+
+        // 残り5秒で警告音を速くする
+        if (Math.floor(timeLeft * 100) % 100 === 0) {
+            playSound(timeLeft < 5 ? 1200 : 800, 'square', 0.05, 0.03);
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            gameOver(false);
+        }
+    }, 10);
+
+    function checkCode() {
+        if(!gameActive) return;
+        const val = document.getElementById('code-input').value.toUpperCase(); // 大文字小文字を区別しない
+        
+        // 入力するたびに短い音
+        playSound(1000, 'sine', 0.02, 0.02);
+
+        if (val === SECRET_KEY) {
+            clearInterval(countdown);
+            gameOver(true);
+        }
+    }
+
+    function gameOver(isWin) {
+        gameActive = false;
+        const msg = document.getElementById('msg');
+        const input = document.getElementById('code-input');
+        input.disabled = true;
+
+        if (isWin) {
+            msg.innerText = "認証成功。秘密のアーカイブへ転送します...";
+            msg.style.color = "#0f0";
+            // 成功の音（キラキラした上昇音）
+            [523, 659, 783, 1046, 1318].forEach((f, i) => {
+                setTimeout(() => playSound(f, 'sine', 0.4, 0.1), i * 100);
+            });
+            // 3秒後に飛ばしたいURLへ
+            setTimeout(() => {
+                window.location.href = "mystery_game.html"; // ★ここを飛ばしたい先に変える
+            }, 3000);
+        } else {
+            document.body.classList.add('shaking');
+            msg.innerText = "認証失敗。アクセスを遮断しました。";
+            msg.style.color = "#ff0000";
+            // 失敗の音（不気味な低音）
+            playSound(80, 'sawtooth', 2, 0.3);
+            // 2秒後にインデックスに戻る
+            setTimeout(() => {
+                window.location.href = "index.html"; 
+            }, 2000);
+        }
+    }
+</script>
+</body>
+</html>
