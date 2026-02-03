@@ -256,41 +256,51 @@ html { scroll-behavior: smooth; }
 </head>
 <body>
 
-    <a href="dungeon.html" id="hidden-door" title="???"></a>
+<a href="dungeon.html" id="hidden-door" title=""></a>
 
 <style>
     #hidden-door {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 0;
+        left: 0;
         width: 40px;
-        height: 50px;
-        background: #333; /* 背景色に馴染む暗い色 */
-        border: 2px solid #222;
-        border-radius: 5px 5px 0 0;
-        cursor: default; /* 最初はカーソルを普通にしておく */
-        opacity: 0.1;   /* ほとんど見えない状態 */
-        transition: all 0.5s ease;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.03); /* 背景に溶け込む極薄の色 */
+        opacity: 0;
+        cursor: default;
+        
+        /* ここがポイント：通常時は一瞬で消えるようにする */
+        transition: opacity 0.5s ease;
         z-index: 9999;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
-    /* マウスが乗ったとき（発見したとき）の演出 */
+    /* マウスを乗せてから「3秒」待つと発動 */
     #hidden-door:hover {
-        opacity: 0.8;
-        background: #5d4037; /* 木の扉っぽい色に変える */
-        border-color: #8d6e63;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        /* 3秒のディレイ（待ち時間）を設定し、そこから2秒かけて現れる */
+        transition: opacity 2s ease 3s;
+        opacity: 0.6; /* うっすらと姿を現す */
+        background: #3e2723; /* 木の扉のような深い茶色 */
+        border: 1px solid #5d4037;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         cursor: pointer;
     }
 
-    /* 発見したときにうっすらアイコンを出す場合 */
+    /* 現れた時にうっすらと紋章（扉）を浮かび上がらせる */
     #hidden-door:hover::after {
         content: "🚪";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
         font-size: 20px;
+        opacity: 0;
+        /* アイコンも遅れて表示 */
+        animation: fadeIn 1s forwards 4s; 
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 </style>
     <div class="emojis-container">
