@@ -253,5 +253,106 @@ function effect(id) { document.getElementById(id).classList.add('shake'); setTim
 
 initFloor(1);
 </script>
+
+    <div id="home-portal-container">
+    <button id="home-portal-btn" onclick="returnToHome()">
+        <span class="portal-icon">🌀</span>
+        <span class="portal-text">拠点へ帰還</span>
+    </button>
+</div>
+
+<style>
+    #home-portal-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    #home-portal-btn {
+        background: #001133;
+        color: #44ccff;
+        border: 2px solid #44ccff;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(68, 204, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* マウスを乗せた時のポータル発動演出 */
+    #home-portal-btn:hover {
+        background: #002266;
+        box-shadow: 0 0 20px rgba(68, 204, 255, 0.8);
+        transform: scale(1.05);
+        color: #fff;
+    }
+
+    #home-portal-btn:hover .portal-icon {
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* 魔法陣が広がるような波紋エフェクト */
+    #home-portal-btn::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(68, 204, 255, 0.4);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    #home-portal-btn:active::after {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+</style>
+
+<script>
+function returnToHome() {
+    // 帰還の最終確認（誤操作防止）
+    if(confirm("魔法『リレミト』を唱えて、拠点（インデックスページ）へ帰還しますか？\n（現在の進行状況は失われます）")) {
+        
+        // 画面全体を青白く光らせる演出
+        const flash = document.createElement('div');
+        flash.style.position = 'fixed';
+        flash.style.top = '0';
+        flash.style.left = '0';
+        flash.style.width = '100vw';
+        flash.style.height = '100vh';
+        flash.style.background = '#e0f7ff';
+        flash.style.zIndex = '10000';
+        flash.style.opacity = '0';
+        flash.style.transition = 'opacity 0.5s ease-in';
+        document.body.appendChild(flash);
+
+        setTimeout(() => {
+            flash.style.opacity = '1';
+        }, 10);
+
+        // 少し余韻を残して移動
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 600);
+    }
+}
+</script>
+    
 </body>
 </html>
