@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>RPG - Five-Story Pagoda: The Final Challenge</title>
+    <style>
+        body { background: #1a1a1a; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; }
+        #main-layout { display: flex; gap: 10px; margin-top: 20px; }
+        #game-window { position: relative; border: 4px solid #555; width: 400px; height: 400px; background: #000; overflow: hidden; }
+        
+        /* 塔のインジケーター */
+        #tower-ui { width: 80px; background: #332211; border: 4px solid #555; display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 10px 0; }
+        .floor-box { width: 50px; height: 50px; border: 2px solid #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; position: relative; }
+        .current-floor { background: #aa8800; border-color: #ff0; box-shadow: 0 0 10px #ff0; }
+        .current-floor::after { content: "◀"; position: absolute; right: -20px; color: #ff0; }
+
+        /* クリア画面 */
+        #clear-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffd700; color: #000; display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000; text-align: center;
+        }
+
+        canvas { display: block; }
+        #battle-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; z-index: 100; border: 4px double #fff; }
+        #m-sprite { font-size: 70px; text-shadow: 0 0 10px red; }
+        .g-bg { width: 100%; height: 8px; background: #333; border: 1px solid #666; margin-bottom: 5px; }
+        .g-fill { height: 100%; width: 100%; transition: width 0.3s; }
+        #e-hp-fill { background: #f00; }
+        #p-hp-fill { background: #0f0; }
+        #p-limit-fill { background: #ff0; width: 0%; }
+        #battle-log { font-size: 12px; height: 60px; background: #111; width: 100%; padding: 5px; border: 1px solid #444; margin: 8px 0; overflow-y: hidden; color: #fff; }
+        .commands { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+        button { padding: 8px; background: #222; color: #fff; border: 1px solid #fff; cursor: pointer; }
+        .limit-btn { color: #ff0; border-color: #ff0; display: none; }
+        .shake { animation: shake 0.2s; }
+        @keyframes shake { 0%,100% {transform:translate(0,0);} 25% {transform:translate(4px,0);} 75% {transform:translate(-4px,0);} }
+    </style>
+</head>
+<body>
+
+<div id="main-layout">
+    <div id="game-window">
+        <canvas id="fieldCanvas" width="400" height="400"></canvas>
+        
+        <div id="clear-screen">
+            <h1 style="margin:0;">CONGRATULATIONS!</h1>
+            <div style="font-size: 80px;">🏆</div>
+            <p style="font-weight:bold;">五重の塔を制覇した！</p>
+            <p>タイトルへ戻ります...</p>
+        </div>
+
+        <div id="battle-overlay">
+            <div id="m-name" style="font-weight:bold; color:#ff4d4d;"></div>
+            <div id="m-sprite"></div>
+            <div class="g-bg"><div id="e-hp-fill" class="g-fill"></div></div>
+            <div id="battle-log"></div>
+            <div class="g-bg"><div id="p-hp-fill" class="g-fill"></div></div>
+            <div class="g-bg"><div id="p-limit-fill" class="g-fill"></div></div>
+            <div class="commands">
+                <button onclick="battleTurn('attack')">攻撃</button>
+                <button onclick="battleTurn('guard')">防御</button>
+                <button onclick="battleTurn('heal')">回復</button>
+                <button onclick="battleTurn('run')">逃げる</button>
+                <button id="btn-lmt" class="limit-btn" onclick="battleTurn('limit')">極大魔法</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tower-ui">
+        <div class="floor-box" id="f5">5F</div>
+        <div class="floor-box" id="f4">4F</div>
+        <div class="floor-box" id="f3">3F</div>
+        <div class="floor-box" id="f2">2F</div>
+        <div class="floor-box" id="f1">1F</div>
+    </div>
+</div>
+
+<div style="margin-top:10px;">🧙 LV: <span id="ui-lv">1</span> | HP: <span id="ui-hp">150</span></div>
+
+<script>
+const canvas = document.getElementById('fieldCanvas');
+const ctx = canvas.getContext('2d');
+const TILE = 40;
+const MAP_SZ = 20;
+
+let gameState = 'field';
+let currentFloor = 1;
+let bossDefeatedCount = 0;
+let p = { x: 2, y: 2, hp: 150, maxHp: 150, atk: 25, limit: 0, lv: 1, guarding: false };
+let enemies = [];
+let maze = [];
+
+function initFloor(floor) {
+    currentFloor = floor;
+    bossDefeatedCount = 0;
+    const floorColors = ["#2d5a27", "#273e5a", "#5a274e", "#5a4d27", "#4a1111"];
+    window.currentWallColor = floorColors[floor-1];
+
+    // マップ生成
+    maze = Array.from({length: MAP_SZ}, (_, y) => 
+        Array.from({length: MAP_SZ}, (_, x) => 
+            (x===0 || y===0 || x===19 || y===19 || Math.random()<0.18) ? 1 : 0
+        )
+    );
+
+    maze[2][2] = 0; maze[2][3] = 0; maze[3][2] = 0; // 安全圏
+
+    // 隠しアイテム（伝説の剣）の配置（1F〜4Fのどこか一箇所にランダムで出現）
+    if (floor < 5 && Math.random() < 0.4) {
+        let ix = 10 + Math.floor(Math.random()*5);
+        let iy = 10 + Math.floor(Math.random()*5);
+        maze[iy][ix] = 3; // 3を剣とする
+    }
+
+    if (floor < 5) {
+        maze[18][18] = 2; maze[17][18] = 0; maze[18][17] = 0;
+    }
+
+    enemies = [];
+    if (floor === 5) {
+        const bosses = [
+            { x: 15, y: 5, name: "炎の守護龍", icon: "🐉", msg: "バ、バカな…火が消える…！" },
+            { x: 5, y: 15, name: "氷の魔神", icon: "🧊", msg: "体が…溶けていく…ッ！" },
+            { x: 15, y: 15, name: "影の王", icon: "👤", msg: "光が…眩しすぎる…！" }
+        ];
+        bosses.forEach(b => {
+            enemies.push({ x: b.x, y: b.y, name: b.name, icon: b.icon, hp: 400, maxHp: 400, atk: 45, isFinalBoss: true, deathMsg: b.msg });
+            maze[b.y][b.x] = 0;
+        });
+    } else {
+        const icons = ["👾", "💀", "🐺", "👹"];
+        for(let i=0; i<4; i++) {
+            enemies.push({ x: 5+Math.floor(Math.random()*10), y: 5+Math.floor(Math.random()*10), name: "敵兵", icon: icons[floor-1], hp: 40+floor*20, maxHp: 40+floor*20, atk: 10+floor*5 });
+        }
+    }
+    
+    document.querySelectorAll('.floor-box').forEach(b => b.classList.remove('current-floor'));
+    document.getElementById('f' + floor).classList.add('current-floor');
+    p.x = 2; p.y = 2;
+    drawField();
+}
+
+function drawField() {
+    ctx.clearRect(0,0,400,400);
+    let ox = Math.max(0, Math.min(p.x-5, MAP_SZ-10));
+    let oy = Math.max(0, Math.min(p.y-5, MAP_SZ-10));
+    for(let y=0; y<10; y++){
+        for(let x=0; x<10; x++){
+            let mx = x+ox, my = y+oy;
+            if(maze[my][mx]===1){ ctx.fillStyle=window.currentWallColor; ctx.fillRect(x*TILE,y*TILE,TILE,TILE); }
+            if(maze[my][mx]===2){ ctx.fillStyle="#f0f"; ctx.fillRect(x*TILE,y*TILE,TILE,TILE); }
+            if(maze[my][mx]===3){ ctx.font="20px serif"; ctx.fillText("⚔️", x*TILE+10, y*TILE+30); }
+            enemies.forEach(en => { if(en.x===mx && en.y===my) ctx.fillText(en.icon, x*TILE+8, y*TILE+30); });
+            if(mx===p.x && my===p.y){ ctx.font="24px serif"; ctx.fillText("🧙", x*TILE+8, y*TILE+30); }
+        }
+    }
+    document.getElementById('ui-hp').innerText = p.hp;
+    document.getElementById('ui-lv').innerText = p.lv;
+}
+
+window.addEventListener('keydown', e => {
+    if(gameState !== 'field') return;
+    let nx = p.x, ny = p.y;
+    if(e.key==='ArrowUp') ny--; if(e.key==='ArrowDown') ny++;
+    if(e.key==='ArrowLeft') nx--; if(e.key==='ArrowRight') nx++;
+    if(maze[ny][nx] !== 1){
+        p.x = nx; p.y = ny;
+        if(maze[ny][nx]===2){
+            if(currentFloor < 5) initFloor(currentFloor+1);
+            else showGameClear();
+            return;
+        }
+        if(maze[ny][nx]===3){
+            maze[ny][nx]=0; p.atk += 50; p.lv++;
+            alert("伝説の剣（⚔️）を手に入れた！ 攻撃力が大幅に上がった！");
+        }
+        let hit = enemies.find(en => en.x === p.x && en.y === p.y);
+        if(hit) startBattle(hit);
+    }
+    drawField();
+});
+
+let currentE = null;
+function startBattle(en) {
+    gameState = 'battle'; currentE = en;
+    document.getElementById('battle-overlay').style.display = 'flex';
+    document.getElementById('m-name').innerText = en.name;
+    document.getElementById('m-sprite').innerText = en.icon;
+    addLog(`${en.name} があらわれた！`);
+    updateBattleUI();
+}
+
+async function battleTurn(type) {
+    p.guarding = false;
+    if(type==='attack'){
+        let d = p.atk + Math.floor(Math.random()*10);
+        currentE.hp -= d; p.limit = Math.min(100, p.limit+20);
+        addLog(`▶ 攻撃！ ${d}ダメージ！`); effect('m-sprite');
+    } else if(type==='limit'){
+        let d = p.atk * 4; currentE.hp -= d; p.limit = 0;
+        addLog(`💥 極大魔法！ ${d}ダメージ！`, "#ff0"); effect('m-sprite');
+    } else if(type==='heal'){
+        p.hp = Math.min(p.maxHp, p.hp+60); addLog(`▶ 回復！ 60回復！`);
+    } else if(type==='run'){
+        addLog(`▶ 逃げ出した！`); setTimeout(endBattle, 500); return;
+    }
+    updateBattleUI();
+    if(currentE.hp <= 0){
+        if(currentE.deathMsg) addLog(`ボス：${currentE.deathMsg}`, "#ff4d4d");
+        else addLog(`${currentE.name} を倒した！`);
+        enemies = enemies.filter(e => e !== currentE);
+        setTimeout(endBattle, 1200); return;
+    }
+    await new Promise(r => setTimeout(r, 800));
+    enemyTurn();
+}
+
+function enemyTurn() {
+    let d = Math.floor(currentE.atk * (0.8 + Math.random()*0.4));
+    if(p.guarding) d = Math.floor(d/2.5);
+    p.hp -= d; addLog(`❌ 敵の攻撃！ ${d}ダメージ！`); effect('game-window');
+    updateBattleUI();
+    if(p.hp <= 0){ alert("敗北..."); location.reload(); }
+}
+
+function updateBattleUI() {
+    document.getElementById('e-hp-fill').style.width = (currentE.hp/currentE.maxHp*100) + "%";
+    document.getElementById('p-hp-fill').style.width = (p.hp/p.maxHp*100) + "%";
+    document.getElementById('p-limit-fill').style.width = p.limit + "%";
+    document.getElementById('btn-lmt').style.display = (p.limit>=100) ? 'block' : 'none';
+}
+
+function endBattle() {
+    if(currentE && currentE.isFinalBoss && currentE.hp <= 0){
+        bossDefeatedCount++;
+        if(bossDefeatedCount >= 3){ alert("全てのボスを倒した！ 中央に出口が現れた！"); maze[10][10] = 2; maze[9][10]=0; maze[11][10]=0; maze[10][9]=0; maze[10][11]=0; }
+    }
+    document.getElementById('battle-overlay').style.display = 'none';
+    gameState = 'field'; currentE = null; drawField();
+}
+
+function showGameClear() {
+    gameState = 'clear';
+    document.getElementById('clear-screen').style.display = 'flex';
+    setTimeout(() => {
+        window.location.href = "index.html"; // インデックスページへ戻る
+    }, 5000);
+}
+
+function addLog(m, c="white") { const l = document.getElementById('battle-log'); l.innerHTML = `<div style="color:${c}">${m}</div>` + l.innerHTML; }
+function effect(id) { document.getElementById(id).classList.add('shake'); setTimeout(() => document.getElementById(id).classList.remove('shake'), 200); }
+
+initFloor(1);
+</script>
+</body>
+</html>
