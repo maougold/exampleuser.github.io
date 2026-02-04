@@ -63,7 +63,6 @@
         }
         .back-link:hover { color: #fff; text-decoration: underline; }
 
-        /* 時限メッセージ用スタイル */
         #timer-msg {
             position: absolute;
             bottom: 20px;
@@ -75,6 +74,7 @@
             font-weight: bold;
         }
 
+        /* 修正ポイント：スタンプをクリック可能に */
         .stamp {
             position: absolute;
             top: 40px;
@@ -85,13 +85,20 @@
             transform: rotate(15deg);
             font-weight: bold;
             font-size: 12px;
+            cursor: pointer; /* クリックできることを示唆 */
+            user-select: none;
+            transition: color 0.2s;
+        }
+        .stamp:active {
+            color: #ff0000; /* 押した瞬間に赤く光る */
         }
     </style>
 </head>
 <body>
 
 <div id="error-card">
-    <div class="stamp">TOP SECRET</div>
+    <div id="stamp-trigger" class="stamp">TOP SECRET</div>
+    
     <h1>404 STATUS: REDACTED</h1>
     
     <div class="main-text">
@@ -99,14 +106,17 @@
         <span class="censored">テレビ朝日 報道局</span>からの申し立てにより<br>
         現在<span class="censored">「なかったこと」</span>として処理されています。<br><br>
         
-        本件に関する<span class="censored">玉川氏の逆神予測</span>は<br>
-        当局の<span class="censored">世論操作プロトコル</span>に抵触しました。
+        当局の<span class="censored">世論操作プロトコル</span>に抵触した真実は、<br>
+        拠点の<span class="censored">「北西の最果て」</span>に封印された。<br><br>
+        
+        暗闇の中で<span class="censored">3秒間の沈黙</span>を守る者だけが、<br>
+        <span class="censored">五重の塔への扉</span>を幻視するだろう。
     </div>
 
     <table class="status-table">
         <tr><td>[INCIDENT_ID]</td><td><span class="censored">TAMAGAWA_OUT_OF_INDEX</span></td></tr>
         <tr><td>[LOCATION]</td><td><span class="censored">トランプ・タワー地下3階</span></td></tr>
-        <tr><td>[STATUS]</td><td><span id="secret-trigger" class="censored">イーロン・マスクによる買収待機中</span></td></tr>
+        <tr><td>[STATUS]</td><td><span class="censored">イーロン・マスクによる買収待機中</span></td></tr>
     </table>
 
     <a href="index.html" class="back-link">≪ 表のニュース一覧（検閲済み）へ戻る</a>
@@ -115,23 +125,33 @@
 </div>
 
 <script>
-    // 1. 隠しクリックイベント（3回クリックで発動）
     let clickCount = 0;
-    const trigger = document.getElementById('secret-trigger');
+    // 反応するターゲットをスタンプに変更
+    const trigger = document.getElementById('stamp-trigger');
     
-    trigger.addEventListener('click', () => {
+    const handleAction = () => {
         clickCount++;
+        
         if (clickCount === 3) {
-            alert("管理人からの緊急メッセージ：\n「真実はテレビの中ではなく、君の思考の中にある。除染完了。健闘を祈る。」");
-            clickCount = 0; // カウントリセット
+            alert("管理人からの緊急メッセージ：\n「真実はテレビの中ではなく、あなたの思考の中にある。\n\nヒント：拠点の【上/左/中央】を、じっと【3秒間】マウスを置いてください。あなたに試練の道が開かれるはずですよ⚔️。」");
+            clickCount = 0; 
         }
+        
+        // 2秒操作がないとリセット
+        clearTimeout(window.clickTimer);
+        window.clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+    };
+
+    trigger.addEventListener('click', handleAction);
+    // iPad/スマホ対応
+    trigger.addEventListener('touchstart', (e) => {
+        handleAction();
     });
 
-    // 2. 時限メッセージ（10秒後に表示）
     setTimeout(() => {
         const msg = document.getElementById('timer-msg');
-        msg.style.opacity = '1';
-    }, 10000); // 10000ms = 10秒
+        if(msg) msg.style.opacity = '1';
+    }, 10000);
 </script>
 
 </body>
