@@ -2,14 +2,13 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>MILLIONAIRE PROTOCOL</title>
+    <title>MILLIONAIRE PROTOCOL | ULTIMATE</title>
     <style>
         body {
             background: radial-gradient(circle, #000044 0%, #000000 100%);
             color: #fff;
             font-family: "Helvetica Neue", Arial, sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
@@ -17,31 +16,81 @@
             overflow: hidden;
         }
 
-        #menu-screen, #game-ui, #success-screen { display: none; width: 90%; max-width: 800px; text-align: center; }
+        #game-container {
+            display: flex;
+            width: 95%;
+            max-width: 1100px;
+            gap: 30px;
+            align-items: flex-end;
+        }
 
-        /* 難易度選択メニュー */
+        /* メインエリア */
+        #main-area { flex: 3; display: flex; flex-direction: column; align-items: center; }
+
+        #menu-screen, #game-ui, #success-screen { display: none; width: 100%; text-align: center; }
+
+        /* 難易度選択 */
         .menu-btn {
             display: block; width: 100%; margin: 15px 0; padding: 20px;
             font-size: 20px; font-weight: bold; border-radius: 40px;
             cursor: pointer; transition: 0.3s; background: #000; border: 2px solid #444; color: #fff;
         }
-        .menu-btn:hover { background: #ff9900; color: #000; border-color: #fff; transform: scale(1.05); }
+        .menu-btn:hover { background: #ff9900; color: #000; border-color: #fff; }
 
-        /* ゲーム画面：ミリオネア風ひし形 */
+        /* クイズボックス */
         #question-box {
-            padding: 40px; margin-bottom: 30px; font-size: 22px; line-height: 1.6;
+            width: 100%; padding: 40px; margin-bottom: 30px; font-size: 22px; line-height: 1.6;
             background: linear-gradient(180deg, #000033 0%, #000099 50%, #000033 100%);
-            border: 2px solid #999; border-radius: 60px / 120px;
+            border: 2px solid #999; border-radius: 60px / 120px; box-sizing: border-box;
         }
-        .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
         .answer-btn {
             background: #000; border: 2px solid #666; border-radius: 40px; padding: 15px 25px;
             color: #fff; font-size: 18px; text-align: left; cursor: pointer; transition: 0.2s;
         }
-        .answer-btn:hover { background: #ff9900; color: #000; border-color: #fff; }
+        .answer-btn:hover:not(.hidden-opt) { background: #ff9900; color: #000; border-color: #fff; }
         .label { color: #ff9900; font-weight: bold; margin-right: 15px; }
+        .hidden-opt { visibility: hidden; pointer-events: none; }
 
-        /* 🚀右斜め上発射演出 */
+        /* サイドバー：賞金ラダー */
+        #sidebar {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #444;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .money-step {
+            display: flex; justify-content: space-between; padding: 5px 15px;
+            font-family: 'Courier New', monospace; color: #ff9900; font-size: 16px;
+            border-radius: 10px; margin-bottom: 2px;
+        }
+        .current-step { background: #ff9900; color: #000; font-weight: bold; box-shadow: 0 0 15px #ff9900; }
+        .passed-step { color: #fff; opacity: 0.4; }
+
+        /* ライフライン */
+        .lifeline-area { display: flex; justify-content: space-around; margin-bottom: 25px; }
+        .lifeline-btn {
+            width: 70px; height: 45px; border-radius: 50%; border: 2px solid #fff;
+            background: radial-gradient(circle, #000066, #000); color: #fff;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .lifeline-btn:hover:not(.used) { background: #fff; color: #000; }
+        .lifeline-btn.used { opacity: 0.2; cursor: default; text-decoration: line-through; }
+
+        /* 辞めるボタン */
+        #walk-away-btn {
+            margin-top: 30px; background: #300; color: #f66; border: 1px solid #600;
+            padding: 10px 25px; border-radius: 20px; cursor: pointer; font-size: 14px;
+        }
+        #walk-away-btn:hover { background: #600; color: #fff; }
+
+        /* 🚀演出 */
         .rocket-trigger { font-size: 100px; cursor: pointer; position: relative; display: inline-block; }
         .rocket-anim { position: absolute; bottom: 0; left: 0; opacity: 0; transform: rotate(45deg); font-size: 70px; }
         .launch .rocket-anim { animation: launchDiagonal 1.8s ease-in forwards; }
@@ -53,31 +102,44 @@
 </head>
 <body>
 
-<div id="menu-screen" style="display: block;">
-    <h1 style="color: #ff9900; text-shadow: 0 0 15px #ff9900;">AUTHENTICATION SELECT</h1>
-    <button class="menu-btn" onclick="startGame('EASY')">EASY [引っかけ・直感]</button>
-    <button class="menu-btn" onclick="startGame('NORMAL')">NORMAL [生活雑学・知恵]</button>
-    <button class="menu-btn" onclick="startGame('HARD')">HARD [国際情勢・地政学]</button>
-</div>
+<div id="game-container">
+    <div id="main-area">
+        <div id="menu-screen" style="display: block;">
+            <h1 style="color: #ff9900; text-shadow: 0 0 15px #ff9900;">AUTHENTICATION SELECT</h1>
+            <button class="menu-btn" onclick="startGame('EASY')">EASY [引っかけ・直感]</button>
+            <button class="menu-btn" onclick="startGame('NORMAL')">NORMAL [生活雑学・知恵]</button>
+            <button class="menu-btn" onclick="startGame('HARD')">HARD [国際情勢・地政学]</button>
+        </div>
 
-<div id="game-ui">
-    <div id="status-bar" style="color:#ff9900; margin-bottom:10px; font-weight:bold;">QUESTION: 1 / 10</div>
-    <div id="question-box">ここに問題文が表示されます</div>
-    <div class="answer-grid">
-        <button class="answer-btn" onclick="checkAnswer('A')"><span class="label">A:</span> <span id="opt-A"></span></button>
-        <button class="answer-btn" onclick="checkAnswer('B')"><span class="label">B:</span> <span id="opt-B"></span></button>
-        <button class="answer-btn" onclick="checkAnswer('C')"><span class="label">C:</span> <span id="opt-C"></span></button>
-        <button class="answer-btn" onclick="checkAnswer('D')"><span class="label">D:</span> <span id="opt-D"></span></button>
-    </div>
-</div>
+        <div id="game-ui">
+            <div id="question-box">ここに問題文が表示されます</div>
+            <div class="answer-grid">
+                <button class="answer-btn" id="btn-A" onclick="checkAnswer('A')"><span class="label">A:</span> <span id="opt-A"></span></button>
+                <button class="answer-btn" id="btn-B" onclick="checkAnswer('B')"><span class="label">B:</span> <span id="opt-B"></span></button>
+                <button class="answer-btn" id="btn-C" onclick="checkAnswer('C')"><span class="label">C:</span> <span id="opt-C"></span></button>
+                <button class="answer-btn" id="btn-D" onclick="checkAnswer('D')"><span class="label">D:</span> <span id="opt-D"></span></button>
+            </div>
+            <button id="walk-away-btn" onclick="walkAway()">ここで辞める (賞金を確定)</button>
+        </div>
 
-<div id="success-screen">
-    <h1 id="success-title" style="color: #ff9900; font-size: 40px;">MISSION COMPLETE</h1>
-    <div class="rocket-trigger" id="finalBtn">
-        <span id="heart-icon" style="color: #f00;">❤</span>
-        <span class="rocket-anim">🚀</span>
+        <div id="success-screen">
+            <h1 id="success-title" style="color: #ff9900; font-size: 40px;">MISSION COMPLETE</h1>
+            <div class="rocket-trigger" id="finalBtn">
+                <span id="heart-icon" style="color: #f00;">❤</span>
+                <span class="rocket-anim">🚀</span>
+            </div>
+            <p id="reward-display">真実が拡散されました。</p>
+        </div>
     </div>
-    <p>真実が放たれました。世界へ拡散を開始します。</p>
+
+<div id="sidebar">
+    <div class="lifeline-area">
+        <button id="fifty-fifty" class="lifeline-btn" onclick="useFiftyFifty()">50:50</button>
+        <button id="phone" class="lifeline-btn" onclick="usePhone()">📞</button>
+        <button id="audience" class="lifeline-btn" onclick="useAudience()">📊</button>
+    </div>
+    <div id="audience-chart" style="display:none; margin-bottom:10px; background:#111; padding:10px; border:1px solid #ff9900; font-size:10px;"></div>
+    <div id="money-ladder"></div>
 </div>
 
 <script>
@@ -88,6 +150,8 @@ function playFreq(f, d, v=0.1) {
     o.connect(g); g.connect(audioCtx.destination);
     o.start(); o.stop(audioCtx.currentTime + d);
 }
+
+const moneyList = ["10,000", "20,000", "30,000", "50,000", "100,000", "250,000", "500,000", "1,000,000", "2,500,000", "10,000,000"];
 
 const quizData = {
     EASY: [
@@ -130,28 +194,55 @@ const quizData = {
 
 let currentLevel = '';
 let currentStep = 0;
+let fiftyUsed = false;
 
 function startGame(lv) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     currentLevel = lv;
     currentStep = 0;
+    fiftyUsed = false;
+    document.getElementById('fifty-fifty').classList.remove('used');
     document.getElementById('menu-screen').style.display = 'none';
     document.getElementById('game-ui').style.display = 'block';
+    initLadder();
     updateView();
+}
+
+function initLadder() {
+    const ladder = document.getElementById('money-ladder');
+    ladder.innerHTML = '';
+    for (let i = moneyList.length - 1; i >= 0; i--) {
+        const div = document.createElement('div');
+        div.id = `step-${i}`;
+        div.className = 'money-step';
+        div.innerHTML = `<span>${i + 1}</span> <span>¥${moneyList[i]}</span>`;
+        ladder.appendChild(div);
+    }
 }
 
 function updateView() {
     if (currentStep >= 10) {
-        showResult();
+        showResult(moneyList[9]);
         return;
     }
+    // ラダー更新
+    for (let i = 0; i < 10; i++) {
+        const el = document.getElementById(`step-${i}`);
+        el.className = 'money-step';
+        if (i === currentStep) el.classList.add('current-step');
+        else if (i < currentStep) el.classList.add('passed-step');
+    }
+
     const data = quizData[currentLevel][currentStep];
-    document.getElementById('status-bar').innerText = `AUTHENTICATION [${currentLevel}]: ${currentStep + 1} / 10`;
     document.getElementById('question-box').innerText = data.q;
-    document.getElementById('opt-A').innerText = data.a;
-    document.getElementById('opt-B').innerText = data.b;
-    document.getElementById('opt-C').innerText = data.c;
-    document.getElementById('opt-D').innerText = data.d;
+    const btnIds = ['btn-A', 'btn-B', 'btn-C', 'btn-D'];
+    const opts = ['a', 'b', 'c', 'd'];
+    
+    btnIds.forEach((id, idx) => {
+        const btn = document.getElementById(id);
+        btn.classList.remove('hidden-opt');
+        document.getElementById('opt-' + (id.split('-')[1])).innerText = data[opts[idx]];
+    });
 }
 
 function checkAnswer(pick) {
@@ -164,16 +255,44 @@ function checkAnswer(pick) {
             updateView();
         } else {
             playFreq(110, 0.8);
-            alert("不正解... アクセス権限を失いました。");
+            alert("不正解... 権限を失いました。");
             location.reload();
         }
     }
 }
 
-function showResult() {
+function useFiftyFifty() {
+    if (fiftyUsed || currentStep >= 10) return;
+    fiftyUsed = true;
+    document.getElementById('fifty-fifty').classList.add('used');
+    playFreq(600, 0.2);
+
+    const correct = quizData[currentLevel][currentStep].ans;
+    const options = ['A', 'B', 'C', 'D'].filter(opt => opt !== correct);
+    // ランダムに2つ選んで消す
+    for (let i = 0; i < 2; i++) {
+        const idx = Math.floor(Math.random() * options.length);
+        const target = options.splice(idx, 1)[0];
+        document.getElementById(`btn-${target}`).classList.add('hidden-opt');
+    }
+}
+
+function walkAway() {
+    if (currentStep === 0) {
+        alert("まだ実績がありません。");
+        return;
+    }
+    const prize = moneyList[currentStep - 1];
+    if (confirm(`現在の実績 ¥${prize} を確定させて辞めますか？`)) {
+        showResult(prize);
+    }
+}
+
+function showResult(amount) {
     document.getElementById('game-ui').style.display = 'none';
     const res = document.getElementById('success-screen');
     res.style.display = 'block';
+    document.getElementById('reward-display').innerText = `獲得実績: ¥${amount} ／ 真実が拡散されました。`;
     if (currentLevel === 'HARD') {
         document.getElementById('success-title').innerText = "★ GOLDEN INTEL MASTER ★";
         document.getElementById('success-title').style.color = "#ffd700";
@@ -185,10 +304,58 @@ document.getElementById('finalBtn').onclick = function() {
     this.classList.add('launch');
     playFreq(200, 1.5, 0.3);
     setTimeout(() => {
-        alert("🛰 拡散完了。真実は全米のサーバーへコピーされました。");
+        alert("🛰 拡散完了。");
         window.location.href = "index.html";
     }, 2000);
 };
+
+let phoneUsed = false;
+let audienceUsed = false;
+
+// 【テレフォン】知人（イーロンや機密局）からメッセージが届く
+function usePhone() {
+    if (phoneUsed || currentStep >= 10) return;
+    phoneUsed = true;
+    document.getElementById('phone').classList.add('used');
+    playFreq(600, 0.5);
+
+    const correct = quizData[currentLevel][currentStep].ans;
+    const messages = [
+        `「確実なことは言えないが…たぶん ${correct} だと思う。信じてくれ。」`,
+        `「当局のデータベースによれば、答えは ${correct} だ。急げ、時間が無い。」`,
+        `「… ${correct} だ。これ以上は消される、通信を切るぞ。」`
+    ];
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    alert(`【TELEPHONE 通信確立】\n\n${msg}`);
+}
+
+// 【オーディエンス】国民の声をグラフで表示
+function useAudience() {
+    if (audienceUsed || currentStep >= 10) return;
+    audienceUsed = true;
+    document.getElementById('audience').classList.add('used');
+    playFreq(500, 0.3);
+
+    const correct = quizData[currentLevel][currentStep].ans;
+    const chart = document.getElementById('audience-chart');
+    chart.style.display = 'block';
+    
+    // 正解の確率を高く設定するロジック
+    let rates = { A: 10, B: 10, C: 10, D: 10 };
+    rates[correct] = 50 + Math.floor(Math.random() * 20); // 正解は50-70%
+    
+    let html = '<div style="color:#ff9900; margin-bottom:5px;">AUDIENCE POLL:</div>';
+    ['A', 'B', 'C', 'D'].forEach(opt => {
+        const barWidth = rates[opt] || 10;
+        html += `<div style="display:flex; align-items:center; margin:2px 0;">
+                    <span style="width:15px;">${opt}:</span>
+                    <div style="background:#ff9900; height:8px; width:${barWidth}px; margin:0 5px;"></div>
+                    <span>${barWidth}%</span>
+                 </div>`;
+    });
+    chart.innerHTML = html;
+}
+
 </script>
 </body>
 </html>
