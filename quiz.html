@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>MILLIONAIRE PROTOCOL</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #000044 0%, #000000 100%);
+            color: #fff;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #menu-screen, #game-ui, #success-screen { display: none; width: 90%; max-width: 800px; text-align: center; }
+
+        /* 難易度選択メニュー */
+        .menu-btn {
+            display: block; width: 100%; margin: 15px 0; padding: 20px;
+            font-size: 20px; font-weight: bold; border-radius: 40px;
+            cursor: pointer; transition: 0.3s; background: #000; border: 2px solid #444; color: #fff;
+        }
+        .menu-btn:hover { background: #ff9900; color: #000; border-color: #fff; transform: scale(1.05); }
+
+        /* ゲーム画面：ミリオネア風ひし形 */
+        #question-box {
+            padding: 40px; margin-bottom: 30px; font-size: 22px; line-height: 1.6;
+            background: linear-gradient(180deg, #000033 0%, #000099 50%, #000033 100%);
+            border: 2px solid #999; border-radius: 60px / 120px;
+        }
+        .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .answer-btn {
+            background: #000; border: 2px solid #666; border-radius: 40px; padding: 15px 25px;
+            color: #fff; font-size: 18px; text-align: left; cursor: pointer; transition: 0.2s;
+        }
+        .answer-btn:hover { background: #ff9900; color: #000; border-color: #fff; }
+        .label { color: #ff9900; font-weight: bold; margin-right: 15px; }
+
+        /* 🚀右斜め上発射演出 */
+        .rocket-trigger { font-size: 100px; cursor: pointer; position: relative; display: inline-block; }
+        .rocket-anim { position: absolute; bottom: 0; left: 0; opacity: 0; transform: rotate(45deg); font-size: 70px; }
+        .launch .rocket-anim { animation: launchDiagonal 1.8s ease-in forwards; }
+        @keyframes launchDiagonal {
+            0% { transform: translate(0,0) rotate(45deg); opacity: 1; }
+            100% { transform: translate(1000px, -1000px) rotate(45deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="menu-screen" style="display: block;">
+    <h1 style="color: #ff9900; text-shadow: 0 0 15px #ff9900;">AUTHENTICATION SELECT</h1>
+    <button class="menu-btn" onclick="startGame('EASY')">EASY [引っかけ・直感]</button>
+    <button class="menu-btn" onclick="startGame('NORMAL')">NORMAL [生活雑学・知恵]</button>
+    <button class="menu-btn" onclick="startGame('HARD')">HARD [国際情勢・地政学]</button>
+</div>
+
+<div id="game-ui">
+    <div id="status-bar" style="color:#ff9900; margin-bottom:10px; font-weight:bold;">QUESTION: 1 / 10</div>
+    <div id="question-box">ここに問題文が表示されます</div>
+    <div class="answer-grid">
+        <button class="answer-btn" onclick="checkAnswer('A')"><span class="label">A:</span> <span id="opt-A"></span></button>
+        <button class="answer-btn" onclick="checkAnswer('B')"><span class="label">B:</span> <span id="opt-B"></span></button>
+        <button class="answer-btn" onclick="checkAnswer('C')"><span class="label">C:</span> <span id="opt-C"></span></button>
+        <button class="answer-btn" onclick="checkAnswer('D')"><span class="label">D:</span> <span id="opt-D"></span></button>
+    </div>
+</div>
+
+<div id="success-screen">
+    <h1 id="success-title" style="color: #ff9900; font-size: 40px;">MISSION COMPLETE</h1>
+    <div class="rocket-trigger" id="finalBtn">
+        <span id="heart-icon" style="color: #f00;">❤</span>
+        <span class="rocket-anim">🚀</span>
+    </div>
+    <p>真実が放たれました。世界へ拡散を開始します。</p>
+</div>
+
+<script>
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playFreq(f, d, v=0.1) {
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.frequency.value = f; g.gain.value = v;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + d);
+}
+
+const quizData = {
+    EASY: [
+        { q: "リンゴが3つありました。そこから2つ取ったら、あなたの手元にはリンゴは何個ある？", a: "1個", b: "2個", c: "3個", d: "0個", ans: "B" },
+        { q: "1年の中で「28日」がある月はいくつある？", a: "1つ", b: "うるう年だけ", c: "12個すべて", d: "0個", ans: "C" },
+        { q: "日本の「50円硬貨」に描かれている花の種類は？", a: "桜", b: "菊", c: "梅", d: "パンジー", ans: "B" },
+        { q: "聖徳太子が生きていた頃、本人は周りから何と呼ばれていた？", a: "厩戸皇子", b: "聖徳さん", c: "十七条の憲法", d: "お札の人", ans: "A" },
+        { q: "一階建ての「青い家」があります。家具も壁もすべて青。さて、階段は何色？", a: "青色", b: "白色", c: "透明", d: "階段はない", ans: "D" },
+        { q: "日本で一番「南」にある都道府県はどこ？", a: "鹿児島県", b: "沖縄県", c: "東京都", d: "高知県", ans: "C" },
+        { q: "「1アウト、ランナー満塁」。バッターがホームランを打ったら、何点入る？", a: "3点", b: "4点", c: "1点", d: "0点", ans: "B" },
+        { q: "レースで「2位の人」を追い越しました。あなたの順位は何位？", a: "1位", b: "2位", c: "3位", d: "リタイア", ans: "B" },
+        { q: "エベレストが発見される前、世界で一番高かった山は何？", a: "富士山", b: "K2", c: "キリマンジャロ", d: "エベレスト", ans: "D" },
+        { q: "このクイズの「第1問」の正解の数字は何だった？", a: "1", b: "2", c: "3", d: "0", ans: "B" }
+    ],
+    NORMAL: [
+        { q: "食パンの袋を留めている「あのプラスチックの留め具」。正式名称は？", a: "クロージャー", b: "クイック・ロック", c: "バッグ・クロージャー", d: "パン・クリップ", ans: "C" },
+        { q: "かき氷シロップのイチゴ、メロン、ブルーハワイ。味のベース以外で唯一違うのは？", a: "糖分の量", b: "酸味の成分", c: "色と香料", d: "氷の削り方", ans: "C" },
+        { q: "明治時代、最初に導入された時の「郵便ポスト」の色は何色だった？", a: "黒色", b: "白色", c: "青色", d: "金色", ans: "A" },
+        { q: "救急車のサイレン「ピーポー」。ピーとポーで物理的に違うのは？", a: "音量", b: "周波数(音の高さ)", c: "音の波長", d: "スピーカーの数", ans: "B" },
+        { q: "レトルトカレーの「レトルト」とは、オランダ語でどういう意味？", a: "保存食", b: "蒸気調理", c: "加圧加熱殺菌釜", d: "魔法の袋", ans: "C" },
+        { q: "トランプの4人のキングの中で、1人だけ「口ひげ」がないのは？", a: "スペード", b: "ハート", c: "ダイヤ", d: "クラブ", ans: "B" },
+        { q: "日本で最も普及し、売れている「乾電池」のサイズは？", a: "単1形", b: "単2形", c: "単3形", d: "単4形", ans: "C" },
+        { q: "非常口マークの「走っている人」。このピクトグラムの公式愛称は？", a: "エスケープくん", b: "ピクトさん", c: "ランニングマン", d: "名前はない", ans: "B" },
+        { q: "一般的な銀行ATM1台の中に、最大でいくらまで現金が入る？", a: "1000万円", b: "3000万円", c: "1億円", d: "5億円", ans: "C" },
+        { q: "ゆで卵を綺麗にむくには、茹でる直前に卵のどこに穴を開けるのが正解？", a: "尖っている方", b: "側面", c: "丸い方", d: "どこでもいい", ans: "C" }
+    ],
+    HARD: [
+        { q: "冷戦後、NATOが歴史上で初めて「集団自衛権(第5条)」を発動した契機は？", a: "イラク戦争", b: "アフガン侵攻", c: "9.11米同時多発テロ", d: "コソボ紛争", ans: "C" },
+        { q: "国連安保理常任理事国の中で、一度も拒否権を行使していない国は？", a: "フランス", b: "中国", c: "イギリス", d: "存在しない", ans: "D" },
+        { q: "EU法が加盟国の国内法に対して優先される原則を確立した歴史的判決は？", a: "コスタ対ENEL判決", b: "リスボン条約判決", c: "マーストリヒト判決", d: "パリ条約判決", ans: "A" },
+        { q: "国家承認はないが実質的国家機能を持ちイスラエルと対峙する主体とその後ろ盾は？", a: "タリバン＋中国", b: "ハマス＋イラン", c: "フーシ派＋ロシア", d: "クルド＋アメリカ", ans: "B" },
+        { q: "2020年ロシア憲法改正においてプーチン政権が得た最大の実質的効果は？", a: "上下院廃止", b: "任期リセットによる長期政権合法化", c: "直接選挙廃止", d: "核使用権の拡大", ans: "B" },
+        { q: "米大統領選で、勝利が法的に確定する最も重要な「確定日」は？", a: "11月の一般投票日", b: "12月の選挙人団投票日", c: "1月の就任式", d: "予備選終了日", ans: "B" },
+        { q: "中国共産党文書で使われる「核心(コア)」という言葉の実質的意味は？", a: "最大派閥代表者", b: "形式的象徴", c: "最終裁定権を持つ不可侵の指導的地位", d: "軍事事務責任者", ans: "C" },
+        { q: "近年のアフリカでのクーデターに共通する対外関係の変化は？", a: "英離脱＋中接近", b: "仏離脱＋露接近", c: "米離脱＋イラン接近", d: "EU離脱＋トルコ接近", ans: "B" },
+        { q: "イスラエルが現在も「成文憲法」を持たない最大の政治的理由は？", a: "世俗派と宗教派の対立", b: "建国時の時間不足", c: "イギリスの禁止", d: "国連の要請", ans: "A" },
+        { q: "国家主権と人権介入が衝突する際に掲げられる象徴的原則は？", a: "集団自衛権", b: "民族自決", c: "勢力均衡", d: "責任ある保護(R2P)", ans: "D" }
+    ]
+};
+
+let currentLevel = '';
+let currentStep = 0;
+
+function startGame(lv) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    currentLevel = lv;
+    currentStep = 0;
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('game-ui').style.display = 'block';
+    updateView();
+}
+
+function updateView() {
+    if (currentStep >= 10) {
+        showResult();
+        return;
+    }
+    const data = quizData[currentLevel][currentStep];
+    document.getElementById('status-bar').innerText = `AUTHENTICATION [${currentLevel}]: ${currentStep + 1} / 10`;
+    document.getElementById('question-box').innerText = data.q;
+    document.getElementById('opt-A').innerText = data.a;
+    document.getElementById('opt-B').innerText = data.b;
+    document.getElementById('opt-C').innerText = data.c;
+    document.getElementById('opt-D').innerText = data.d;
+}
+
+function checkAnswer(pick) {
+    playFreq(440, 0.1);
+    if (confirm("ファイナルアンサー？")) {
+        if (pick === quizData[currentLevel][currentStep].ans) {
+            playFreq(880, 0.4);
+            alert("正解！");
+            currentStep++;
+            updateView();
+        } else {
+            playFreq(110, 0.8);
+            alert("不正解... アクセス権限を失いました。");
+            location.reload();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('game-ui').style.display = 'none';
+    const res = document.getElementById('success-screen');
+    res.style.display = 'block';
+    if (currentLevel === 'HARD') {
+        document.getElementById('success-title').innerText = "★ GOLDEN INTEL MASTER ★";
+        document.getElementById('success-title').style.color = "#ffd700";
+        document.getElementById('heart-icon').style.color = "#ffd700";
+    }
+}
+
+document.getElementById('finalBtn').onclick = function() {
+    this.classList.add('launch');
+    playFreq(200, 1.5, 0.3);
+    setTimeout(() => {
+        alert("🛰 拡散完了。真実は全米のサーバーへコピーされました。");
+        window.location.href = "index.html";
+    }, 2000);
+};
+</script>
+</body>
+</html>
