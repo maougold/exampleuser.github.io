@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沈黙の解剖 | 連載小説サイト風</title>
+    <style>
+        :root {
+            /* ライトモード用変数 */
+            --sidebar-width: 280px;
+            --main-bg: #f8f9fa;
+            --paper-bg: #ffffff;
+            --text-color: #333333;
+            --sidebar-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-color: #2575fc;
+        }
+
+        /* ダークモード設定（bodyにdark-modeクラスがある時） */
+        body.dark-mode {
+            --main-bg: #121212;
+            --paper-bg: #1e1e1e;
+            --text-color: #d1d1d1;
+            --sidebar-bg: #1a1a1a;
+            --border-color: #333333;
+            --accent-color: #4e8fff;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* 設定ツールバー */
+        .toolbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: 50px;
+            background: var(--paper-bg);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .toolbar button {
+            margin-left: 10px;
+            padding: 5px 12px;
+            cursor: pointer;
+            background: var(--main-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* 左側サイドバー（目次） */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            overflow-y: auto;
+            padding: 20px 0;
+            transition: background 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 25px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 { font-size: 1.1em; color: #888; }
+
+        .home-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .episode-list { list-style: none; padding: 0; margin: 0; }
+        .episode-list li a {
+            display: block;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .episode-list li a.active {
+            background-color: rgba(37, 117, 252, 0.1);
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 50px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .paper {
+            background-color: var(--paper-bg);
+            max-width: 750px;
+            width: 90%;
+            padding: 60px 60px;
+            margin: 40px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            line-height: 2.2;
+            transition: background 0.3s;
+        }
+
+        /* 文字サイズ制御 */
+        .size-s { font-size: 0.9em; }
+        .size-m { font-size: 1.1em; }
+        .size-l { font-size: 1.3em; }
+
+        h1.episode-title {
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .content p {
+            margin-bottom: 1.8em;
+            text-indent: 1em;
+        }
+
+        .separator {
+            text-align: center;
+            margin: 40px 0;
+            letter-spacing: 0.5em;
+            color: var(--border-color);
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .toolbar { left: 0; }
+            .main-content { margin-left: 0; }
+            .paper { padding: 40px 20px; width: 100%; margin: 0; box-shadow: none; }
+        }
+    </style>
+</head>
+<body class="dark-mode size-m">
+
+<div class="toolbar">
+    <button onclick="changeSize('s')">小</button>
+    <button onclick="changeSize('m')">中</button>
+    <button onclick="changeSize('l')">大</button>
+    <button onclick="toggleLight()">昼/夜切替</button>
+</div>
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <a href="index.html" class="home-btn">← 作品トップへ戻る</a>
+        <h2>エピソード目次</h2>
+    </div>
+    <ul class="episode-list">
+        <li><a href="index.html" class="active">第一話：沈黙の解剖</a></li>
+        <li><a href="episode2.html">第二話：情報の海へ</a></li>
+        <li><a href="#">第三話：未踏の境界</a></li>
+    </ul>
+</nav>
+
+<main class="main-content">
+    <article class="paper" id="novel-paper">
+        <h1 class="episode-title">第一話：沈黙の解剖</h1>
+        
+        <div class="content">
+            <p>衆議院選挙の期間中、テレビをつけるたびに、私は喉の奥に小さな刺が引っかかっているような違和感を覚えていた。画面の向こうで繰り返されるのは、日本の将来を左右する政策でも、候補者たちの熱を帯びた理想でもない。「SNSに騙されないように」「AIによるフェイク画像に注意」――まるで、視聴者のリテラシーを疑うような、過剰なまでの警鐘ばかりだった。</p>
+
+            <p>ワイドショーがSNS規制や収益制限の必要性を説くのを聞きながら、私はふと思う。もしテレビメディアがSNSと同列の倫理や基準を語るのなら、なぜテレビという場所は、誰もが自由に言葉を届けられる開かれた広場ではないのだろうか。巨大な資本に守られた既存メディアが、個人のささやかな発信の場を「危険な領域」として切り捨てる。その歪な構図が、どうにも腑に落ちなかった。</p>
+
+            <p>前回の参議院選挙のときも、同じような光景を見た。たとえば、ある新興政党が掲げたスローガン。それは既存メディアの手にかかれば、瞬く間に排外主義のレッテルを貼られ、全局横並びの冷ややかな報道に塗りつぶされた。けれど、有権者はそれほど盲目ではなかった。テレビが映さない情報を、人々は自らの手でSNSから手繰り寄せ、精査し、自らの判断を投票箱に託した。</p>
+
+            <p>この光景は、数年前のYouTubeをめぐる騒動とも重なる。かつてテレビの中にいた人々は、新興の動画プラットフォームを「素人の副業」と冷笑していた。しかし、パンデミックで自分たちの足場が揺らぎ始めると、彼らは掌を返したようにその場所へなだれ込んだ。あの時の高潔な「報道の誇り」は、一体どこへ消えたのだろうか。</p>
+
+            <div class="separator">***</div>
+
+            <p>青白い光を放つ画面を見つめながら、私は彼らがSNSを「危険」だと叫ぶ裏側に潜む、剥き出しの思惑を指折り数えてみる。</p>
+
+            <p>第一に、それは情報の独占権が崩壊したことへの恐怖だ。ゲートキーパーとしての役割を失った彼らに残されたのは、自分たちが介在しない情報流通を「無秩序な悪」と定義することで、かつての権威を死守しようとする、あまりに切実な抵抗だった。</p>
+
+            <p>第二に、それは影響力の低下という、逃れようのない経済的死活問題だ。彼らににとってSNSは、民主主義を脅かす敵である以上に、自分たちのパイを奪い去る憎き「競合」に他ならない。規制論という名の公共性を装った盾は、実際には、自分たちの地位を守るための最後の防衛線なのだ。</p>
+
+            <p>第三に、世論を形作る支配力を失ったことへの、激しい焦りだ。テレビでの断定的な語りが「絶対的な正解」として通用した時代は、もう終わった。その不自由さを認められない心が、「リテラシー」という言葉を都合よく使いながら、実質的には自分たちにとって都合の悪い言説をコントロールしたいという欲求に姿を変えている。</p>
+
+            <p>結局のところ、問われるべきは媒体の形ではない。「誰が、どの立場で、どんな責任意識を持って言葉を紡いでいるのか」。その一点だ。SNS規制論が、真に民主主義を守るための防具なのか。それとも、既存メディアが失いつつある影響力を取り戻すための、醜い延命策なのか。</p>
+
+            <p>私は手元のリモコンを押し、耳障りな喧騒を遮断した。一瞬で静寂が戻った部屋に、テレビが消える直前の、ひときわ高い電子音だけが残る。真っ黒に塗りつぶされた画面には、今の私の冷めた眼差しが鏡のように映り込んでいた。</p>
+
+            <p>ソファの傍らに置いてあったスマートフォンを手に取る。バックライトが暗い指先を照らし出した。既存メディアが「ノイズ」と切り捨て、「嘘」と断じた情報の海へ、私はもう一度、深く潜り込んでいく。そこに沈んでいるはずの、けれど誰にも編集されていない、私だけの「真実」の断片を探し出すために。</p>
+        </div>
+    </article>
+</main>
+
+<script>
+    // 文字サイズの変更 (s/m/l)
+    function changeSize(s) {
+        document.body.classList.remove('size-s', 'size-m', 'size-l');
+        document.body.classList.add('size-' + s);
+    }
+
+    // デフォルトがダークなので、classList.toggle で dark-mode を外すとライトモードになります
+    function toggleLight() {
+        document.body.classList.toggle('dark-mode');
+    }
+</script>
+
+</body>
+</html>
