@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二話：調査中 | 沈黙の解剖</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #d1d1d1;
+            font-family: "Yu Mincho", serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+            border: 1px solid #333;
+            background: #1e1e1e;
+            box-shadow: 0 0 30px rgba(201, 24, 74, 0.1);
+        }
+
+        .status-code {
+            font-family: monospace;
+            color: #c9184a;
+            font-size: 1.2em;
+            letter-spacing: 0.3em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            font-weight: normal;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 2px;
+            background: #333;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .loading-bar::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 40%; /* 進捗状況 */
+            background: #c9184a;
+            box-shadow: 0 0 10px #c9184a;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .hint {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #c9184a;
+            font-weight: bold;
+            font-size: 0.9em;
+            border: 1px solid #c9184a;
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            background: #c9184a;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <span class="status-code">CONNECTION SECURED... [404]</span>
+    <h1>第二話：情報の海へ<br>――解析中。</h1>
+    
+    <div class="loading-bar"></div>
+    
+    <div style="text-align: left; padding: 20px; border-left: 2px solid #c9184a; background: rgba(201, 24, 74, 0.05); margin-bottom: 40px;">
+        <p style="font-size: 1em; line-height: 1.8; margin: 0; color: #eee;">
+            「世界の気になる出来事を追い、人々の生の声（ボイス）を翻訳していると、ある不可解な動画に巡り合った。その動画の再生ボタンを押した瞬間に――」
+        </p>
+    </div>
+    
+    <p class="hint">
+        これより先のデータは現在、整合性を確認しています。<br>
+        証拠の断片が揃い次第、公開を再開します。
+    </p>
+
+    <a href="index.html" class="back-link">目次へ戻り、続報を待つ</a>
+</div>
+
+</body>
+</html>
