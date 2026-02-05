@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>MILLIONAIRE PROTOCOL | THE COMPLETE INSANE EDITION</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #000022 0%, #000000 100%);
+            color: #fff; font-family: "Hiragino Mincho ProN", serif;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden;
+            transition: background 0.1s;
+        }
+        #game-container { display: flex; width: 95%; max-width: 1100px; gap: 30px; align-items: flex-end; }
+        #main-area { flex: 3; display: flex; flex-direction: column; align-items: center; }
+        #menu-screen, #game-ui, #success-screen { display: none; width: 100%; text-align: center; }
+        
+        #narrator-box { color: #800; font-size: 16px; min-height: 24px; margin-bottom: 10px; font-style: italic; letter-spacing: 2px; }
+        
+        #question-box {
+            width: 100%; padding: 40px; margin-bottom: 30px; font-size: 22px; line-height: 1.6;
+            background: linear-gradient(180deg, #000011 0%, #000033 50%, #000011 100%);
+            border: 1px solid #444; border-radius: 60px / 120px; box-sizing: border-box;
+        }
+        .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        .answer-btn {
+            background: #000; border: 1px solid #333; border-radius: 40px; padding: 15px 25px;
+            color: #aaa; font-size: 18px; text-align: left; cursor: pointer; transition: 0.3s;
+        }
+        .answer-btn:hover:not(.hidden-opt) { border-color: #800; color: #fff; background: #100; box-shadow: 0 0 15px #800; }
+        .label { color: #800; font-weight: bold; margin-right: 15px; }
+        .hidden-opt { visibility: hidden; pointer-events: none; }
+
+        /* サイドバー */
+        #sidebar { flex: 1; background: rgba(0,0,0,0.8); border: 1px solid #222; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; }
+        .money-step { display: flex; justify-content: space-between; padding: 2px 10px; font-family: monospace; color: #500; font-size: 14px; }
+        .current-step { color: #f00; text-shadow: 0 0 5px #f00; font-weight: bold; }
+        .passed-step { color: #222; }
+
+        .lifeline-btn { width: 60px; height: 35px; border-radius: 50%; border: 1px solid #444; background: #000; color: #666; cursor: pointer; margin-bottom: 10px; font-size: 18px; }
+        .lifeline-btn.used { text-decoration: line-through; opacity: 0.2; }
+
+        /* 赤い手の演出 */
+        .hand-trigger { font-size: 120px; cursor: pointer; position: relative; display: inline-block; transition: transform 0.2s; }
+        .hand-trigger:hover { transform: scale(1.1); }
+        .return-text { font-size: 20px; color: #f00; font-weight: bold; letter-spacing: 8px; margin-top: -10px; opacity: 0.6; }
+
+        /* 帰還の点滅 */
+        @keyframes red-flash { 0% { background: #000; } 50% { background: #f00; } 100% { background: #000; } }
+        .return-ritual { animation: red-flash 0.1s infinite !important; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="main-area">
+        <div id="menu-screen" style="display: block;">
+            <h1 style="color: #800; letter-spacing: 5px;">MILLIONAIRE PROTOCOL</h1>
+            <p style="font-size: 12px; color: #444;">※警告：真実を知る覚悟のない者は立ち去れ</p>
+            <button class="menu-btn answer-btn" style="width:100%; margin-bottom:10px;" onclick="startGame('EASY')">EASY [有名ホラーの記憶]</button>
+            <button class="menu-btn answer-btn" style="width:100%; margin-bottom:10px;" onclick="startGame('NORMAL')">NORMAL [奇妙な現実の狭間]</button>
+            <button class="menu-btn answer-btn" style="width:100%;" onclick="startGame('HARD')">HARD [未解決・禁忌の真実]</button>
+        </div>
+
+        <div id="game-ui">
+            <div id="narrator-box"></div>
+            <div id="question-box"></div>
+            <div class="answer-grid">
+                <button class="answer-btn" id="btn-A" onclick="checkAnswer('A')"><span class="label">A:</span> <span id="opt-A"></span></button>
+                <button class="answer-btn" id="btn-B" onclick="checkAnswer('B')"><span class="label">B:</span> <span id="opt-B"></span></button>
+                <button class="answer-btn" id="btn-C" onclick="checkAnswer('C')"><span class="label">C:</span> <span id="opt-C"></span></button>
+                <button class="answer-btn" id="btn-D" onclick="checkAnswer('D')"><span class="label">D:</span> <span id="opt-D"></span></button>
+            </div>
+            <button id="walk-away-btn" onclick="walkAway()" style="margin-top: 30px; background: #100; color: #600; border: 1px solid #300; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-size: 12px; font-family: serif; transition: 0.3s;">
+                ここで辞める（実績を確定して帰還する）
+            </button>
+        </div>
+
+        <div id="success-screen">
+            <h1 id="success-title" style="color: #800; font-size: 40px; letter-spacing: 10px;">MISSION COMPLETE</h1>
+            <div class="hand-trigger" id="finalBtn">
+                <span id="hand-icon" style="color: #a00; filter: drop-shadow(0 0 15px #f00);">🖐</span>
+                <div class="return-text">帰 還</div>
+            </div>
+            <p id="reward-display" style="font-size: 14px; color: #666; margin-top: 20px;"></p>
+        </div>
+    </div>
+
+    <div id="sidebar">
+        <div class="lifeline-area">
+            <button id="fifty" class="lifeline-btn" onclick="useFifty()">50</button>
+            <button id="phone" class="lifeline-btn" onclick="usePhone()">📞</button>
+        </div>
+        <div id="money-ladder"></div>
+    </div>
+</div>
+
+<script>
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playFreq(f, d, v=0.05) {
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.frequency.value = f; g.gain.value = v; o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + d);
+}
+
+const moneyList = ["10,000", "20,000", "30,000", "50,000", "100,000", "250,000", "500,000", "1,000,000", "2,500,000", "10,000,000"];
+const narrations = ["ようこそ。知らない方が幸せだった真実の領域です。", "まだ、引き返せます。今のうちですよ。", "耳を澄ませてください。何か聞こえませんか？", "あなたの後ろの戸締まり、確認しましたか？", "半分まで来ました。心臓の音、速くなっていますね。", "逃げ道は、もうありません。", "真実に近づくほど、世界は色を失います。", "…今の音、気付きましたか？", "次を正解すれば最後。…あなたが最後の一人になる番です。", "最後の一問。決して、後ろを振り返らないでください。"];
+const hardComments = ["…9人の遺体は、内側から切り裂かれたテントの先にありました。", "…翼を広げたそれは、不吉な予兆とされています。", "…軍が回収した『破片』の行方は、今も不明です。", "…彼はどこへ消えたのか。目撃者はあなただけかもしれません。", "…湖底には、まだ科学の届かない深淵があります。", "…犯人は今、あなたの隣でこの画面を覗いているかもしれません。", "…半透明のそれは、光を屈折させて獲物を待ちます。", "…犯人の指紋、靴の跡。それだけあっても、誰にも辿り着けない。", "…枯れ果てた家畜の身体には、一滴の血も残っていなかった。", "…視界の端に映る『黒い影』。それが彼らです。"];
+
+const quizData = {
+    EASY: [
+        { q: "アニメ『ひぐらしのなく頃に』で、物語の舞台となる村の名前は？", a: "雛見沢村", b: "鬼隠村", c: "綿流村", d: "昭和村", ans: "A" },
+        { q: "映画『リング』で、呪いのビデオを見た人が死ぬまでの日数は？", a: "3日", b: "5日", c: "7日", d: "10日", ans: "C" },
+        { q: "アニメ『Another』で、クラス内に存在してはいけないとされる人物は？", a: "転校生", b: "担任教師", c: "死者", d: "生徒会長", ans: "C" },
+        { q: "映画『呪怨』で現れる霊の特徴的な音は？", a: "笑い声", b: "猫の鳴き声", c: "うめき声", d: "喉を鳴らすような音", ans: "D" },
+        { q: "ドラマ『世にも奇妙な物語』で、物語の最後によく表示される言葉は？", a: "END", b: "FIN", c: "つづく", d: "奇妙な世界は終わらない", ans: "D" },
+        { q: "映画『IT／イット』で子どもたちを恐怖に陥れる存在の姿は？", a: "魔女", b: "ピエロ", c: "人形", d: "道化師の仮面", ans: "B" },
+        { q: "アニメ『地獄少女』で、依頼をすると相手が送られる場所は？", a: "冥界", b: "黄泉", c: "地獄", d: "奈落", ans: "C" },
+        { q: "映画『シックス・センス』で、少年が「見える」と告白するものは？", a: "未来", b: "悪魔", c: "死者", d: "記憶", ans: "C" },
+        { q: "アニメ『学校の怪談』に登場する、語尾に「〜だべ」とつけるキャラクターは？", a: "花子さん", b: "天の邪鬼", c: "のっぺらぼう", d: "赤マント", ans: "B" },
+        { q: "映画『キャリー』で、主人公が超能力を使い始めるきっかけとなる力は？", a: "念動力", b: "予知能力", c: "催眠術", d: "瞬間移動", ans: "A" }
+    ],
+    NORMAL: [
+        { q: "『エクソシスト』の実話で、少年の体に浮かび上がった文字は？", a: "HELP", b: "HELL", c: "DIE", d: "EVIL", ans: "A" },
+        { q: "1930年代、カナダで村人全員が衣服を残したまま消えた湖の名は？", a: "アンジクニ湖", b: "ロアノーク湖", c: "メアリー湖", d: "バイカル湖", ans: "A" },
+        { q: "バミューダ・トライアングルで消失した爆撃機。最後の通信内容は？", a: "何も見えない", b: "海が白く光っている", c: "空が赤い", d: "燃料が切れた", ans: "B" },
+        { q: "『ヴォイニッチ手稿』に描かれている植物の共通点は？", a: "猛毒がある", b: "地球上に存在しない", c: "人が描いたものではない", d: "すべて枯れている", ans: "B" },
+        { q: "ポルターガイスト事件で少女に憑依した老人の名は？", a: "ジャック", b: "ビル", c: "トム", d: "ハリー", ans: "B" },
+        { q: "18世紀フランスの『ジェヴォーダンの獣』。有力な正体説は？", a: "巨大な狼", b: "ハイエナ", c: "ライオン", d: "クマ", ans: "A" },
+        { q: "『スレンダーマン』が連れ去る場所とされるのは？", a: "クローゼット", b: "深い森", c: "地下鉄", d: "鏡の中", ans: "B" },
+        { q: "エリサ・ラムが最後に見られた時に着ていた服の色は？", a: "白", b: "赤", c: "黒", d: "青", ans: "B" },
+        { q: "『犬鳴村』看板の文言は？", a: "地獄へようこそ", b: "日本憲法通じず", c: "立ち去れ", d: "出口なし", ans: "B" },
+        { q: "『虚舟伝説』の女性が抱えていたのは？", a: "杖", b: "謎の箱", c: "赤ん坊", d: "髑髏", ans: "B" }
+    ],
+    HARD: [
+        { q: "1959年、ソ連登山隊9人の不可解な死の事件名は？", a: "ウラル惨殺事件", b: "ディアトロフ峠事件", c: "シベリア事件", d: "雪山事件", ans: "B" },
+        { q: "60年代に多数目撃された、翼を持つ人型存在は？", a: "スカイマン", b: "ナイトフライヤー", c: "モスマン", d: "エンジェル", ans: "C" },
+        { q: "1947年、米ニューメキシコ州のUFO墜落事件は？", a: "エリア51", b: "ロズウェル事件", c: "ペンタゴン", d: "ホワイトサンズ", ans: "B" },
+        { q: "1974年、日本の男性突然消失事件は？", a: "世田谷事件", b: "三億円事件", c: "津山事件", d: "船橋駅前失踪事件", ans: "D" },
+        { q: "スコットランドの湖に生息すると言われるUMAは？", a: "チュパカブラ", b: "モケーレ", c: "ネッシー", d: "オゴポゴ", ans: "C" },
+        { q: "正体不明の連続殺人鬼「Z」は何と呼ばれる？", a: "ジャック", b: "Zodiac事件", c: "ブラックコード", d: "キラーZ", ans: "B" },
+        { q: "フロリダ州で目撃された半透明の未確認生物は？", a: "シャドウ", b: "フラットウッズ", c: "スカンクエイプ", d: "フロリダ・ジェリー", ans: "D" },
+        { q: "現場に大量の証拠を残した日本の未解決事件は？", a: "グリコ", b: "三億円", c: "世田谷一家殺害事件", d: "八王子スーパー", ans: "C" },
+        { q: "家畜の血を抜くとされる南米の未確認生物は？", a: "モスマン", b: "チュパカブラ", c: "ビッグフット", d: "ヨローナ", ans: "B" },
+        { q: "世界中で目撃される、特定不能の「黒い影」の現象は？", a: "ライトニング", b: "パラリシス", c: "シャドウパーソン", d: "集団幻覚", ans: "C" }
+    ]
+};
+
+let currentLevel = ''; let currentStep = 0; let fiftyUsed = false; let phoneUsed = false;
+
+function startGame(lv) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    currentLevel = lv; currentStep = 0; fiftyUsed = false; phoneUsed = false;
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('game-ui').style.display = 'block';
+    document.getElementById('fifty').classList.remove('used');
+    document.getElementById('phone').classList.remove('used');
+    initLadder(); updateView();
+}
+
+function initLadder() {
+    const ladder = document.getElementById('money-ladder'); ladder.innerHTML = '';
+    for (let i = moneyList.length - 1; i >= 0; i--) {
+        const div = document.createElement('div'); div.id = `step-${i}`; div.className = 'money-step';
+        div.innerHTML = `<span>${i + 1}</span> <span>¥${moneyList[i]}</span>`;
+        ladder.appendChild(div);
+    }
+}
+
+function updateView() {
+    if (currentStep >= 10) { showResult(); return; }
+    for (let i = 0; i < 10; i++) {
+        const el = document.getElementById(`step-${i}`); el.className = 'money-step';
+        if (i === currentStep) el.classList.add('current-step'); else if (i < currentStep) el.classList.add('passed-step');
+    }
+    const data = quizData[currentLevel][currentStep];
+    document.getElementById('narrator-box').innerText = narrations[currentStep];
+    document.getElementById('question-box').innerText = data.q;
+    ['A','B','C','D'].forEach(opt => {
+        const b = document.getElementById('btn-'+opt); b.classList.remove('hidden-opt');
+        document.getElementById('opt-'+opt).innerText = data[opt.toLowerCase()];
+    });
+}
+
+function checkAnswer(pick) {
+    playFreq(200, 0.2);
+    if (confirm("ファイナルアンサー…？")) {
+        if (pick === quizData[currentLevel][currentStep].ans) {
+            playFreq(600, 0.4);
+            alert((currentLevel === 'HARD') ? hardComments[currentStep] : "正解です…");
+            currentStep++; updateView();
+        } else {
+            playFreq(80, 1.5); document.body.style.background = "#500";
+            alert("不正解。あなたは闇に飲まれました。"); location.reload();
+        }
+    }
+}
+
+function walkAway() {
+    if (currentStep === 0) { alert("まだ実績がありません。"); return; }
+    const prize = moneyList[currentStep - 1];
+    if (confirm(`現在の実績 ¥${prize} を持って、現世へ帰還しますか…？`)) {
+        showResult(prize);
+    }
+}
+
+function useFifty() {
+    if (fiftyUsed) return; fiftyUsed = true; document.getElementById('fifty').classList.add('used');
+    const correct = quizData[currentLevel][currentStep].ans;
+    const options = ['A','B','C','D'].filter(opt => opt !== correct);
+    for (let i=0; i<2; i++) {
+        const target = options.splice(Math.floor(Math.random()*options.length), 1)[0];
+        document.getElementById(`btn-${target}`).classList.add('hidden-opt');
+    }
+}
+
+function usePhone() {
+    if (phoneUsed) return; phoneUsed = true; document.getElementById('phone').classList.add('used');
+    const msg = (currentStep < 7) ? `「…答えは ${quizData[currentLevel][currentStep].ans} だ。早くしてくれ…」` : "「……う、後ろ……に……」";
+    alert(`【通信確立】\n\n${msg}`);
+}
+
+function showResult(amount = null) {
+    document.getElementById('game-ui').style.display = 'none';
+    document.getElementById('success-screen').style.display = 'block';
+    const finalAmount = amount || moneyList[9];
+    const msg = (currentLevel === 'HARD' && currentStep === 10) 
+        ? "あなたは全てを知ってしまった。もう、知らない頃の自分には戻れません。" 
+        : `獲得実績: ¥${finalAmount} ／ あなたは無事に帰還しました。`;
+    document.getElementById('reward-display').innerText = msg;
+}
+
+document.getElementById('finalBtn').onclick = function() {
+    document.body.classList.add('return-ritual');
+    playFreq(80, 2.0, 0.4); playFreq(1000, 0.1, 0.2);
+    setTimeout(() => { alert("……帰還を承認しました。二度とこちらへ来ないように。"); window.location.href = "index.html"; }, 2500);
+};
+</script>
+</body>
+</html>
