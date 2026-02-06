@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Yahoo!ニュース風：気候変動への新たな視点</title>
+<style>
+    body { background-color: #f0f2f5; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.5; margin: 0; padding-bottom: 50px; }
+    
+    /* レイアウト */
+    .container { display: flex; max-width: 1000px; margin: 0 auto; gap: 20px; padding-top: 20px; }
+    .main-content { flex: 2; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .side-content { flex: 1; }
+
+    /* 記事ヘッダー */
+    .article-header { padding: 20px; border-bottom: 1px solid #eee; }
+    .category-tag { color: #cc0000; font-weight: bold; font-size: 12px; margin-bottom: 8px; display: block; }
+    .article-title { font-size: 24px; font-weight: bold; line-height: 1.3; color: #000; margin-bottom: 15px; }
+    .publish-date { font-size: 12px; color: #666; }
+    
+    /* 記事本文 */
+    .article-body { padding: 20px; font-size: 16px; border-bottom: 8px solid #f0f2f5; }
+    .article-body h2 { font-size: 18px; border-left: 4px solid #005087; padding-left: 10px; margin: 25px 0 15px; }
+    .summary-highlight { font-weight: bold; background: linear-gradient(transparent 70%, #fff3cd 70%); }
+    
+    /* コメントセクション */
+    .comment-section { padding: 20px; }
+    .comment-count-header { font-weight: bold; font-size: 18px; border-bottom: 2px solid #005087; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+    .comment-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .user-row { display: flex; align-items: center; margin-bottom: 8px; }
+    .user-icon { width: 32px; height: 32px; background: #ddd; border-radius: 4px; margin-right: 10px; }
+    .user-name { font-weight: bold; font-size: 14px; color: #005087; }
+    .comment-body { font-size: 15px; white-space: pre-wrap; }
+    .stats { display: flex; gap: 12px; font-size: 13px; color: #666; margin-top: 10px; }
+    .btn { padding: 4px 12px; border: 1px solid #ddd; border-radius: 16px; background: #f9f9f9; cursor: pointer; }
+    .btn-up { color: #ff5a5f; border-color: #ff5a5f; }
+
+    /* サイドバー：ヤフコメ風ランキング */
+    .side-box { background: #fff; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .side-title { font-size: 16px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px; }
+    .rank-item { display: flex; gap: 10px; margin-bottom: 15px; text-decoration: none; color: #333; align-items: flex-start; }
+    .rank-num { font-size: 18px; font-weight: bold; color: #999; min-width: 20px; }
+    .rank-text { font-size: 13px; font-weight: bold; line-height: 1.4; }
+    .rank-stats { font-size: 11px; color: #005087; margin-top: 4px; display: block; }
+    
+    .back-button { display: inline-block; margin: 20px auto; padding: 10px 20px; background: #005087; color: #fff; text-decoration: none; border-radius: 20px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">国際・環境（オピニオン）</span>
+            <h1 class="article-title">「私が気候変動を怖がらなくなった理由」――元活動家が語る、科学的事実と繁栄のバランス</h1>
+            <p class="publish-date">2/6(金) 11:00配信</p>
+        </article>
+
+        <div class="article-body">
+            <p>気候変動の脅威が叫ばれる中、元気候活動家で現在は「気候リアリスト」として活動するルーシー氏が、自身の考えを一変させた5つの事実を挙げ、現在の過度な危機論に異議を唱えた。</p>
+            
+            <h2>1. 自然災害による死亡者数の激減</h2>
+            <p>「この100年で、気象災害による死亡者数は<span class="summary-highlight">約95％減少しました</span>。これは私たちが豊かになり、適応力を高めた証です」と、人類の発展が最大の防御策であることを指摘。</p>
+
+            <h2>2. 暑さよりも深刻な「寒さ」のリスク</h2>
+            <p>統計によれば、寒さによる死亡者は暑さの約10倍に上る。「温暖化が進むことで、むしろ救われている命が増えている側面を無視すべきではありません」。</p>
+
+            <h2>3. CO2は「植物の栄養」である</h2>
+            <p>「CO2は汚染物質ではなく、自然の一部。温室栽培の農家が成長を促すために意図的に添加するように、大気中の濃度上昇は地球のグリーン化を促進しています」。</p>
+
+            <h2>4. 統計に見る「極端な気象」の真実</h2>
+            <p>メディアは災害のたびに気候変動を結びつけるが、過去30年の統計では極端な気象は横ばい。「変わったのはSNSやニュースの拡散スピードであり、統計的事実ではありません」。</p>
+
+            <p>ルーシー氏は最後に、「石油や石炭を悪者扱いし、不安定なエネルギーに依存する政策は、現代の豊かさを壊し、生活コストを押し上げている」と警告。人間の繁栄を最優先にする事実に基づいた政策を訴えた。</p>
+        </div>
+
+        <div class="comment-section">
+            <div class="comment-count-header"><span>コメント（2,580件）</span></div>
+            
+
+
+<div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#4a4a4a;"></div>
+                <span class="user-name">kuma_san_phys</span>
+            </div>
+            <div class="comment-body">元活動家が「リアリスト」に転向したというのが興味深い。
+実際に現場で運動に関わっていた人ほど、今の「脱炭素」が科学ではなく、巨大な補助金ビジネスと化している実態に絶望するんだろうな。
+特に「寒さによる死亡者の方が圧倒的に多い」という事実は、断熱性能の低い住宅に住む低所得者層にとって、電気代高騰こそが死活問題であることを示唆している。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 18,502</div>
+                <div class="btn">👎 421</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#d0021b;"></div>
+                <span class="user-name">stop_denial_2026</span>
+            </div>
+            <div class="comment-body">こういった「温暖化は怖くない」という言説を広めること自体が、次世代への犯罪です。
+統計の切り抜きに騙されてはいけない。IPCCの報告書を読みましたか？
+極端な気象が横ばいなわけがない。現に毎年のように「観測史上初」が起きている。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 1,203</div>
+                <div class="btn">👎 15,670</div>
+            </div>
+            
+            <div class="reply-area">
+                <div class="user-row">
+                    <div class="user-icon"></div>
+                    <span class="user-name">fact_checker_v</span>
+                </div>
+                <div class="comment-body">「観測史上初」が増えているのは、単に観測地点が増え、精度が上がったからですよ。
+100年前には山奥や海上の正確なデータなんてなかった。
+メディアの「煽り」と、科学的な「長期統計」を混同してはいけません。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 9,840</div>
+                    <div class="btn">👎 210</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#f8e71c;"></div>
+                <span class="user-name">nasu_oishii</span>
+            </div>
+            <div class="comment-body">うちのビニールハウスのナスも、CO2濃度を上げると驚くほどツヤツヤに育つよ。
+環境団体はCO2を悪魔の毒ガスみたいに言うけど、農家からしたら「最高の肥料」なんだよね。
+地球が緑化してるなら、ナスの直売所としては大歓迎だな（笑）</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 7,550</div>
+                <div class="btn">👎 180</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#7ed321;"></div>
+                <span class="user-name">liberal_critics</span>
+            </div>
+            <div class="comment-body">グラミー賞のセレブたちがICE（移民局）を批判しながら、自分たちはガチガチの警備に守られてるのと似た構造だね。
+「地球を守ろう」とプライベートジェットで駆けつける人たちの言葉に、どれほどの説得力があるのか。
+ルーシーさんのように、洗脳から解けた人の発信は今の時代に必要だと思う。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 12,330</div>
+                <div class="btn">👎 560</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#bd10e0;"></div>
+                <span class="user-name">ex_energy_biz</span>
+            </div>
+            <div class="comment-body">欧州のエネルギー政策の失敗を見れば明らか。
+風力や太陽光に全振りした結果、冬場の電力不足で結局は石炭火力を再稼働させている。
+この「気候リアリズム」という考え方こそ、今の日本がエネルギー自給率を考える上で持つべき視点。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 10,980</div>
+                <div class="btn">👎 340</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#50e3c2;"></div>
+                <span class="user-name">co2_enjoyer</span>
+            </div>
+            <div class="comment-body">太陽「俺の気分次第で地球の温度なんて±10度くらい余裕で変わるけど、人間って頑張って1.5度とか言ってるの可愛いよね」</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 5,420</div>
+                <div class="btn">👎 110</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#9013fe;"></div>
+                <span class="user-name">history_buff</span>
+            </div>
+            <div class="comment-body">14世紀の「小氷期」の記録を読むと、寒さがいかに文明を滅ぼしかけたかよくわかる。
+今は暖かくなったおかげで農作物の収穫量も史上最大だし、人口も増やせている。
+温暖化のデメリットばかり強調して、メリットを一切語らないのは、科学ではなく政治的な意図を感じる。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 8,110</div>
+                <div class="btn">👎 230</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#f5a623;"></div>
+                <span class="user-name">engineering_logic</span>
+            </div>
+            <div class="comment-body">「100年で死者95%減」というデータは、インフラの強靭化と化石燃料による安価なエネルギー供給があったからこそ可能になった。
+その化石燃料を否定するということは、これら人類の防御壁を自ら壊すことに等しい。
+貧困層を飢えさせ、凍えさせるのが「環境保護」なのか？</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 14,200</div>
+                <div class="btn">👎 390</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon"></div>
+                <span class="user-name">shiritai_man</span>
+            </div>
+            <div class="comment-body">メディアが流す「氷河が溶けてシロクマが溺れる」的な映像に違和感あったけど、この記事を読んでスッキリした。
+「怖がらせる」ことで得をする人がいるってことだね。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 6,780</div>
+                <div class="btn">👎 150</div>
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="user-row">
+                <div class="user-icon" style="background:#000;"></div>
+                <span class="user-name">meta_observer</span>
+            </div>
+            <div class="comment-body">かつては「地球寒冷化」で騒ぎ、次は「温暖化」、今は「沸騰化」。
+常に名前を変えて危機感を煽り続けるのは、それが支配のツールだから。
+ルーシー氏のような「リアリスト」が増えることで、ようやく地に足のついた議論が始まる気がする。</div>
+            <div class="stats">
+                <div class="btn btn-up">👍 11,400</div>
+                <div class="btn">👎 280</div>
+            </div>
+        </div>
+
+
+
+
+            <div class="comment-card">
+                <div class="user-row"><div class="user-icon"></div><span class="user-name">realist_jp</span></div>
+                <div class="comment-body">「救われている命がある」という視点は日本のメディアでは一切報じられない。
+感情論ではなく、こうした具体的な統計データをもっと議論の場に出すべき。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 12,405</div>
+                    <div class="btn">👎 890</div>
+                </div>
+            </div>
+            <div class="comment-card">
+                <div class="user-row"><div class="user-icon" style="background:#50e3c2;"></div><span class="user-name">energy_safety</span></div>
+                <div class="comment-body">再エネへの急進的なシフトで電気代が高騰し、製造業が苦しんでいるのは事実。
+ルーシー氏の言う「安定したエネルギーこそが繁栄の基盤」という主張には強く同意する。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 8,221</div>
+                    <div class="btn">👎 312</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <aside class="side-content">
+        <div class="side-box">
+            <div class="side-title">コメントランキング（国内）</div>
+            
+            <a href="#" class="rank-item">
+                <span class="rank-num">1</span>
+                <div>
+                    <span class="rank-text">リービット報道官、不法移民による米国民殺害事件で民主党を痛烈批判</span>
+                    <span class="rank-stats">💬 4,502件 / 👍 32,010</span>
+                </div>
+            </a>
+
+            <a href="#" class="rank-item">
+                <span class="rank-num">2</span>
+                <div>
+                    <span class="rank-text">「ロシア疑惑は捏造」確定した証拠に基づきトランプ政権が逆襲の布陣</span>
+                    <span class="rank-stats">💬 3,211件 / 👍 28,450</span>
+                </div>
+            </a>
+
+            <a href="#" class="rank-item">
+                <span class="rank-num">3</span>
+                <div>
+                    <span class="rank-text">グラミー賞会場で「ICE Out」ピンを組織配布 セレブの偽善に批判殺到</span>
+                    <span class="rank-stats">💬 2,890件 / 👍 19,200</span>
+                </div>
+            </a>
+
+            <a href="#" class="rank-item">
+                <span class="rank-num">4</span>
+                <div>
+                    <span class="rank-text">CNN調査で判明、共和党支持層の71%が「トランプの影響はプラス」</span>
+                    <span class="rank-stats">💬 1,540件 / 👍 12,030</span>
+                </div>
+            </a>
+        </div>
+
+
+
+<div class="side-box">
+            <div class="side-title">意識調査</div>
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">
+                現在の「脱炭素」政策、あなたの生活への影響は？
+            </div>
+            <div style="font-size: 12px; margin-bottom: 15px;">
+                <div style="margin-bottom: 5px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                        <span>負担を感じる</span><span>78%</span>
+                    </div>
+                    <div style="width: 100%; background: #eee; height: 8px; border-radius: 4px;">
+                        <div style="width: 78%; background: #ff5a5f; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                        <span>妥当な負担だと思う</span><span>15%</span>
+                    </div>
+                    <div style="width: 100%; background: #eee; height: 8px; border-radius: 4px;">
+                        <div style="width: 15%; background: #005087; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                        <span>わからない</span><span>7%</span>
+                    </div>
+                    <div style="width: 100%; background: #eee; height: 8px; border-radius: 4px;">
+                        <div style="width: 7%; background: #ccc; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 11px; color: #005087; cursor: pointer;">
+                投票数：125,402票
+            </div>
+        </div>
+
+        <div class="side-box" style="padding: 0; overflow: hidden; border-left: 4px solid #cc0000;">
+            <a href="#" style="text-decoration: none; display: block; padding: 15px;">
+                <div style="font-size: 11px; color: #cc0000; font-weight: bold; margin-bottom: 5px;">連載：科学と利権の境界線</div>
+                <div style="font-size: 14px; font-weight: bold; color: #333; line-height: 1.4;">
+                    「地球沸騰化」という言葉が生まれた本当の理由を追う
+                </div>
+                <div style="font-size: 11px; color: #999; margin-top: 10px;">
+                    筆者：阿部 真一（環境ジャーナリスト）
+                </div>
+            </a>
+        </div>
+
+
+
+        <div class="side-box" style="background:#f9f9f9; text-align:center; font-size:12px; color:#999; border:1px dashed #ccc;">
+            広告：【無料診断】あなたのエネルギーリテラシーは？
+        </div>
+    </aside>
+</div>
+
+
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="index.html" class="back-button">
+        <span class="arrow">←</span> ニュースのトップへ戻る
+    </a>
+</div>
+
+<style>
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 30px;
+        background-color: #005087; /* Yahoo!ニュースのブランドカラー風 */
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .back-button:hover {
+        background-color: #003a63;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .arrow {
+        margin-right: 8px;
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .back-button:hover .arrow {
+        transform: translateX(-5px);
+    }
+</style>
+
+</body>
+</html>
