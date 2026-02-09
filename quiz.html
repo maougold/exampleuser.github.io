@@ -333,12 +333,14 @@ function showResult(amount) {
     }
 }
 
+// クイズ側の最後のボタン処理
 document.getElementById('finalBtn').onclick = function() {
     this.classList.add('launch');
     playFreq(200, 1.5, 0.3);
     setTimeout(() => {
-        alert("🛰 拡散完了。");
-        window.location.href = "index.html";
+        alert("🛰 拡散完了。稼いだ賞金を持ってスロットへ移動します。");
+        // ここを 77777.html に変更
+        window.location.href = "77777.html"; 
     }, 2000);
 };
 </script>
