@@ -24,12 +24,9 @@
             align-items: flex-end;
         }
 
-        /* メインエリア */
         #main-area { flex: 3; display: flex; flex-direction: column; align-items: center; }
-
         #menu-screen, #game-ui, #success-screen { display: none; width: 100%; text-align: center; }
 
-        /* 難易度選択 */
         .menu-btn {
             display: block; width: 100%; margin: 15px 0; padding: 20px;
             font-size: 20px; font-weight: bold; border-radius: 40px;
@@ -37,7 +34,6 @@
         }
         .menu-btn:hover { background: #ff9900; color: #000; border-color: #fff; }
 
-        /* クイズボックス */
         #question-box {
             width: 100%; padding: 40px; margin-bottom: 30px; font-size: 22px; line-height: 1.6;
             background: linear-gradient(180deg, #000033 0%, #000099 50%, #000033 100%);
@@ -53,7 +49,6 @@
         .label { color: #ff9900; font-weight: bold; margin-right: 15px; }
         .hidden-opt { visibility: hidden; pointer-events: none; }
 
-        /* サイドバー：賞金ラダー */
         #sidebar {
             flex: 1;
             background: rgba(0, 0, 0, 0.6);
@@ -73,7 +68,6 @@
         .current-step { background: #ff9900; color: #000; font-weight: bold; box-shadow: 0 0 15px #ff9900; }
         .passed-step { color: #fff; opacity: 0.4; }
 
-        /* ライフライン */
         .lifeline-area { display: flex; justify-content: space-around; margin-bottom: 25px; }
         .lifeline-btn {
             width: 70px; height: 45px; border-radius: 50%; border: 2px solid #fff;
@@ -83,14 +77,12 @@
         .lifeline-btn:hover:not(.used) { background: #fff; color: #000; }
         .lifeline-btn.used { opacity: 0.2; cursor: default; text-decoration: line-through; }
 
-        /* 辞めるボタン */
         #walk-away-btn {
             margin-top: 30px; background: #300; color: #f66; border: 1px solid #600;
             padding: 10px 25px; border-radius: 20px; cursor: pointer; font-size: 14px;
         }
         #walk-away-btn:hover { background: #600; color: #fff; }
 
-        /* 🚀演出 */
         .rocket-trigger { font-size: 100px; cursor: pointer; position: relative; display: inline-block; }
         .rocket-anim { position: absolute; bottom: 0; left: 0; opacity: 0; transform: rotate(45deg); font-size: 70px; }
         .launch .rocket-anim { animation: launchDiagonal 1.8s ease-in forwards; }
@@ -132,14 +124,15 @@
         </div>
     </div>
 
-<div id="sidebar">
-    <div class="lifeline-area">
-        <button id="fifty-fifty" class="lifeline-btn" onclick="useFiftyFifty()">50:50</button>
-        <button id="phone" class="lifeline-btn" onclick="usePhone()">📞</button>
-        <button id="audience" class="lifeline-btn" onclick="useAudience()">📊</button>
+    <div id="sidebar">
+        <div class="lifeline-area">
+            <button id="fifty-fifty" class="lifeline-btn" onclick="useFiftyFifty()">50:50</button>
+            <button id="phone" class="lifeline-btn" onclick="usePhone()">📞</button>
+            <button id="audience" class="lifeline-btn" onclick="useAudience()">📊</button>
+        </div>
+        <div id="audience-chart" style="display:none; margin-bottom:10px; background:#111; padding:10px; border:1px solid #ff9900; font-size:10px;"></div>
+        <div id="money-ladder"></div>
     </div>
-    <div id="audience-chart" style="display:none; margin-bottom:10px; background:#111; padding:10px; border:1px solid #ff9900; font-size:10px;"></div>
-    <div id="money-ladder"></div>
 </div>
 
 <script>
@@ -179,7 +172,7 @@ const quizData = {
         { q: "ゆで卵を綺麗にむくには、茹でる直前に卵のどこに穴を開けるのが正解？", a: "尖っている方", b: "側面", c: "丸い方", d: "どこでもいい", ans: "C" }
     ],
     HARD: [
-        { q: "冷戦後、NATOが歴史上で初めて「集団自衛権(第5条)」を発動した契機は？", a: "イラク戦争", b: "アフガン侵攻", c: "9.11米同時多発テロ", d: "コソボ紛争", ans: "C" },
+        { q: "冷戦後、NATOが歴史上で初めて「集団自衛権(第5条)」を発動した契記は？", a: "イラク戦争", b: "アフガン侵攻", c: "9.11米同時多発テロ", d: "コソボ紛争", ans: "C" },
         { q: "国連安保理常任理事国の中で、一度も拒否権を行使していない国は？", a: "フランス", b: "中国", c: "イギリス", d: "存在しない", ans: "D" },
         { q: "EU法が加盟国の国内法に対して優先される原則を確立した歴史的判決は？", a: "コスタ対ENEL判決", b: "リスボン条約判決", c: "マーストリヒト判決", d: "パリ条約判決", ans: "A" },
         { q: "国家承認はないが実質的国家機能を持ちイスラエルと対峙する主体とその後ろ盾は？", a: "タリバン＋中国", b: "ハマス＋イラン", c: "フーシ派＋ロシア", d: "クルド＋アメリカ", ans: "B" },
@@ -195,13 +188,20 @@ const quizData = {
 let currentLevel = '';
 let currentStep = 0;
 let fiftyUsed = false;
+let phoneUsed = false;
+let audienceUsed = false;
 
 function startGame(lv) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     currentLevel = lv;
     currentStep = 0;
     fiftyUsed = false;
+    phoneUsed = false;
+    audienceUsed = false;
     document.getElementById('fifty-fifty').classList.remove('used');
+    document.getElementById('phone').classList.remove('used');
+    document.getElementById('audience').classList.remove('used');
+    document.getElementById('audience-chart').style.display = 'none';
     document.getElementById('menu-screen').style.display = 'none';
     document.getElementById('game-ui').style.display = 'block';
     initLadder();
@@ -225,7 +225,6 @@ function updateView() {
         showResult(moneyList[9]);
         return;
     }
-    // ラダー更新
     for (let i = 0; i < 10; i++) {
         const el = document.getElementById(`step-${i}`);
         el.className = 'money-step';
@@ -265,11 +264,8 @@ function useFiftyFifty() {
     if (fiftyUsed || currentStep >= 10) return;
     fiftyUsed = true;
     document.getElementById('fifty-fifty').classList.add('used');
-    playFreq(600, 0.2);
-
     const correct = quizData[currentLevel][currentStep].ans;
     const options = ['A', 'B', 'C', 'D'].filter(opt => opt !== correct);
-    // ランダムに2つ選んで消す
     for (let i = 0; i < 2; i++) {
         const idx = Math.floor(Math.random() * options.length);
         const target = options.splice(idx, 1)[0];
@@ -277,26 +273,63 @@ function useFiftyFifty() {
     }
 }
 
+function usePhone() {
+    if (phoneUsed || currentStep >= 10) return;
+    phoneUsed = true;
+    document.getElementById('phone').classList.add('used');
+    const correct = quizData[currentLevel][currentStep].ans;
+    alert(`【TELEPHONE 通信確立】\n\n「…当局のデータベースによれば、答えは ${correct} だ。信じてくれ。」`);
+}
+
+function useAudience() {
+    if (audienceUsed || currentStep >= 10) return;
+    audienceUsed = true;
+    document.getElementById('audience').classList.add('used');
+    const correct = quizData[currentLevel][currentStep].ans;
+    const chart = document.getElementById('audience-chart');
+    chart.style.display = 'block';
+    let rates = { A: 10, B: 10, C: 10, D: 10 };
+    rates[correct] = 60 + Math.floor(Math.random() * 15);
+    let html = '<div style="color:#ff9900; margin-bottom:5px;">AUDIENCE POLL:</div>';
+    ['A', 'B', 'C', 'D'].forEach(opt => {
+        html += `<div style="display:flex; align-items:center; margin:2px 0;">
+                    <span style="width:15px;">${opt}:</span>
+                    <div style="background:#ff9900; height:8px; width:${rates[opt]}px; margin:0 5px;"></div>
+                    <span>${rates[opt]}%</span>
+                 </div>`;
+    });
+    chart.innerHTML = html;
+}
+
 function walkAway() {
-    if (currentStep === 0) {
-        alert("まだ実績がありません。");
-        return;
-    }
+    if (currentStep === 0) { alert("まだ実績がありません。"); return; }
     const prize = moneyList[currentStep - 1];
     if (confirm(`現在の実績 ¥${prize} を確定させて辞めますか？`)) {
         showResult(prize);
     }
 }
 
+/* --- スロット連携機能 --- */
+function syncPrizeToSlot(prizeStr) {
+    // 10,000 などの文字列を数値に変換
+    const prizeAmount = parseInt(prizeStr.replace(/,/g, ''));
+    let currentBalance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
+    const newBalance = currentBalance + prizeAmount;
+    localStorage.setItem('ev_coin_balance', newBalance);
+}
+
 function showResult(amount) {
     document.getElementById('game-ui').style.display = 'none';
     const res = document.getElementById('success-screen');
     res.style.display = 'block';
-    document.getElementById('reward-display').innerText = `獲得実績: ¥${amount} ／ 真実が拡散されました。`;
+    
+    // スロットへ送金
+    syncPrizeToSlot(amount);
+    
+    document.getElementById('reward-display').innerText = `獲得実績: ¥${amount} ／ スロットの残高に転送されました。`;
     if (currentLevel === 'HARD') {
         document.getElementById('success-title').innerText = "★ GOLDEN INTEL MASTER ★";
         document.getElementById('success-title').style.color = "#ffd700";
-        document.getElementById('heart-icon').style.color = "#ffd700";
     }
 }
 
@@ -308,54 +341,6 @@ document.getElementById('finalBtn').onclick = function() {
         window.location.href = "index.html";
     }, 2000);
 };
-
-let phoneUsed = false;
-let audienceUsed = false;
-
-// 【テレフォン】知人（イーロンや機密局）からメッセージが届く
-function usePhone() {
-    if (phoneUsed || currentStep >= 10) return;
-    phoneUsed = true;
-    document.getElementById('phone').classList.add('used');
-    playFreq(600, 0.5);
-
-    const correct = quizData[currentLevel][currentStep].ans;
-    const messages = [
-        `「確実なことは言えないが…たぶん ${correct} だと思う。信じてくれ。」`,
-        `「当局のデータベースによれば、答えは ${correct} だ。急げ、時間が無い。」`,
-        `「… ${correct} だ。これ以上は消される、通信を切るぞ。」`
-    ];
-    const msg = messages[Math.floor(Math.random() * messages.length)];
-    alert(`【TELEPHONE 通信確立】\n\n${msg}`);
-}
-
-// 【オーディエンス】国民の声をグラフで表示
-function useAudience() {
-    if (audienceUsed || currentStep >= 10) return;
-    audienceUsed = true;
-    document.getElementById('audience').classList.add('used');
-    playFreq(500, 0.3);
-
-    const correct = quizData[currentLevel][currentStep].ans;
-    const chart = document.getElementById('audience-chart');
-    chart.style.display = 'block';
-    
-    // 正解の確率を高く設定するロジック
-    let rates = { A: 10, B: 10, C: 10, D: 10 };
-    rates[correct] = 50 + Math.floor(Math.random() * 20); // 正解は50-70%
-    
-    let html = '<div style="color:#ff9900; margin-bottom:5px;">AUDIENCE POLL:</div>';
-    ['A', 'B', 'C', 'D'].forEach(opt => {
-        const barWidth = rates[opt] || 10;
-        html += `<div style="display:flex; align-items:center; margin:2px 0;">
-                    <span style="width:15px;">${opt}:</span>
-                    <div style="background:#ff9900; height:8px; width:${barWidth}px; margin:0 5px;"></div>
-                    <span>${barWidth}%</span>
-                 </div>`;
-    });
-    chart.innerHTML = html;
-}
-
 </script>
 </body>
 </html>
