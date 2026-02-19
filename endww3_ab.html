@@ -123,11 +123,11 @@
                 totalDelay += item.d;
             });
 
-            // 一泊してからindex.htmlへ
+            // 一泊してからtop.htmlへ
             setTimeout(() => {
                 body.classList.add('fade-out');
                 setTimeout(() => {
-                    window.location.href = "index.html";
+                    window.location.href = "top.html";
                 }, 2000);
             }, totalDelay);
         }
