@@ -2,549 +2,141 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィールリンク | Valentine Special Edition</title>
+    <title>ELISE VANESSA | MIRACLE ARCHIVE</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(-45deg, #ff5f9e, #ff8fb1, #ffb3c6, #ffd6e0, #c9184a);
-            background-size: 400% 400%;
-            animation: gradientBG 18s ease infinite;
-            color: #4a1c2a;
-            margin: 0;
-            padding: 40px 20px;
-            line-height: 1.7;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* バレンタイン絵文字 */
-        .emojis-container {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .emoji-particle {
-            position: absolute;
-            font-size: 36px;
-            opacity: 0.85;
-            animation: floatUpEmoji 16s linear infinite;
-        }
-
-        @keyframes floatUpEmoji {
-            0% { bottom: -120px; opacity: 0; transform: translateX(0) rotate(0deg); }
-            20% { opacity: 0.9; }
-            80% { opacity: 0.9; }
-            100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(15deg); }
-        }
-
-        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; }
-        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; }
-        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; }
-        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; }
-        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; }
-        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; }
-        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; }
-        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; }
-        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 1s; }
-        .emoji-particle:nth-child(10){ left: 95%; animation-delay: 3s; }
-
-        .content {
-            position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-size: 34px;
-            margin-bottom: 20px;
-            color: #fff0f5;
-            opacity: 0;
-            transform: translateY(-30px);
-            animation: fadeInDown 1s ease forwards;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
-        }
-
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #5a1f33;
-            text-shadow: none;
-        }
-
-        .section {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            text-align: left;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1.2s ease forwards;
-            box-shadow: 0 10px 28px rgba(0,0,0,0.25);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 18px 38px rgba(0,0,0,0.35);
-        }
-
-        .section:nth-child(2) { animation-delay: 0.3s; }
-        .section:nth-child(3) { animation-delay: 0.6s; }
-
-        @keyframes fadeInDown {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-top: 0;
-            margin-bottom: 18px;
-            color: #c9184a;
-        }
-
-        .section p {
-            color: #4a1c2a;
-        }
-
-        footer {
-            margin-top: 50px;
-            font-size: 14px;
-            color: #5a1f33;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.9s;
-        }
-
-        /* ===== リンクまとめ ===== */
-        .link-hub {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 36px;
-            border-radius: 18px;
-            margin: 60px 0 40px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.28);
-            text-align: left;
-        }
-
-        .link-hub h2 {
-            text-align: center;
-            color: #c9184a;
-            margin-top: 0;
-            margin-bottom: 30px;
-            font-size: 24px;
-        }
-
-        .link-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 26px;
-        }
-
-        .link-category h3 {
-            color: #7a1f3d;
-            font-size: 18px;
-            margin-bottom: 14px;
-            border-bottom: 1px solid rgba(201,24,74,0.3);
-            padding-bottom: 6px;
-        }
-
-        .link-category a {
+        body { margin: 0; display: flex; height: 100vh; font-family: "MS PGothic", "IPAMonaPGothic", sans-serif; background-color: #efefef; }
+        
+        /* サイドバー */
+        #sidebar {
+            width: 280px;
+            background-color: #f0f0f0;
+            border-right: 2px solid #ccc;
             display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            color: #4a1c2a;
-            font-weight: bold;
+            flex-direction: column;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* 移植されたコンテンツ一覧エリア */
+        .article-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .cat { 
+            font-weight: bold; 
+            color: #ff0000; 
+            margin: 12px 0 5px 0; 
+            font-size: 12px; 
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 2px;
+        }
+        .cat:first-child { margin-top: 0; }
+
+        .item {
+            display: block;
+            color: #0000ff;
             text-decoration: none;
-            font-size: 15px;
-        }
-
-        .link-category a:hover {
-            text-decoration: underline;
-            color: #c9184a;
-        }
-
-        /* NEWバッジのCSS設定 */
-        .badge {
-            display: inline-flex;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 2px 8px;
-            border-radius: 50px;
-            margin-right: 8px;
-            white-space: nowrap;
-            line-height: 1;
-        }
-
-        .badge-pulse {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
-            color: white;
-            animation: anim-pulse 2s infinite;
-        }
-        @keyframes anim-pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(0.9); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .badge-outline {
-            background: transparent;
-            color: #c9184a;
-            border: 1.5px solid #c9184a;
-            animation: anim-blink 1.5s infinite;
-        }
-        @keyframes anim-blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.2; }
-            100% { opacity: 1; }
-        }
-
-        .badge-neon {
-            background: #2ecc71;
-            color: white;
-            animation: anim-neon 2s infinite;
-        }
-        @keyframes anim-neon {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
-
-        .badge-shine {
-            background: #3498db;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .badge-shine::after {
-            content: "";
-            position: absolute;
-            top: -50%; left: -150%;
-            width: 200%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
-            transform: rotate(30deg);
-            animation: anim-shine 3s infinite;
-        }
-        @keyframes anim-shine {
-            0% { left: -150%; }
-            30% { left: 150%; }
-            100% { left: 150%; }
-        }
-
-        /* ボタン用スタイル */
-        .m-mini-trigger, .m-mini-trigger-horror {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 1.5px;
-            border-radius: 20px;
-            text-decoration: none;
-            transition: all 0.3s;
-            margin: 5px;
-            width: fit-content;
-        }
-
-        .m-mini-trigger { background: linear-gradient(90deg, #000066, #3333ff, #000066); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); }
-        .m-mini-trigger-horror { background: linear-gradient(90deg, #400, #b00, #400); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); }
-
-        .m-mini-btn, .m-mini-btn-horror {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
+            margin: 3px 0 3px 10px;
             font-size: 12px;
-            font-weight: bold;
-            padding: 5px 15px;
-            border-radius: 18px;
-            border: 1px solid #333;
-            white-space: nowrap;
+            cursor: pointer;
+            line-height: 1.4;
         }
+        .item:hover { text-decoration: underline; background-color: #eef; }
+        .item:visited { color: #551a8b; }
 
-        .m-mini-btn { color: #ff9900; text-shadow: 0 0 5px rgba(255, 153, 0, 0.5); }
-        .m-mini-btn-horror { color: #800; font-family: "Hiragino Mincho ProN", serif; text-shadow: 0 0 5px rgba(136, 0, 0, 0.5); }
+        /* バッジ（簡易再現） */
+        .new-tag { color: #ff416c; font-weight: bold; font-size: 9px; margin-right: 3px; }
 
-        .m-mini-trigger:hover { transform: scale(1.03); box-shadow: 0 0 15px rgba(51, 51, 255, 0.7); }
-        .m-mini-trigger-horror:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
+        /* 支援・メッセージセクション（移植） */
+        .support-section {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #fff;
+            border: 1px solid #c9184a;
+            border-radius: 5px;
+            font-size: 11px;
+            color: #4a1c2a;
+        }
+        .support-text { margin-bottom: 8px; line-height: 1.4; }
+        
+        .btn-link {
+            display: block;
+            text-align: center;
+            padding: 6px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        .btn-ofuse { background: #f39c12; color: white; border: 1px solid #d35400; }
+        .btn-amazon { background: linear-gradient(to bottom, #f7dfa1, #f0c14b); color: #111; border: 1px solid #a88734; }
 
-        .m-mini-trigger:hover .m-mini-btn { color: #fff; background: radial-gradient(circle, #000044 0%, #000 100%); }
-        .m-mini-trigger-horror:hover .m-mini-btn-horror { color: #f00; background: radial-gradient(circle, #300 0%, #000 100%); text-shadow: 0 0 8px #f00; }
-
-        html { scroll-behavior: smooth; }
+        /* メインエリア */
+        #main-view { flex-grow: 1; background-color: #fff; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-<a href="dungeon.html" id="hidden-door" title=""></a>
-<style>
-    #hidden-door {
-        position: absolute; top: 0; left: 0; width: 40px; height: 60px;
-        background: rgba(255, 255, 255, 0.03); opacity: 0; transition: opacity 0.5s ease; z-index: 9999;
-    }
-    #hidden-door:hover {
-        transition: opacity 1s ease 2s; opacity: 0.6; background: #3e2723; border: 1px solid #5d4037; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); cursor: pointer;
-    }
-    #hidden-door:hover::after {
-        content: "🚪"; display: flex; align-items: center; justify-content: center; height: 100%; font-size: 20px; opacity: 0; animation: fadeIn 1s forwards 4s; 
-    }
-    @keyframes fadeIn { to { opacity: 1; } }
-</style>
-
-<div class="emojis-container">
-    <div class="emoji-particle">💝</div><div class="emoji-particle">🍫</div><div class="emoji-particle">💌</div><div class="emoji-particle">❤️</div><div class="emoji-particle">🍓</div>
-    <div class="emoji-particle">💗</div><div class="emoji-particle">🎀</div><div class="emoji-particle">🫶</div><div class="emoji-particle">💞</div><div class="emoji-particle">🍩</div>
-</div>
-
-    <div class="content">
-        <h1>Happy Valentine 💝<br>Elise Vanessa のリンクページへようこそ</h1>
-
-        <p>
-            X（@ev0123456789）をご覧いただきありがとうございます。<br>
-            甘いチョコの季節ですが、ここでは少しビターな話題も扱っています🍫  
-            メディアが語らない出来事や背景を、私なりの視点でまとめています。
-        </p>
-
-        <div class="section">
-            <h2>投稿の傾向について</h2>
-             <p>私の投稿は、主に大手メディアで十分に報道されないニュースや世界の出来事を中心に扱っています。政治的バイアスや偏向報道では見えにくい側面を、自分なりに整理・考察して発信しています。保守的な視点から、自由・責任・伝統を重視した分析を心がけていますが、すべて個人の見解です。</p>
-        </div>
-
-        <div class="section">
-            <h2>ご留意いただきたい点（Love & Respect）</h2>
-             <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
-               ・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
-               ・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
-               ・異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
-               ・万一、誤った情報があった場合は訂正いたしますので、丁寧なご指摘をいただければ幸いです。</p>
-        </div>
-
-
-    <div class="link-hub">
-        <h2>📌 記事・コンテンツ一覧</h2>
-
-        <div class="link-grid">
-
-
-
-
+    <nav id="sidebar">
+        <div class="article-list">
+            <div class="cat">■ 主要コンテンツ</div>
+            <span class="item" onclick="changePage('https://maougold.github.io/exampleuser.github.io/')">翻訳アーカイブ(Top)</span>
+            <span class="item" onclick="changePage('novel_ep1.html')"><span class="new-tag">[新]</span>沈黙の解剖</span>
             
-            <div class="link-category" style="background: rgba(201, 24, 74, 0.03); border-left: 4px solid #c9184a; padding-left: 15px; border-radius: 8px;">
-                <h3>📖 文芸・連載小説</h3>
-                <a href="novel_ep1.html">
-                    <span class="badge badge-pulse">NEW</span> <b>沈黙の解剖</b>
-                </a>
-                <p style="font-size: 11px; color: #666; margin: -5px 0 10px 35px; line-height: 1.3;">
-                    メディアの断末魔と情報の海に潜る私。今、この国の「正解」が解体される。
-                </p>
-                <a href="novel_ep1.html" style="font-weight: normal; font-size: 13px; color: #4a1c2a;">└ 第一話：沈黙の解剖</a>
-            </div>
+            <div class="cat">■ 試練・娯楽</div>
+            <span class="item" onclick="changePage('quiz.html')">クイズ・ミリオネア</span>
+            <span class="item" onclick="changePage('horror_quiz.html')" style="color:#800;">クイズ・ミリオネア(裏)</span>
+            <span class="item" onclick="changePage('77777.html')">にゃんこスロット</span>
 
+            <div class="cat">■ ランキング</div>
+            <span class="item" onclick="changePage('posts.html')">バズった投稿TOP10</span>
+            <span class="item" onclick="changePage('SpecialRanking.html')">バズ投稿[Valentine]</span>
+            <span class="item" onclick="changePage('kiseki_a.html')">✨ 奇跡を掴み取る</span>
 
+            <div class="cat">■ 構造・メディア分析</div>
+            <span class="item" onclick="changePage('TDS_MELANIA.html')">映画『MELANIA』の衝撃</span>
+            <span class="item" onclick="changePage('charlie-kirk-incident.html')">チャーリー・カーク事件分析</span>
+            <span class="item" onclick="changePage('jhonmaney.html')">ジョン・マネー事例</span>
+            <span class="item" onclick="changePage('media-bias.html')">日本メディアの構造問題</span>
+            <span class="item" onclick="changePage('AIbadlite.html')">AIの中立性リスク</span>
+            <span class="item" onclick="changePage('Gemini_gpt.html')">AIと言論の自由</span>
 
-     <div class="link-category">
-            <h3>🎮 クイズ・ミリオネア</h3>
-            <a href="quiz.html">クイズ・ミリオネア（通常版）</a>
-            <a href="horror_quiz.html" style="color: #800;">
-                <span class="badge badge-outline" style="color: #800; border-color: #800;">閲覧注意</span> クイズ・ミリオネア（裏）
-            </a>
-          <a href="77777.html"><span class="badge badge-outline">NEW</span>にゃんこスロット</a>
+            <div class="cat">■ 世界・地域・思想</div>
+            <span class="item" onclick="changePage('japan_islam.html')">進行するシャリーア</span>
+            <span class="item" onclick="changePage('korea-policy-detailed.html')">日韓関係・竹島問題</span>
+            <span class="item" onclick="changePage('settler-nation.html')">「移民の国」の誤解</span>
+            <span class="item" onclick="changePage('Liberal_miss.html')">リベラル政権の失敗★1</span>
+
+            <div class="cat">■ 用語・風刺スレ</div>
+            <span class="item" onclick="changePage('glossary.html')">米国政治用語入門</span>
+            <span class="item" onclick="changePage('tamakawa_fafo.html')">玉川徹氏 経済予測批判</span>
+            <span class="item" onclick="changePage('2ch_model_maga01.html')">ビルゲイツ、エプ島ww</span>
+            <span class="item" onclick="changePage('yahoo_ab001.html')">「脱炭素」への違和感</span>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-            <div class="link-category">
-                <h3>🏆 ランキング・まとめ</h3>
-                <a href="posts.html">バズった投稿トップ10（通常版）</a>
-                <a href="SpecialRanking.html">💘 バズった投稿ランキング TOP10</a>
-                <a href="kiseki_a.html">
-                    <span class="badge badge-shine">注目</span> ✨ 奇跡を掴み取る
-                </a>
+        <div class="support-section">
+            <div class="support-text">
+                <strong>活動へのご支援</strong><br>
+                翻訳活動の維持・継続のため、温かいご支援をお願いいたします。
             </div>
-
-            <div class="link-category">
-                <h3>⚠️ 議論・センシティブ</h3>
-                <a href="TDS_MELANIA.html">
-                    <span class="badge badge-pulse">NEW</span> 映画『MELANIA』12億円の衝撃
-                </a>
-                <a href="charlie-kirk-incident.html">チャーリー・カーク事件の構造分析</a>
-                <a href="jhonmaney.html">ジョン・マネー事例と医療リスク</a>
-                <a href="japan_islam.html">日本に静かに進行するシャリーア</a>
-            </div>
-
-            <div class="link-category">
-                <h3>🧠 構造・メディア分析</h3>
-                <a href="worldnews_b.html">世界保守メディア大全まとめスレ★1</a>
-                <a href="media-bias.html">日本メディアと米国報道の構造的問題</a>
-                <a href="usaTrump2gdp.html">メディアの「経済音痴」を解剖する</a>
-                <a href="AIbadlite.html">AIの中立性と保守層離反リスク</a>
-<a href="Gemini_gpt.html">AIと言論の自由に関する記録</a>
-
-            </div>
-
-
-
-            <div class="link-category">
-                <h3>🌍 国・地域別分析</h3>
-                <a href="korea-policy-detailed.html">日韓関係・竹島問題の詳細考察</a>
-                <a href="settler-nation.html">「移民の国」は間違いである｜アメリカの本質</a>
-                <a href="Liberal_miss.html">リベラル・左派政権、世界中で大失敗してしまう★1</a>
-            </div>
-
-            <div class="link-category">
-                <h3>📚 用語・基礎解説</h3>
-                <a href="glossary.html">アメリカ政治用語の超入門ガイド</a>
-                <a href="aruaruzen.html">アルゼンチン政治用語・スラング</a>
-                <a href="supe.html">スペイン政治用語・スラング</a>
-            </div>
-
-            <div class="link-category">
-                <h3>📺️ 落書き・風刺</h3>
-                <a href="tamakawa_fafo.html"><span class="badge badge-outline">NEW</span> 玉川徹氏の経済予測批判スレ【第1回】</a>
-                <a href="yahoo_ab001.html"><span class="badge badge-neon">NEW</span> 「脱炭素」への違和感はどこから【第1回】</a>
-                <a href="yahoo_003.html"><span class="badge badge-neon">NEW</span> 「「私が気候変動を怖がらなくなった理由」【第2回】</a>
-                <a href="2ch_model_maga01.html"><span class="badge badge-shine">NEW</span> ビルゲイツ、エプ島で真っ黒確定ww ★1</a>
-                            <a href="yahoo_ab002.html">
-                <span class="badge badge-neon">NEW</span> トランプ政権「GDP成長率4.4%」達成★1
-            </a>
-                <br>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <a href="404status.html" style="font-size: 11px; opacity: 0.6;">[ 404 ]</a>
-                    <a href="403st.html" style="font-size: 11px; opacity: 0.6; color: red;">[ 世界滅亡 ]</a>
-                </div>
-            </div>
-
+            <a href="https://ofuse.me/7a4dcbad" target="_blank" class="btn-link btn-ofuse">💌 OFUSEで応援</a>
+            <a href="https://www.amazon.jp/hz/wishlist/ls/204FNL7FFUQPZ" target="_blank" class="btn-link btn-amazon">📦 ほしいものリスト</a>
         </div>
-    </div>
+    </nav>
 
-<section id="support" style="border: 1px solid rgba(201, 24, 74, 0.3); padding: 25px; text-align: center; margin: 30px 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-    <h3 style="color: #c9184a; margin-top: 0;">活動へのご支援と奇跡の試練</h3>
-    <p style="color: #4a1c2a;">
-        翻訳活動の維持や継続のため、温かいご支援をいただけると励みになります。<br>
-        また、強運をお持ちの方は「奇跡」を掴み取ってください。
-    </p>
-    
-    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
-        <a href="https://ofuse.me/7a4dcbad" target="_blank" style="background-color: #f39c12; color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 0 #d35400;">
-            💌 OFUSEで応援メッセージ
-        </a>
+    <main id="main-view">
+<iframe id="content-frame" src="top.html"></iframe>
+    </main>
 
-        <a href="miracle.html" style="background: linear-gradient(45deg, #ffcc00, #ff6600); color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 0 #e67e22;">
-            ✨ 奇跡を信じてAmazonリストへ
-        </a>
-    </div>
-</section>
-
-    <footer>
-        <p>ご質問やご意見はXのDMやリプライでどうぞ 💌<br>最終更新：2026年2月6日 Elise Vanessa [xyz]</p>
-        <p style="font-size: 10px; color: rgba(90, 31, 51, 0.4); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
-    </footer>
-
-</div>
-
-<div id="secret-area" style="position: fixed; bottom: 10px; left: 10px; z-index: 9999;">
-    <a href="challenge.html" class="secret-trigger">?</a>
-</div>
-<style>
-    .secret-trigger {
-        display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;
-        background: rgba(201, 24, 74, 0.05); color: rgba(255, 255, 255, 0.2); text-decoration: none; border-radius: 50%;
-        font-family: 'Courier New', monospace; font-size: 12px; transition: all 0.5s ease; border: 1px solid transparent;
-    }
-    .secret-trigger:hover { background: rgba(0, 0, 0, 0.8); color: #0f0; border: 1px solid #0f0; box-shadow: 0 0 15px #0f0; transform: scale(1.2); }
-</style>
-
-<div id="tone-overlay" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 9998;
-    transition: backdrop-filter 0.5s, background 0.5s;
-"></div>
-
-<div id="tone-switcher" style="
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 10000;
-    font-family: serif;
-    font-size: 11px;
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    padding: 4px 12px;
-    border-radius: 20px;
-    display: flex;
-    gap: 12px;
-    border: 1px solid rgba(201, 24, 74, 0.2);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-">
-    <span onclick="applyTone('none')" style="cursor:pointer; color:#4a1c2a; font-weight: bold;">標準</span>
-    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#c9184a; font-weight: bold;">ビビッド</span>
-    <span onclick="applyTone('mono')" style="cursor:pointer; color:#666;">白黒</span>
-</div>
-
-<style>
-    /* 白黒：すべての色を消す */
-    .filter-mono {
-        backdrop-filter: grayscale(100%);
-        -webkit-backdrop-filter: grayscale(100%);
-    }
-    
-    /* ビビッド：彩度とコントラストを大幅に上げる */
-    .filter-vivid {
-        backdrop-filter: saturate(200%) contrast(140%);
-        -webkit-backdrop-filter: saturate(200%) contrast(140%);
-    }
-    
-    #tone-switcher span:hover {
-        text-decoration: underline;
-        opacity: 0.7;
-    }
-</style>
-
-<script>
-    function applyTone(mode) {
-        const overlay = document.getElementById('tone-overlay');
-        const switcher = document.getElementById('tone-switcher');
-        
-        overlay.className = '';
-        
-        if (mode === 'mono') {
-            overlay.classList.add('filter-mono');
-            switcher.style.background = "rgba(0, 0, 0, 0.2)";
-        } else if (mode === 'vivid') {
-            overlay.classList.add('filter-vivid');
-            switcher.style.background = "rgba(255, 255, 255, 0.6)";
-        } else {
-            switcher.style.background = "rgba(255, 255, 255, 0.4)";
+    <script>
+        function changePage(url) {
+            document.getElementById('content-frame').src = url;
         }
-    }
-</script>
+    </script>
 
-    
 </body>
 </html>
