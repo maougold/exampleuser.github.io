@@ -223,14 +223,14 @@ function endBattle() {
 
 function showGameClear() {
     gameState = 'clear'; document.getElementById('clear-screen').style.display = 'flex';
-    setTimeout(() => { window.location.href = "index.html"; }, 4000);
+    setTimeout(() => { window.location.href = "top.html"; }, 4000);
 }
 
 function returnToHome() {
     if(confirm("拠点へ帰還しますか？")) {
         const f = document.createElement('div'); f.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#e0f7ff;z-index:10000;opacity:0;transition:0.5s';
         document.body.appendChild(f); setTimeout(()=>f.style.opacity='1',10);
-        setTimeout(()=>window.location.href="index.html", 600);
+        setTimeout(()=>window.location.href="top.html", 600);
     }
 }
 
