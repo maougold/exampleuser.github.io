@@ -110,7 +110,7 @@
 <div id="result-overlay">
     <h2 style="font-size: 4rem; margin: 0;">★奇跡当選★</h2>
     <p style="font-size: 1.5rem;">おめでとうございます！</p>
-    <p>「index.html」へ戻る権利を付与しました。</p>
+    <p>「top.html」へ戻る権利を付与しました。</p>
     <p id="countdown">3秒後に転送します...</p>
 </div>
 
@@ -191,7 +191,7 @@
                 document.getElementById('countdown').innerText = sec + "秒後に転送します...";
                 if(sec <= 0) {
                     clearInterval(cd);
-                    window.location.href = "index.html"; // index.htmlへ戻る
+                    window.location.href = "top.html"; // top.htmlへ戻る
                 }
             }, 1000);
         }, 1200);
