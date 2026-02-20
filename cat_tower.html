@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Magical Cat Tower - Final Edition</title>
+    <title>Magical Cat Tower - Complete Edition</title>
     <style>
         :root { --bg-color: #fff0f5; --vivid-pink: #ff007f; --vivid-blue: #007bff; --vivid-yellow: #ffcc00; --vivid-green: #28a745; --disabled-gray: #bbb; }
         body { background: var(--bg-color); color: #333; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding-bottom: 40px; }
@@ -28,8 +28,6 @@
         @keyframes pulse { 0%,100% {transform: scale(1);} 50% {transform: scale(1.03);} }
         .status-bar { margin-top: 10px; background: #333; color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; }
         .home-btn { background: #ff8c00; color: white; padding: 10px 25px; border-radius: 30px; font-size: 14px; box-shadow: 0 4px 0 #cc7000; margin-top: 20px; border:none; cursor:pointer;}
-        .shake { animation: shake 0.2s; }
-        @keyframes shake { 0%,100% {transform:translate(0,0);} 25% {transform:translate(5px,0);} 75% {transform:translate(-5px,0);} }
         .t-btn { width: 55px; height: 55px; background: var(--vivid-pink); border: none; border-radius: 50%; font-size: 22px; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #c0005a; cursor: pointer; }
     </style>
 </head>
@@ -50,7 +48,7 @@
                 <div class="commands">
                     <button id="btn-lmt-atk" class="limit-btn" onclick="battleTurn('limit_atk')">🌟極大消滅</button>
                     <button id="btn-lmt-heal" class="limit-btn" onclick="battleTurn('limit_heal')">💖聖なる祈り</button>
-                    <button class="btn-attack" onclick="battleTurn('attack')">攻撃</button>
+                    <button class="btn-attack" onclick="battleTurn('attack')">魔法攻撃</button>
                     <button class="btn-guard" onclick="battleTurn('guard')">まもり</button>
                     <button class="btn-heal" onclick="battleTurn('heal')">ヒール</button>
                     <button class="btn-run" onclick="battleTurn('run')">逃げる</button>
@@ -96,20 +94,31 @@ function initFloor(floor) {
     maze = Array.from({length: MAP_SZ}, (_, y) => Array.from({length: MAP_SZ}, (_, x) => (x===0 || y===0 || x===19 || y===19 || Math.random()<0.18) ? 1 : 0));
     maze[2][2]=0; maze[2][3]=0; maze[3][2]=0; maze[18][18]=2; maze[17][18]=0; maze[18][17]=0;
     if (floor < 5 && Math.random() < 0.5) maze[10+Math.floor(Math.random()*5)][10+Math.floor(Math.random()*5)] = 3;
+    
     enemies = [];
     if (floor === 5) {
+        // 四天王配置
         const elites = [{x:15,y:4,n:"Dr.マモー",i:"🧠",hp:2500,atk:120},{x:15,y:15,n:"宇宙人",i:"👽🛸",hp:2200,atk:110},{x:4,y:15,n:"破壊ロボ",i:"🤖👾",hp:1800,atk:80},{x:4,y:4,n:"影の頭領",i:"🥷🏿",hp:1200,atk:90}];
         elites.forEach(b => { maze[b.y][b.x]=0; enemies.push({...b, maxHp:b.hp, isGateKeeper:true}); });
+        // 5Fのザコ（忍者）
+        for(let i=0; i<6; i++) spawnEnemy("🥷", 300, 45, false);
     } else {
+        // 1-4Fの番人
         const icons = ["🧸", "👻", "🦄", "🐉"];
-        for(let i=0; i<(2+floor); i++) {
-            let ex=5+Math.floor(Math.random()*12), ey=5+Math.floor(Math.random()*12); maze[ey][ex]=0;
-            enemies.push({x:ex, y:ey, name:floor+"階の番人", icon:icons[floor-1], hp:80*floor, maxHp:80*floor, atk:15+floor*10, isGateKeeper:true});
-        }
+        for(let i=0; i<(2+floor); i++) spawnEnemy(icons[floor-1], 80*floor, 15+floor*10, true);
     }
+    // 全階層共通のザコ「はぐれ子猫」
+    for(let i=0; i<7; i++) spawnEnemy("🐱", 20+floor*15, 5+floor*5, false);
+
     document.querySelectorAll('.floor-box').forEach(b => b.classList.remove('current-floor'));
     document.getElementById('f'+floor).classList.add('current-floor');
     p.x=2; p.y=2; drawField();
+}
+
+function spawnEnemy(icon, hp, atk, isGate) {
+    let ex, ey;
+    do { ex=Math.floor(Math.random()*16)+2; ey=Math.floor(Math.random()*16)+2; } while(maze[ey][ex]!==0 || (ex===2 && ey===2));
+    enemies.push({x:ex, y:ey, name:isGate?"番人":"はぐれ子猫", icon:icon, hp:hp, maxHp:hp, atk:atk, isGateKeeper:isGate});
 }
 
 function drawField() {
@@ -151,10 +160,10 @@ function movePlayer(key) {
 function startBattle(en) {
     gameState = 'battle'; currentE = en;
     document.getElementById('battle-overlay').style.display = 'flex';
-    document.getElementById('m-name').innerText = en.name;
+    document.getElementById('m-name').innerText = en.icon + " " + en.name;
     document.getElementById('m-sprite').innerText = en.icon;
     document.getElementById('battle-log').innerHTML = "";
-    addLog(`${en.name} がきた！`); updateBattleUI();
+    addLog(`あらわれた！`); updateBattleUI();
 }
 
 function battleTurn(type) {
@@ -165,8 +174,8 @@ function battleTurn(type) {
     else if(type==='run'){ if(currentE.isGateKeeper) addLog("逃げられない！"); else { endBattle(); return; } }
     updateBattleUI();
     if(currentE.hp <= 0){
-        sfx.levelUp(); addLog(`${currentE.name} 撃破！`);
-        p.defeatCount++; if(p.defeatCount>=10){ p.lv++; p.maxHp+=50; p.atk+=15; p.hp=p.maxHp; p.defeatCount=0; }
+        sfx.levelUp(); addLog(`撃破！`);
+        p.defeatCount++; if(p.defeatCount>=10){ p.lv++; p.maxHp+=50; p.atk+=15; p.hp=p.maxHp; p.defeatCount=0; addLog("🎊LV UP!"); }
         enemies = enemies.filter(e => e !== currentE);
         if(!enemies.some(e => e.isGateKeeper)) { bossDefeated = true; addLog("✨階段が出現！"); }
         setTimeout(endBattle, 1000); return;
@@ -180,7 +189,7 @@ function enemyTurn() {
     if(p.guarding) { d = Math.floor(d/3); p.guarding = false; }
     p.hp -= d; sfx.hit(); addLog(`❌敵の攻撃！ ${Math.floor(d)}ダメ`);
     updateBattleUI();
-    if(p.hp <= 0){ alert("敗北..."); location.reload(); }
+    if(p.hp <= 0){ alert("敗北..."); window.location.href="top.html"; }
 }
 
 function updateBattleUI() {
@@ -194,7 +203,7 @@ function updateBattleUI() {
 function endBattle() { document.getElementById('battle-overlay').style.display = 'none'; gameState = 'field'; drawField(); }
 function addLog(m) { const l = document.getElementById('battle-log'); const div = document.createElement('div'); div.innerText = m; l.appendChild(div); if(l.childNodes.length > 4) l.removeChild(l.firstChild); }
 function handleTouch(k) { movePlayer(k); }
-function goHome() { if(confirm("拠点(top.html)に戻りますか？")) window.location.href = "top.html"; }
+function goHome() { if(confirm("拠点に戻りますか？")) window.location.href = "top.html"; }
 window.addEventListener('keydown', e => movePlayer(e.key));
 initFloor(1);
 </script>
