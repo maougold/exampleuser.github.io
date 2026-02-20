@@ -91,23 +91,51 @@ function initFloor(floor) {
     currentFloor = floor; bossDefeated = false;
     const colors = ["#ffb6c1", "#87cefa", "#dda0dd", "#f0e68c", "#4b0082"];
     window.currentWallColor = colors[floor-1];
-    maze = Array.from({length: MAP_SZ}, (_, y) => Array.from({length: MAP_SZ}, (_, x) => (x===0 || y===0 || x===19 || y===19 || Math.random()<0.18) ? 1 : 0));
-    maze[2][2]=0; maze[2][3]=0; maze[3][2]=0; maze[18][18]=2; maze[17][18]=0; maze[18][17]=0;
-    if (floor < 5 && Math.random() < 0.5) maze[10+Math.floor(Math.random()*5)][10+Math.floor(Math.random()*5)] = 3;
+    
+    // マップ生成
+    maze = Array.from({length: MAP_SZ}, (_, y) => Array.from({length: MAP_SZ}, (_, x) => {
+        // 外壁
+        if (x===0 || y===0 || x===19 || y===19) return 1;
+        
+        // --- 安全エリアの設定 ---
+        // 1. プレイヤーの開始地点 (2,2) の周囲 3x3 は道にする
+        if (x >= 1 && x <= 3 && y >= 1 && y <= 3) return 0;
+        
+        // 2. 階段 (18,18) の周囲 3x3 は道にする
+        if (x >= 16 && x <= 18 && y >= 16 && y <= 18) return 0;
+
+        // それ以外はランダムで壁（18%の確率）
+        return Math.random() < 0.18 ? 1 : 0;
+    }));
+
+    // 階段の設置
+    maze[18][18] = 2;
+
+    // 武器（剣）の配置（たまに出現）
+    if (floor < 5 && Math.random() < 0.5) {
+        let wx, wy;
+        do { wx=Math.floor(Math.random()*14)+3; wy=Math.floor(Math.random()*14)+3; } while(maze[wy][wx]!==0);
+        maze[wy][wx] = 3;
+    }
     
     enemies = [];
     if (floor === 5) {
-        // 四天王配置
-        const elites = [{x:15,y:4,n:"Dr.マモー",i:"🧠",hp:2500,atk:120},{x:15,y:15,n:"宇宙人",i:"👽🛸",hp:2200,atk:110},{x:4,y:15,n:"破壊ロボ",i:"🤖👾",hp:1800,atk:80},{x:4,y:4,n:"影の頭領",i:"🥷🏿",hp:1200,atk:90}];
-        elites.forEach(b => { maze[b.y][b.x]=0; enemies.push({...b, maxHp:b.hp, isGateKeeper:true}); });
-        // 5Fのザコ（忍者）
+        // 四天王：固定の位置（安全エリア外）に配置
+        const elites = [
+            {x:15,y:4,n:"Dr.マモー",i:"🧠",hp:2500,atk:120},
+            {x:15,y:15,n:"宇宙人",i:"👽🛸",hp:2200,atk:110},
+            {x:4,y:15,n:"破壊ロボ",i:"🤖👾",hp:1800,atk:80},
+            {x:4,y:4,n:"影の頭領",i:"🥷🏿",hp:1200,atk:90}
+        ];
+        elites.forEach(b => { 
+            maze[b.y][b.x]=0; 
+            enemies.push({...b, maxHp:b.hp, isGateKeeper:true}); 
+        });
         for(let i=0; i<6; i++) spawnEnemy("🥷", 300, 45, false);
     } else {
-        // 1-4Fの番人
         const icons = ["🧸", "👻", "🦄", "🐉"];
         for(let i=0; i<(2+floor); i++) spawnEnemy(icons[floor-1], 80*floor, 15+floor*10, true);
     }
-    // 全階層共通のザコ「はぐれ子猫」
     for(let i=0; i<7; i++) spawnEnemy("🐱", 20+floor*15, 5+floor*5, false);
 
     document.querySelectorAll('.floor-box').forEach(b => b.classList.remove('current-floor'));
