@@ -167,19 +167,65 @@ function startBattle(en) {
 }
 
 function battleTurn(type) {
-    if(type==='attack'){ let d = p.atk + Math.floor(Math.random()*15); currentE.hp -= d; p.limit = Math.min(100, p.limit+25); sfx.hit(); addLog(`▶攻撃！ ${d}ダメ`); }
-    else if(type==='limit_atk'){ let d = p.atk * 6; currentE.hp -= d; p.limit = 0; sfx.hit(); addLog(`🌟極大魔法！ ${d}ダメ！`); }
-    else if(type==='heal'){ let h = 40+p.lv*15; p.hp = Math.min(p.maxHp, p.hp+h); sfx.heal(); addLog(`▶ヒール！ ${h}回復`); }
-    else if(type==='guard'){ p.guarding = true; addLog(`▶ガード！`); }
-    else if(type==='run'){ if(currentE.isGateKeeper) addLog("逃げられない！"); else { endBattle(); return; } }
-    updateBattleUI();
-    if(currentE.hp <= 0){
-        sfx.levelUp(); addLog(`撃破！`);
-        p.defeatCount++; if(p.defeatCount>=10){ p.lv++; p.maxHp+=50; p.atk+=15; p.hp=p.maxHp; p.defeatCount=0; addLog("🎊LV UP!"); }
-        enemies = enemies.filter(e => e !== currentE);
-        if(!enemies.some(e => e.isGateKeeper)) { bossDefeated = true; addLog("✨階段が出現！"); }
-        setTimeout(endBattle, 1000); return;
+    if(type==='attack'){ 
+        let d = p.atk + Math.floor(Math.random()*15); 
+        currentE.hp -= d; 
+        p.limit = Math.min(100, p.limit+25); 
+        sfx.hit(); 
+        addLog(`▶攻撃！ ${d}ダメ`); 
+    } 
+    else if(type==='limit_atk'){ 
+        let d = p.atk * 6; 
+        currentE.hp -= d; 
+        p.limit = 0; 
+        sfx.hit(); 
+        addLog(`🌟極大魔法！ ${d}ダメ！`); 
+    } 
+    else if(type==='limit_heal'){ // ←ここが修正ポイント！
+        p.hp = p.maxHp; 
+        p.limit = 0; 
+        sfx.heal(); 
+        addLog(`💖聖なる祈り！全回復！`); 
+    } 
+    else if(type==='heal'){ 
+        let h = 40+p.lv*15; 
+        p.hp = Math.min(p.maxHp, p.hp+h); 
+        sfx.heal(); 
+        addLog(`▶ヒール！ ${h}回復`); 
+    } 
+    else if(type==='guard'){ 
+        p.guarding = true; 
+        addLog(`▶ガード！`); 
+    } 
+    else if(type==='run'){ 
+        if(currentE.isGateKeeper) addLog("逃げられない！"); 
+        else { endBattle(); return; } 
     }
+    
+    updateBattleUI();
+
+    // 敵を倒したかチェック
+    if(currentE.hp <= 0){
+        sfx.levelUp(); 
+        addLog(`撃破！`);
+        p.defeatCount++; 
+        if(p.defeatCount>=10){ 
+            p.lv++; 
+            p.maxHp+=50; 
+            p.atk+=15; 
+            p.hp=p.maxHp; 
+            p.defeatCount=0; 
+            addLog("🎊LV UP!"); 
+        }
+        enemies = enemies.filter(e => e !== currentE);
+        if(!enemies.some(e => e.isGateKeeper)) { 
+            bossDefeated = true; 
+            addLog("✨階段が出現！"); 
+        }
+        setTimeout(endBattle, 1000); 
+        return;
+    }
+    // 敵のターンへ
     setTimeout(enemyTurn, 600);
 }
 
