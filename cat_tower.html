@@ -116,21 +116,37 @@ function initFloor(floor) {
             {x:4,  y:4,  name:"影の頭領", icon:"🥷🏿", hp:1200, atk:90}
         ];
         elites.forEach(b => { maze[b.y][b.x]=0; enemies.push({...b, maxHp:b.hp, isGateKeeper:true}); });
-        for(let i=0; i<6; i++) spawnEnemy("🥷", 300, 45, false);
+        // 第5引数に "影の軍団" を追加
+for(let i=0; i<6; i++) spawnEnemy("🥷", 300, 45, false, "影の軍団");
     } else {
         const icons = ["🧸", "👻", "🦄", "🐉"];
-        for(let i=0; i<(2+floor); i++) spawnEnemy(icons[floor-1], 80*floor, 15+floor*10, true);
+       for(let i=0; i<(2+floor); i++) spawnEnemy(icons[floor-1], 80*floor, 15+floor*10, true, floor+"階の番人");
     }
-    for(let i=0; i<8; i++) spawnEnemy("🐱", 20+floor*15, 5+floor*5, false);
+    for(let i=0; i<8; i++) spawnEnemy("🐱", 20+floor*15, 5+floor*5, false, "はぐれ子猫");
 
     document.querySelectorAll('.floor-box').forEach(b => b.classList.remove('current-floor'));
     document.getElementById('f'+floor).classList.add('current-floor');
     p.x=2; p.y=2; drawField();
 }
 
-function spawnEnemy(icon, hp, atk, isGate) {
-    let ex, ey; do { ex=Math.floor(Math.random()*16)+2; ey=Math.floor(Math.random()*16)+2; } while(maze[ey][ex]!==0 || (ex===2 && ey===2));
-    enemies.push({x:ex, y:ey, name:isGate?currentFloor+"階の番人":"はぐれ子猫", icon:icon, hp:hp, maxHp:hp, atk:atk, isGateKeeper:isGate});
+// 名前も引数(nm)で受け取れるように変更
+function spawnEnemy(icon, hp, atk, isGate, nm) {
+    let ex, ey; 
+    do { 
+        ex = Math.floor(Math.random() * 16) + 2; 
+        ey = Math.floor(Math.random() * 16) + 2; 
+    } while(maze[ey][ex] !== 0 || (ex === 2 && ey === 2));
+
+    enemies.push({
+        x: ex, 
+        y: ey, 
+        name: nm, // 指定された名前を入れる
+        icon: icon, 
+        hp: hp, 
+        maxHp: hp, 
+        atk: atk, 
+        isGateKeeper: isGate
+    });
 }
 
 function drawField() {
