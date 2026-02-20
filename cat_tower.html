@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Magical Cat Tower - Final Edition</title>
+    <style>
+        :root { --bg-color: #fff0f5; --vivid-pink: #ff007f; --vivid-blue: #007bff; --vivid-yellow: #ffcc00; --vivid-green: #28a745; --disabled-gray: #bbb; }
+        body { background: var(--bg-color); color: #333; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding-bottom: 40px; }
+        h1 { color: var(--vivid-pink); text-shadow: 2px 2px white; margin: 10px 0; font-size: 1.5rem; }
+        #game-container { background: white; border: 8px solid var(--vivid-pink); border-radius: 30px; padding: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        #main-layout { display: flex; gap: 15px; }
+        #game-window { position: relative; border: 4px solid var(--vivid-blue); border-radius: 15px; width: 400px; height: 400px; background: #fafafa; overflow: hidden; }
+        #tower-ui { width: 70px; background: #fffde7; border: 3px solid var(--vivid-pink); border-radius: 15px; display: flex; flex-direction: column; justify-content: space-around; align-items: center; }
+        .floor-box { width: 45px; height: 45px; border: 2px solid #ddd; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; font-size: 14px; }
+        .current-floor { background: var(--vivid-pink); color: white; border-color: #c0005a; transform: scale(1.1); box-shadow: 0 0 10px var(--vivid-pink); }
+        #battle-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); display: none; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px 15px; box-sizing: border-box; z-index: 100; }
+        #m-sprite { font-size: 50px; margin: 5px 0; }
+        .g-bg { width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; border: 1px solid #ccc; margin-bottom: 4px; }
+        .g-fill { height: 100%; width: 100%; transition: width 0.3s; }
+        #e-hp-fill { background: #ff0000; } #p-hp-fill { background: #00ff00; } #p-limit-fill { background: var(--vivid-yellow); }
+        #battle-log { font-size: 12px; height: 50px; background: #fdfdfd; width: 100%; padding: 5px; border-radius: 10px; border: 2px solid var(--vivid-blue); margin: 5px 0; overflow-y: hidden; display: flex; flex-direction: column-reverse; font-weight: bold; }
+        .commands { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; margin-top: auto; }
+        button { padding: 8px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
+        .btn-attack { background: var(--vivid-blue); } .btn-guard { background: var(--vivid-green); } .btn-heal { background: #f06; } .btn-run { background: #666; }
+        .limit-btn { background: var(--disabled-gray); pointer-events: none; }
+        .limit-btn.active { background: var(--vivid-yellow); color: #000; pointer-events: auto; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% {transform: scale(1);} 50% {transform: scale(1.03);} }
+        .status-bar { margin-top: 10px; background: #333; color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+        .home-btn { background: #ff8c00; color: white; padding: 10px 25px; border-radius: 30px; font-size: 14px; box-shadow: 0 4px 0 #cc7000; margin-top: 20px; border:none; cursor:pointer;}
+        .shake { animation: shake 0.2s; }
+        @keyframes shake { 0%,100% {transform:translate(0,0);} 25% {transform:translate(5px,0);} 75% {transform:translate(-5px,0);} }
+        .t-btn { width: 55px; height: 55px; background: var(--vivid-pink); border: none; border-radius: 50%; font-size: 22px; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #c0005a; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h1>🎀 Magical Cat Tower 🎀</h1>
+<div id="game-container">
+    <div id="main-layout">
+        <div id="game-window">
+            <canvas id="fieldCanvas" width="400" height="400"></canvas>
+            <div id="battle-overlay">
+                <div id="m-name" style="font-weight:bold; color:var(--vivid-pink);"></div>
+                <div id="m-sprite"></div>
+                <div class="g-bg"><div id="e-hp-fill" class="g-fill"></div></div>
+                <div id="battle-log"></div>
+                <div class="g-bg"><div id="p-hp-fill" class="g-fill"></div></div>
+                <div class="g-bg"><div id="p-limit-fill" class="g-fill"></div></div>
+                <div class="commands">
+                    <button id="btn-lmt-atk" class="limit-btn" onclick="battleTurn('limit_atk')">🌟極大消滅</button>
+                    <button id="btn-lmt-heal" class="limit-btn" onclick="battleTurn('limit_heal')">💖聖なる祈り</button>
+                    <button class="btn-attack" onclick="battleTurn('attack')">攻撃</button>
+                    <button class="btn-guard" onclick="battleTurn('guard')">まもり</button>
+                    <button class="btn-heal" onclick="battleTurn('heal')">ヒール</button>
+                    <button class="btn-run" onclick="battleTurn('run')">逃げる</button>
+                </div>
+            </div>
+        </div>
+        <div id="tower-ui">
+            <div class="floor-box" id="f5">5F</div><div class="floor-box" id="f4">4F</div><div class="floor-box" id="f3">3F</div><div class="floor-box" id="f2">2F</div><div class="floor-box" id="f1">1F</div>
+        </div>
+    </div>
+</div>
+
+<div class="status-bar">🐱 LV: <span id="ui-lv">1</span> | HP: <span id="ui-hp">150</span> | ATK: <span id="ui-atk">25</span> | NEXT: <span id="ui-count">0</span>/10</div>
+
+<div style="margin-top:15px; display:flex; flex-direction:column; align-items:center; gap:8px;">
+    <div class="t-btn" onclick="handleTouch('ArrowUp')">▲</div>
+    <div style="display:flex; gap:25px;"><div class="t-btn" onclick="handleTouch('ArrowLeft')">◀</div><div class="t-btn" onclick="handleTouch('ArrowDown')">▼</div><div class="t-btn" onclick="handleTouch('ArrowRight')">▶</div></div>
+</div>
+
+<button class="home-btn" onclick="goHome()">🏡 拠点(top.html)へ帰還</button>
+
+<script>
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(freq, type, duration, vol=0.1) {
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq; gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+}
+const sfx = { move:()=>playSound(440,'sine',0.05,0.05), hit:()=>playSound(150,'sawtooth',0.2), heal:()=>playSound(523,'sine',0.2), levelUp:()=>[523,659,783].forEach((f,i)=>setTimeout(()=>playSound(f,'square',0.2),i*100)) };
+
+const canvas = document.getElementById('fieldCanvas'); const ctx = canvas.getContext('2d');
+const TILE = 40; const MAP_SZ = 20;
+let gameState = 'field'; let currentFloor = 1; let bossDefeated = false;
+let p = { x: 2, y: 2, hp: 150, maxHp: 150, atk: 25, limit: 0, lv: 1, defeatCount: 0, guarding: false };
+let enemies = []; let maze = [];
+
+function initFloor(floor) {
+    currentFloor = floor; bossDefeated = false;
+    const colors = ["#ffb6c1", "#87cefa", "#dda0dd", "#f0e68c", "#4b0082"];
+    window.currentWallColor = colors[floor-1];
+    maze = Array.from({length: MAP_SZ}, (_, y) => Array.from({length: MAP_SZ}, (_, x) => (x===0 || y===0 || x===19 || y===19 || Math.random()<0.18) ? 1 : 0));
+    maze[2][2]=0; maze[2][3]=0; maze[3][2]=0; maze[18][18]=2; maze[17][18]=0; maze[18][17]=0;
+    if (floor < 5 && Math.random() < 0.5) maze[10+Math.floor(Math.random()*5)][10+Math.floor(Math.random()*5)] = 3;
+    enemies = [];
+    if (floor === 5) {
+        const elites = [{x:15,y:4,n:"Dr.マモー",i:"🧠",hp:2500,atk:120},{x:15,y:15,n:"宇宙人",i:"👽🛸",hp:2200,atk:110},{x:4,y:15,n:"破壊ロボ",i:"🤖👾",hp:1800,atk:80},{x:4,y:4,n:"影の頭領",i:"🥷🏿",hp:1200,atk:90}];
+        elites.forEach(b => { maze[b.y][b.x]=0; enemies.push({...b, maxHp:b.hp, isGateKeeper:true}); });
+    } else {
+        const icons = ["🧸", "👻", "🦄", "🐉"];
+        for(let i=0; i<(2+floor); i++) {
+            let ex=5+Math.floor(Math.random()*12), ey=5+Math.floor(Math.random()*12); maze[ey][ex]=0;
+            enemies.push({x:ex, y:ey, name:floor+"階の番人", icon:icons[floor-1], hp:80*floor, maxHp:80*floor, atk:15+floor*10, isGateKeeper:true});
+        }
+    }
+    document.querySelectorAll('.floor-box').forEach(b => b.classList.remove('current-floor'));
+    document.getElementById('f'+floor).classList.add('current-floor');
+    p.x=2; p.y=2; drawField();
+}
+
+function drawField() {
+    ctx.clearRect(0,0,400,400);
+    let ox = Math.max(0, Math.min(p.x-5, MAP_SZ-10)), oy = Math.max(0, Math.min(p.y-5, MAP_SZ-10));
+    for(let y=0; y<10; y++){
+        for(let x=0; x<10; x++){
+            let mx=x+ox, my=y+oy;
+            if(maze[my][mx]===1){ ctx.fillStyle=window.currentWallColor; ctx.beginPath(); ctx.roundRect(x*TILE+2,y*TILE+2,TILE-4,TILE-4,8); ctx.fill(); }
+            if(maze[my][mx]===2 && bossDefeated){ ctx.fillStyle="#ff69b4"; ctx.fillRect(x*TILE,y*TILE,TILE,TILE); ctx.fillStyle="white"; ctx.font="10px sans-serif"; ctx.fillText("NEXT", x*TILE+5, y*TILE+25); }
+            if(maze[my][mx]===3){ ctx.font="20px serif"; ctx.fillText("⚔️", x*TILE+10, y*TILE+30); }
+            enemies.forEach(en => { if(en.x===mx && en.y===my) { ctx.font="24px serif"; ctx.fillText(en.icon, x*TILE+8, y*TILE+30); }});
+            if(mx===p.x && my===p.y){ ctx.font="30px serif"; ctx.fillText("🧙", x*TILE+5, y*TILE+32); }
+        }
+    }
+    document.getElementById('ui-hp').innerText = Math.floor(p.hp);
+    document.getElementById('ui-lv').innerText = p.lv;
+    document.getElementById('ui-atk').innerText = p.atk;
+    document.getElementById('ui-count').innerText = p.defeatCount;
+}
+
+function movePlayer(key) {
+    if(gameState !== 'field') return;
+    let nx=p.x, ny=p.y;
+    if(key==='ArrowUp') ny--; if(key==='ArrowDown') ny++; if(key==='ArrowLeft') nx--; if(key==='ArrowRight') nx++;
+    if(nx>=0 && nx<MAP_SZ && ny>=0 && ny<MAP_SZ && maze[ny][nx] !== 1){
+        p.x=nx; p.y=ny; sfx.move();
+        if(maze[ny][nx]===2 && bossDefeated){ 
+            if(currentFloor < 5) initFloor(currentFloor+1); 
+            else { window.location.href = "final_boss.html"; }
+        }
+        if(maze[ny][nx]===3){ maze[ny][nx]=0; p.atk+=30; }
+        let hit = enemies.find(en => en.x === p.x && en.y === p.y);
+        if(hit) startBattle(hit);
+    }
+    drawField();
+}
+
+function startBattle(en) {
+    gameState = 'battle'; currentE = en;
+    document.getElementById('battle-overlay').style.display = 'flex';
+    document.getElementById('m-name').innerText = en.name;
+    document.getElementById('m-sprite').innerText = en.icon;
+    document.getElementById('battle-log').innerHTML = "";
+    addLog(`${en.name} がきた！`); updateBattleUI();
+}
+
+function battleTurn(type) {
+    if(type==='attack'){ let d = p.atk + Math.floor(Math.random()*15); currentE.hp -= d; p.limit = Math.min(100, p.limit+25); sfx.hit(); addLog(`▶攻撃！ ${d}ダメ`); }
+    else if(type==='limit_atk'){ let d = p.atk * 6; currentE.hp -= d; p.limit = 0; sfx.hit(); addLog(`🌟極大魔法！ ${d}ダメ！`); }
+    else if(type==='heal'){ let h = 40+p.lv*15; p.hp = Math.min(p.maxHp, p.hp+h); sfx.heal(); addLog(`▶ヒール！ ${h}回復`); }
+    else if(type==='guard'){ p.guarding = true; addLog(`▶ガード！`); }
+    else if(type==='run'){ if(currentE.isGateKeeper) addLog("逃げられない！"); else { endBattle(); return; } }
+    updateBattleUI();
+    if(currentE.hp <= 0){
+        sfx.levelUp(); addLog(`${currentE.name} 撃破！`);
+        p.defeatCount++; if(p.defeatCount>=10){ p.lv++; p.maxHp+=50; p.atk+=15; p.hp=p.maxHp; p.defeatCount=0; }
+        enemies = enemies.filter(e => e !== currentE);
+        if(!enemies.some(e => e.isGateKeeper)) { bossDefeated = true; addLog("✨階段が出現！"); }
+        setTimeout(endBattle, 1000); return;
+    }
+    setTimeout(enemyTurn, 600);
+}
+
+function enemyTurn() {
+    if(!currentE) return;
+    let d = Math.max(5, Math.floor(currentE.atk * (0.8+Math.random()*0.4)));
+    if(p.guarding) { d = Math.floor(d/3); p.guarding = false; }
+    p.hp -= d; sfx.hit(); addLog(`❌敵の攻撃！ ${Math.floor(d)}ダメ`);
+    updateBattleUI();
+    if(p.hp <= 0){ alert("敗北..."); location.reload(); }
+}
+
+function updateBattleUI() {
+    document.getElementById('e-hp-fill').style.width = (Math.max(0, currentE.hp)/currentE.maxHp*100) + "%";
+    document.getElementById('p-hp-fill').style.width = (Math.max(0, p.hp)/p.maxHp*100) + "%";
+    document.getElementById('p-limit-fill').style.width = p.limit + "%";
+    if(p.limit >= 100) document.querySelectorAll('.limit-btn').forEach(b=>b.classList.add('active'));
+    else document.querySelectorAll('.limit-btn').forEach(b=>b.classList.remove('active'));
+}
+
+function endBattle() { document.getElementById('battle-overlay').style.display = 'none'; gameState = 'field'; drawField(); }
+function addLog(m) { const l = document.getElementById('battle-log'); const div = document.createElement('div'); div.innerText = m; l.appendChild(div); if(l.childNodes.length > 4) l.removeChild(l.firstChild); }
+function handleTouch(k) { movePlayer(k); }
+function goHome() { if(confirm("拠点(top.html)に戻りますか？")) window.location.href = "top.html"; }
+window.addEventListener('keydown', e => movePlayer(e.key));
+initFloor(1);
+</script>
+</body>
+</html>
