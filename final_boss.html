@@ -3,30 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>THE ULTIMATE BOSS</title>
+    <title>THE ULTIMATE BOSS - FINAL</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; justify-content: center; margin: 0; overflow: hidden; }
-        #boss-window { width: 350px; border: 5px solid #4b0082; background: radial-gradient(circle, #20002c, #000); border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 0 50px #ff00ff55; }
+        :root { --vivid-pink: #ff007f; --gold: #ffd700; }
+        body { background: #000; color: #fff; font-family: 'Courier New', sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; justify-content: center; margin: 0; overflow: hidden; }
+        
+        /* バトルウィンドウ */
+        #boss-window { width: 350px; border: 5px solid #4b0082; background: radial-gradient(circle, #20002c, #000); border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 0 50px #ff00ff55; z-index: 10; transition: opacity 1s; }
         #boss-sprite { font-size: 80px; margin: 20px 0; animation: float 3s infinite ease-in-out; text-shadow: 0 0 20px #fff; }
         @keyframes float { 0%,100% {transform:translateY(0) scale(1);} 50% {transform:translateY(-15px) scale(1.1);} }
         .g-bg { width: 100%; height: 15px; background: #222; border-radius: 10px; border: 1px solid #444; margin: 10px 0; }
         .g-fill { height: 100%; width: 100%; transition: width 0.3s; border-radius: 10px; }
         #e-hp { background: linear-gradient(to right, #6a0dad, #ff00ff); }
         #p-hp { background: #00ff00; }
-        #p-limit { background: #ffcc00; width: 0%; box-shadow: 0 0 10px gold; }
+        #p-limit { background: var(--gold); width: 0%; box-shadow: 0 0 10px gold; }
         #log { font-size: 14px; height: 60px; color: #0f0; text-align: left; margin: 10px 0; border-top: 1px solid #333; padding-top: 10px; font-weight: bold; }
         .cmds { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         button { padding: 12px; border: none; border-radius: 10px; font-weight: bold; color: white; cursor: pointer; font-size: 14px; }
         .btn-atk { background: #007bff; } .btn-heal { background: #f06; }
-        .btn-limit { background: #ffcc00; color: #000; grid-column: span 2; display: none; }
+        .btn-limit { background: var(--gold); color: #000; grid-column: span 2; display: none; }
         .btn-limit.active { display: block; animation: flash 0.5s infinite; }
         @keyframes flash { 0%,100% {opacity: 1;} 50% {opacity: 0.7;} }
         .shake { animation: shake 0.2s; }
         @keyframes shake { 0%,100% {transform:translate(0,0);} 25% {transform:translate(8px,0);} 75% {transform:translate(-8px,0);} }
+
+        /* エンドロール */
+        #ending-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; display: none; flex-direction: column; align-items: center; z-index: 1000; overflow: hidden; }
+        #credits-container { position: absolute; top: 100%; width: 100%; text-align: center; transition: none; }
+        .credit-text { font-size: 18px; margin: 20px 0; color: #eee; line-height: 1.6; }
+        .credit-title { color: var(--gold); font-size: 24px; margin-top: 60px; font-weight: bold; }
+        .scrolling { animation: scrollUp 60s linear forwards; }
+        @keyframes scrollUp { 0% { top: 100%; } 100% { top: -250%; } }
+        #end-msg { color: var(--vivid-pink); font-size: 28px; margin-top: 100px; text-shadow: 0 0 10px white; }
     </style>
 </head>
 <body>
-<h1 style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">Final Dimension</h1>
+
+<h1 id="stage-title" style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">Final Dimension</h1>
+
 <div id="boss-window">
     <div style="font-weight:bold; color:#ff00ff;">真の支配者：虚無の魔王</div>
     <div id="boss-sprite">💀🌌</div>
@@ -42,34 +56,120 @@
         <button class="btn-heal" onclick="action('heal')">超ヒール</button>
     </div>
 </div>
+
+<div id="ending-screen">
+    <div id="credits-container">
+        <div class="credit-title">✨ QUEST CLEAR ✨</div>
+        <p class="credit-text">虚無の魔王は、宇宙の塵となった...</p>
+        
+        <div class="credit-title">--- 冒険の記録 ---</div>
+        <p class="credit-text">倒された子猫：数知れず</p>
+        <p class="credit-text">四天王のプライド：ズタズタ</p>
+        <p class="credit-text">2階の壁：実はあれ、嫌がらせでした</p>
+        <p class="credit-text">undefinedの文字：今はいい思い出</p>
+
+        <div class="credit-title">--- CAST ---</div>
+        <p class="credit-text">伝説の魔導師（あなた）：最強</p>
+        <p class="credit-text">影の軍団：残業代未払い</p>
+        <p class="credit-text">Dr.マモー：実は視力が悪い</p>
+        <p class="credit-text">はぐれ子猫：次は味方で出たい</p>
+
+        <div class="credit-title">--- STAFF ---</div>
+        <p class="credit-text">監督：AI (Gemini)</p>
+        <p class="credit-text">デバッグ・企画：Elise Vanessa</p>
+        <p class="credit-text">サウンド：ピコピコ・オーケストラ</p>
+
+        <div id="end-msg">THANK YOU FOR PLAYING!</div>
+        <p class="credit-text" style="margin-top:50px;">(画面クリックで最初に戻る)</p>
+    </div>
+</div>
+
 <script>
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSnd(f, t, d) { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = t; o.frequency.value = f; g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); }
-let p = { hp: 1500, max: 1500, limit: 0, atk: 200 };
-let e = { hp: 10000, max: 10000, atk: 220 };
+function playSnd(f, t, d, v=0.1) { 
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
+    o.type = t; o.frequency.value = f; 
+    g.gain.setValueAtTime(v, audioCtx.currentTime); 
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d); 
+    o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); 
+}
+
+let p = { hp: 1500, max: 1500, limit: 0, atk: 250 };
+let e = { hp: 10000, max: 10000, atk: 220, isDead: false };
+
 function update() {
-    document.getElementById('e-hp').style.width = (e.hp/e.max*100) + "%";
-    document.getElementById('p-hp').style.width = (p.hp/p.max*100) + "%";
+    document.getElementById('e-hp').style.width = (Math.max(0, e.hp)/e.max*100) + "%";
+    document.getElementById('p-hp').style.width = (Math.max(0, p.hp)/p.max*100) + "%";
     document.getElementById('p-limit').style.width = p.limit + "%";
     document.getElementById('lmt-btn').className = p.limit >= 100 ? "btn-limit active" : "btn-limit";
 }
+
 function action(type) {
+    if(e.isDead) return;
     if(audioCtx.state === 'suspended') audioCtx.resume();
     let log = document.getElementById('log');
-    if(type === 'atk') { let d = p.atk + Math.floor(Math.random()*50); e.hp -= d; p.limit = Math.min(100, p.limit + 20); log.innerText = `▶ 渾身の魔法！ ${d}のダメージ！`; playSnd(200, 'sawtooth', 0.2); }
-    else if(type === 'heal') { p.hp = Math.min(p.max, p.hp + 500); log.innerText = `▶ 奇跡の光で500回復！`; playSnd(600, 'sine', 0.3); }
-    else if(type === 'limit') { let d = p.atk * 10; e.hp -= d; p.limit = 0; log.innerText = `🌟 究極魔法オメガ！！！ ${d}の超絶ダメージ！！`; playSnd(100, 'square', 0.8); }
+    
+    if(type === 'atk') { 
+        let d = p.atk + Math.floor(Math.random()*50); e.hp -= d; p.limit = Math.min(100, p.limit + 20); 
+        log.innerText = `▶ 渾身の魔法！ ${d}のダメージ！`; playSnd(200, 'sawtooth', 0.2); 
+    }
+    else if(type === 'heal') { 
+        p.hp = Math.min(p.max, p.hp + 500); 
+        log.innerText = `▶ 奇跡の光で500回復！`; playSnd(600, 'sine', 0.3); 
+    }
+    else if(type === 'limit') { 
+        let d = p.atk * 12; e.hp -= d; p.limit = 0; 
+        log.innerText = `🌟 究極魔法オメガ！！！ ${d}の超絶ダメージ！！`; playSnd(100, 'square', 0.8); 
+    }
+    
     update();
-    if(e.hp <= 0) { alert("虚無の魔王を撃破！世界は救われた！"); location.href = "cat_tower.html"; return; }
+    if(e.hp <= 0) { win(); return; }
     setTimeout(enemyTurn, 600);
 }
+
 function enemyTurn() {
+    if(e.hp <= 0) return;
     let d = e.atk + Math.floor(Math.random()*60); p.hp -= d;
     document.getElementById('log').innerText = `❌ 魔王の虚無！ ${Math.floor(d)}のダメージ！`;
-    document.getElementById('boss-window').classList.add('shake'); setTimeout(() => document.getElementById('boss-window').classList.remove('shake'), 200);
-    playSnd(100, 'sine', 0.4); update();
+    document.getElementById('boss-window').classList.add('shake'); 
+    setTimeout(() => document.getElementById('boss-window').classList.remove('shake'), 200);
+    playSnd(100, 'sine', 0.4); 
+    update();
     if(p.hp <= 0) { alert("敗北..."); location.href = "cat_tower.html"; }
 }
+
+function win() {
+    e.isDead = true;
+    document.getElementById('log').innerText = "魔王：ぐわあああ！この私がぁぁ！！";
+    playSnd(50, 'sawtooth', 1.5);
+    setTimeout(() => {
+        document.getElementById('boss-window').style.opacity = "0";
+        document.getElementById('stage-title').style.opacity = "0";
+        setTimeout(startEnding, 1000);
+    }, 2000);
+}
+
+function startEnding() {
+    const screen = document.getElementById('ending-screen');
+    const container = document.getElementById('credits-container');
+    screen.style.display = 'flex';
+    container.classList.add('scrolling');
+
+    // 勝利のBGM風メロディ
+    const melody = [523, 659, 783, 1046, 783, 1046];
+    melody.forEach((f, i) => {
+        setTimeout(() => playSnd(f, 'square', 0.5, 0.1), i * 300);
+    });
+
+    // 定期的なハッピーサウンド
+    const interval = setInterval(() => {
+        if(screen.style.display === 'none') { clearInterval(interval); return; }
+        playSnd(880, 'sine', 0.5, 0.05);
+    }, 1500);
+
+    screen.onclick = () => { location.href = "top.html"; };
+}
+
 update();
 </script>
 </body>
