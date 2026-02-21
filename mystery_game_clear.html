@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NYANKO GATE: MISSION CLEARED</title>
+    <style>
+        :root { --main-pink: #ff4d94; --bg-red: #4d0019; --gold: #ffd700; }
+        body { 
+            background: #000; /* 背景は漆黒 */
+            color: #fff; font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0; overflow: hidden; 
+        }
+
+        /* 最初の衝撃演出 */
+        #initial-clear {
+            position: fixed; font-size: 2.5rem; color: var(--gold);
+            text-shadow: 0 0 25px var(--gold); text-align: center;
+            animation: initialFade 4s forwards; z-index: 100;
+        }
+        @keyframes initialFade {
+            0% { opacity: 0; transform: scale(0.8); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.2); pointer-events: none; }
+        }
+
+        /* エンドロール共通設定 */
+        .end-roll-container {
+            position: fixed; top: 100%; left: 0; width: 100%; height: auto;
+            text-align: center; z-index: 5; pointer-events: none;
+            display: none; /* 最初は非表示 */
+        }
+        .end-roll-text {
+            font-size: 1.25rem; line-height: 3.0; color: var(--gold);
+            text-shadow: 0 0 12px rgba(0,0,0,0.9); padding-bottom: 30vh;
+        }
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-135%); }
+        }
+        .scrolling { display: block; animation: scrollUp 40s linear forwards; }
+
+        /* 最後に現れるボタンコンテナ */
+        #final-ui {
+            opacity: 0; text-align: center; z-index: 50;
+            transition: opacity 2s ease-in; visibility: hidden;
+        }
+        .show-ui { opacity: 1 !important; visibility: visible !important; }
+
+        .result-text { font-size: 1.1rem; line-height: 1.8; margin: 20px 0; color: #ffccd5; }
+        .highlight { color: var(--gold); font-weight: bold; }
+        button { 
+            background: linear-gradient(135deg, var(--gold), #b8860b); border: none; padding: 15px 45px; 
+            border-radius: 35px; cursor: pointer; font-weight: bold; color: #300;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); transition: 0.3s;
+        }
+
+        .heart { position: absolute; color: var(--main-pink); animation: fall 4s linear infinite; opacity: 0.4; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="initial-clear">
+        <span style="font-size: 4rem;">👑</span><br>
+        MISSION CLEARED
+    </div>
+
+    <div id="roll-1" class="end-roll-container">
+        <div class="end-roll-text">
+            <br>―― エピソード Ⅰ ――<br><br>
+            ある日、飼い主が真実を求めて猫に問うた。<br>
+            「お前、昨日どこへ行っていたんだ？」<br><br>
+            「隣の奥さんが言っていたぞ。庭で昼寝をしていたと。」<br>
+            猫はゆっくりと、憐れむように瞬きをした。<br><br>
+            「撫でられて、ゴロゴロ言っていたらしいな？」<br>
+            猫は無関心を装い、前足を整え始める。<br><br>
+            「……それは、明らかな浮気だろう。」<br>
+            飼い主は重い溜息をついた。<br><br>
+            猫はやっと顔を上げ、短く鳴いた。<br>
+            「ニャ。」<br><br>
+            その響きは、真理を物語っていた。<br>
+            『 勘違いするな。 全人類が、私の飼い主（下僕）なのだ。 』
+        </div>
+    </div>
+
+    <div id="roll-2" class="end-roll-container">
+        <div class="end-roll-text">
+            <br>―― エピソード Ⅱ ――<br><br>
+            深夜２時、リビングに響く物音。<br>
+            ガタン。<br><br>
+            床には割れた花瓶、その横には静かに座る猫。<br>
+            「……やったな？ これ、高かったんだぞ。」<br><br>
+            猫は目を細め、沈黙を返した。<br>
+            数秒後、飼い主はため息をつく。<br>
+            「……ケガ、してないか？」<br><br>
+            猫は当然のように膝に乗り、喉を鳴らす。<br>
+            その瞬間、飼い主の怒りは霧散した。<br><br>
+            翌朝、破片を片付けながら飼い主は気づく。<br>
+            昨日も、一昨日も、その前も。<br>
+            すべて、猫が見つめた後に物が落ちている。<br><br>
+            コトン、と背後で小さな音。<br>
+            机の端の財布の横に、猫。<br><br>
+            目が合う。猫はゆっくりと、前足を伸ばした。<br>
+            スッ。<br><br>
+            飼い主は悟った。これは事故ではない。<br>
+            ―― “支配” の確認だ。<br><br>
+            人類はまだ、猫に勝ったことがないのだ。<br><br><br><br>
+            🐾 SPECIAL THANKS: YOU 🐾
+        </div>
+    </div>
+
+    <div id="final-ui">
+        <h1>CONGRATULATIONS!</h1>
+        <p class="result-text">
+            至高の知略を示したあなたに、猫たちの祝福を。<br>
+            <span class="highlight">Happy Valentine... forever.</span>
+        </p>
+        <button onclick="location.href='top.html'">ゲートを閉じる</button>
+    </div>
+
+    <script>
+        function createHeart() {
+            const h = document.createElement('div'); h.classList.add('heart');
+            h.innerText = '♥'; h.style.left = Math.random()*100+'vw';
+            h.style.animationDuration = Math.random()*2+4+'s'; document.body.appendChild(h);
+            setTimeout(() => h.remove(), 5000);
+        }
+        setInterval(createHeart, 400);
+
+        window.onload = () => {
+            // タイムライン制御
+            // 1. エピソード1開始 (4秒後)
+            setTimeout(() => {
+                document.getElementById('roll-1').classList.add('scrolling');
+            }, 4000);
+
+            // 2. エピソード2開始 (エピソード1が消え、少し間を置いた 48秒後)
+            setTimeout(() => {
+                document.getElementById('roll-1').style.display = 'none';
+                document.getElementById('roll-2').classList.add('scrolling');
+            }, 48000);
+
+            // 3. 最終UI表示 (エピソード2完走後の 92秒後)
+            setTimeout(() => {
+                document.getElementById('final-ui').classList.add('show-ui');
+            }, 92000); 
+        };
+    </script>
+</body>
+</html>
