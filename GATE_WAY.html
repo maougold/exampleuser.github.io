@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NYANKO GATE: VALENTINE MASTERPIECE</title>
+    <style>
+        :root { --main-pink: #ff4d94; --bg-red: #4d0019; --gold: #ffd700; --heart-color: rgba(255, 77, 148, 0.3); }
+        
+        body { 
+            background: linear-gradient(135deg, #2b0000, var(--bg-red), #2b0000); 
+            color: #fff; font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0; overflow: hidden; position: relative;
+        }
+
+        body::before {
+            content: "♥"; position: absolute; color: var(--heart-color);
+            font-size: 20px; animation: floatingHeart 10s linear infinite;
+            text-shadow: 40vw 10vh 0, 80vw 50vh 0, 10vw 80vh 0, 60vw 90vh 0, 30vw 30vh 0; z-index: -1;
+        }
+        @keyframes floatingHeart {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        #terminal { 
+            width: 90%; max-width: 500px; padding: 25px; border: 6px solid var(--main-pink); 
+            background: rgba(43, 0, 0, 0.85); border-radius: 40px; 
+            box-shadow: 0 0 40px rgba(255, 77, 148, 0.5); position: relative; text-align: center; backdrop-filter: blur(5px);
+            transition: all 0.5s ease;
+        }
+        
+        .final-warning-mode { animation: final-pulse 0.5s infinite alternate !important; border-color: #ff0000 !important; }
+        @keyframes final-pulse { from { box-shadow: 0 0 20px #ff0000; } to { box-shadow: 0 0 50px #ff0000; } }
+
+        #progress-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .step { 
+            width: 30px; height: 30px; border-radius: 50%; background: rgba(0,0,0,0.4); 
+            display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555;
+        }
+        .step.active { background: var(--main-pink); color: #fff; box-shadow: 0 0 15px var(--main-pink); }
+        .step.current { background: #fff; color: var(--main-pink); transform: scale(1.2); animation: bounce 0.8s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        #timer { font-size: 3.5rem; color: #ffeb3b; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 15px #f44336; font-family: 'Courier New', monospace; }
+        .status-bar { border-bottom: 2px solid var(--main-pink); margin-bottom: 15px; padding-bottom: 5px; font-size: 0.8rem; display: flex; justify-content: space-between; color: var(--main-pink); font-weight: bold; }
+        #question-box { min-height: 110px; margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; border: 2px dashed var(--main-pink); display: flex; align-items: center; justify-content: center; text-align: left; }
+        
+        input { width: 85%; background: rgba(0,0,0,0.5); border: 3px solid var(--main-pink); border-radius: 20px; color: #fff; font-size: 1.8rem; text-align: center; outline: none; padding: 10px; }
+        
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,0,0,0.98); display: flex; align-items: center; justify-content: center; z-index: 100; }
+        #briefing { width: 85%; max-width: 450px; padding: 35px; border: 8px double var(--main-pink); background: #2b0000; border-radius: 50px; text-align: center; }
+        .rule-list { text-align: left; font-size: 0.9rem; line-height: 1.8; margin: 20px 0; color: #ffccd5; border-left: 5px solid var(--main-pink); padding-left: 15px; }
+        
+        .hidden { display: none !important; }
+        button { background: linear-gradient(to bottom, #ff4d94, #ff0055); color:#fff; border:none; padding:18px; font-weight:bold; cursor:pointer; font-size: 1.2rem; width: 100%; border-radius: 50px; box-shadow: 0 5px 0 #a00; outline: none; }
+        button:active { transform: translateY(5px); box-shadow: none; }
+        .flash-wrong { animation: shake 0.2s; background: #800 !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <div id="briefing">
+            <h2 style="color: var(--main-pink); margin-top: 0; text-shadow: 0 0 10px var(--main-pink);">💝 NYANKO GATE 💝</h2>
+            <div class="rule-list">
+                ・全 <span style="color:var(--gold); font-weight:bold;">10門</span> の壁を突破せよ！<br>
+                ・通常エリア：3問ごとに <span style="color:var(--gold); font-weight:bold;">90秒</span>。<br>
+                ・最終エリア：究極の論理パズル <span style="color:var(--gold); font-weight:bold;">90秒</span>。<br>
+                ・<span style="color:#ff4d94; font-weight:bold;">最終問題は「1回ミス」で即終了。</span>
+            </div>
+            <button onclick="pressStart()">挑戦を開始する🐾</button>
+        </div>
+    </div>
+
+    <div id="terminal">
+        <div id="progress-bar">
+            <div class="step" id="s1">🐾</div><div class="step" id="s2">🐾</div><div class="step" id="s3">🐾</div>
+            <div class="step" id="s4">🐾</div><div class="step" id="s5">🐾</div><div class="step" id="s6">🐾</div>
+            <div class="step" id="s7">🐾</div><div class="step" id="s8">🐾</div><div class="step" id="s9">🐾</div>
+            <div class="step" id="s10">🐾</div>
+        </div>
+        <div class="status-bar">
+            <span>AREA: <span id="q-num">1</span>/10</span>
+            <span id="system-mode">VALENTINE SECURITY</span>
+        </div>
+        <div id="timer">01:30</div>
+        <div id="main-content">
+            <div id="question-box">READY...</div>
+            <input type="text" id="code-input" autocomplete="off" placeholder="答え！" onkeydown="handleEnter(event)">
+        </div>
+        <div id="rest-content" class="hidden">
+            <h2 id="rest-title" style="color: #ffd700;">☕ SAFE AREA ☕</h2>
+            <p id="rest-text">時間は止まっています。深呼吸して。</p>
+            <button id="next-btn" onclick="nextQuestion()">次のエリアへ</button>
+        </div>
+        <div id="msg" style="margin-top:20px; text-align:center; color:var(--gold); font-weight:bold; font-size: 0.85rem;">[Enter] 認証</div>
+    </div>
+
+<script>
+    let audioCtx;
+const QUESTIONS = [
+        { q: "古代エジプトで、「バ」ではじまる猫の頭を持つ姿で描かれた豊穣の女神の名前は？", a: "バステト" },
+        { q: "「黒猫」「三毛猫」「白猫」のうち、遺伝学的にそのほとんど（99%以上）がメスなのは？", a: "三毛猫" },
+        { q: "英語で「猫」はキャット。では「子猫」を指す愛称は？", a: "キティ" },
+        { q: "【計算】3つあるお菓子を5倍にしてから7つ食べると、残りはいくつ？", a: "8" },
+        { q: "猫の足の裏にある、ぷにぷにとした柔らかい部分は？", a: "肉球" },
+        { q: "【暗号】にゃんこの好物で、名前に「ち」と「る」がつくおやつは？", a: "ちゅーる" },
+        { q: "中世欧州で猫が迫害された結果、ネズミが媒介して大流行した病気は？", a: "ペスト" },
+        { q: "黒猫『三毛猫は偽猫』 三毛猫『白猫は真猫』 白猫『黒猫と私は同種』 真実を言う真猫はどの猫？", a: "黒猫" },
+        { q: "猫の目は暗闇で光りますが、その網膜裏にある反射層の名前は？ (4文字)", a: "タペタム" },
+        { q: "【最終・論理】A〜Dさんに「クッキー、マカロン、どら焼き、チーズケーキ」を 1つずつ配った。\n①Aは洋菓子だが焼き菓子ではない\n②Bは和菓子ではない\n③Cはしっとり系\n④Dは個包装のサクサク系\n⑤クッキーはAでもCでもない\nAさんがもらったのは？", a: "チーズケーキ" }
+    ];
+
+    let currentIdx = 0;
+    let timeLeft = 90.0;
+    let gameActive = false;
+    let timerInterval;
+
+    function pressStart() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        document.getElementById('overlay').classList.add('hidden');
+        gameActive = true;
+        loadQuestion();
+        startTimer();
+    }
+
+    function playSound(f, t, d, v = 0.1) {
+        if(!audioCtx) return;
+        try {
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = t; o.frequency.value = f; g.connect(audioCtx.destination);
+            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
+            o.connect(g); o.start(); o.stop(audioCtx.currentTime + d);
+        } catch(e) {}
+    }
+
+    function playFinalGateSound() {
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((f, i) => {
+            setTimeout(() => playSound(f, 'sine', 0.5, 0.1), i * 120);
+        });
+    }
+
+    function startTimer() {
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if(!gameActive) return;
+            timeLeft -= 0.1;
+            if (timeLeft <= 0) { timeLeft = 0; updateTimerDisplay(); gameOver(false); }
+            updateTimerDisplay();
+        }, 100);
+    }
+
+    function updateTimerDisplay() {
+        const m = Math.max(0, Math.floor(timeLeft / 60)); 
+        const s = Math.max(0, Math.floor(timeLeft % 60));
+        document.getElementById('timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if(timeLeft < 10 && timeLeft > 0 && Math.floor(timeLeft*10)%2===0) playSound(1000, 'square', 0.05, 0.02);
+    }
+
+    function updateProgress() {
+        for(let i=1; i<=10; i++) {
+            const el = document.getElementById('s' + i);
+            el.classList.remove('active', 'current');
+            if(i <= currentIdx) el.classList.add('active');
+            if(i === currentIdx + 1) el.classList.add('current');
+        }
+    }
+
+    function loadQuestion() {
+        updateProgress();
+        const q = QUESTIONS[currentIdx];
+        const msgArea = document.getElementById('msg');
+        const inputArea = document.getElementById('code-input');
+        
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('rest-content').classList.add('hidden');
+        
+        if (currentIdx === 9) {
+            document.getElementById('terminal').classList.add('final-warning-mode');
+            document.getElementById('system-mode').innerText = "FATAL SECURITY: ONE CHANCE";
+            msgArea.innerText = "⚠️ 警告：誤入力は即座にシステムを物理破壊します";
+            msgArea.style.color = "#ff0000";
+            inputArea.placeholder = "答えを慎重に…";
+        } else {
+            msgArea.innerText = "[Enter] 認証にゃ！";
+            msgArea.style.color = "var(--gold)";
+            inputArea.placeholder = "答えを入力！";
+        }
+
+        document.getElementById('q-num').innerText = currentIdx + 1;
+        document.getElementById('question-box').innerText = q.q;
+        inputArea.value = "";
+        setTimeout(() => inputArea.focus(), 10);
+    }
+
+    function handleEnter(e) { if (e.key === 'Enter') checkAnswer(); }
+
+    function checkAnswer() {
+        if(!gameActive) return;
+        
+        let val = document.getElementById('code-input').value.trim();
+        val = val.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+
+        const correct = QUESTIONS[currentIdx].a;
+
+        if (val === correct) {
+            if (currentIdx === 8) {
+                playFinalGateSound();
+            } else {
+                playSound(880, 'sine', 0.1, 0.1);
+            }
+            currentIdx++;
+            if (currentIdx >= 10) { updateProgress(); gameOver(true); }
+            else if (currentIdx % 3 === 0) showSafeRoom();
+            else loadQuestion();
+        } else {
+            if (currentIdx === 9) {
+                gameActive = false; clearInterval(timerInterval);
+                playSound(100, 'sawtooth', 1.2, 0.3);
+                document.getElementById('terminal').style.borderColor = "red";
+                document.getElementById('msg').innerHTML = "<span style='color:red;'>致命的な認証エラー。アクセス権限を剥奪。</span>";
+                setTimeout(() => location.href = "top.html", 1500);
+                return;
+            }
+            document.getElementById('terminal').classList.add('flash-wrong');
+            playSound(150, 'sawtooth', 0.2, 0.1);
+            setTimeout(() => document.getElementById('terminal').classList.remove('flash-wrong'), 300);
+        }
+    }
+
+    function showSafeRoom() {
+        gameActive = false; clearInterval(timerInterval); updateProgress();
+        const restTitle = document.getElementById('rest-title');
+        const restText = document.getElementById('rest-text');
+        const nextBtn = document.getElementById('next-btn');
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('rest-content').classList.remove('hidden');
+        
+        if (currentIdx === 9) {
+            restTitle.innerText = "⚠️ ULTIMATE GATE ⚠️"; restTitle.style.color = "#f00";
+            restText.innerHTML = "次はいよいよ最終問題。ミスは許されない...<br>論理の迷宮を解き明かせ。<br>時間は<span style='font-size:1.5rem; color:#f00;'>【 90秒 】</span>だにゃ！";
+            nextBtn.innerText = "最終決戦をはじめる"; nextBtn.style.background = "#f00";
+            timeLeft = 90.0;
+        } else {
+            timeLeft = 90.0;
+            playSound(1200, 'sine', 0.4, 0.05);
+        }
+    }
+
+    function nextQuestion() { gameActive = true; loadQuestion(); startTimer(); }
+
+    function gameOver(isWin) {
+        gameActive = false; clearInterval(timerInterval);
+        if (isWin) {
+            document.getElementById('msg').innerText = "愛の勝利にゃ！転送するよ💝";
+            setTimeout(() => window.location.href = "mystery_game_clear.html", 2000);
+        } else {
+            document.getElementById('msg').innerText = "時間切れにゃ... チョコが溶けたにゃ。";
+            setTimeout(() => window.location.href = "top.html", 2000);
+        }
+    }
+</script>
+</body>
+</html>
