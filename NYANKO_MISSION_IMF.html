@@ -52,6 +52,20 @@
             position: relative; z-index: 10;
         }
 
+        .redacted {
+    background-color: #000; /* 背景を黒くする */
+    color: #000;            /* 文字も黒くして読めなくする */
+    padding: 0 2px;
+    border-radius: 2px;
+    transition: all 0.5s;   /* 演出用：マウスを乗せた時に見せたい場合など */
+}
+
+/* もし「マウスを乗せた時だけ読める」ようにしたいなら追加 */
+.redacted:hover {
+    color: #ff4d94;         /* にゃんこピンクで表示 */
+    background-color: transparent;
+}
+
         /* 共通スクロールバー */
         #mission-grid::-webkit-scrollbar, #log-area::-webkit-scrollbar { width: 8px; }
         #mission-grid::-webkit-scrollbar-track, #log-area::-webkit-scrollbar-track { background: #111; }
@@ -365,7 +379,7 @@
         { name: "MOUNT ETNA", pos: [37.7510, 14.9934], hint: "ITALY: 噴火の煙が「猫の形」に見えるのは、地球がゴロゴロ言っている証拠。", desc: "流れる溶岩は、猫が喜ぶ<span class='redacted'>究極のホットカーペット</span>である。" },
         { name: "LE PALAIS IDEAL", pos: [45.2567, 5.0285], hint: "FRANCE: 郵便配達員が作った城。複雑な彫刻の裏に、無数の<span class='redacted'>猫専用通路</span>が隠されている。" },
         { name: "SVALBARD CHURCH", pos: [78.2197, 15.6521], hint: "NORWAY: 世界最北の教会。猫たちが聖歌の代わりに「ニャン」と合唱中。", desc: "ここでは神の言葉よりも、<span class='redacted'>猫の要求</span>が絶対的な法とされる。" },
-        { name: "BAIKAL LAKE", pos: [53.5587, 108.1650], hint: "RUSSIA: 世界最深の湖。氷が割れる音は、猫が<span class='redacted'>氷の隙間から魚を狙う</span>合図である。" }
+        { name: "バイカル湖[BAIKAL LAKE]", pos: [53.5587, 108.1650], hint: "ロシア[RUSSIA]: 世界最深の湖。氷が割れる音は、猫が<span class='redacted'>氷の隙間から魚を狙う</span>合図である。" }
     ];
 
     const grid = document.getElementById('mission-grid');
