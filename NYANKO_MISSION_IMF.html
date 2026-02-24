@@ -72,6 +72,15 @@
         #map-wrapper { position: relative; flex: 1; overflow: hidden; border-bottom: 2px solid #ff4d94; }
         #intelligence-map { height: 100%; width: 100%; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%); }
 
+                /* ステータスパネル（時計・占有率） */
+        #status-panel {
+            background: #000; padding: 8px 15px; font-size: 14px; border-bottom: 1px solid #ff4d94;
+            display: flex; justify-content: space-between; align-items: center; position: relative;
+        }
+        #current-time { font-size: 18px; color: #ff4d94; text-shadow: 0 0 10px #ff4d94; font-weight: bold; }
+        #cat-fill-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: #222; }
+        #cat-fill { width: 0%; height: 100%; background: #ff4d94; transition: 1s; }
+
         /* --- 統合：地図内スキャンライン（動く層） --- */
         .moving-scanline {
             position: absolute; top: 0; left: 0; width: 100%; height: 2px;
@@ -129,6 +138,33 @@
         .leaflet-popup { opacity: 0 !important; transition: opacity 0.3s; pointer-events: none !important; }
         .zoom-high .leaflet-popup { opacity: 1 !important; pointer-events: auto !important; }
 
+
+        /* オーバーロード時の猫の走り */
+.running-cat {
+    position: fixed;
+    right: -100px;
+    font-size: 50px;
+    z-index: 10000;
+    pointer-events: none;
+    animation: cat-run linear forwards;
+}
+@keyframes cat-run {
+    from { transform: translateX(0); }
+    to { transform: translateX(-120vw); }
+}
+
+/* ログの赤い文字 */
+.glitch-red {
+    color: #ff0000;
+    font-weight: bold;
+    text-shadow: 0 0 10px #f00;
+    animation: blink 0.1s infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
     </style>
 </head>
 <body>
@@ -155,6 +191,17 @@
 </div>
 
 <div id="main-container">
+    <div id="status-panel" style="background: #111; padding: 5px 15px; font-size: 13px; border-bottom: 1px solid #ff4d94; display: flex; justify-content: space-between; align-items: center; color: #00ffff;">
+    <div>
+        <span id="human-icon">👤 HUMAN: <span id="p-human">100</span>%</span>
+        <span style="margin: 0 10px;">|</span>
+        <span style="color:#ff4d94;">🐈 CAT: <span id="p-cat">0</span>%</span>
+    </div>
+    <div id="current-time" style="font-weight: bold; font-family: 'Courier New'; letter-spacing: 2px; color: #ff4d94;">00:00:00</div>
+    <div style="position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: #222;">
+        <div id="cat-fill" style="width: 0%; height: 100%; background: #ff4d94; transition: 1s; box-shadow: 0 0 10px #ff4d94;"></div>
+    </div>
+</div>
     <div id="mission-grid"></div>
     <div id="map-wrapper">
         <div class="moving-scanline"></div>
@@ -512,8 +559,30 @@ marker.bindPopup(`
         }
     }
 
+    function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    
+    // IDが 'current-time' の要素を探して、中身を書き換える
+    const timeDisplay = document.getElementById('current-time');
+    if (timeDisplay) {
+        timeDisplay.innerText = `${h}:${m}:${s}`;
+    }
+
+    // 2時22分 00秒の判定（イベント用）
+    if (now.getHours() % 12 === 2 && now.getMinutes() === 22 && now.getSeconds() === 0) {
+        if (typeof startNyankoOverload === 'function') {
+            startNyankoOverload();
+        }
+    }
+}
+
     // 起動時にロードを実行
     window.addEventListener('load', loadGame);
+    // 1秒(1000ミリ秒)ごとに updateClock 関数を実行する命令を追加
+    setInterval(updateClock, 1000);
 
     // 既存の refreshMarkers 関数を、ポップアップ非表示に対応させるため上書き修正
     const originalRefreshMarkers = refreshMarkers;
@@ -522,6 +591,74 @@ marker.bindPopup(`
         const zoom = map.getZoom();
         if (zoom < 15) map.closePopup(); 
     };
+
+
+    let isOverloadActive = false;
+
+    // --- 2時22分イベント本体 ---
+    function startNyankoOverload() {
+        if(isOverloadActive) return; // 二重起動防止
+        isOverloadActive = true;
+        
+        addLog("<span class='glitch-red'>CRITICAL ERROR: NYANKO-OVERLOAD</span>");
+        
+        // ステータス表示の書き換え（要素がある場合）
+        const catFill = document.getElementById('cat-fill');
+        if(catFill) catFill.style.width = "100%";
+        
+        const pCat = document.getElementById('p-cat');
+        if(pCat) pCat.innerText = "100";
+        
+        const pHuman = document.getElementById('p-human');
+        if(pHuman) pHuman.innerText = "0";
+        
+        const hIcon = document.getElementById('human-icon');
+        if(hIcon) hIcon.style.opacity = "0";
+
+        // 重低音の警告音
+        const drone = setInterval(() => { 
+            if(!isOverloadActive){ clearInterval(drone); return; } 
+            playBeep(60 + Math.random()*20, 0.5, 'sawtooth', 0.1); 
+        }, 400);
+
+        // 猫が走り回るループ
+        const runner = setInterval(() => {
+            if(!isOverloadActive){ clearInterval(runner); return; }
+            
+            const div = document.createElement('div'); 
+            div.className = 'running-cat';
+            div.innerText = ['🐱', '🐈', '🐈‍⬛', '🦁', '🐾', '😸'][Math.floor(Math.random()*6)];
+            div.style.top = Math.random() * 80 + 10 + "vh";
+            div.style.animationDuration = (Math.random() * 0.5 + 0.7) + "s";
+            document.body.appendChild(div);
+            
+            // 猫の鳴き声（代用として高い音）
+            playBeep(1000 + Math.random()*500, 0.05, 'sine', 0.05);
+            
+            addLog("MEOW! " + Math.random().toString(16).substr(2, 6));
+            setTimeout(() => div.remove(), 1600);
+        }, 150);
+
+        // 1分後に自動停止
+        setTimeout(stopNyankoOverload, 60000);
+    }
+
+    function stopNyankoOverload() { 
+        isOverloadActive = false; 
+        const hIcon = document.getElementById('human-icon');
+        if(hIcon) hIcon.style.opacity = "1"; 
+        addLog("<span style='color:#0f0;'>SYSTEM RECOVERED.</span>"); 
+        playBeep(440, 0.5); 
+    }
+
+    // --- 時計を監視するタイマー ---
+    function checkClock() {
+        const now = new Date();
+        if (now.getHours() % 12 === 2 && now.getMinutes() === 22) {
+            startNyankoOverload();
+        }
+    }
+    setInterval(checkClock, 60000); // 1分おきにチェック
 </script>
 </body>
 </html>
