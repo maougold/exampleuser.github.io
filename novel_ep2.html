@@ -3,114 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第二話：調査中 | 沈黙の解剖</title>
+    <title>聖域の影 | 沈黙の解剖 第二話</title>
     <style>
+        :root {
+            /* ライトモード用変数 */
+            --sidebar-width: 280px;
+            --main-bg: #f8f9fa;
+            --paper-bg: #ffffff;
+            --text-color: #333333;
+            --sidebar-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-color: #2575fc;
+        }
+
+        /* ダークモード設定 */
+        body.dark-mode {
+            --main-bg: #121212;
+            --paper-bg: #1e1e1e;
+            --text-color: #d1d1d1;
+            --sidebar-bg: #1a1a1a;
+            --border-color: #333333;
+            --accent-color: #4e8fff;
+        }
+
         body {
-            background-color: #121212;
-            color: #d1d1d1;
-            font-family: "Yu Mincho", serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            overflow: hidden;
+            display: flex;
+            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
         }
 
-        .container {
-            text-align: center;
-            max-width: 600px;
-            padding: 40px;
-            border: 1px solid #333;
-            background: #1e1e1e;
-            box-shadow: 0 0 30px rgba(201, 24, 74, 0.1);
-        }
-
-        .status-code {
-            font-family: monospace;
-            color: #c9184a;
-            font-size: 1.2em;
-            letter-spacing: 0.3em;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        h1 {
-            font-size: 1.5em;
-            font-weight: normal;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .loading-bar {
-            width: 100%;
-            height: 2px;
-            background: #333;
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .loading-bar::after {
-            content: "";
-            position: absolute;
-            left: 0;
+        /* 設定ツールバー */
+        .toolbar {
+            position: fixed;
             top: 0;
-            height: 100%;
-            width: 40%; /* 進捗状況 */
-            background: #c9184a;
-            box-shadow: 0 0 10px #c9184a;
-            animation: pulse 2s infinite;
+            right: 0;
+            left: var(--sidebar-width);
+            height: 50px;
+            background: var(--paper-bg);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+        .toolbar button {
+            margin-left: 10px;
+            padding: 5px 12px;
+            cursor: pointer;
+            background: var(--main-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85em;
         }
 
-        .hint {
-            font-size: 0.9em;
-            color: #888;
-            margin-bottom: 40px;
+        /* 左側サイドバー（目次） */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            overflow-y: auto;
+            padding: 20px 0;
+            transition: background 0.3s;
         }
 
-        .back-link {
+        .sidebar-header {
+            padding: 0 25px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 { font-size: 1.1em; color: #888; }
+
+        .home-btn {
+            display: inline-block;
+            margin-bottom: 15px;
             text-decoration: none;
-            color: #c9184a;
+            color: var(--accent-color);
             font-weight: bold;
             font-size: 0.9em;
-            border: 1px solid #c9184a;
-            padding: 10px 20px;
-            transition: 0.3s;
         }
 
-        .back-link:hover {
-            background: #c9184a;
-            color: #fff;
+        .episode-list { list-style: none; padding: 0; margin: 0; }
+        .episode-list li a {
+            display: block;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .episode-list li a.active {
+            background-color: rgba(37, 117, 252, 0.1);
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 50px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .paper {
+            background-color: var(--paper-bg);
+            max-width: 750px;
+            width: 90%;
+            padding: 60px 60px;
+            margin: 40px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            line-height: 2.2;
+            transition: background 0.3s;
+        }
+
+        /* 文字サイズ制御 */
+        .size-s { font-size: 0.9em; }
+        .size-m { font-size: 1.1em; }
+        .size-l { font-size: 1.3em; }
+
+        h1.episode-title {
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .content p {
+            margin-bottom: 1.8em;
+            text-indent: 1em;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .toolbar { left: 0; }
+            .main-content { margin-left: 0; }
+            .paper { padding: 40px 20px; width: 100%; margin: 0; box-shadow: none; }
         }
     </style>
 </head>
-<body>
+<body class="dark-mode size-m">
 
-<div class="container">
-    <span class="status-code">CONNECTION SECURED... [404]</span>
-    <h1>第二話：情報の海へ<br>――解析中。</h1>
-    
-    <div class="loading-bar"></div>
-    
-    <div style="text-align: left; padding: 20px; border-left: 2px solid #c9184a; background: rgba(201, 24, 74, 0.05); margin-bottom: 40px;">
-        <p style="font-size: 1em; line-height: 1.8; margin: 0; color: #eee;">
-            「世界の気になる出来事を追い、人々の生の声（ボイス）を翻訳していると、ある不可解な動画に巡り合った。その動画の再生ボタンを押した瞬間に――」
-        </p>
-    </div>
-    
-    <p class="hint">
-        これより先のデータは現在、整合性を確認しています。<br>
-        証拠の断片が揃い次第、公開を再開します。
-    </p>
-
-    <a href="top.html" class="back-link">目次へ戻り、続報を待つ</a>
+<div class="toolbar">
+    <button onclick="changeSize('s')">小</button>
+    <button onclick="changeSize('m')">中</button>
+    <button onclick="changeSize('l')">大</button>
+    <button onclick="toggleLight()">昼/夜切替</button>
 </div>
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <a href="index.html" class="home-btn">← 作品トップへ戻る</a>
+        <h2>エピソード目次</h2>
+    </div>
+    <ul class="episode-list">
+        <li><a href="index.html">第一話：沈黙の解剖</a></li>
+        <li><a href="novel_ep2.html" class="active">第二話：聖域の影</a></li>
+        <li><a href="#">第三話：未踏の境界</a></li>
+    </ul>
+</nav>
+
+<main class="main-content">
+    <article class="paper" id="novel-paper">
+        <h1 class="episode-title">第二話：聖域の影</h1>
+        
+        <div class="content">
+            <p>翌朝、習慣とは恐ろしいもので、私は再びテレビのスイッチを入れた。画面の中では、いつもの顔ぶれが、いつものような深刻な顔で、海の向こうの不祥事について語っている。</p>
+
+            <p>「エプスタイン問題の再燃が、トランプ陣営に影を落としています」</p>
+
+            <p>解説の女性学者は、二週間前の使い古された情報を、あたかも最新の知見であるかのように披露していた。彼女の言葉の端々には、トランプという存在をどうにかして「悪の連鎖」に結びつけたいという、隠しきれない情念が滲んでいる。隣に座る元検察官の女性弁護士も、法的な論理を装いながら、MAGAと呼ばれる支持層の離反を「必然の結果」として断じていた。</p>
+
+            <p>私は、手に持ったマグカップのコーヒーが冷めていくのも忘れ、その欺瞞に満ちた「物語」を凝視する。</p>
+
+            <p>彼女たちが決して口にしない名前がある。番組が一度もテロップに映し出さない「聖域」がある。</p>
+
+            <p>バイデン政権下の四年間、なぜこのリストは地下の奥深くに封印され続けたのか。なぜ、司法の武器化を厭わない政権が、トランプをこの問題で一度も法廷に引きずり出せなかったのか。答えはあまりに単純だ。もし彼に僅かでも有罪の証拠があれば、彼らは狂喜乱舞してそれを利用しただろう。トランプが潔白であることの最大の証明は、敵対する司法省の「沈黙」そのものなのだ。むしろ、トランプこそが著名人の中で唯一、エプスタインやギレーヌ・マクスウェルの捜査に協力するために情報提供を行った人物であるという事実は、このスタジオの照明の下では存在しないことにされている。</p>
+
+            <p>私は画面に向かって、声に出さずに問いかける。『クリントンの名前はどこへ消えたの？』</p>
+
+            <p>何度も専用機に乗り、密接な関係が囁かれ続けた元大統領夫妻。そして、オバマ政権下でエプスタインから司法のアドバイスを受けていた幹部たちの影。オバマに平和賞を授与した選考委員長までもが、その闇のネットワークの一部であったという驚愕の報告。それらリベラルの象徴ともいえる実名が挙がるたび、メディアは「陰謀論」という便利なレッテルを貼り、自ら思考のシャッターを下ろしてきた。</p>
+
+            <p>さらに醜悪なのは、情報のすり替えだ。番組は、ビル・ゲイツとイーロン・マスクを同じ天秤にかけてみせた。しかし、事実は残酷なほどに違う。エプスタインとの接触を峻拒し続けたマスクに対し、ゲイツは自身の身体的特徴や薬の服用についてまで、エプスタイン側の記録に詳細を残しているのだ。この決定的な差異を無視し、ひとまとめに「富裕層の腐敗」として塗りつぶす手法を、彼女たちは平然と「解説」と呼んでいる。</p>
+
+            <p>トランプがあえて公開を遅らせたのだとしたら、それは戦略だったのかもしれない。リベラルメディアが自ら「透明性」を叫び、逃げ道を失った瞬間に、彼らが守りたかった「真の主」たちの実名を白日の下に晒すための。</p>
+
+            <p>三牧氏の冷ややかな声が、再び「トランプの苦境」を語る。二週遅れの、鮮度の落ちたプロパガンダ。私はリモコンを探すのをやめ、スマートフォンの画面をスワイプした。そこには、彼女たちが決して触れたがらない実名が、夥しい数の証拠とともに流れている。</p>
+
+            <p>テレビの中では、平和賞の記憶が美化され、聖域が守られている。けれど、デジタルという名の地下水脈では、既にダムは決壊していた。</p>
+
+            <p>「……もう、騙せないわよ」</p>
+
+            <p>独り言は、冷めたコーヒーの表面に小さな波紋を作った。私は、黒い画面に映る自分自身の瞳の中に、メディアが必死に隠そうとしている「太陽」が昇り始めているのを感じていた。</p>
+        </div>
+    </article>
+</main>
+
+<script>
+    function changeSize(s) {
+        document.body.classList.remove('size-s', 'size-m', 'size-l');
+        document.body.classList.add('size-' + s);
+    }
+
+    function toggleLight() {
+        document.body.classList.toggle('dark-mode');
+    }
+</script>
 
 </body>
 </html>
