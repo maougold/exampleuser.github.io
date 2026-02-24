@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沈黙の解剖 | 報道の死と再生</title>
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --main-bg: #f8f9fa;
+            --paper-bg: #ffffff;
+            --text-color: #333333;
+            --sidebar-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-color: #2575fc;
+        }
+
+        body.dark-mode {
+            --main-bg: #121212;
+            --paper-bg: #1e1e1e;
+            --text-color: #d1d1d1;
+            --sidebar-bg: #1a1a1a;
+            --border-color: #333333;
+            --accent-color: #4e8fff;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: 50px;
+            background: var(--paper-bg);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .toolbar button {
+            margin-left: 10px;
+            padding: 5px 12px;
+            cursor: pointer;
+            background: var(--main-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            overflow-y: auto;
+            padding: 20px 0;
+            transition: background 0.3s;
+        }
+
+        .sidebar-header { padding: 0 25px; margin-bottom: 20px; }
+        .sidebar-header h2 { font-size: 1.1em; color: #888; }
+
+        .episode-list { list-style: none; padding: 0; margin: 0; }
+        .episode-list li a {
+            display: block;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .episode-list li a:hover { background-color: rgba(37, 117, 252, 0.05); }
+        .episode-list li a.active {
+            background-color: rgba(37, 117, 252, 0.1);
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 50px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .paper {
+            background-color: var(--paper-bg);
+            max-width: 750px;
+            width: 90%;
+            padding: 60px 60px;
+            margin: 40px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            line-height: 2.2;
+        }
+
+        .size-s { font-size: 0.9em; }
+        .size-m { font-size: 1.1em; }
+        .size-l { font-size: 1.3em; }
+
+        .episode-title {
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .content p { margin-bottom: 1.8em; text-indent: 1em; }
+        .separator { text-align: center; margin: 40px 0; letter-spacing: 0.5em; color: var(--border-color); }
+
+        /* 非表示用 */
+        .episode-content { display: none; }
+        .episode-content.active { display: block; }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .toolbar { left: 0; }
+            .main-content { margin-left: 0; }
+            .paper { padding: 40px 20px; width: 100%; margin: 0; }
+        }
+    </style>
+</head>
+<body class="dark-mode size-m">
+
+<div class="toolbar">
+    <button onclick="changeSize('s')">小</button>
+    <button onclick="changeSize('m')">中</button>
+    <button onclick="changeSize('l')">大</button>
+    <button onclick="toggleLight()">昼/夜切替</button>
+</div>
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h2 style="color: var(--accent-color);">沈黙の解剖</h2>
+        <p style="font-size: 0.8em; color: #888;">〜報道の死と再生〜</p>
+    </div>
+    <ul class="episode-list">
+        <li><a onclick="showEpisode(1)" id="link-1" class="active">第一話：ゲートキーパーの黄昏</a></li>
+        <li><a onclick="showEpisode(2)" id="link-2">第二話：聖域の影と平和の仮面</a></li>
+        <li><a onclick="showEpisode(3)" id="link-3">第三話：巨額訴訟の招待状</a></li>
+        <li><a onclick="showEpisode(4)" id="link-4">第四話：ダブル・スタンダードの崩壊</a></li>
+        <li><a onclick="showEpisode(5)" id="link-5">第五話：情報の「開国」</a></li>
+    </ul>
+</nav>
+
+<main class="main-content">
+    <article class="paper">
+        <div id="ep-1" class="episode-content active">
+            <h1 class="episode-title">第一話：ゲートキーパーの黄昏</h1>
+            <div class="content">
+                <p>羽田空港のラウンジで、一条蓮は苦笑した。大型モニターに映る『モーニング・ワイド』のコメンテーターが、したり顔で「SNSのデマが民主主義を壊す」と説いている。</p>
+                <p>「驚いたな。まだこのレベルなのか」</p>
+                <p>米国であれば、特定の個人や団体を根拠なく「排外主義者」や「デマの温床」とレッテル貼りした時点で、数千万ドルの損害賠償請求（ディスカバリー）が飛んでくる。しかし、この国の電波という「聖域」では、公共性を隠れ蓑にした印象操作が、朝のコーヒーと共に当たり前のように供されている。</p>
+                <p>メディアは情報の「門番（ゲートキーパー）」として、自分たちが気に入らない情報を「不適切」という箱に放り込む。その一方で、自分たちの報道の「不適切さ」を問う仕組みは、この国には存在しないに等しかった。</p>
+                <p>「SNSを規制しろ、か……。それは『自分たち以外の発言権を奪え』という悲鳴にしか聞こえないよ」</p>
+                <p>日本のメディアが享受しているのは、自由ではなく、単なる「無責任な特権」だ。一条はスマートフォンの画面をタップし、ある非公開のチャットグループにメッセージを送った。『準備はいいか。日本の「歪んだ鏡」を叩き割る時間だ』</p>
+            </div>
+        </div>
+
+        <div id="ep-2" class="episode-content">
+            <h1 class="episode-title">第二話：聖域の影と平和の仮面</h1>
+            <div class="content">
+                <p>翌週、蓮はあえて『サンデー・トピックス』を視聴していた。議題は「エプスタイン問題」。画面の中では解説者が、二週遅れの古い情報を使い、トランプ支持層の離反を「希望的観測」を交えて語っている。</p>
+                <p>「彼女、ビル・クリントンの名前を一度も出さなかったな」</p>
+                <p>蓮は資料に目を落とした。専用機に何度も同乗した元大統領。オバマ政権下の司法中枢がエプスタインから受けていた助言。そしてオバマに平和賞を与えた選考委員長との繋がり。日本のスタジオに漂うのは、リベラルの象徴たちを守るための「計算された沈黙」だ。</p>
+                <p>「イーロン・マスクとビル・ゲイツを同列に語る勇気だけは認めるよ。無知なのか、それとも意図的なのか」</p>
+                <p>接触を拒絶し続けたマスクに対し、ゲイツは身体的な特徴や薬の服用までが記録に残っている。その決定的な差異を無視し、「富裕層の腐敗」という雑な言葉で塗りつぶす。米国なら、この瞬間に巨額の訴訟状が届くレベルだ。</p>
+                <p>「トランプがなぜ今、リストを公開させたか。その『罠』に気づいてもいない」。メディアに透明性を叫ばせ、退路を断ってから聖域を白日の下に晒す。トランプの署名した『透明化法』は、リベラルの神々を焼き払うための聖火だったのだ。</p>
+            </div>
+        </div>
+
+        <div id="ep-3" class="episode-content">
+            <h1 class="episode-title">第三話：巨額訴訟の招待状</h1>
+            <div class="content">
+                <p>月曜日。蓮は大手放送局『JBC』の受付に立っていた。局の法務部長は、蓮の名刺を見て鼻で笑った。「一条先生、ここは日本です。コメンテーターの発言は表現の自由。訴訟なんて、無駄ですよ」</p>
+                <p>蓮は静かに笑い返し、一枚の書面を差し出した。「これは日本の裁判所ではなく、デラウェア州の連邦裁判所、および米国のファクトチェック機関との連名によるものです。あなた方は、米国法人の権利を著しく毀損するフェイクニュースを世界に拡散しました」</p>
+                <p>法務部長の顔から血の気が引いていく。「な……何を言っている。ここは日本だぞ！」</p>
+                <p>「今の時代、電波は海を越えるんです。あなた方が朝のワイドショーで流した『二週遅れの偏向解説』が、米国の法律下でどれほどの賠償額になるか、想像したことはありますか？ 3億ドル。それが我々が算出した、あなた方の『無責任の対価』です」</p>
+                <p>スタジオでは、今日も何も知らない司会者が「情報の正しさを守るために……」と説教を垂れている。しかし、その足元の床は、既に崩れ始めていた。</p>
+            </div>
+        </div>
+
+        <div id="ep-4" class="episode-content">
+            <h1 class="episode-title">第四話：ダブル・スタンダードの崩壊</h1>
+            <div class="content">
+                <p>JBCの会議室。例の解説を行った女性教授が声を荒らげる。「一条先生、学術的な見解をフェイクと呼び、巨額の賠償を求めるなんて、言論弾圧ですよ！」</p>
+                <p>一条蓮は冷淡に突き放した。「弾圧？ これはあなた方が大好きな『ファクトチェック』の結果です。あなたがトランプがリストを隠したと語った時、米国では既に公開の事実が報じられていた。情報の鮮度を意図的に落とし、結論ありきで事実を曲げた。これは学術ではなく『政治工作』です」</p>
+                <p>「あなた方はSNSをデマの温床として叩き、規制を叫んでいる。一方で、公共の電波を使ってこれほど巨大なフェイクを流しながら、自分たちには防弾チョッキがあると思い込んでいる。そのダブル・スタンダードが通用するのは、日本という鎖国されたメディア村の中だけです」</p>
+                <p>プロデューサーが震える手で資料を手に取る。そこには、米国の広告主たちが、この偏向報道を理由に広告引き揚げを検討し始めたという報告書が綴じられていた。</p>
+            </div>
+        </div>
+
+        <div id="ep-5" class="episode-content">
+            <h1 class="episode-title">第五話：情報の「開国」</h1>
+            <div class="content">
+                <p>騒動はSNSを駆け巡った。番組の生放送中、リアルタイムの「ファクトチェック」が爆発し、スポンサーの不買運動にまで発展したのだ。メディアが隠してきたのは、自分たちが『間違える可能性がある』という恐怖そのものだった。</p>
+                <p>JBCの社屋前。かつて情報の門番だった者たちが、今は説明を求められる側になっている。他の民放各局からも戦々恐々とした連絡が入っていた。彼らが恐れているのは、自分たちが築き上げた「正義の独占権」が崩壊することだった。</p>
+                <p>「さあ、モーニングショーを始めよう。今度は、台本のない本当のショーだ」</p>
+                <p>蓮は、JBCが用意した公式会見の場へと歩みを進める。その手には、クリントン、オバマ、ビル・ゲイツ、そして日本のメディア関係者の名前すらも含まれていると言われる、『真実のリスト』の写しが握られていた。</p>
+                <p>日本メディアという「温室」に、米国の極寒のリアリズムが吹き込んだ。情報の開国。それは、痛みを伴う真実への第一歩だった。</p>
+                <div class="separator">（完）</div>
+            </div>
+        </div>
+    </article>
+</main>
+
+<script>
+    function showEpisode(num) {
+        // 全コンテンツを非表示
+        document.querySelectorAll('.episode-content').forEach(el => el.classList.remove('active'));
+        // 対象を表示
+        document.getElementById('ep-' + num).classList.add('active');
+        
+        // サイドバーのactiveクラス付け替え
+        document.querySelectorAll('.episode-list li a').forEach(el => el.classList.remove('active'));
+        document.getElementById('link-' + num).classList.add('active');
+        
+        // スクロールをトップに戻す
+        window.scrollTo(0, 0);
+    }
+
+    function changeSize(s) {
+        document.body.classList.remove('size-s', 'size-m', 'size-l');
+        document.body.classList.add('size-' + s);
+    }
+
+    function toggleLight() {
+        document.body.classList.toggle('dark-mode');
+    }
+</script>
+
+</body>
+</html>
