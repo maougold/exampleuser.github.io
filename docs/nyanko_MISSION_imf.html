@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>NYANKO-GATE: NODE SYSTEM</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+
+/* 起動時のミッションブリーフィング画面 */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #1a0005 0%, #000 100%); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #ff4d94; text-align: center; padding: 20px;
+        }
+        .intro-box {
+            max-width: 650px; border: 1px solid #ff4d94; padding: 40px;
+            background: rgba(10, 0, 5, 0.9); box-shadow: 0 0 30px rgba(255, 77, 148, 0.2);
+            position: relative;
+        }
+        .intro-box::before { content: "TOP SECRET"; position: absolute; top: -10px; left: 20px; background: #ff4d94; color: #000; padding: 2px 10px; font-size: 12px; font-weight: bold; }
+        
+        .intro-box h1 { font-size: 3em; margin: 0; letter-spacing: 8px; text-shadow: 2px 2px 0 #4a001a; }
+        .intro-box p { line-height: 1.8; text-align: left; margin: 20px 0; font-size: 14px; color: #ffccd5; }
+        
+        .mission-specs { border-top: 1px solid #333; padding-top: 15px; margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; text-align: left; font-size: 12px; color: #00ffff; }
+        
+        .accept-btn {
+            background: #ff4d94; color: #000; border: none;
+            padding: 15px 50px; font-size: 1.2em; cursor: pointer; font-family: 'Courier New', monospace;
+            font-weight: bold; transition: 0.3s; margin-top: 30px; letter-spacing: 2px;
+        }
+        .accept-btn:hover { background: #fff; box-shadow: 0 0 50px #ff4d94; transform: scale(1.05); }
+
+        /* --- 統合：全体スキャンライン（静止層） --- */
+        body { background-color: #050505; color: #ff4d94; font-family: 'Courier New', monospace; margin: 0; padding: 10px; overflow: hidden; position: relative; }
+        
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+            z-index: 5000;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+
+        #main-container {
+            display: flex; flex-direction: column; height: 96vh; max-width: 1200px; margin: 0 auto;
+            border: 3px solid #ff4d94; border-radius: 15px; overflow: hidden; background: #000;
+            position: relative; z-index: 10;
+        }
+
+        .redacted {
+    background-color: #000; /* 背景を黒くする */
+    color: #000;            /* 文字も黒くして読めなくする */
+    padding: 0 2px;
+    border-radius: 2px;
+    transition: all 0.5s;   /* 演出用：マウスを乗せた時に見せたい場合など */
+}
+
+/* もし「マウスを乗せた時だけ読める」ようにしたいなら追加 */
+.redacted:hover {
+    color: #ff4d94;         /* にゃんこピンクで表示 */
+    background-color: transparent;
+}
+
+        /* 共通スクロールバー */
+        #mission-grid::-webkit-scrollbar, #log-area::-webkit-scrollbar { width: 8px; }
+        #mission-grid::-webkit-scrollbar-track, #log-area::-webkit-scrollbar-track { background: #111; }
+        #mission-grid::-webkit-scrollbar-thumb, #log-area::-webkit-scrollbar-thumb { background: #ff4d94; border-radius: 4px; border: 2px solid #111; }
+
+        #mission-grid { 
+            display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; 
+            padding: 10px; background: #111; border-bottom: 2px solid #ff4d94;
+            max-height: 100px; overflow-y: scroll;
+        }
+        .m-btn { 
+            aspect-ratio: 1.2; background: #222; border: 1px solid #444; color: #666; 
+            font-size: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        }
+        .m-btn.active { border-color: #ff4d94; color: #ff4d94; box-shadow: 0 0 10px #ff4d94; background: #2b0010; }
+        .m-btn.found { background: #ff4d94 !important; color: #000 !important; font-weight: bold; border-color: #fff; }
+
+        #map-wrapper { position: relative; flex: 1; overflow: hidden; border-bottom: 2px solid #ff4d94; }
+        #intelligence-map { height: 100%; width: 100%; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%); }
+
+                /* ステータスパネル（時計・占有率） */
+        #status-panel {
+            background: #000; padding: 8px 15px; font-size: 14px; border-bottom: 1px solid #ff4d94;
+            display: flex; justify-content: space-between; align-items: center; position: relative;
+        }
+        #current-time { font-size: 18px; color: #ff4d94; text-shadow: 0 0 10px #ff4d94; font-weight: bold; }
+        #cat-fill-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: #222; }
+        #cat-fill { width: 0%; height: 100%; background: #ff4d94; transition: 1s; }
+
+        /* --- 統合：地図内スキャンライン（動く層） --- */
+        .moving-scanline {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(255, 77, 148, 0.4); box-shadow: 0 0 15px #ff4d94;
+            z-index: 1005; pointer-events: none;
+            animation: scan-anim 6s linear infinite;
+        }
+        @keyframes scan-anim { 0% { top: -2%; } 100% { top: 102%; } }
+
+        /* ナビゲーション */
+        #map-controls { position: absolute; top: 15px; left: 15px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; }
+        .control-group { background: rgba(0,0,0,0.8); border: 1px solid #ff4d94; padding: 5px; display: grid; gap: 2px; }
+        .d-pad { grid-template-columns: repeat(3, 35px); grid-template-rows: repeat(3, 35px); }
+        button.ctrl-btn { background: #222; color: #ff4d94; border: 1px solid #ff4d94; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.1s; }
+        button.ctrl-btn:active { background: #ff4d94; color: #000; }
+
+        /* レーダー */
+        #radar-display {
+            position: absolute; bottom: 20px; left: 20px; z-index: 2000; 
+            background: rgba(0,20,0,0.85); border: 2px solid #0f0; border-radius: 10px; 
+            padding: 12px; color: #0f0; font-family: monospace; min-width: 160px; display: none;
+            box-shadow: 0 0 15px rgba(0,255,0,0.3);
+        }
+        #radar-direction { font-size: 40px; text-align: center; transition: transform 0.2s ease-out; }
+
+        /* 発見済みノードのデザイン */
+        .node-icon {
+            background: #ff4d94; border: 2px solid #fff; border-radius: 50%;
+            box-shadow: 0 0 8px #ff4d94;
+        }
+        .cat-icon {
+            font-size: 24px; text-align: center; line-height: 1;
+            text-shadow: 0 0 10px #ff4d94, 0 0 20px #fff;
+        }
+
+        #log-area { height: 140px; background: #111; overflow-y: scroll; border-top: 1px solid #ff4d94; }
+        #log-stream { padding: 10px; font-size: 14px; color: #ffccd5; display: flex; flex-direction: column; }
+        .log-entry { margin-bottom: 6px; border-left: 2px solid #ff4d94; padding-left: 10px; animation: glitch-in 0.3s; }
+        @keyframes glitch-in { 0% { transform: translateX(-5px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+    
+
+/* セーブボタン（緑系） */
+        .save-btn { background: #004400 !important; color: #0f0 !important; border-color: #0f0 !important; margin-top: 10px; font-size: 12px !important; }
+        .save-btn:hover { background: #006600 !important; }
+        
+        /* 削除ボタン（赤系） */
+        button.clear-btn { 
+            background: #330000; color: #ff0000; border: 1px solid #ff0000; 
+            font-size: 10px; cursor: pointer; position: sticky; bottom: 5px; right: 5px; 
+            float: right; z-index: 100; opacity: 0.6;
+        }
+        button.clear-btn:hover { opacity: 1; background: #550000; }
+
+        /* ズームアウト時にポップアップを隠す設定 */
+        .leaflet-popup { opacity: 0 !important; transition: opacity 0.3s; pointer-events: none !important; }
+        .zoom-high .leaflet-popup { opacity: 1 !important; pointer-events: auto !important; }
+
+
+        /* オーバーロード時の猫の走り */
+.running-cat {
+    position: fixed;
+    right: -100px;
+    font-size: 50px;
+    z-index: 10000;
+    pointer-events: none;
+    animation: cat-run linear forwards;
+}
+@keyframes cat-run {
+    from { transform: translateX(0); }
+    to { transform: translateX(-120vw); }
+}
+
+/* ログの赤い文字 */
+.glitch-red {
+    color: #ff0000;
+    font-weight: bold;
+    text-shadow: 0 0 10px #f00;
+    animation: blink 0.1s infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+    </style>
+</head>
+<body>
+
+<div id="start-screen">
+    <div class="intro-box">
+        <h1 id="main-title">NYANKO MISSION</h1>
+        <p style="text-align:center; color:#888; letter-spacing: 2px;">-- GLOBAL NODE TRACING SYSTEM --</p>
+        
+        <p>おはよう、エージェント。今回の任務は、世界各地の重要拠点に潜伏し、地球の裏側から文明を支配しつつある「にゃんこノード」を特定・確保することだ。</p>
+        
+        <p>敵（にゃんこ）は極めて警戒心が強く、地図を最大解像度まで引き上げなければその姿を現さない。レーダーの反応を頼りに、世界中を駆け巡り、全てのノードをアーカイブせよ。</p>
+
+        <div class="mission-specs">
+            <div>ターゲット：100 ノード</div>
+            <div>優先度：レベル レッド</div>
+            <div>ストレージ：ローカルディスク暗号化</div>
+            <div>自動破壊：なし</div>
+        </div>
+        
+        <button class="accept-btn" onclick="startGame()">MISSION ACCEPT</button>
+        <p style="font-size: 10px; color: #555; margin-top: 10px;">※このメッセージは自動的に消滅しませんが、あなたのブラウザに記録されます。</p>
+    </div>
+</div>
+
+<div id="main-container">
+    <div id="status-panel" style="background: #111; padding: 5px 15px; font-size: 13px; border-bottom: 1px solid #ff4d94; display: flex; justify-content: space-between; align-items: center; color: #00ffff;">
+    <div>
+        <span id="human-icon">👤 HUMAN: <span id="p-human">100</span>%</span>
+        <span style="margin: 0 10px;">|</span>
+        <span style="color:#ff4d94;">🐈 CAT: <span id="p-cat">0</span>%</span>
+    </div>
+    <div id="current-time" style="font-weight: bold; font-family: 'Courier New'; letter-spacing: 2px; color: #ff4d94;">00:00:00</div>
+    <div style="position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: #222;">
+        <div id="cat-fill" style="width: 0%; height: 100%; background: #ff4d94; transition: 1s; box-shadow: 0 0 10px #ff4d94;"></div>
+    </div>
+</div>
+    <div id="mission-grid"></div>
+    <div id="map-wrapper">
+        <div class="moving-scanline"></div>
+        <div id="map-controls">
+            <div class="control-group">
+                <button class="ctrl-btn" onclick="playBeep(900, 0.1, 'square'); map.zoomIn()">+</button>
+                <button class="ctrl-btn" onclick="playBeep(700, 0.1, 'square'); map.zoomOut()">-</button>
+            </div>
+            <div class="control-group d-pad">
+                <div></div><button class="ctrl-btn" onclick="navMap(0, -100)">↑</button><div></div>
+                <button class="ctrl-btn" onclick="navMap(-100, 0)">←</button><div></div><button class="ctrl-btn" onclick="navMap(100, 0)">→</button>
+                <div></div><button class="ctrl-btn" onclick="navMap(0, 100)">↓</button><div></div>
+            </div>
+            <button class="ctrl-btn save-btn" onclick="saveGame()">DISK SAVE</button>
+        </div>
+        <div id="intelligence-map"></div>
+        <div id="radar-display">
+            <div id="radar-id">TARGET ACQUIRED</div>
+            <div id="radar-distance" style="font-size:16px; font-weight:bold;">DIST: ---</div>
+            <div id="radar-direction">↑</div>
+        </div>
+    </div>
+    <div id="log-area">
+        <div id="log-stream"></div>
+        <button class="clear-btn" onclick="clearData()">WIPE ALL DATA</button>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // --- 音響エンジン（統合強化版） ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(f, d, t='sine', v=0.08) {
+        if(audioCtx.state==='suspended') audioCtx.resume();
+        const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+        o.type=t; 
+        o.frequency.setValueAtTime(f, audioCtx.currentTime);
+        // グリッチ感を出すため周波数を少しだけスイープさせる
+        o.frequency.exponentialRampToValueAtTime(f * 0.8, audioCtx.currentTime + d);
+        g.gain.setValueAtTime(v, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+d);
+        o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+d);
+    }
+
+    const map = L.map('intelligence-map', { zoomControl: false }).setView([35, 135], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    let currentMissionIndex = null;
+    let foundMarkers = [];
+
+    const hiddenSpots = [
+        /* 北米・中南米 (11) */
+        { name: "WHITE HOUSE", pos: [38.8977, -77.0365], hint: "USA: 大統領執務室から「ニャー」という声明が発表された。", desc: "全閣僚が<span class='redacted'>猫用おやつ</span>の備蓄を最優先事項として承認した。" },
+        { name: "MOUNT RUSHMORE", pos: [43.8791, -103.4591], hint: "USA: 4人の大統領の顔が、猫の品種図鑑に変更された。", desc: "岩山全体から<span class='redacted'>巨大なゴロゴロ音</span>が鳴り響き、地殻を揺らしている。" },
+        { name: "STATUE OF LIBERTY", pos: [40.6892, -74.0445], hint: "USA: 自由の女神が掲げる松明に異常事態。", desc: "松明から<span class='redacted'>マタタビの煙</span>が放出され、大西洋の猫がNYに集結中。" },
+        { name: "CHRIST THE REDEEMER", pos: [-22.9519, -43.2105], hint: "BRAZIL: コルコバードの丘で巨大像が「猫を抱っこ」し始めた。", desc: "広げた両手は、実は<span class='redacted'>巨大な猫専用の物干し竿</span>だった。" },
+        { name: "MACHU PICCHU", pos: [-13.1631, -72.5450], hint: "PERU: 空中都市の段々畑が、世界最大の「猫の階段」に改造。", desc: "アルパカたちがすべて<span class='redacted'>猫の乗り物</span>として徴用されている。" },
+        { name: "GUADALUPE BASILICA", pos: [19.4849, -99.1176], hint: "MEXICO: 聖母像のヴェールの中から子猫が顔を出している。", desc: "巡礼者たちはひざまずき、<span class='redacted'>肉球への接吻</span>を捧げている。" },
+        { name: "LIONEL MESSI STATUE", pos: [-34.6177, -58.3621], hint: "ARGENTINA: メッシ像の足元のボールが「巨大な毛玉」にすり替わった。", desc: "ドリブルの天才は、今や<span class='redacted'>猫とのじゃれ合い</span>の天才となった。" },
+        { name: "AREA 51", pos: [37.2431, -115.7930], hint: "USA: 宇宙人ではなく、二足歩行する「宇宙猫」が訓練を受けている。", desc: "機密事項はすべて、猫の<span class='redacted'>肉球暗号</span>で厳重に保護されている。" },
+        { name: "NAZCA LINES", pos: [-14.7390, -75.1300], hint: "PERU: 地上絵の中に、教科書には載っていない「巨大な猫」の絵を検知。", desc: "宇宙から見ないと全貌がわからない、<span class='redacted'>神々のための猫じゃらし</span>である。" },
+        { name: "BIGGEST THERMOMETER", pos: [35.2661, -116.0719], hint: "USA: 巨大温度計。猫が「これ以上暑いと溶ける」と訴えるための指標。", desc: "温度が上がると、巨大な<span class='redacted'>猫の鳴き声</span>で警告を発する。" },
+        { name: "ANGEL FALLS", pos: [5.9675, -62.5356], hint: "VENEZUELA: 世界最大の落差を誇る滝。猫が「高い所から水をチョイチョイする」練習場。", desc: "落ちる水しぶきは、すべて<span class='redacted'>猫用ミストサウナ</span>として利用されている。" },
+
+        /* ヨーロッパ・ロシア (17) */
+        { name: "KREMLIN", pos: [55.7520, 37.6175], hint: "RUSSIA: 赤の広場の塔のてっぺんに、黄金の猫耳が設置された。", desc: "城壁の隙間はすべて、<span class='redacted'>極寒を凌ぐ猫の寝床</span>として暖房完備された。" },
+        { name: "PRINCIPALITY OF SEALAND", pos: [51.8951, 1.4805], hint: "SEALAND: 世界最小の国家が「猫の公国」として独立を宣言。", desc: "領土全域が<span class='redacted'>巨大なキャットタワー</span>として再定義された。" },
+        { name: "EIFFEL TOWER", pos: [48.8584, 2.2945], hint: "FRANCE: 鉄の塔の頂上で「空飛ぶ魚」が大量に目撃される。", desc: "塔の構造自体が、猫にとって<span class='redacted'>最高の縦型爪とぎ</span>となった。" },
+        { name: "ARC DE TRIOMPHE", pos: [48.8738, 2.2950], hint: "FRANCE: 凱旋門が、巨大な「猫専用の通り抜けトンネル」に。", desc: "門の上では軍隊の代わりに、<span class='redacted'>昼寝をする猫軍団</span>が整列している。" },
+        { name: "BIG BEN", pos: [51.5007, -0.1246], hint: "UK: 時計の針が「ごはんの時間」以外を指さなくなった。", desc: "鐘の音はすべて<span class='redacted'>缶詰を開ける音</span>にサンプリングされている。" },
+        { name: "TOWER OF LONDON", pos: [51.5081, -0.0759], hint: "UK: 塔を守るカラスが、すべて「黒猫」に入れ替わった。", desc: "王冠の宝石は、猫が転がして遊ぶための<span class='redacted'>最高級の玩具</span>になった。" },
+        { name: "SAGRADA FAMILIA", pos: [41.4036, 2.1744], hint: "SPAIN: 建築中の塔が、実は巨大な「全自動猫タワー」だったと判明。", desc: "設計図には、数百万匹の猫が<span class='redacted'>日向ぼっこする広場</span>が描かれている。" },
+        { name: "COLOSSEUM", pos: [41.8902, 12.4922], hint: "ITALY: 闘技場で「猫とレーザーポインター」の決闘が開催中。", desc: "観客は全員、猫が<span class='redacted'>丸くなって寝る姿</span>を24時間監視させられる。" },
+        { name: "LEANING TOWER OF PISA", pos: [43.7230, 10.3966], hint: "ITALY: 塔が傾いているのは、巨大猫が背中をこすりつけたせい。", desc: "これ以上倒れないよう、数万匹の猫が<span class='redacted'>反対側から押し支えている</span>。" },
+        { name: "PARTHENON", pos: [37.9715, 23.7267], hint: "GREECE: 神殿の柱が、すべて「巨大な猫の足」に見えると話題。", desc: "アテネの神々は、猫に<span class='redacted'>チュールを捧げる召使い</span>に降格した。" },
+        { name: "MAIDEN'S TOWER", pos: [41.0211, 29.0041], hint: "TURKEY: 海に浮かぶ塔が、世界一孤立した「猫の別荘」に。", desc: "周辺の海域には、猫が食べるための<span class='redacted'>刺身が自動湧出</span>している。" },
+        { name: "CHRIST THE KING", pos: [52.2367, 15.5450], hint: "POLAND: 巨大な王の冠が、実は「猫の餌入れ」だった衝撃の事実。", desc: "像の背中には、猫が登るための<span class='redacted'>隠し階段</span>が設置されている。" },
+        { name: "MANNEKEN PIS", pos: [50.8450, 4.3500], hint: "BELGIUM: 小僧の像が、猫にミルクを飲ませる像に変更。", desc: "放出されている液体は、すべて<span class='redacted'>猫専用の高級ミルク</span>である。" },
+        { name: "STONEHENGE", pos: [51.1789, -1.8262], hint: "UK: 巨大な石柱は、古代の猫が「日向ぼっこ」の角度を計算して配置したもの。", desc: "夏至の朝、石の隙間から差し込む光は、世界一巨大な<span class='redacted'>レーザーポインター</span>となる。" },
+        { name: "LAKE NESS", pos: [57.3229, -4.4370], hint: "UK: ネッシーの正体は、実は巨大な「水生猫」のしっぽだった。", desc: "湖の底には、防水仕様の<span class='redacted'>キャットタワー</span>が隠されている。" },
+        { name: "SEDLEC OSSUARY", pos: [49.9618, 15.2880], hint: "CZECH: 骨の教会。実はすべての骨が「猫の形」に組み替えられる呪いがある。", desc: "祭壇の中央には、<span class='redacted'>猫の守護聖人</span>の肉球マークが刻まれている。" },
+        { name: "CERN HADRON COLLIDER", pos: [46.2333, 6.0491], hint: "SWITZERLAND: 粒子加速器の真の目的は、猫が「光の速さ」で動く実験。", desc: "衝突実験の結果、<span class='redacted'>無限に増殖する子猫</span>が発見された。" },
+
+        /* アフリカ・中東 (7) */
+        { name: "BURJ KHALIFA", pos: [25.1972, 55.2744], hint: "UAE: 世界最高峰のビルの影が「猫のごはん時計」に。", desc: "最上階のアンテナは、宇宙の<span class='redacted'>キャット星</span>と通信を行っている。" },
+        { name: "PETRA", pos: [30.3285, 35.4444], hint: "JORDAN: 岩壁を削った遺跡が、猫専用の「高級立体隠れ家」に。", desc: "宝物庫の中身は、金銀財宝ではなく<span class='redacted'>乾燥マタタビ</span>だった。" },
+        { name: "GREAT PYRAMID", pos: [29.9792, 31.1342], hint: "EGYPT: ピラミッド内部から、巨大なゴロゴロ音が漏れている。", desc: "王の間は、世界で最も静かな<span class='redacted'>猫の昼寝部屋</span>として開放された。" },
+        { name: "SPHINX", pos: [29.9753, 31.1377], hint: "EGYPT: スフィンクスが失った鼻の代わりに「猫の鼻」が再生中。", desc: "その眼差しは、常に<span class='redacted'>未開封の缶詰</span>がある方向を向いている。" },
+        { name: "MOUNT NEBO", pos: [31.7683, 35.7258], hint: "JORDAN: モーセ像の杖が、世界一長い「猫じゃらし」に変貌。", desc: "山頂からは、約束の地ならぬ<span class='redacted'>約束のごはん場</span>が見渡せる。" },
+        { name: "PALM JUMEIRAH", pos: [25.1124, 55.1390], hint: "UAE: 椰子の木型の人工島は、実は「巨大な猫の足跡」を模して造られた。", desc: "各枝の部分は、猫が<span class='redacted'>爪を研ぐため</span>の専用エリアとして機能している。" },
+        { name: "THE GATE TO HELL", pos: [40.2526, 58.4397], hint: "TURKMENISTAN: 燃え続けるガスクレーターは、実は「猫の巨大暖炉」。", desc: "周辺の猫たちは、ここで<span class='redacted'>一年中毛並みを乾燥</span>させている。" },
+
+        /* アジア・オセアニア (11) */
+        { name: "ANGKOR WAT", pos: [13.4125, 103.8670], hint: "CAMBODIA: 遺跡の壁画に、猫に貢物を捧げる古代人の姿。", desc: "密林の奥底で、<span class='redacted'>伝説の黄金猫じゃらし</span>が発見された。" },
+        { name: "TAJ MAHAL", pos: [27.1751, 78.0421], hint: "INDIA: 壮麗なドームに、究極の「猫用円形ベッド」を検知。", desc: "白亜の壁は、猫が<span class='redacted'>背中をこすりつけるため</span>に磨かれている。" },
+        { name: "EASTER ISLAND", pos: [-27.1127, -109.3497], hint: "CHILE: モアイ像がすべて「猫耳」をつけて並んでいる。", desc: "彼らが見つめる先には、<span class='redacted'>キャットフードの運搬船</span>がある。" },
+        { name: "SYDNEY OPERA HOUSE", pos: [-33.8568, 151.2153], hint: "AUSTRALIA: 屋根の形が「猫の耳」の群れに見える不可解な現象。", desc: "内部では、24時間体制で<span class='redacted'>猫が喜ぶ超音波</span>が演奏されている。" },
+        { name: "TAIPEI 101", pos: [25.0330, 121.5654], hint: "TAIWAN: ビルの制振ダンパーが「巨大な鈴」に交換された。", desc: "地震のたびに、台北中に<span class='redacted'>チリンチリン</span>と巨大な音が響く。" },
+        { name: "MARINA BAY SANDS", pos: [1.2834, 103.8607], hint: "SINGAPORE: 屋上の船型プールが、世界最大の「猫の足湯」に。", desc: "3つのタワーは、実は<span class='redacted'>巨大な猫の爪</span>を模して建てられた。" },
+        { name: "MERLION", pos: [1.2868, 103.8545], hint: "SINGAPORE: ライオンの口から水ではなく、カリカリが射出中。", desc: "上半身が猫、下半身が魚の姿は<span class='redacted'>自給自足</span>の象徴となった。" },
+        { name: "MOUNT EVEREST SUMMIT", pos: [27.9881, 86.9250], hint: "NEPAL/CHINA: 世界最高峰の頂上で、寒さに動じない「モフモフの神」が瞑想中。", desc: "エベレストの標高が高いのは、猫が<span class='redacted'>より高い場所で寝たがった</span>結果である。" },
+        { name: "ULURU (AYERS ROCK)", pos: [-25.3444, 131.0361], hint: "AUSTRALIA: 巨大な一枚岩は、太古の猫が残した「世界最大の爪とぎ石」。", desc: "岩の赤い色は、猫が<span class='redacted'>摩擦熱でゴロゴロ言った</span>時の名残である。" },
+        { name: "METEORA MONASTERIES", pos: [39.7217, 21.6306], hint: "GREECE: 断崖絶壁の修道院。猫が「絶対に人間に邪魔されない昼寝場所」として選定。", desc: "運搬用のカゴの中には、常に<span class='redacted'>隠れた猫</span>が紛れ込んでいる。" },
+        { name: "STATUE OF REBA", pos: [52.0233, 113.5000], hint: "MONGOLIA: 大草原の真ん中に、猫を崇める「遊牧猫の像」を検知。", desc: "羊の群れを管理しているのは、実は<span class='redacted'>一匹の賢い三毛猫</span>である。" },
+
+        /* 日本・全域 (25) */
+        { name: "TOKYO SKYTREE", pos: [35.7101, 139.8107], hint: "JAPAN: 電波塔から、猫を呼び寄せる「特殊なフェロモン信号」を放射。", desc: "頂上付近には、<span class='redacted'>雲を食べる猫</span>が住み着いている。" },
+        { name: "TOKYO TOWER", pos: [35.6586, 139.7454], hint: "JAPAN: 鉄塔が赤く光るたび、都内の猫が一斉に北を向く。", desc: "展望台は、実は<span class='redacted'>猫が地球を見下ろすため</span>の玉座だった。" },
+        { name: "HIMEJI CASTLE", pos: [34.8394, 134.6939], hint: "JAPAN: 白鷺城が「白猫城」へと改名された。", desc: "屋根裏には忍者の代わりに、<span class='redacted'>肉球自慢の猫軍団</span>が潜伏中。" },
+        { name: "HACHIKO STATUE", pos: [35.6591, 139.7006], hint: "JAPAN: 忠犬ハチ公が、ついに「猫の友達」を連れてきた。", desc: "銅像の隣には、目に見えない<span class='redacted'>透明な猫の像</span>が並んでいる。" },
+        { name: "CRAB CLAW MONUMENT", pos: [44.3486, 143.3556], hint: "HOKKAIDO: 紋別の巨大なカニの爪が、猫の「カニカマ」を奪い合っている。", desc: "かつてカニだったものは、今や<span class='redacted'>世界最大の猫用おしゃぶり</span>となった。" },
+        { name: "CAPE SOYA MONUMENT", pos: [45.5231, 141.9366], hint: "HOKKAIDO: 日本最北端の碑で、ロシアを見つめる猫を検知。", desc: "ここから発信される鳴き声は、<span class='redacted'>流氷を猫砂に変える</span>力を持つ。" },
+        { name: "TETSUJIN 28-GO", pos: [34.6543, 135.1451], hint: "HYOGO: 鉄人28号が、巨大な「全自動猫じゃらし機」に改造された。", desc: "神戸中の野良猫を運動させるために24時間稼働している。" },
+        { name: "GLYCO MAN", pos: [34.6690, 135.5013], hint: "OSAKA: 道頓堀のランナーが、猫から逃げる「ネズミ」に書き換えられた。", desc: "ゴールデンに輝く看板は、実は<span class='redacted'>猫用おやつの広告</span>だった。" },
+        { name: "SAKAMOTO RYOMA STATUE", pos: [33.4971, 133.5746], hint: "KOCHI: 龍馬が見つめる太平洋の向こうから「巨大キャットタワー」が襲来。", desc: "懐に入れているのは、ピストルではなく<span class='redacted'>最高級のまたたび</span>である。" },
+        { name: "USHIKU DAIBUTSU", pos: [35.9827, 140.2202], hint: "IBARAKI: 世界最大の仏像の掌に、100匹の猫が収容されている。", desc: "大仏の耳の穴は、実は<span class='redacted'>猫専用の緊急脱出口</span>になっている。" },
+        { name: "NAGASAKI PEACE STATUE", pos: [32.7760, 129.8631], hint: "NAGASAKI: 平和祈念像の指し示す先は「キャットフードの貯蔵庫」だった。", desc: "軽く閉じた左手の中には、<span class='redacted'>世界を救う子猫</span>が握られている。" },
+        { name: "AWALI KANNON", pos: [34.5008, 134.9814], hint: "HYOGO: 淡路島の巨大観音像が、実は「猫の遠隔監視タワー」だった。", desc: "首の回りの装飾は、すべて<span class='redacted'>猫のノミ取り首輪</span>を模している。" },
+        { name: "CAPE SATA MONUMENT", pos: [30.9946, 130.6601], hint: "KAGOSHIMA: 日本本土最南端の岬で、熱帯の猫たちが日向ぼっこ中。", desc: "ここにある灯台は、夜になると<span class='redacted'>猫用レーザーポインター</span>に切り替わる。" },
+        { name: "YONAGUNI MONUMENT", pos: [24.4326, 123.0122], hint: "OKINAWA: 与那国島の海底遺跡は、古代猫の「水中の爪とぎ場」だった。", desc: "不自然な岩は、猫が<span class='redacted'>海中散歩を楽しむため</span>のステップである。" },
+        { name: "GIANT STRAWBERRY BUS STOP", pos: [32.9152, 130.2207], hint: "NAGASAKI: イチゴ型のバス停の中に、巨大な「猫の寝床」を確認。", desc: "バスを待つ人々は、全員<span class='redacted'>猫の背もたれ</span>として利用されている。" },
+        { name: "NAMAHAGE STATUE", pos: [39.9329, 139.9015], hint: "AKITA: なまはげが「猫を愛さない子」を捜索中。", desc: "包丁に見えるのは、実は<span class='redacted'>超巨大な猫用爪切り</span>である。" },
+        { name: "TOTTORI SAND DUNES", pos: [35.5391, 134.2305], hint: "TOTTORI: 鳥取砂丘が、世界最大の「猫用トイレ」として認定された。", desc: "風紋はすべて、<span class='redacted'>巨大な猫が砂をかいた跡</span>である。" },
+        { name: "MT. FUJI TOP", pos: [35.3606, 138.7273], hint: "SHIZUOKA: 富士山頂の火口が、実は「巨大な猫のごはん皿」だった。", desc: "冬の冠雪は、盛り付けられた<span class='redacted'>炊き立ての白米</span>に見せかける擬態である。" },
+        { name: "UNKO BUILDING", pos: [35.7096, 139.8011], hint: "TOKYO: 浅草の金の炎が、猫の「黄金の落とし物」に見える異常事態。", desc: "このモニュメントは、世界一高価な<span class='redacted'>猫の健康診断用サンプル</span>である。" },
+        { name: "PARC-Y-KODOMO DAISHI", pos: [34.2255, 133.7461], hint: "KAGAWA: 巨大な弘法大師像が、四国の猫をテレパシーで集結させている。", desc: "その錫杖は、振るたびに<span class='redacted'>カリカリの雨</span>を降らせるマジックアイテムだ。" },
+        { name: "HEIWA NO TORII", pos: [35.2016, 139.0306], hint: "KANAGAWA: 箱根の湖上に立つ鳥居が、猫の「水上アスレチック」に。", desc: "芦ノ湖の海賊船は、実は<span class='redacted'>キャットニップ運搬船</span>である。" },
+        { name: "GANDHI STATUE", pos: [35.6558, 139.7570], hint: "TOKYO: ガンディー像が「非暴力・不服従・猫愛護」を提唱中。", desc: "彼の眼鏡のレンズには、常に<span class='redacted'>近所の飼い猫</span>の姿が映っている。" },
+        { name: "MOYAI STATUE", pos: [35.6582, 139.7011], hint: "TOKYO: 渋谷のモヤイ像が、実は「巨大猫の爪とぎ」で削られた跡だと判明。", desc: "深い溝には、<span class='redacted'>数百年分の猫の抜け毛</span>が詰まっている。" },
+        { name: "KINTARO STATUE", pos: [35.3094, 139.0125], hint: "KANAGAWA: 金太郎がクマではなく、巨大な「トラ猫」と相撲を取っている。", desc: "投げ飛ばされたトラ猫は、空中で<span class='redacted'>華麗に一回転して着地</span>した。" },
+        { name: "KUSATSU YUBATAKE", pos: [36.6225, 138.5964], hint: "GUNMA: 湯畑から湧き出るのは、猫が一生出たくなくなる「極楽の湯」。", desc: "湯けむりの中、<span class='redacted'>何百匹もの猫</span>がタオルを頭に乗せてくつろいでいる。" },
+
+        /* 世界の端っこ・極地・特殊 (24) */
+        { name: "SVALBARD GLOBAL SEED VAULT", pos: [78.2358, 15.4913], hint: "NORWAY: 種子貯蔵庫が、実は「チュールの備蓄庫」だった。", desc: "永久凍土の下には、<span class='redacted'>1000年分の猫用おやつ</span>が凍結保存されている。" },
+        { name: "NORTH POLE MARKER", pos: [90.0000, 0.0000], hint: "ARCTIC: 地球の最北点。磁力が集中し、すべての猫の毛が逆立っている。", desc: "サンタの代わりに、<span class='redacted'>白い長毛種の猫</span>が世界中にプレゼントを配る。" },
+        { name: "AMUNDSEN-SCOTT STATION", pos: [-90.0000, 0.0000], hint: "ANTARCTICA: 南極点。方位磁石が狂うのは、巨大な「猫の肉球」による磁気干渉。", desc: "南極観測隊の正体は、<span class='redacted'>ペンギンと猫の共存</span>を研究するエージェントだった。" },
+        { name: "CAPE OF GOOD HOPE", pos: [-34.3502, 18.4712], hint: "SOUTH AFRICA: 喜望峰。ここを通過する船は、猫への<span class='redacted'>通行税として煮干し</span>を払う。" },
+        { name: "USHUAIA SIGN", pos: [-54.8019, -68.3030], hint: "ARGENTINA: 「世界の果て」の看板。ここより先には猫と氷しかない。", desc: "南極へ向かう猫たちが、ここで<span class='redacted'>最後の肉球チェック</span>を行っている。" },
+        { name: "CAPE REINGA LIGHTHOUSE", pos: [-34.4267, 172.6811], hint: "NEW ZEALAND: 二つの海がぶつかる岬。灯台は<span class='redacted'>猫の目を光らせる</span>ための充電器である。" },
+        { name: "POINT BARROW", pos: [71.3889, -156.4717], hint: "ALASKA: アメリカ最北端。イヌイットの伝説には、<span class='redacted'>氷を爪とぎにする巨大猫</span>が登場する。" },
+        { name: "CABO DA ROCA", pos: [38.7813, -9.4985], hint: "PORTUGAL: ユーラシア大陸最西端。碑文は、実は<span class='redacted'>「ここから先、魚獲り放題」</span>という意味。" },
+        { name: "CAPE DEZHNEV", pos: [66.0825, -169.6522], hint: "RUSSIA: ユーラシア大陸最東端。アラスカの猫と通信する「耳型アンテナ」を設置。", desc: "ベーリング海峡を越えて、<span class='redacted'>テレパシーによる猫の会議</span>が行われている。" },
+        { name: "NORDKAPP MONUMENT", pos: [71.1714, 25.7831], hint: "NORWAY: ヨーロッパ最北端の地球儀。実は巨大な「猫の毛玉」がモデル。", desc: "深夜の太陽は、猫の<span class='redacted'>瞳孔を細くするため</span>だけに輝いている。" },
+        { name: "STATUE OF COOK", pos: [-16.9208, 145.7716], hint: "AUSTRALIA: キャプテン・クック像が、実は「猫を抱えて上陸」していた新事実。", desc: "彼が発見したのは大陸ではなく、<span class='redacted'>巨大な猫の縄張り</span>だった。" },
+        { name: "CAPE AGOULHAS", pos: [-34.8333, 20.0000], hint: "SOUTH AFRICA: アフリカ最南端。インド洋と大西洋の境界は、<span class='redacted'>猫のナワバリの境界</span>でもある。" },
+        { name: "FINISTERRE LIGHTHOUSE", pos: [42.8821, -9.2708], hint: "SPAIN: 「世界の終わり」と呼ばれる岬。靴ではなく猫の「抜け毛」が奉納されている。", desc: "ここで夕日を見ると、<span class='redacted'>永遠に猫に好かれる</span>呪いにかかる。" },
+        { name: "HAMMERFEST MERIDIAN", pos: [70.6631, 23.6814], hint: "NORWAY: 世界最北の都市。街全体が「猫の暖房便座」のように温かい。", desc: "北極圏の猫たちは、ここで<span class='redacted'>一年中昼寝</span>を謳歌している。" },
+        { name: "CAPE CHELYUSKIN", pos: [77.7222, 104.2833], hint: "RUSSIA: アジア最北端。雪の中に「猫の足跡」だけが数千キロ続いている。", desc: "この足跡を辿ると、<span class='redacted'>猫のユートピア</span>に辿り着けると言われている。" },
+        { name: "CABO FROWARD", pos: [-53.8967, -71.3033], hint: "CHILE: 南米大陸最南端。巨大な十字架が「猫じゃらしの持ち手」に改造された。", desc: "マゼラン海峡の風は、猫の<span class='redacted'>毛並みを整える</span>ために吹いている。" },
+        { name: "LAND'S END SIGN", pos: [50.0657, -5.7132], hint: "UK: イギリス最西端。看板の矢印がすべて「猫のカフェ」を指している。", desc: "ここから見える海は、すべて<span class='redacted'>猫専用の釣り堀</span>に指定された。" },
+        { name: "CAPE COMORIN", pos: [8.0883, 77.5385], hint: "INDIA: インド最南端。三つの海が混ざる場所で、三色の猫が誕生。", desc: "女神が修行した場所には、今や<span class='redacted'>聖なる野良猫</span>が鎮座している。" },
+        { name: "NULL ISLAND", pos: [0.0000, 0.0000], hint: "OCEAN: 座標(0,0)。すべての迷子猫データがここに集約される「猫のブラックホール」。", desc: "デジタル世界の猫たちは、ここを<span class='redacted'>秘密の拠点</span>として使用している。" },
+        { name: "CAPE YORK TIP", pos: [-10.6867, 142.5317], hint: "AUSTRALIA: オーストラリア最北端。ワニを追い出した猫軍団がビーチを占拠。", desc: "ここの砂は、世界で最も<span class='redacted'>肉球に優しい</span>成分でできている。" },
+        { name: "ST. MICHAEL'S MOUNT", pos: [50.1159, -5.4778], hint: "UK: 潮が引くと現れる猫専用の「キャット・パレード・ロード」。", desc: "城の主は人間ではなく、<span class='redacted'>12世紀から生きている猫</span>である。" },
+        { name: "BERMUDA TRIANGLE CENTER", pos: [25.0000, -71.0000], hint: "ATLANTIC: 消えた飛行機は、猫が「チョイチョイ」して落としたものだった。", desc: "次元の裂け目からは、常に<span class='redacted'>猫のゴロゴロ音</span>が聞こえてくる。" },
+        { name: "MONUMENT TO THE LABRADOR", pos: [53.3333, -60.4167], hint: "CANADA: 犬の記念碑の裏で、猫たちが「実権」を握っている姿を確認。", desc: "この地域の雪は、すべて<span class='redacted'>猫のブラッシング後の毛</span>でできている。" },
+        { name: "TOTALITY POINT (NULL)", pos: [0.0000, 180.0000], hint: "PACIFIC: 日付変更線と赤道の交点。猫が永遠に子猫のままでいられる場所。", desc: "ここへ辿り着いた猫は、<span class='redacted'>全人類の主人</span>となる権利を得る。" },
+
+        /* 未分類・巨大建築・ミステリー (5) */
+        { name: "GREAT BLUE HOLE", pos: [17.3160, -87.5345], hint: "BELIZE: 巨大な穴は、地球という猫が使っている「水飲み場」。", desc: "吸い込まれた海水は、地下を通って<span class='redacted'>猫の惑星</span>へと転送されている。" },
+        { name: "MOUNT ETNA", pos: [37.7510, 14.9934], hint: "ITALY: 噴火の煙が「猫の形」に見えるのは、地球がゴロゴロ言っている証拠。", desc: "流れる溶岩は、猫が喜ぶ<span class='redacted'>究極のホットカーペット</span>である。" },
+        { name: "LE PALAIS IDEAL", pos: [45.2567, 5.0285], hint: "FRANCE: 郵便配達員が作った城。複雑な彫刻の裏に、無数の<span class='redacted'>猫専用通路</span>が隠されている。" },
+        { name: "SVALBARD CHURCH", pos: [78.2197, 15.6521], hint: "NORWAY: 世界最北の教会。猫たちが聖歌の代わりに「ニャン」と合唱中。", desc: "ここでは神の言葉よりも、<span class='redacted'>猫の要求</span>が絶対的な法とされる。" },
+        { name: "バイカル湖[BAIKAL LAKE]", pos: [53.5587, 108.1650], hint: "ロシア[RUSSIA]: 世界最深の湖。氷が割れる音は、猫が<span class='redacted'>氷の隙間から魚を狙う</span>合図である。" }
+    ];
+
+    const grid = document.getElementById('mission-grid');
+    for(let i=0; i<100; i++) {
+        const btn = document.createElement('div');
+        btn.className = 'm-btn';
+        btn.id = `btn-${i}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => selectMission(i);
+        grid.appendChild(btn);
+    }
+
+function selectMission(index) {
+        // インデックスがhiddenSpotsの範囲外（未実装のスポット）でもボタンは反応させる
+        document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
+        const targetBtn = document.getElementById(`btn-${index}`);
+        targetBtn.classList.add('active');
+
+        if(index >= hiddenSpots.length) {
+            // 未実装スポットの場合
+            addLog(`<span style="color:#666;">[SYSTEM]</span> #${index+1}: 該当エリアのデータが暗号化されています。`);
+            playBeep(200, 0.2, 'sawtooth', 0.05); // 低いエラー音
+            document.getElementById('radar-display').style.display = 'none';
+            return;
+        }
+
+        // 実装済みスポットの場合
+        currentMissionIndex = index;
+        const spot = hiddenSpots[index];
+        
+        document.getElementById('radar-display').style.display = 'block';
+        
+        // --- 修正箇所：ログにヒントを表示 ---
+        addLog(`<span style="color:#ffff00;">[ANALYZING]</span> #${index+1}: 信号受信中...`);
+        addLog(`<span style="color:#ff4d94;">[HINT]</span> ${spot.hint}`);
+        
+        playBeep(1200, 0.1, 'square', 0.1); // クリック音
+        updateRadar();
+    }
+
+    function navMap(x, y) { 
+        map.panBy([x, y]); 
+        playBeep(400, 0.05, 'triangle', 0.1); 
+    }
+
+    function updateRadar() {
+        if(currentMissionIndex === null) return;
+        const target = hiddenSpots[currentMissionIndex];
+        const dist = map.getCenter().distanceTo(L.latLng(target.pos));
+        document.getElementById('radar-distance').innerText = `DIST: ${(dist/1000).toFixed(1)}km`;
+        
+        const targetPoint = map.latLngToContainerPoint(target.pos);
+        const centerPoint = map.latLngToContainerPoint(map.getCenter());
+        const angle = Math.atan2(targetPoint.y - centerPoint.y, targetPoint.x - centerPoint.x) * 180 / Math.PI;
+        document.getElementById('radar-direction').style.transform = `rotate(${angle + 90}deg)`;
+        
+        // ターゲットに近づくほど高い音を鳴らす（レーダー探知感）
+        if (dist < 500000) {
+            playBeep(1000 + (1000000 / dist), 0.05, 'sine', 0.02);
+        }
+    }
+
+function refreshMarkers() {
+    const zoom = map.getZoom();
+    const mapContainer = document.getElementById('intelligence-map');
+
+    // ズームレベル15以上なら表示用クラスを追加
+    if (zoom >= 15) {
+        mapContainer.classList.add('zoom-high');
+    } else {
+        mapContainer.classList.remove('zoom-high');
+    }
+
+    // 既存のマーカーアイコン切り替え処理
+    foundMarkers.forEach(m => {
+        if (zoom >= 15) {
+            m.marker.setIcon(L.divIcon({ html: '✖🐈‍⬛🐾🐾', className: 'cat-icon', iconSize: [30, 30] }));
+        } else {
+            m.marker.setIcon(L.divIcon({ className: 'node-icon', iconSize: [10, 10] }));
+        }
+    });
+}
+
+function scanForDiscovery() {
+        const zoom = map.getZoom();
+        const bounds = map.getBounds();
+        hiddenSpots.forEach((s, idx) => {
+            const isAlreadyFound = foundMarkers.some(m => m.name === s.name);
+            if(zoom >= 15 && bounds.contains(s.pos) && !isAlreadyFound) {
+                document.getElementById(`btn-${idx}`).classList.add('found');
+                
+                // マーカー作成
+                const marker = L.marker(s.pos, {
+                    icon: L.divIcon({ html: '🐈‍⬛', className: 'cat-icon', iconSize: [30, 30] })
+                }).addTo(map);
+
+                // --- 追加：ポップアップの設定 ---
+                // 名前(name)と説明(desc)を表示
+marker.bindPopup(`
+    <div style="text-align:center; min-width:150px; font-family: sans-serif;">
+        <b style="color:#000; font-size:16px;">NODE: ${s.name}</b>
+        <hr style="border:0; border-top:1px solid #ccc; margin:5px 0;">
+        <span style="font-size:13px; color:#333; line-height:1.4; font-weight:bold;">
+            ${s.desc}
+        </span>
+    </div>
+`, {
+    autoClose: false, // 他を触っても閉じない
+    closeOnClick: false // 地図をクリックしても閉じない（お好みで）
+}).openPopup();
+                
+                foundMarkers.push({ name: s.name, marker: marker });
+                addLog(`<span style="color:#0ff;">[SUCCESS]</span> #${idx+1} ${s.name} を登録。`);
+                
+                playBeep(800, 0.2, 'square');
+                setTimeout(() => playBeep(1200, 0.3, 'square'), 100);
+            }
+        });
+        refreshMarkers();
+    }
+
+    function addLog(msg) {
+        const stream = document.getElementById('log-stream');
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = `<span style="opacity:0.5;">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+        stream.appendChild(entry);
+        document.getElementById('log-area').scrollTop = document.getElementById('log-area').scrollHeight;
+        playBeep(2000, 0.02, 'sine', 0.01); // ログ流れる音
+    }
+
+    map.on('move', updateRadar);
+    map.on('moveend', scanForDiscovery);
+    map.on('zoomend', refreshMarkers);
+
+    // 初回クリックでのオーディオ有効化
+    window.addEventListener('mousedown', () => {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+    }, { once: true });
+
+    function startGame() {
+        // 画面を消す
+        document.getElementById('start-screen').style.display = 'none';
+        // オーディオ開始（ブラウザ制限対策）
+        if(audioCtx.state==='suspended') audioCtx.resume();
+        playBeep(400, 0.5, 'sawtooth', 0.1);
+        addLog("<span style='color:#0f0;'>[SYSTEM]</span> ログイン成功。オペレーションを開始します。");
+    }
+
+// --- セーブ機能 ---
+    function saveGame() {
+        const saveData = {
+            foundNames: foundMarkers.map(m => m.name),
+            lastPos: [map.getCenter().lat, map.getCenter().lng],
+            lastZoom: map.getZoom()
+        };
+        localStorage.setItem('nyanko_gate_save', JSON.stringify(saveData));
+        addLog(`<span style="color:#0f0;">[SYSTEM]</span> 進行状況をディスクに記録しました。`);
+        playBeep(1500, 0.4, 'sine', 0.1);
+    }
+
+    // --- ロード（自動復元）機能 ---
+    function loadGame() {
+        const rawData = localStorage.getItem('nyanko_gate_save');
+        if(!rawData) return;
+        const data = JSON.parse(rawData);
+        
+        data.foundNames.forEach(name => {
+            const spot = hiddenSpots.find(s => s.name === name);
+            if(spot && !foundMarkers.some(m => m.name === name)) {
+                const idx = hiddenSpots.indexOf(spot);
+                document.getElementById(`btn-${idx}`).classList.add('found');
+                const marker = L.marker(spot.pos, {
+                    icon: L.divIcon({ className: 'node-icon', iconSize: [10, 10] })
+                }).addTo(map);
+                marker.bindPopup(`<b>${spot.name}</b><br>${spot.desc}`);
+                foundMarkers.push({ name: spot.name, marker: marker });
+            }
+        });
+
+        if(data.lastPos) map.setView(data.lastPos, data.lastZoom);
+        addLog(`<span style="color:#0f0;">[SYSTEM]</span> 前回のセッションを復元しました。`);
+        refreshMarkers();
+    }
+
+    // --- データ全削除機能 ---
+    function clearData() {
+        if(confirm("警告：すべての発見記録を消去して初期化しますか？")) {
+            localStorage.removeItem('nyanko_gate_save');
+            location.reload();
+        }
+    }
+
+    function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    
+    // IDが 'current-time' の要素を探して、中身を書き換える
+    const timeDisplay = document.getElementById('current-time');
+    if (timeDisplay) {
+        timeDisplay.innerText = `${h}:${m}:${s}`;
+    }
+
+    // 2時22分 00秒の判定（イベント用）
+    if (now.getHours() % 12 === 2 && now.getMinutes() === 22 && now.getSeconds() === 0) {
+        if (typeof startNyankoOverload === 'function') {
+            startNyankoOverload();
+        }
+    }
+}
+
+    // 起動時にロードを実行
+    window.addEventListener('load', loadGame);
+    // 1秒(1000ミリ秒)ごとに updateClock 関数を実行する命令を追加
+    setInterval(updateClock, 1000);
+
+    // 既存の refreshMarkers 関数を、ポップアップ非表示に対応させるため上書き修正
+    const originalRefreshMarkers = refreshMarkers;
+    refreshMarkers = function() {
+        originalRefreshMarkers();
+        const zoom = map.getZoom();
+        if (zoom < 15) map.closePopup(); 
+    };
+
+
+    let isOverloadActive = false;
+
+    // --- 2時22分イベント本体 ---
+    function startNyankoOverload() {
+        if(isOverloadActive) return; // 二重起動防止
+        isOverloadActive = true;
+        
+        addLog("<span class='glitch-red'>CRITICAL ERROR: NYANKO-OVERLOAD</span>");
+        
+        // ステータス表示の書き換え（要素がある場合）
+        const catFill = document.getElementById('cat-fill');
+        if(catFill) catFill.style.width = "100%";
+        
+        const pCat = document.getElementById('p-cat');
+        if(pCat) pCat.innerText = "100";
+        
+        const pHuman = document.getElementById('p-human');
+        if(pHuman) pHuman.innerText = "0";
+        
+        const hIcon = document.getElementById('human-icon');
+        if(hIcon) hIcon.style.opacity = "0";
+
+        // 重低音の警告音
+        const drone = setInterval(() => { 
+            if(!isOverloadActive){ clearInterval(drone); return; } 
+            playBeep(60 + Math.random()*20, 0.5, 'sawtooth', 0.1); 
+        }, 400);
+
+        // 猫が走り回るループ
+        const runner = setInterval(() => {
+            if(!isOverloadActive){ clearInterval(runner); return; }
+            
+            const div = document.createElement('div'); 
+            div.className = 'running-cat';
+            div.innerText = ['🐱', '🐈', '🐈‍⬛', '🦁', '🐾', '😸'][Math.floor(Math.random()*6)];
+            div.style.top = Math.random() * 80 + 10 + "vh";
+            div.style.animationDuration = (Math.random() * 0.5 + 0.7) + "s";
+            document.body.appendChild(div);
+            
+            // 猫の鳴き声（代用として高い音）
+            playBeep(1000 + Math.random()*500, 0.05, 'sine', 0.05);
+            
+            addLog("MEOW! " + Math.random().toString(16).substr(2, 6));
+            setTimeout(() => div.remove(), 1600);
+        }, 150);
+
+        // 1分後に自動停止
+        setTimeout(stopNyankoOverload, 60000);
+    }
+
+    function stopNyankoOverload() { 
+        isOverloadActive = false; 
+        const hIcon = document.getElementById('human-icon');
+        if(hIcon) hIcon.style.opacity = "1"; 
+        addLog("<span style='color:#0f0;'>SYSTEM RECOVERED.</span>"); 
+        playBeep(440, 0.5); 
+    }
+
+    // --- 時計を監視するタイマー ---
+    function checkClock() {
+        const now = new Date();
+        if (now.getHours() % 12 === 2 && now.getMinutes() === 22) {
+            startNyankoOverload();
+        }
+    }
+    setInterval(checkClock, 60000); // 1分おきにチェック
+</script>
+</body>
+</html>
