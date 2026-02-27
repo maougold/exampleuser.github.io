@@ -147,23 +147,38 @@
     .sidebar { 
         position: static;
         display: block;
-        width: 100%;
-        height: 250px;      /* ← 高さを制限して、この中だけでスクロールさせる */
-        overflow-y: auto;   /* ← 縦スクロールを有効に */
+        width: 100%; /* 親要素の幅は100%ですが、中身を分割します */
+        max-height: 200px; /* さらに高さを抑えました */
+        overflow-y: auto;
         border-right: none;
-        border-bottom: 2px solid var(--accent-color);
+        border-bottom: 1px solid var(--border-color);
         padding: 10px 0;
     }
-    
+
     .sidebar-header {
-        padding: 10px 20px;
-        margin-bottom: 5px;
+        padding: 0 20px;
+        text-align: center; /* 中央寄せでコンパクトに */
     }
 
-    /* 各話のリストを少し細くして見やすく */
+    /* リストを2列（幅半分）にする設定 */
+    .episode-list {
+        display: flex;
+        flex-wrap: wrap; /* 折り返しを許可 */
+        padding: 0 10px;
+    }
+
+    .episode-list li {
+        width: 50%; /* ここで幅を半分にしています */
+        box-sizing: border-box;
+    }
+
     .episode-list li a {
-        padding: 8px 20px;
-        font-size: 0.9em;
+        padding: 8px 10px;
+        font-size: 0.8em; /* 文字を少し小さく */
+        border-bottom: 1px solid var(--border-color);
+        white-space: nowrap; /* 改行させない */
+        overflow: hidden;
+        text-overflow: ellipsis; /* 長いタイトルは「...」にする */
     }
 
     .toolbar { left: 0; }
