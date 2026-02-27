@@ -143,47 +143,22 @@
         .episode-content.active { display: block; }
 
 /* 修正後のメディアクエリ */
+/* 修正後のメディアクエリ */
 @media (max-width: 900px) {
     .sidebar { 
-        position: static;
-        display: block;
-        width: 100%; /* 親要素の幅は100%ですが、中身を分割します */
-        max-height: 200px; /* さらに高さを抑えました */
-        overflow-y: auto;
+        position: static;   /* 固定を解除 */
+        display: block;     /* 表示する */
+        width: 100%;        /* 横幅いっぱい */
+        height: auto;       /* 高さを自動に */
         border-right: none;
         border-bottom: 1px solid var(--border-color);
-        padding: 10px 0;
     }
-
-    .sidebar-header {
-        padding: 0 20px;
-        text-align: center; /* 中央寄せでコンパクトに */
-    }
-
-    /* リストを2列（幅半分）にする設定 */
-    .episode-list {
-        display: flex;
-        flex-wrap: wrap; /* 折り返しを許可 */
-        padding: 0 10px;
-    }
-
-    .episode-list li {
-        width: 50%; /* ここで幅を半分にしています */
-        box-sizing: border-box;
-    }
-
-    .episode-list li a {
-        padding: 8px 10px;
-        font-size: 0.8em; /* 文字を少し小さく */
-        border-bottom: 1px solid var(--border-color);
-        white-space: nowrap; /* 改行させない */
-        overflow: hidden;
-        text-overflow: ellipsis; /* 長いタイトルは「...」にする */
-    }
-
     .toolbar { left: 0; }
-    .main-content { margin-left: 0; margin-top: 0; }
-    .paper { padding: 30px 15px; width: 100%; margin: 0; }
+    .main-content { 
+        margin-left: 0; 
+        margin-top: 0; /* ツールバーの下にサイドバーが来るように調整 */
+    }
+    .paper { padding: 40px 20px; width: 100%; margin: 0; }
 }
     </style>
 </head>
