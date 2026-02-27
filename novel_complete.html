@@ -142,12 +142,23 @@
         .episode-content { display: none; }
         .episode-content.active { display: block; }
 
-        @media (max-width: 900px) {
-            .sidebar { display: none; }
-            .toolbar { left: 0; }
-            .main-content { margin-left: 0; }
-            .paper { padding: 40px 20px; width: 100%; margin: 0; }
-        }
+/* 修正後のメディアクエリ */
+@media (max-width: 900px) {
+    .sidebar { 
+        position: static;   /* 固定を解除 */
+        display: block;     /* 表示する */
+        width: 100%;        /* 横幅いっぱい */
+        height: auto;       /* 高さを自動に */
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .toolbar { left: 0; }
+    .main-content { 
+        margin-left: 0; 
+        margin-top: 0; /* ツールバーの下にサイドバーが来るように調整 */
+    }
+    .paper { padding: 40px 20px; width: 100%; margin: 0; }
+}
     </style>
 </head>
 <body class="dark-mode size-m">
