@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィールリンク | Valentine Special Edition</title>
+    <title>プロフィールリンク | Spring Special Edition</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(-45deg, #ff5f9e, #ff8fb1, #ffb3c6, #ffd6e0, #c9184a);
+            /* 春らしい桜と新緑のグラデーション */
+            background: linear-gradient(-45deg, #ffc8dd, #ffafcc, #bde0fe, #cdb4db, #e2f0d9);
             background-size: 400% 400%;
             animation: gradientBG 18s ease infinite;
-            color: #4a1c2a;
+            color: #2d3436;
             margin: 0;
             padding: 40px 20px;
             line-height: 1.7;
@@ -26,7 +27,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* バレンタイン絵文字 */
+        /* 春の絵文字 */
         .emojis-container {
             position: absolute;
             inset: 0;
@@ -37,16 +38,16 @@
 
         .emoji-particle {
             position: absolute;
-            font-size: 36px;
-            opacity: 0.85;
+            font-size: 32px;
+            opacity: 0.8;
             animation: floatUpEmoji 16s linear infinite;
         }
 
         @keyframes floatUpEmoji {
             0% { bottom: -120px; opacity: 0; transform: translateX(0) rotate(0deg); }
-            20% { opacity: 0.9; }
-            80% { opacity: 0.9; }
-            100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(15deg); }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(45deg); }
         }
 
         .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; }
@@ -68,22 +69,22 @@
         h1 {
             font-size: 34px;
             margin-bottom: 20px;
-            color: #fff0f5;
+            color: #ffffff;
             opacity: 0;
             transform: translateY(-30px);
             animation: fadeInDown 1s ease forwards;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.15);
         }
 
         p {
             font-size: 18px;
             margin-bottom: 20px;
-            color: #5a1f33;
+            color: #4a5568;
             text-shadow: none;
         }
 
         .section {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 16px;
             margin-bottom: 30px;
@@ -91,13 +92,13 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1.2s ease forwards;
-            box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
 
         .section:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 18px 38px rgba(0,0,0,0.35);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
 
         .section:nth-child(2) { animation-delay: 0.3s; }
@@ -115,34 +116,34 @@
             font-size: 22px;
             margin-top: 0;
             margin-bottom: 18px;
-            color: #c9184a;
+            color: #db2777; /* 桜色に近い濃いピンク */
         }
 
         .section p {
-            color: #4a1c2a;
+            color: #2d3748;
         }
 
         footer {
             margin-top: 50px;
             font-size: 14px;
-            color: #5a1f33;
+            color: #718096;
             opacity: 0;
             animation: fadeInUp 1s ease forwards 0.9s;
         }
 
         /* ===== リンクまとめ ===== */
         .link-hub {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, 255, 0.92);
             padding: 36px;
             border-radius: 18px;
             margin: 60px 0 40px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
             text-align: left;
         }
 
         .link-hub h2 {
             text-align: center;
-            color: #c9184a;
+            color: #db2777;
             margin-top: 0;
             margin-bottom: 30px;
             font-size: 24px;
@@ -155,10 +156,10 @@
         }
 
         .link-category h3 {
-            color: #7a1f3d;
+            color: #059669; /* 新緑の緑 */
             font-size: 18px;
             margin-bottom: 14px;
-            border-bottom: 1px solid rgba(201,24,74,0.3);
+            border-bottom: 1px solid rgba(5, 150, 105, 0.2);
             padding-bottom: 6px;
         }
 
@@ -166,7 +167,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 10px;
-            color: #4a1c2a;
+            color: #2d3748;
             font-weight: bold;
             text-decoration: none;
             font-size: 15px;
@@ -174,10 +175,10 @@
 
         .link-category a:hover {
             text-decoration: underline;
-            color: #c9184a;
+            color: #db2777;
         }
 
-        /* NEWバッジのCSS設定 */
+        /* バッジ */
         .badge {
             display: inline-flex;
             font-size: 10px;
@@ -190,41 +191,41 @@
         }
 
         .badge-pulse {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            background: linear-gradient(135deg, #f472b6, #db2777);
             color: white;
             animation: anim-pulse 2s infinite;
         }
         @keyframes anim-pulse {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(0.9); opacity: 0.8; }
             100% { transform: scale(1); opacity: 1; }
         }
 
         .badge-outline {
             background: transparent;
-            color: #c9184a;
-            border: 1.5px solid #c9184a;
+            color: #db2777;
+            border: 1.5px solid #db2777;
             animation: anim-blink 1.5s infinite;
         }
         @keyframes anim-blink {
             0% { opacity: 1; }
-            50% { opacity: 0.2; }
+            50% { opacity: 0.3; }
             100% { opacity: 1; }
         }
 
         .badge-neon {
-            background: #2ecc71;
+            background: #10b981;
             color: white;
             animation: anim-neon 2s infinite;
         }
         @keyframes anim-neon {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
         .badge-shine {
-            background: #3498db;
+            background: #60a5fa;
             color: white;
             position: relative;
             overflow: hidden;
@@ -234,7 +235,7 @@
             position: absolute;
             top: -50%; left: -150%;
             width: 200%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
             transform: rotate(30deg);
             animation: anim-shine 3s infinite;
         }
@@ -244,7 +245,7 @@
             100% { left: 150%; }
         }
 
-        /* ボタン用スタイル */
+        /* 隠し要素の基本スタイル維持 */
         .m-mini-trigger, .m-mini-trigger-horror {
             display: inline-flex;
             justify-content: center;
@@ -258,8 +259,8 @@
             width: fit-content;
         }
 
-        .m-mini-trigger { background: linear-gradient(90deg, #000066, #3333ff, #000066); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); }
-        .m-mini-trigger-horror { background: linear-gradient(90deg, #400, #b00, #400); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); }
+        .m-mini-trigger { background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); }
+        .m-mini-trigger-horror { background: linear-gradient(90deg, #400, #b00, #400); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); }
 
         .m-mini-btn, .m-mini-btn-horror {
             display: flex;
@@ -274,14 +275,8 @@
             white-space: nowrap;
         }
 
-        .m-mini-btn { color: #ff9900; text-shadow: 0 0 5px rgba(255, 153, 0, 0.5); }
-        .m-mini-btn-horror { color: #800; font-family: "Hiragino Mincho ProN", serif; text-shadow: 0 0 5px rgba(136, 0, 0, 0.5); }
-
-        .m-mini-trigger:hover { transform: scale(1.03); box-shadow: 0 0 15px rgba(51, 51, 255, 0.7); }
-        .m-mini-trigger-horror:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
-
-        .m-mini-trigger:hover .m-mini-btn { color: #fff; background: radial-gradient(circle, #000044 0%, #000 100%); }
-        .m-mini-trigger-horror:hover .m-mini-btn-horror { color: #f00; background: radial-gradient(circle, #300 0%, #000 100%); text-shadow: 0 0 8px #f00; }
+        .m-mini-btn { color: #f59e0b; text-shadow: 0 0 5px rgba(245, 158, 11, 0.5); }
+        .m-mini-btn-horror { color: #800; font-family: serif; text-shadow: 0 0 5px rgba(136, 0, 0, 0.5); }
 
         html { scroll-behavior: smooth; }
     </style>
@@ -304,16 +299,16 @@
 </style>
 
 <div class="emojis-container">
-    <div class="emoji-particle">💝</div><div class="emoji-particle">🍫</div><div class="emoji-particle">💌</div><div class="emoji-particle">❤️</div><div class="emoji-particle">🍓</div>
-    <div class="emoji-particle">💗</div><div class="emoji-particle">🎀</div><div class="emoji-particle">🫶</div><div class="emoji-particle">💞</div><div class="emoji-particle">🍩</div>
+    <div class="emoji-particle">🌸</div><div class="emoji-particle">🌱</div><div class="emoji-particle">🦋</div><div class="emoji-particle">🍡</div><div class="emoji-particle">🌷</div>
+    <div class="emoji-particle">🌸</div><div class="emoji-particle">🍃</div><div class="emoji-particle">🐝</div><div class="emoji-particle">🍀</div><div class="emoji-particle">🕊️</div>
 </div>
 
     <div class="content">
-        <h1>Happy Valentine 💝<br>Elise Vanessa のリンクページへようこそ</h1>
+        <h1>Spring Special 🌸<br>Elise Vanessa のリンクページへようこそ</h1>
 
         <p>
             X（@ev0123456789）をご覧いただきありがとうございます。<br>
-            甘いチョコの季節ですが、ここでは少しビターな話題も扱っています🍫  
+            春の訪れとともに、新しい視点で世の中を眺めてみませんか？🍃<br>
             メディアが語らない出来事や背景を、私なりの視点でまとめています。
         </p>
 
@@ -323,7 +318,7 @@
         </div>
 
         <div class="section">
-            <h2>ご留意いただきたい点（Love & Respect）</h2>
+            <h2>ご留意いただきたい点（Respect & Harmony）</h2>
              <p>・投稿内容はすべて個人の意見およびまとめであり、公式な報道機関の情報ではありません。<br>
                ・バズった投稿などで「ソースはどこですか」「どこで報道されていますか」「詳細を教えてください」といったご質問をいただくことがありますが、投稿に記載されているキーワードや内容を基に、ご自身で検索・検証をお願いいたします。<br>
                ・投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
@@ -337,11 +332,7 @@
 
         <div class="link-grid">
 
-
-
-
-            
-            <div class="link-category" style="background: rgba(201, 24, 74, 0.03); border-left: 4px solid #c9184a; padding-left: 15px; border-radius: 8px;">
+            <div class="link-category" style="background: rgba(5, 150, 105, 0.03); border-left: 4px solid #059669; padding-left: 15px; border-radius: 8px;">
                 <h3>📖 文芸・連載小説</h3>
                 <a href="novel_ep1.html">
                     <span class="badge badge-pulse">NEW</span> <b>沈黙の解剖</b>
@@ -349,10 +340,8 @@
                 <p style="font-size: 11px; color: #666; margin: -5px 0 10px 35px; line-height: 1.3;">
                     メディアの断末魔と情報の海に潜る私。今、この国の「正解」が解体される。
                 </p>
-                <a href="novel_ep1.html" style="font-weight: normal; font-size: 13px; color: #4a1c2a;">└ 第一話：沈黙の解剖</a>
+                <a href="novel_ep1.html" style="font-weight: normal; font-size: 13px; color: #2d3748;">└ 第一話：沈黙の解剖</a>
             </div>
-
-
 
      <div class="link-category">
             <h3>🎮 クイズ・ミリオネア</h3>
@@ -363,20 +352,10 @@
           <a href="77777.html"><span class="badge badge-outline">NEW</span>にゃんこスロット</a>
         </div>
 
-
-
-
-
-
-
-
-
-
-
             <div class="link-category">
                 <h3>🏆 ランキング・まとめ</h3>
                 <a href="posts.html">バズった投稿トップ10（通常版）</a>
-                <a href="SpecialRanking.html">💘 バズった投稿ランキング TOP10</a>
+                <a href="SpecialRanking.html">🌸 バズった投稿ランキング TOP10</a>
                 <a href="kiseki_a.html">
                     <span class="badge badge-shine">注目</span> ✨ 奇跡を掴み取る
                 </a>
@@ -398,11 +377,8 @@
                 <a href="media-bias.html">日本メディアと米国報道の構造的問題</a>
                 <a href="usaTrump2gdp.html">メディアの「経済音痴」を解剖する</a>
                 <a href="AIbadlite.html">AIの中立性と保守層離反リスク</a>
-<a href="Gemini_gpt.html">AIと言論の自由に関する記録</a>
-
+                <a href="Gemini_gpt.html">AIと言論の自由に関する記録</a>
             </div>
-
-
 
             <div class="link-category">
                 <h3>🌍 国・地域別分析</h3>
@@ -437,11 +413,9 @@
         </div>
     </div>
 
-
-
     <footer>
-        <p>ご質問やご意見はXのDMやリプライでどうぞ 💌<br>最終更新：2026年2月6日 Elise Vanessa [xyz]</p>
-        <p style="font-size: 10px; color: rgba(90, 31, 51, 0.4); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
+        <p>ご質問やご意見はXのDMやリプライでどうぞ 🕊️<br>最終更新：2026年3月6日 Elise Vanessa [xyz]</p>
+        <p style="font-size: 10px; color: rgba(74, 85, 104, 0.5); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
     </footer>
 
 </div>
@@ -452,7 +426,7 @@
 <style>
     .secret-trigger {
         display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;
-        background: rgba(201, 24, 74, 0.05); color: rgba(255, 255, 255, 0.2); text-decoration: none; border-radius: 50%;
+        background: rgba(0, 0, 0, 0.05); color: rgba(0, 0, 0, 0.2); text-decoration: none; border-radius: 50%;
         font-family: 'Courier New', monospace; font-size: 12px; transition: all 0.5s ease; border: 1px solid transparent;
     }
     .secret-trigger:hover { background: rgba(0, 0, 0, 0.8); color: #0f0; border: 1px solid #0f0; box-shadow: 0 0 15px #0f0; transform: scale(1.2); }
@@ -476,34 +450,30 @@
     z-index: 10000;
     font-family: serif;
     font-size: 11px;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     padding: 4px 12px;
     border-radius: 20px;
     display: flex;
     gap: 12px;
-    border: 1px solid rgba(201, 24, 74, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 ">
-    <span onclick="applyTone('none')" style="cursor:pointer; color:#4a1c2a; font-weight: bold;">標準</span>
-    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#c9184a; font-weight: bold;">ビビッド</span>
+    <span onclick="applyTone('none')" style="cursor:pointer; color:#2d3748; font-weight: bold;">標準</span>
+    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#db2777; font-weight: bold;">ビビッド</span>
     <span onclick="applyTone('mono')" style="cursor:pointer; color:#666;">白黒</span>
 </div>
 
 <style>
-    /* 白黒：すべての色を消す */
     .filter-mono {
         backdrop-filter: grayscale(100%);
         -webkit-backdrop-filter: grayscale(100%);
     }
-    
-    /* ビビッド：彩度とコントラストを大幅に上げる */
     .filter-vivid {
-        backdrop-filter: saturate(200%) contrast(140%);
-        -webkit-backdrop-filter: saturate(200%) contrast(140%);
+        backdrop-filter: saturate(180%) contrast(120%);
+        -webkit-backdrop-filter: saturate(180%) contrast(120%);
     }
-    
     #tone-switcher span:hover {
         text-decoration: underline;
         opacity: 0.7;
@@ -519,16 +489,15 @@
         
         if (mode === 'mono') {
             overlay.classList.add('filter-mono');
-            switcher.style.background = "rgba(0, 0, 0, 0.2)";
+            switcher.style.background = "rgba(0, 0, 0, 0.1)";
         } else if (mode === 'vivid') {
             overlay.classList.add('filter-vivid');
-            switcher.style.background = "rgba(255, 255, 255, 0.6)";
+            switcher.style.background = "rgba(255, 255, 255, 0.7)";
         } else {
-            switcher.style.background = "rgba(255, 255, 255, 0.4)";
+            switcher.style.background = "rgba(255, 255, 255, 0.5)";
         }
     }
 </script>
 
-    
 </body>
 </html>
