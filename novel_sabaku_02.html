@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>砂漠の落日 | テロの連鎖を断つ大統領</title>
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --main-bg: #fdfcfb; /* 少し暖かみのある白 */
+            --paper-bg: #ffffff;
+            --text-color: #333333;
+            --sidebar-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-color: #d4af37; /* ★アクセントカラーをゴールドに */
+            --hover-bg: rgba(212, 175, 55, 0.05);
+            --active-bg: rgba(212, 175, 55, 0.1);
+        }
+
+        body.dark-mode {
+            --main-bg: #121212;
+            --paper-bg: #1e1e1e;
+            --text-color: #d1d1d1;
+            --sidebar-bg: #1a1a1a;
+            --border-color: #333333;
+            --accent-color: #f9e79f; /* ダークモード用の明るいゴールド */
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ツールバー */
+        .toolbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: 50px;
+            background: var(--paper-bg);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .toolbar button {
+            margin-left: 10px;
+            padding: 5px 12px;
+            cursor: pointer;
+            background: var(--main-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .toolbar button:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* サイドバー調整 */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            overflow-y: auto;
+            padding: 20px 0 100px 0;
+            transition: background 0.3s;
+            scrollbar-width: thin;
+        }
+
+        /* Chrome/Safari用スクロールバー細分化 */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .sidebar-header { padding: 0 25px; margin-bottom: 20px; }
+        .sidebar-header h2 { font-size: 1.3em; color: var(--accent-color); margin-bottom: 5px; }
+        .sidebar-header p { font-size: 0.8em; color: #888; margin: 0; }
+
+        .episode-list { list-style: none; padding: 0; margin: 0; padding-bottom: 50px; }
+        .episode-list li a {
+            display: block;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .episode-list li a:hover { background-color: var(--hover-bg); color: var(--accent-color); }
+        .episode-list li a.active {
+            background-color: var(--active-bg);
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 50px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .paper {
+            background-color: var(--paper-bg);
+            max-width: 750px;
+            width: 90%;
+            padding: 60px 60px;
+            margin: 40px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+            line-height: 2.3; /* 少し広げて読みやすく */
+            position: relative;
+        }
+
+        /* ゴールドの装飾を少し追加 */
+        .paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .size-s { font-size: 0.9em; }
+        .size-m { font-size: 1.1em; }
+        .size-l { font-size: 1.3em; }
+
+        .episode-title {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color);
+            padding-bottom: 20px;
+            position: relative;
+        }
+        
+        .episode-title::after {
+            content: '✦'; /* 砂漠の星 */
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-color);
+            font-size: 0.7em;
+        }
+
+        .content p { margin-bottom: 2em; text-indent: 1em; }
+        .separator { text-align: center; margin: 50px 0; letter-spacing: 0.5em; color: var(--accent-color); font-size: 0.8em; }
+
+        /* 非表示用 */
+        .episode-content { display: none; }
+        .episode-content.active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+/* メディアクエリ */
+@media (max-width: 900px) {
+    .sidebar { 
+        position: static;
+        display: block;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 20px 0;
+    }
+    .toolbar { left: 0; width: 100%; }
+    .main-content { 
+        margin-left: 0; 
+        margin-top: 50px; 
+    }
+    .paper { padding: 40px 20px; width: 95%; margin: 20px auto; }
+    .episode-title { font-size: 1.5em; }
+}
+    </style>
+</head>
+<body class="dark-mode size-m">
+
+<div class="toolbar">
+    <button onclick="changeSize('s')">小</button>
+    <button onclick="changeSize('m')">中</button>
+    <button onclick="changeSize('l')">大</button>
+    <button onclick="toggleLight()">昼/夜切替</button>
+</div>
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h2>砂漠の落日</h2>
+        <p>〜テロの連鎖を断つ大統領〜</p>
+    </div>
+    <ul class="episode-list">
+        <li><a onclick="showEpisode(1)" id="link-1" class="active">第一話：カスピ海の影</a></li>
+<li><a onclick="showEpisode(2)" id="link-2">第二話：二つの画面</a></li>
+<li><a onclick="showEpisode(3)" id="link-3">第三話：ベネズエラからの伝言</a></li>
+<li><a onclick="showEpisode(4)" id="link-4">第四話：ホワイトハウスの執務室</a></li>
+<li><a onclick="showEpisode(5)" id="link-5">第五話：ゲートキーパーの抵抗</a></li>
+<li><a onclick="showEpisode(6)" id="link-6">第六話：沈黙を破るツイート</a></li>
+<li><a onclick="showEpisode(7)" id="link-7">第七話：テヘランの地下室</a></li>
+<li><a onclick="showEpisode(8)" id="link-8">第八話：資金源の断絶</a></li>
+<li><a onclick="showEpisode(9)" id="link-9">第九話：メディアの聖域</a></li>
+<li><a onclick="showEpisode(10)" id="link-10">第十話：カライマの反乱</a></li>
+<li><a onclick="showEpisode(11)" id="link-11">第十一話：深夜の現金パレット</a></li>
+<li><a onclick="showEpisode(12)" id="link-12">第十二話：ノーベル平和賞の裏帳簿</a></li>
+<li><a onclick="showEpisode(13)" id="link-13">第十三話：ソレイマニの終焉</a></li>
+<li><a onclick="showEpisode(14)" id="link-14">第十四話：捏造された怒り</a></li>
+<li><a onclick="showEpisode(15)" id="link-15">第十五話：ファクトチェックの崩壊</a></li>
+<li><a onclick="showEpisode(16)" id="link-16">第十六話：イラン国民の「開国」</a></li>
+<li><a onclick="showEpisode(17)" id="link-17">第十七話：核合意の正体</a></li>
+<li><a onclick="showEpisode(18)" id="link-18">第十八話：イラン・リストの衝撃</a></li>
+<li><a onclick="showEpisode(19)" id="link-19">第十九話：逃げ場のないスタジオ</a></li>
+<li><a onclick="showEpisode(20)" id="link-20">第二十話：テヘランの壁が落ちる日</a></li>
+<li><a onclick="showEpisode(21)" id="link-21">第二十一話：ベネズエラの再起</a></li>
+<li><a onclick="showEpisode(22)" id="link-22">第二十二話：オールドメディアの国葬</a></li>
+<li><a onclick="showEpisode(23)" id="link-23">第二十三話：エリックの帰還</a></li>
+<li><a onclick="showEpisode(24)" id="link-24">第二十四話：新しい時代の朝</a></li>
+        </ul>
+</nav>
+
+<main class="main-content">
+    <article class="paper">
+
+        <div id="ep-1" class="episode-content active">
+            <h1 class="episode-title">第一話：カスピ海の影</h1>
+            <div class="content">
+                <p>カスピ海から吹き付ける風は、塩分と、何か焦げたような匂いを孕んでいた。CIA工作員エリック・バンスは、テヘラン郊外の寂れた港湾地区にある、放棄された倉庫の影に身を潜めていた。彼の視線の先では、黒塗りのトラックが次々と巨大なコンテナ船へ横付けされている。</p>
+                <p>「……確認した。あれは石油じゃない」</p>
+                <p>エリックは極小のマイクに呟いた。暗視スコープ越しに見えるのは、ドラム缶ではなく、厳重に梱包された木箱だ。その隙間から、最新鋭の地対空ミサイルの鈍い光沢がのぞいていた。イラン革命防衛隊のエンブレムをつけた男たちが、怒号と共にそれを積み込んでいく。</p>
+                <p>彼が掴んだのは、イラン国内のインフラ整備に使われるはずだった「核合意」に基づく解除資金が、そのまま中東全域のテロ組織へ武器として流出している決定的な証拠だった。国民がハイパーインフレと食料不足に飢える一方で、独裁者たちは「神聖な戦い」のために数億ドルを砂漠にばら撒いている。</p>
+                <p>エリックは、この国の地下で、トランプ大統領の演説動画を密かに共有し、自由を夢見る若者たちの目を見てきた。彼らの希望は、電波によって検閲されていた。真実は、このカスピ海の影のように、厚い嘘のカーテンの向こう側に隠されている。エリックは撮影したデータを暗号化し、ワシントンへ向けて送信した。</p>
+            </div>
+        </div>
+
+        <div id="ep-2" class="episode-content">
+            <h1 class="episode-title">第二話：二つの画面</h1>
+            <div class="content">
+                <p>ワシントンD.C.のCIA本部。エリックが送った映像が、メインモニターに映し出されていた。そこには、数百万ドルの現金と武器が、テロリストの手に渡る瞬間が克明に記録されている。</p>
+                <p>しかし、エリックのデスクにある小さなテレビでは、大手ニュースネットワークが別の「現実」を報じていた。スタジオのキャスターは、流暢な口調でこう説いている。「イランとの核合意は、中東に永続的な平和をもたらす唯一の道です。トランプ政権の制裁強化は、罪のない市民を苦しめ、国際的な協調を破壊する暴挙です」</p>
+                <p>エリックは、胃が焼け付くような感覚を覚えた。彼が命がけで掴んだ真実は、ワシントンのスタジオで「平和への反逆」として処理されている。オールドメディアは情報の門番（ゲートキーパー）として、自分たちの「融和」という物語に不都合な事実は、存在しないものとして葬り去る。</p>
+                <p>「彼らは、自分たちが守っている『平和』の正体が、テロリストの資金源であることを知らないのか、それとも……」</p>
+                <p>メディアは「人道危機」を叫ぶが、その裏で、解除された資金で製造されたミサイルが、隣国の一般市民に向けられている現実には、決して触れようとしない。エリックはテレビの電源を切り、執務室へ向かった。そこでは、大統領が彼を待っているはずだ。</p>
+            </div>
+        </div>
+
+        <div id="ep-3" class="episode-content">
+            <h1 class="episode-title">第三話：ベネズエラからの伝言</h1>
+            <div class="content">
+                <p>イランから大西洋を越えた南米ベネズエラ。エリックは、首都カラカスのスラム街に立っていた。ここは、石油利権で結ばれたイランの独裁政権が、その影響力を南米へ伸ばすための拠点でもあった。</p>
+                <p>「アミーゴ、これを見てくれ」</p>
+                <p>現地の反政府活動家の男が、エリックに古びたスマートフォンを差し出した。そこには、軍が食料を求めてデモをする市民に対し、躊躇なく発砲する映像が映っていた。画面の隅には、イラン製の装甲車が見える。</p>
+                <p>「俺たちは、毎日石油の上に座りながら、子供に飲ませるミルクもない。だが、メディアは『米国の経済封鎖が原因だ』としか言わない。嘘つきだ。俺たちを搾取しているのは、ワシントンじゃなく、この国の独裁者とテロリストだ！」</p>
+                <p>男の悲鳴のような訴えは、米国のオールドメディアには決して届かない。彼らはこれを「内政干渉」という言葉で封じ込め、独裁政権への批判を「排外主義」とレッテル貼りする。</p>
+                <p>イラン国民の飢えと、ベネズエラ市民の怒り。二つの国で見たのは、独裁とテロが織りなす「同じ地獄」だった。そして、その地獄を隠蔽するために、メディアが沈黙の壁を築いている。エリックは、自分の中にある葛藤が、確固たる決意に変わるのを感じた。</p>
+                <div class="separator">（続く）</div>
+            </div>
+        </div>
+        <div id="ep-4" class="episode-content">
+            <h1 class="episode-title">第四話：ホワイトハウスの執務室</h1>
+            <div class="content">
+                <p>重厚なオーク材のデスク、通称『レゾリュート・デスク』。その前に立つエリックに対し、トランプ大統領は鋭い眼光を向けた。机の上には、エリックが命がけで持ち帰った「裏の帳簿」が広げられている。</p>
+                <p>「エリック、よくやった。この数字を見ろ。前政権が『核合意』の引き換えに、深夜の滑走路でパレット積みの現金をイランへ送った。メディアはあれを正当な返還金だと報じたが、実際にはテロの給料袋だったわけだ」</p>
+                <p>トランプは分厚い資料の一枚を指で弾いた。そこには、特定の海外口座を経由して、テロ組織『ヒズボラ』へ流れた送金記録が記されている。その承認印の影に、ある人物のコードネームが刻まれていた。</p>
+                <p>「平和賞を受賞した男が、世界で最も血に汚れたパレットを用意していた。皮肉なものだな。彼は今もワシントンの豪邸から、メディアと司法省を操り、私の邪魔をしている。だが、その聖者の仮面を剥ぎ取る時が来た」</p>
+            </div>
+        </div>
+
+        <div id="ep-5" class="episode-content">
+            <h1 class="episode-title">第五話：ゲートキーパーの抵抗</h1>
+            <div class="content">
+                <p>トランプがイランへの制裁再開と「現金パレットの再調査」を宣言した翌朝、メディアは一斉に牙を剥いた。ニューヨーク・タイムズの社説は「前政権の遺産を破壊する、個人的な復讐心」と断じ、JBCの朝のニュースでは三木教授が涙ながらに訴えた。</p>
+                <p>「これは国際秩序への挑戦です。バラク・オバマ氏が築き上げた対話の歴史を、一晩で灰にするつもりですか？」</p>
+                <p>画面の向こう側で、洗練されたスーツに身を包んだオバマ元大統領が、慈善事業のシンポジウムで静かに微笑んでいる。その知的な微笑みこそが、もっとも強力な検閲だった。彼を批判することは、知性と平和への反逆であると、メディアは国民に刷り込んできたのだ。エリックは確信した。この国で最も守られている「聖域」は、教会でも議会でもなく、この男の過去だ。</p>
+            </div>
+        </div>
+
+        <div id="ep-6" class="episode-content">
+            <h1 class="episode-title">第六話：沈黙を破るツイート</h1>
+            <div class="content">
+                <p>「テロ国家に1ドルも渡さない。前政権の『血のパレット』は、アメリカ市民への裏切りだ」。トランプの一言がSNSを駆け巡った。それは、メディアが必死に維持してきた「美しい物語」への宣戦布告だった。</p>
+                <p>それまで「陰謀論」として片付けられていた、深夜の空港での現金受け渡し映像が、一般ユーザーの手によって次々と拡散される。メディアは「ファクトチェック」の名の下にこれらを削除しようとするが、一度溢れ出した真実の奔流は止まらない。</p>
+                <p>「彼らは、自分たちのヒーローがテロリストの財布だったという事実を認めるわけにはいかないんだ」。エリックは、情報の最前線で戦う一条蓮と連絡を取り合った。日本でも、この『砂漠の落日』を報じないメディアへの疑念が、静かに、しかし確実に広がり始めていた。</p>
+            </div>
+        </div>
+
+        <div id="ep-7" class="episode-content">
+            <h1 class="episode-title">第七話：テヘランの地下室</h1>
+            <div class="content">
+                <p>再びイラン。テヘランの埃っぽい地下室で、エリックは現地の大学生数名とモニターを囲んでいた。彼らはVPNを使い、当局の監視をかいくぐってトランプの演説を見ていた。</p>
+                <p>「バンスさん、聞いてくれ。オバマが金を送った年、私たちの生活は少しも良くならなかった。代わりに、街に秘密警察が増え、隣国の戦争に行くための徴兵が厳しくなっただけだ」</p>
+                <p>一人の若者が、タブレットに映るオバマの写真を指さした。「この男は、私たちの自由を売って、自分の『業績』を買ったんだ。彼は私たちの味方じゃない。独裁者の友人だ」。地下室の壁には、トランプがかつて放った「我々はあなたたちの戦いを見守っている」という言葉が、ペルシャ語で力強く書かれていた。</p>
+            </div>
+        </div>
+
+        <div id="ep-8" class="episode-content">
+            <h1 class="episode-title">第八話：資金源の断絶</h1>
+            <div class="content">
+                <p>制裁の効果は劇的だった。テロ組織『ヒズボラ』の戦闘員たちが、「給料が支払われない」として戦線を離脱し始めたのだ。パレット積みの現金が尽き、銀行口座が凍結されたことで、中東を覆っていた死のネットワークが麻痺していく。</p>
+                <p>「ボス、資金が底をつきました」。イラン革命防衛隊の司令官が、影に向かって電話で報告する。電話の主は、ワシントンの邸宅で高級ワインを傾けながら、窓の外を見つめていた。その優雅な指先が、テーブルの上の「イラン核合意」の記念ペンを弄んでいる。</p>
+                <p>「……焦ることはない。メディアを使って『人道危機』を最大限に煽らせろ。共和党内の中道派にも圧力をかけろ。トランプを『飢餓の主犯』に仕立て上げるんだ」。影の黒幕、バラク・オバマの静かな声が、大西洋を越えてテロの司令部へと届いた。</p>
+            </div>
+        </div>
+
+        <div id="ep-9" class="episode-content">
+            <h1 class="episode-title">第九話：メディアの聖域</h1>
+            <div class="content">
+                <p>エリックが掴んだ新たな証拠は、衝撃的なものだった。オバマ政権下の高官たちが、退任後にイランとの取引を仲介するコンサルティング会社を設立し、数百万ドルの「成功報酬」を受け取っていたのだ。これこそが、メディアが決して報じない「平和のビジネスモデル」だった。</p>
+                <p>エリックはこのデータを、日本の一条蓮へ転送した。「一条、日本のメディアもこれに関与しているはずだ。イラン政府から、特定のキャスターや教授へ、文化交流という名目で資金が流れている」</p>
+                <p>「了解した、エリック。こちらでも『リスト』の精査を始める。エプスタインの時と同じだ。彼らは正義を語りながら、その財布はテロリストの金で膨らんでいる」。メディアという聖域の防壁が、ゴールドの光線に焼かれ、ひび割れ始めていた。</p>
+            </div>
+        </div>
+
+        <div id="ep-10" class="episode-content">
+            <h1 class="episode-title">第十話：カライマの反乱</h1>
+            <div class="content">
+                <p>ベネズエラ、カライマ地区。イランからのテロ資金が途絶えたことで、独裁政権が雇っていた傭兵たちが武器を置き始めた。その隙を突いて、市民たちが大統領府へと行進を開始する。</p>
+                <p>「リベルタッ！（自由を！）」</p>
+                <p>数万人の群衆が、かつて自分たちを弾圧していた装甲車を包囲する。その装甲車のエンジンは、イランの部品が届かず、黒い煙を吐いて停止していた。メディアはこれを「不法なクーデター」と報じ、オバマは声明で「民主的な秩序への回帰」を求めたが、現場の市民にとっての秩序とは、飢えと弾圧でしかなかった。</p>
+                <p>エリックは群衆の中で、一人の少女がトランプの似顔絵が描かれた旗を振っているのを見た。ワシントンの影の黒幕がいくら美しい言葉を重ねても、自由の味を知った民衆を止めることはできない。砂漠の落日は、独裁者たちの終わりの始まりを告げていた。</p>
+                <div class="separator">（続く）</div>
+            </div>
+        </div>
+        <div id="ep-11" class="episode-content">
+            <h1 class="episode-title">第十一話：深夜の現金パレット</h1>
+            <div class="content">
+                <p>2016年、深夜のテヘラン空港。エリックの手元にある未公開写真には、C-130輸送機から運び出される「パレット積みの現金」が鮮明に写っていた。額面にして17億ドル。当時のオバマ政権はこれを「正当な和解金」と呼んだが、エリックがズームしたパレットの側面には、小さな、しかし決定的な『行き先コード』が記されていた。</p>
+                <p>「レバノン、シリア、そしてイエメン……。これは返還金じゃない。中東を火の海にするための『前払い金』だ」。エリックは、その配送指示書に、当時の国務省高官と、オバマ個人の財団（オバマ・センター）に関係する人物のサインがあることを突き止める。</p>
+                <p>オバマはこの現金でイランに「恩」を売り、自らのノーベル賞の体裁を保つ「偽りの平和」を買い取った。その裏で、テロの炎はパレットの現金によって勢いを増していた。トランプはこの写真を手に、ホワイトハウスの受話器を取った。「サウジのサルマン国王、準備はいいか。パレットの主を変える時間だ」</p>
+            </div>
+        </div>
+
+        <div id="ep-12" class="episode-content">
+            <h1 class="episode-title">第十二話：ノーベル平和賞の裏帳簿</h1>
+            <div class="content">
+                <p>ワシントンD.C.の地下オフィスでは、バラク・オバマが苛立ちを隠せずにいた。彼の「影の政府（ディープステート）」は、メディアを使ってトランプを『戦争狂』と書き立てさせていたが、現実は正反対だった。</p>
+                <p>トランプはイスラエルのネタニヤフ、そしてサウジアラビアのムハンマド皇太子（MBS）との間で、歴史的な密約「アブラハム合意」のさらに先を行く包囲網を完成させていた。イランを孤立させるのは、軍事力ではない。イランを支える「金流」を、中東諸国自らが断つという、したたかな根回しだ。</p>
+                <p>「トランプはチェス盤をひっくり返すつもりだ」。オバマは側近に命じた。「JBCに伝えろ。イランの市民が制裁で死んでいるというフェイクニュースを24時間流し続けろ。平和賞の威信にかけて、あの男を人道に対する罪で告発する準備をしろ」</p>
+            </div>
+        </div>
+
+        <div id="ep-13" class="episode-content">
+            <h1 class="episode-title">第十三話：ソレイマニの終焉</h1>
+            <div class="content">
+                <p>バグダッド空港付近。エリックは暗視ゴーグル越しに、一台の車両が空からの「審判」を受ける瞬間を目撃した。精密誘導ミサイル『R9X』。爆発音は最小限。しかし、イラン革命防衛隊の「テロの天才」ソレイマニは、その存在を消滅させた。</p>
+                <p>この瞬間、世界中のメディアはパニックに陥った。「第三次世界大戦の始まりだ！」「無謀な暗殺！」という見出しが踊る。しかし、トランプは冷徹だった。この排除は、ハメネイ最高指導者への最後通牒であると同時に、北京への強烈なメッセージでもあったのだ。</p>
+                <p>イランは中国にとって「一帯一路」の急所であり、ドルの支配から逃れるための石油の供給源だった。トランプはその急所を、一滴の米兵の血も流さずに、ピンポイントで外科手術のように摘出した。これこそがトランプ流の『四次元チェス』。メディアが「混乱」と呼ぶものは、トランプにとっては「計算された整理」に過ぎなかった。</p>
+            </div>
+        </div>
+
+        <div id="ep-14" class="episode-content">
+            <h1 class="episode-title">第十四話：捏造された怒り</h1>
+            <div class="content">
+                <p>ソレイマニの葬儀。テヘランの街を埋め尽くす「嘆き悲しむ数百万の群衆」を、BBCやCNNは「国民の団結」として報じた。だが、エリックは現場から真実を伝えていた。群衆の多くは公務員であり、参列しなければ解雇や逮捕をちらつかされた「動員されたエキストラ」だった。</p>
+                <p>「エリック、これを日本の一条蓮に送れ」。トランプからの指示が届く。エリックが捉えたのは、葬儀の裏側で、イラン当局が参加者に「現金」と「配給券」を配っている現場の映像だった。かつてオバマが送った現金パレットが、今度は「悲しみの演出」のための小道具として使われていたのだ。</p>
+                <p>一条蓮は即座にこれをネット上で公開。日本のワイドショーが「イランの怒りは限界に達しています」と報じる中、ネット上では「サクラの葬式」というタグがトレンドを支配した。情報の門番たちは、自分たちの足元が空洞化していることにまだ気づいていない。</p>
+            </div>
+        </div>
+
+        <div id="ep-15" class="episode-content">
+            <h1 class="episode-title">第十五話：ファクトチェックの崩壊</h1>
+            <div class="content">
+                <p>JBCのスタジオ。多摩川融は焦燥に駆られていた。「一条氏が拡散している映像は、出所不明のデマです！ 専門家によれば……」。その瞬間、スタジオの大型モニターがハッキングされたかのように切り替わった。</p>
+                <p>映し出されたのは、米財務省が公開したばかりの「イラン制裁逃れ協力者リスト」だった。そこには、JBCの親会社が出資する商社の名前、そして多摩川自身の「文化講演料」名目での入金記録が赤字で強調されていた。</p>
+                <p>「ファクトチェックをしましょうか、多摩川さん」。一条蓮の冷ややかな声がスタジオに響く。彼らが「デマ」と呼んでいたのは、自分たちの犯罪を暴く「真実」そのものだった。メディアが築き上げた欺瞞の城壁は、内側からの腐敗と、外側からの精密なリークによって粉々に砕け散った。</p>
+            </div>
+        </div>
+
+        <div id="ep-16" class="episode-content">
+            <h1 class="episode-title">第十六話：イラン国民の「開国」</h1>
+            <div class="content">
+                <p>テヘランの大学都市。ついに我慢の限界を超えた若者たちが、ハメネイの肖像画を破り捨てた。彼らが掲げていたのは、かつてオバマが無視した「2009年の緑の革命」の時とは違う、確信に満ちたスローガンだった。</p>
+                <p>「中国への売国を止めろ！ 我々の金をテロに使うな！」。彼らは知っていた。トランプがイランのテロ組織を叩き潰したのは、イラン国民を苦しめるためではなく、ハメネイと中国の「共犯関係」を終わらせ、イランを再び世界の市場へと戻すため（開国）であることを。</p>
+                <p>トランプの四次元チェスが、ついに王手（チェックメイト）をかける。中国はイランからの安価な石油供給を絶たれ、国内経済が悲鳴を上げ始めた。オバマが守ろうとした『闇の秩序』は、砂漠の太陽の下で完全に露呈し、焼かれようとしていた。エリックは、自由の旗を振る若者たちの列に、新しい時代の息吹を感じた。</p>
+                <div class="separator">（続く）</div>
+            </div>
+        </div>
+        <div id="ep-17" class="episode-content">
+            <h1 class="episode-title">第十七話：核合意の正体</h1>
+            <div class="content">
+                <p>エリックがテヘランの通信局からサルベージした暗号データには、核開発の進捗以上の戦慄すべき記録が残されていた。バラク・オバマが主導した『核合意（JCPOA）』の真の目的。それは、イランを西側の監視から外れた「巨大な洗浄機（ランドリー）」にすることだった。</p>
+                <p>合意によって制裁が解除された瞬間、イランを経由して欧州の銀行、そして中国のペーパーカンパニーへと、出所不明の巨額資金が還流し始めていた。その中には、米国市民の税金から捻出された「人道支援金」も含まれている。「彼らは核を止めるふりをして、世界最大の裏金ルートを構築したんだ」。</p>
+                <p>トランプはこの報告を受け、ホワイトハウスの地下室で静かに笑った。「平和の代償が、テロの軍資金とグローバリストのポケットマネーか。エリック、この洗浄機のプラグを抜け。世界中のゴールド（真実）が、どこへ流れているか白日の下に晒すんだ」。</p>
+            </div>
+        </div>
+
+        <div id="ep-18" class="episode-content">
+            <h1 class="episode-title">第十八話：イラン・リストの衝撃</h1>
+            <div class="content">
+                <p>トランプが署名した一通の大統領令により、機密解除された『イラン・リスト』が全世界に公開された。そこには、核合意を熱烈に支持していた欧米の政治家、そして日本のメディア幹部の実名と、彼らがイランのフロント企業から受け取っていた「コンサルティング料」の額が克明に記されていた。</p>
+                <p>「これは、報道じゃない。ただの広報活動だ」。日本の一条蓮は、リストに載ったJBCの解説委員たちの名前を画面に映し出し、リアルタイムでその「偏向の対価」を告発した。昨日まで「人道的見地」を説いていた者たちが、実はテロ国家の給料袋で動いていた。その衝撃は、オールドメディアの最後の信頼を粉々に打ち砕いた。</p>
+                <p>リストの最上段には、依然として黒塗りの部分が残っていた。しかし、その黒塗りの筆致こそが、ワシントンの邸宅に潜む「影の黒幕」の存在を雄弁に物語っていた。</p>
+            </div>
+        </div>
+
+        <div id="ep-19" class="episode-content">
+            <h1 class="episode-title">第十九話：逃げ場のないスタジオ</h1>
+            <div class="content">
+                <p>JBCのメインスタジオ。多摩川融は、カメラが回っていることも忘れ、手元のリストを凝視したまま凍りついていた。「これ……これは何かの間違いだ。トランプ政権による捏造だ！」。必死の叫びも、もはや視聴者には届かない。SNS上では、彼がイラン大使館主催のパーティーで満面の笑みを浮かべる写真が拡散されていた。</p>
+                <p>その時、スタジオの副調整室に、米連邦捜査局（FBI）からの正式な協力要請が届く。容疑は「外国代理人登録法（FARA）」違反、およびテロ資金供与への加担。カメラマンは自らの意志でレンズを多摩川の震える指先に向け、ズームした。それは、一人のメディア人が「権力の犬」から「真実の生贄」へと変わる瞬間だった。</p>
+                <p>一方、ワシントンのオバマは、テレビを消し、静かに側近に告げた。「メディアという盾はもう使えない。司法省の中にある『我々の友人』を動かせ。トランプを別のスキャンダルで包囲するんだ」。</p>
+            </div>
+        </div>
+
+        <div id="ep-20" class="episode-content">
+            <h1 class="episode-title">第二十話：テヘランの壁が落ちる日</h1>
+            <div class="content">
+                <p>テヘラン。かつてソレイマニの巨大な肖像画が掲げられていた広場は、いまや自由を求める数万人の若者たちで埋め尽くされていた。革命防衛隊の兵士たちも、給料が途絶え、指揮系統が崩壊したことで、次々と武器を置いて民衆に合流し始める。ハメネイの支配を支えていたのは「信仰」ではなく、オバマがパレットで送った「現金」だったことが証明されたのだ。</p>
+                <p>エリックは群衆の中で、一人の若者が「NO MORE OBAMA, THANK YOU TRUMP」と書かれた段ボールを掲げているのを見た。オバマが築いた「偽りの対話」という壁が崩れ、イラン国民はついに自分たちの足で歩き始めた。それは、中東全域を覆っていた暗雲が晴れ、ゴールドの朝日が差し込む瞬間だった。</p>
+                <p>「ハメネイが亡命を求めて北京に打診したそうだ」。エリックはトランプに報告した。「させないよ」とトランプは答えた。「彼は逃げられない。四次元チェスの終盤戦（エンドゲーム）だ」。</p>
+            </div>
+        </div>
+
+        <div id="ep-21" class="episode-content">
+            <h1 class="episode-title">第二十一話：ベネズエラの再起</h1>
+            <div class="content">
+                <p>中東の崩壊は、即座に南米ベネズエラへと連鎖した。イランからの技術支援と資金が完全に断たれたことで、マドゥロ政権の独裁装置は音を立てて停止した。カラカスの大統領府を包囲したのは、もはや「暴徒」ではない。自由な選挙と、汚職のない未来を求める、誇り高い国民たちだった。</p>
+                <p>中国の「一帯一路」という名の債務の罠も、トランプが主導する国際的な債務再編によって無効化されつつあった。北京はイランとベネズエラという二つの「石油の財布」を同時に失い、その覇権戦略は根本から揺らぎ始めた。トランプのチェス盤の上で、中国の持ち駒は一つずつ、確実に消されていった。</p>
+                <p>「これが、私が言った『勝利』だ」。トランプはペンを置き、窓の外のワシントン記念塔を見つめた。戦わずして、敵の拠点を全て落とす。これこそが、かつてオバマが「不可能だ」と嘲笑した、トランプのリアリズムだった。</p>
+            </div>
+        </div>
+
+        <div id="ep-22" class="episode-content">
+            <h1 class="episode-title">第二十二話：オールドメディアの国葬</h1>
+            <div class="content">
+                <p>一週間後、JBCは放送免許の取り消しを待たずして、広告収入の完全停止により破産を申請した。スタジオは静まり返り、かつて「真実の番人」を自称したキャスターたちは、足早に社屋を去っていった。それは、一つの時代の終わりであり、メディアという巨大な虚構の「国葬」だった。</p>
+                <p>一条蓮は、誰もいなくなったJBCのロビーに立ち、スマホのライブ配信を開始した。「皆さん、門番（ゲートキーパー）はいなくなりました。今日からは、あなたがニュースを選び、あなたが真実を検証する時代です」。彼の背後のモニターには、再建が始まったテヘランの街並みが映っていた。</p>
+                <p>一方、ワシントンの「影の支配者」は、まだ諦めていなかった。オバマはプライベートジェットのタラップを登りながら、タブレット端末で次の計画を確認していた。「トランプ、君は戦術には勝った。だが、世界を支配する『システム』そのものは、まだ私の手の中にある」。次なる戦いの舞台は、シリコンバレー、そして宇宙へと移ろうとしていた。</p>
+                <div class="separator">（続く）</div>
+            </div>
+        </div>
+        <div id="ep-23" class="episode-content">
+            <h1 class="episode-title">第二十三話：エリックの帰還</h1>
+            <div class="content">
+                <p>ワシントンD.C.近郊、アンドルーズ空軍基地。早朝の冷気の中、一台のガルフストリームが静かに着陸した。タラップを降りてきたエリック・バンスを待っていたのは、大統領専用車（ビースト）と、窓越しに不敵な笑みを浮かべるトランプ大統領だった。</p>
+                <p>「エリック、砂漠の砂は落としてきたか？ 君のリークのおかげで、中東のテロ資金源は干上がった。中国の『石油の財布』も空っぽだ。世界は少しだけ、まともな場所になったな」。トランプは車内でエリックに厚い封筒を差し出した。中には、次なる任務の断片が記された衛星写真が入っていた。</p>
+                <p>「だが、まだ終わっていない。イランのパレットから消えた金の一部が、東欧の凍土（ウクライナ）で、さらに巨大な『洗濯機』に投入されている。バラク・オバマ、そしてジョージ・ソロス……。彼らが4年以上にわたってウクライナ支援を隠れ蓑に、EUの官僚たちと共謀して行っている、人類史上最大規模のマネーローンダリングだ」。</p>
+                <p>エリックは写真に写る、キエフ近郊の地下貯蔵庫に積まれた「支援物資」という名の武器と現金の山を凝視した。「砂漠の次は、氷の国ですか」。トランプは頷いた。「今度は一人じゃない。日本の一条蓮、そして欧州の反グローバリズム勢力が君を待っている。彼らの『オープン・ソサエティ』という名の檻をぶち破れ」。</p>
+            </div>
+        </div>
+
+        <div id="ep-24" class="episode-content">
+            <h1 class="episode-title">第二十四話：新しい時代の朝</h1>
+            <div class="content">
+                <p>銀座の朝。一条蓮は、新しく設立された独立系ニュース財団のオフィスで、エリックからの暗号通信を受信した。画面には、ウクライナの戦火の影で蠢く、ソロス財団の資金フローが浮かび上がっている。「中東の『情報の開国』は成功した。次は、欧州を支配する『人道的利権』の解体か……」。</p>
+                <p>日本のテレビでは、相変わらず「ウクライナを救え」という情緒的なプロパガンダが流れている。しかし、視聴者のコメント欄には、かつてのような盲信はない。「その支援金、どこへ消えているんだ？」「ソロスの影があるぞ」。国民のリテラシーという『ゴールドの盾』は、確実に磨き上げられていた。</p>
+                <p>「エリック、準備はできている」。一条はメッセージを返し、窓の外に広がる日本の夜明けを見つめた。トランプの四次元チェスは、今や地球規模の最終決戦（エンドゲーム）へと突入した。バラク・オバマが残した負の遺産、そしてジョージ・ソロスが築き上げた偽りの秩序。それらを一掃するための、新たな戦いの鐘が鳴り響く。</p>
+                <p>砂漠の落日は、東欧の凍土を溶かす情熱の朝日へと変わる。トランプ大統領、エリック、そして一条蓮。真実を武器にする者たちの共闘は、ここからが本番だ。世界を、そして真実を、再び自分たちの手に取り戻すために。</p>
+                <div class="separator">SEASON 2 FINISHED</div>
+                <div class="separator" style="color: var(--accent-color); font-weight: bold;">COMING SOON: SEASON 3 "FROZEN CHAINS"</div>
+            </div>
+        </div>
+
+        </article>
+</main>
+
+<script>
+    function showEpisode(num) {
+        document.querySelectorAll('.episode-content').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('ep-' + num);
+        if (target) target.classList.add('active');
+        
+        document.querySelectorAll('.episode-list li a').forEach(el => el.classList.remove('active'));
+        const link = document.getElementById('link-' + num);
+        if (link) link.classList.add('active');
+        
+        // ページ上部へスクロール
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function changeSize(s) {
+        document.body.classList.remove('size-s', 'size-m', 'size-l');
+        document.body.classList.add('size-' + s);
+    }
+
+    function toggleLight() {
+        document.body.classList.toggle('dark-mode');
+    }
+</script>
+
+</body>
+</html>
