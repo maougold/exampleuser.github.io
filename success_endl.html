@@ -2,83 +2,355 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>CONFIDENTIAL: SUCCESS</title>
+    <title>THE FINAL CHAMBER: ETERNAL GLORY</title>
     <style>
         body {
             background-color: #000;
-            color: #fff;
-            font-family: 'Hiragino Mincho ProN', serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            color: #e0e0e0; /* 読みやすいオフホワイト */
+            font-family: 'Times New Roman', 'Hiragino Mincho ProN', serif;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            overflow: hidden; /* スクロールバーを隠す */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
         }
-        #message-box {
-            max-width: 600px;
-            padding: 40px;
-            background: linear-gradient(135deg, rgba(201, 24, 74, 0.1), rgba(0, 0, 0, 0.9));
-            border-left: 5px solid #c9184a;
-            box-shadow: 0 0 50px rgba(201, 24, 74, 0.3);
+
+        /* エンドロールのコンテナ */
+        .crawl-container {
+            position: absolute;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            /* 文章量と読みやすさに合わせて時間を調整（75秒） */
+            animation: scrollUp 75s linear forwards;
+            top: 100vh;
+        }
+
+        @keyframes scrollUp {
+            0% { top: 100vh; }
+            100% { top: -4800px; } /* 文章の長さに合わせて調整 */
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 3rem;
+            letter-spacing: 1rem;
+            margin-bottom: 300px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 2.2; /* 行間を広くして読みやすく */
+            margin-bottom: 80px; /* 段落間の余白 */
+            letter-spacing: 0.1rem;
+        }
+
+        /* 要所で輝く文字（ゴールド） */
+        .highlight {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.4rem;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+            display: inline-block; /* アニメーション用 */
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+            to { text-shadow: 0 0 25px rgba(212, 175, 55, 1); }
+        }
+
+        /* 最後の勲章付きゴールドボタン */
+        #final-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 3s ease forwards;
+            visibility: hidden;
+            transition: opacity 2s ease;
+            z-index: 100;
         }
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
+
+        .show-seal {
+            opacity: 1 !important;
+            visibility: visible !important;
         }
-        h1 { color: #c9184a; font-size: 1.5rem; letter-spacing: 0.2rem; }
-        p { line-height: 2; letter-spacing: 0.1rem; color: #f8f8f8; }
-        .glitch-text { color: #ff8fb1; font-weight: bold; }
-        #back-home {
+
+        .medal {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8));
+        }
+
+        #exit-btn {
             display: inline-block;
             margin-top: 30px;
-            color: #888;
+            padding: 15px 50px;
+            color: #000;
+            background: linear-gradient(135deg, #d4af37, #f0e68c);
             text-decoration: none;
-            font-size: 0.8rem;
-            border-bottom: 1px solid #444;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
             transition: 0.3s;
+            border: none;
+            cursor: pointer;
         }
-        #back-home:hover { color: #fff; border-color: #fff; }
+
+        #exit-btn:hover {
+            background: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        }
     </style>
 </head>
 <body onclick="playAmbient()">
-    <div id="message-box">
-        <h1>ACCESS GRANTED.</h1>
+
+    <div class="crawl-container" id="crawl-text">
+        <h1>ASCENSION</h1>
+
         <p>
-            ……ふふ。本当の正解にたどり着くなんて。<br>
-            私の仕掛けた「月の鍵」を解いたのは、貴方が初めてかもしれないわね。
+            おめでとうございます。<br>
+            名も知れぬ探求者よ。
         </p>
+
         <p>
-            表側の世界では、いつも政治や真実の追求で騒がしくしているけれど、<br>
-            この場所にあるのは、私だけの<span class="glitch-text">「特別なプライベート」</span>。
+            あなたは今、<br>
+            この世で最も神聖にして、<br>
+            最も不可能に近い偉業を、<br>
+            成し遂げてしまいました。
         </p>
+
         <p>
-            ここまで来てくれた貴方には、私の本音を少しだけ。<br>
-            ……バレンタインの夜に、秘密を共有できる人がいる。それだけで、私の世界は少しだけ優しくなるの。
+            そう——<br>
+            「秘密の部屋」の、<br>
+            最奥、最終の間。
         </p>
-        <p style="text-align: right;">— Elise Vanessa</p>
-        
-        <a href="top.html" id="back-home">表の世界へ戻る</a>
+
+        <p>
+            誰も知り得なかったはずの暗号を解き、<br>
+            誰も踏み入れなかったはずの扉を開き、<br>
+            ここに、立っているのです。✨🗝️
+        </p>
+
+        <p>
+            あなたは最初、ただの偶然か、<br>
+            あるいは好奇心の導きによって、<br>
+            この場所の存在を知った。
+        </p>
+
+        <p>
+            しかし、そこからが、<br>
+            本当の試練の始まりでした。
+        </p>
+
+        <p>
+            普通の人間なら、<br>
+            「面倒くさい」でスマホを閉じ、<br>
+            Netflixを再生するところで、<br>
+            終わっていたはずです。
+        </p>
+
+        <p>
+            ところがあなたは、違った。
+        </p>
+
+        <p>
+            深夜のコーヒーを何杯も飲み干しながら、<br>
+            古代文字の資料を漁り、<br>
+            忘れられたフォーラムを掘り起こし……
+        </p>
+
+        <p>
+            ついに最初の暗号を解読した。
+        </p>
+
+        <p>
+            その瞬間、あなたはただの「誰か」から、<br>
+            <span class="highlight">「選ばれし者」</span>へと、<br>
+            変貌したのです。
+        </p>
+
+        <p>
+            二つ目の扉は、さらに狡猾でした。
+        </p>
+
+        <p>
+            数学的パズルと詩的な暗喩が絡み合い、<br>
+            「解ける人間など存在しない」という、<br>
+            嘲笑が聞こえてくるような難問。
+        </p>
+
+        <p>
+            あなたはそこで何度も挫折し、<br>
+            「もういいか」と呟きながら、<br>
+            それでも翌朝にはまた机に向かっていた。
+        </p>
+
+        <p>
+            その<span class="highlight">執念</span>。<br>
+            その忍耐。<br>
+            その狂気じみた献身——
+        </p>
+
+        <p>
+            これぞ、人間が持つ、<br>
+            最も美しい業の形です。
+        </p>
+
+        <p>
+            常人なら発狂するか、<br>
+            諦めるかの二択を迫られる領域。<br>
+            あなたはどちらも選ばなかった。
+        </p>
+
+        <p>
+            ただひたすらに、<br>
+            「もう一歩だけ」と自分に言い聞かせ、<br>
+            闇の中で光を探し続けた。
+        </p>
+
+        <p>
+            そして今。<br>
+            最後の扉が、静かに開いた。
+        </p>
+
+        <p>
+            あなたがここに辿り着いた瞬間、<br>
+            この部屋は、<br>
+            長い眠りから目覚めたのです。
+        </p>
+
+        <p>
+            あなたこそが、<br>
+            この部屋を「発見」した、<br>
+            最初の、そしておそらく最後の人間。
+        </p>
+
+        <p>
+            どうか、今この瞬間を味わってください。
+        </p>
+
+        <p>
+            あなたの瞳に映るこの光景は、<br>
+            どれほど多くの天才が、<br>
+            どれほど多くの人生を費やしても、<br>
+            到達できなかった領域。
+        </p>
+
+        <p>
+            あなたはそれを、<br>
+            ただの「興味」と「諦めない心」だけで、<br>
+            成し遂げた。
+        </p>
+
+        <p>
+            あなたは<span class="highlight">英雄</span>です。
+        </p>
+
+        <p>
+            歴史書に名を残さない英雄。<br>
+            誰にも語られない英雄。
+        </p>
+
+        <p>
+            しかし、それゆえに、<br>
+            最も純粋で、最も高貴な英雄。
+        </p>
+
+        <p>
+            この部屋のすべてが、<br>
+            あなたによって<span class="highlight">「存在」</span>を与えられたのです。
+        </p>
+
+        <p>
+            どうか胸を張ってください。
+        </p>
+
+        <p>
+            あなたは、世界でただ一人の<br>
+            <span class="highlight">「最終の部屋の征服者」</span>です。
+        </p>
+
+        <p>
+            魂は今、<br>
+            永遠の栄光に浴している。
+        </p>
+
+        <p>
+            私はここに、名もなき者として、<br>
+            あなたを心の底から、<br>
+            無限に、果てしなく、<br>
+            べた褒めいたします。
+        </p>
+
+        <p>
+            あなたは素晴らしい。<br>
+            あなたは天才だ。<br>
+            あなたは不屈だ。<br>
+            あなたは美しい。
+        </p>
+
+        <p>
+            あなたは、この宇宙で最も尊い<br>
+            <span class="highlight">「探求の結晶」</span>なのです。
+        </p>
+
+        <p>
+            ……よくぞ、ここまで来てくれた。<br>
+            本当に、本当に、おめでとう。
+        </p>
+
+        <p>
+            永遠に、この栄光を胸に抱き続けてください。<br>
+            あなたに、最大級の敬意と、<br>
+            無限の称賛を。🫡🌟✨
+        </p>
+
+        <div style="margin-top: 600px; font-size: 0.7rem; opacity: 0.5;">
+            RECORDED BY THE ARCHIVE OF ETERNITY
+        </div>
+    </div>
+
+    <div id="final-screen">
+        <div class="medal">🎖️</div>
+        <p>「誇り高き探求者に、敬礼。」</p>
+        <a href="top.html" id="exit-btn">栄光と共に、現実へ戻る</a>
     </div>
 
 <script>
+    const text = document.getElementById('crawl-text');
+    const screen = document.getElementById('final-screen');
     let audioCtx;
+
+    // スクロール終了（アニメーション終了）を検知してボタンを表示
+    text.addEventListener('animationend', () => {
+        screen.classList.add('show-seal');
+    });
+
     function playAmbient() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        // 神秘的な高音を一度だけ鳴らす
-        const osc = audioCtx.createOscillator();
+        // 重厚で神聖な音（サイン波の和音）
+        const o1 = audioCtx.createOscillator();
+        const o2 = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 2);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 3);
+        
+        o1.type = 'sine'; o2.type = 'sine';
+        o1.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+        o2.frequency.setValueAtTime(329.63, audioCtx.currentTime); // E4 (完全五度)
+        
+        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 5);
+        
+        o1.connect(gain); o2.connect(gain); gain.connect(audioCtx.destination);
+        o1.start(); o2.start();
+        o1.stop(audioCtx.currentTime + 5); o2.stop(audioCtx.currentTime + 5);
     }
 </script>
 </body>
