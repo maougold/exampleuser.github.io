@@ -2,230 +2,279 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>NYANKO SLOT | COMPLETE EDITION</title>
+    <title>SEA SIDE SLOT | GORGEOUS GOLD</title>
     <style>
+        /* --- 夏 × ゴージャスゴールド デザイン --- */
         body { 
-            background: #fff0f5; color: #4a1c2a; font-family: 'Segoe UI', "Hiragino Sans", sans-serif; 
+            background: linear-gradient(135deg, #001f3f 0%, #0074d9 50%, #7fdbff 100%); 
+            color: #fff; 
+            font-family: 'Impact', 'Arial Black', "Hiragino Sans", sans-serif; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            min-height: 100vh; margin: 0; overflow: hidden;
+            min-height: 100vh; margin: 0;
+            overflow: hidden;
         }
         
-        #game-layout { display: flex; gap: 40px; align-items: flex-start; padding: 20px; z-index: 10; }
-
-        /* 左側：配当表 */
-        #paytable {
-            background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 20px;
-            border: 2px solid #ffb3c6; font-size: 14px; box-shadow: 0 4px 15px rgba(201, 24, 74, 0.1);
-        }
-        #paytable h3 { margin: 0 0 15px 0; color: #c9184a; font-size: 18px; text-align: center; border-bottom: 2px solid #ffccd5; padding-bottom: 5px; }
-        .pay-row { display: flex; justify-content: space-between; gap: 30px; border-bottom: 1px solid #ffe5ec; padding: 6px 0; }
-        .pay-symbol { font-weight: bold; font-size: 16px; letter-spacing: 2px; }
-        .pay-value { color: #c9184a; font-weight: bold; }
-
-        /* 中央：メイン筐体 */
-        #main-cabinet { display: flex; flex-direction: column; align-items: center; }
         #money-bar { 
-            background: #c9184a; color: #fff; padding: 12px 50px; border-radius: 50px; 
-            font-size: 26px; font-weight: bold; margin-bottom: 20px; 
-            box-shadow: 0 4px 15px rgba(201, 24, 74, 0.3); border: 3px solid #fff; 
+            background: linear-gradient(to bottom, #ffd700, #ff8c00); 
+            color: #000; padding: 10px 50px; border-radius: 4px; /* 四角形 */
+            font-size: 28px; font-weight: 900; margin-bottom: 25px; 
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px #fff;
+            border: 4px solid #fff;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         }
 
-        #slot-machine {
-            background: #fff; padding: 30px; border: 8px solid #ff8fb1; border-radius: 40px;
-            box-shadow: 0 15px 45px rgba(201, 24, 74, 0.2); position: relative; transition: 0.3s;
+        #game-layout { display: flex; gap: 15px; align-items: stretch; z-index: 10; }
+
+        /* 配当表：四角く高級感のあるパネル */
+        #paytable {
+            background: rgba(0, 10, 30, 0.85); padding: 15px; border-radius: 4px;
+            border: 3px solid #ffd700; 
+            width: 230px;
+            display: flex; flex-direction: column; 
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        #paytable h3 { 
+            margin: 0 0 10px 0; 
+            background: linear-gradient(to right, #ffd700, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center; font-size: 20px; border-bottom: 2px solid #ffd700;
+            flex-shrink: 0;
+            letter-spacing: 1px;
         }
 
-        /* リーチ演出（背景明滅） */
-        .reach-mode { animation: reach-flash 0.4s infinite; }
-        @keyframes reach-flash { 0% { background: #fff; } 50% { background: #ffd6e0; } 100% { background: #fff; } }
+        .pay-list {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
 
-        #reels { display: flex; gap: 12px; background: #ffe5ec; padding: 20px; border-radius: 20px; margin-bottom: 25px; }
-        .reel {
-            width: 80px; height: 110px; background: #fff; border-radius: 15px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 45px; border: 2px solid #ffb3c6; transition: 0.1s;
+        .pay-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 4px 0;
+        }
+        .pay-symbol { font-size: 16px; font-weight: bold; letter-spacing: 1px; }
+        .pay-value { color: #ffd700; font-weight: bold; font-size: 22px; text-shadow: 0 0 5px #ff4500; }
+
+        /* スロット筐体：金色の重厚なフレーム */
+        #slot-frame {
+            background: linear-gradient(145deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #aa771c); 
+            padding: 15px 30px; border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255, 215, 0, 0.4); 
+            position: relative;
+            display: flex; align-items: center;
+            border: 2px solid #555;
+        }
+
+        #reel-area { display: flex; align-items: center; gap: 8px; position: relative; }
+        .line-numbers { display: flex; flex-direction: column; justify-content: space-between; height: 320px; font-weight: 900; color: #ffd700; font-size: 18px; text-shadow: 1px 1px 2px #000; }
+        
+        #reels-grid { 
+            display: grid; grid-template-columns: repeat(3, 110px); grid-template-rows: repeat(3, 110px); 
+            gap: 10px; 
+            background: #000; /* 漆黒 */
+            padding: 10px; border-radius: 4px; position: relative; 
+            border: 4px solid #333;
+        }
+        .cell { 
+            width: 110px; height: 110px; 
+            background: linear-gradient(to bottom, #fff 0%, #eee 100%); 
+            border-radius: 2px; display: flex; align-items: center; justify-content: center; 
+            font-size: 65px; position: relative; z-index: 10; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* ベットライン（ゴールドネオン） */
+        .bet-line { position: absolute; background: rgba(255, 215, 0, 0.5); pointer-events: none; z-index: 5; box-shadow: 0 0 10px #ffd700; }
+        .line-horiz { height: 4px; width: 350px; left: 10px; }
+        #line1 { top: 63px; } #line2 { top: 183px; } #line3 { top: 303px; }
+        .line-diag { height: 4px; width: 480px; top: 183px; left: -55px; transform-origin: center; }
+        #line4 { transform: rotate(45deg); } #line5 { transform: rotate(-45deg); }
+
+        .controls { margin-top: 20px; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .bet-selector { display: flex; gap: 10px; }
+        
+        .bet-btn { 
+            background: #222; 
+            border: 2px solid #ffd700;
+            padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; 
+            color: #ffd700; font-size: 16px; transition: 0.2s; 
+        }
+        .bet-btn.active { 
+            background: #ffd700 !important;
+            color: #000 !important; 
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        #spin-btn { 
+            width: 250px; padding: 18px; 
+            background: linear-gradient(to bottom, #ff4500, #ff8c00); 
+            color: #fff; border: 2px solid #fff; border-radius: 4px; font-size: 26px; font-weight: 900; cursor: pointer; 
+            box-shadow: 0 6px 0 #8b0000, 0 10px 20px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        #spin-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #8b0000; }
+        #spin-btn:disabled { background: #555; box-shadow: 0 4px 0 #333; color: #888; border-color: #777; cursor: not-allowed; }
+        
+        #msg { height: 45px; margin-top: 15px; color: #ffd700; font-weight: 900; font-size: 22px; text-shadow: 2px 2px 5px #000; text-align: center; }
+
+        /* 当たり演出（ゴールドフラッシュ） */
+        .line-win-glow { background: #fff !important; box-shadow: 0 0 30px #ffd700, 0 0 60px #fff; height: 8px !important; }
+        .win-glow { animation: blink 0.2s infinite alternate; background: #fffde0 !important; z-index: 20; }
+        @keyframes blink { 
+            from { box-shadow: 0 0 10px #ffd700; transform: scale(1); } 
+            to { box-shadow: 0 0 40px #ffd700, inset 0 0 20px #ffd700; transform: scale(1.05); } 
         }
         
-        /* 当たり時の発光 */
-        .win-glow { border-color: #ff4d6d !important; box-shadow: 0 0 25px #ff4d6d; transform: scale(1.1); background: #fff0f5 !important; }
-
-        #spin-btn {
-            width: 240px; padding: 18px; background: #ff4d6d; color: #fff;
-            border: none; border-radius: 60px; font-size: 22px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 6px 0 #c9184a; transition: 0.1s;
-        }
-        #spin-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c9184a; }
-        #spin-btn:disabled { background: #ffb3c6; box-shadow: 0 4px 0 #ff8fb1; cursor: not-allowed; }
-
-        #msg { height: 50px; margin-top: 20px; color: #c9184a; font-size: 20px; font-weight: bold; text-align: center; }
-
-        /* ジャックポット演出：降り注ぐアイテム */
-        .rain-item {
-            position: fixed; top: -60px; font-size: 50px; user-select: none;
-            pointer-events: none; z-index: 9999; animation: fall-and-spin 3s linear forwards;
-        }
-        @keyframes fall-and-spin {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            70% { opacity: 1; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-        }
+        /* ロジック用アニメーション（変更なし） */
+        @keyframes bound-stop { 0% { transform: translateY(0); } 20% { transform: translateY(12px); } 100% { transform: translateY(0); } }
+        .bound { animation: bound-stop 0.3s ease-out; }
+        @keyframes rainbow { 0% { color: #fff; text-shadow: 0 0 10px red; } 50% { color: #ffd700; text-shadow: 0 0 20px gold; } 100% { color: #fff; text-shadow: 0 0 10px blue; } }
+        .rainbow-text { animation: rainbow 0.15s linear infinite; font-size: 28px !important; }
     </style>
 </head>
 <body>
 
-<div id="money-bar">💰 <span id="balance">1000</span> COINS</div>
+<div id="money-bar">BANK: <span id="balance">1000</span> COINS</div>
 
 <div id="game-layout">
     <div id="paytable">
-        <h3>配当表 (Payout)</h3>
-        <div class="pay-row"><span class="pay-symbol">❤️❤️❤️❤️❤️</span> <span class="pay-value">12000</span></div>
-        <div class="pay-row"><span class="pay-symbol">❤️❤️❤️❤️</span> <span class="pay-value">2500</span></div>
-        <div class="pay-row"><span class="pay-symbol">🐱🐱🐱🐱🐱</span> <span class="pay-value">5000</span></div>
-        <div class="pay-row"><span class="pay-symbol">🐱🐱🐱🐱</span> <span class="pay-value">1000</span></div>
-        <div class="pay-row"><span class="pay-symbol">🐱🐱🐱</span> <span class="pay-value">300</span></div>
-        <div class="pay-row"><span class="pay-symbol">Other 5-Match</span> <span class="pay-value">2000</span></div>
-        <div class="pay-row"><span class="pay-symbol">Other 4-Match</span> <span class="pay-value">500</span></div>
-        <div class="pay-row"><span class="pay-symbol">Other 3-Match</span> <span class="pay-value">150</span></div>
-        <p style="font-size: 11px; color: #999; margin-top: 15px; text-align: center;">1 SPIN = 100 COINS</p>
+        <h3>PAYMENT INFO</h3>
+        <div class="pay-list">
+            <div class="pay-row"><span class="pay-symbol">7️⃣ 7️⃣ 7️⃣</span> <span class="pay-value">x50</span></div>
+            <div class="pay-row"><span class="pay-symbol">🐳 🐳 🐳</span> <span class="pay-value">x20</span></div>
+            <div class="pay-row"><span class="pay-symbol">🦈 🦈 🦈</span> <span class="pay-value">x15</span></div>
+            <div class="pay-row"><span class="pay-symbol">🍉 🍉 🍉</span> <span class="pay-value">x10</span></div>
+            <div class="pay-row"><span class="pay-symbol">🐙 🐙 🐙</span> <span class="pay-value">x5</span></div>
+            <div class="pay-row"><span class="pay-symbol">🦐 🦐 🦐</span> <span class="pay-value">x3</span></div>
+        </div>
+        <p style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
+            5-LINES VALID SYSTEM<br>
+            SUMMER GORGEOUS EDITION
+        </p>
     </div>
 
-    <div id="main-cabinet">
-        <div id="slot-machine">
-            <div id="reels">
-                <div class="reel" id="reel1">🐾</div>
-                <div class="reel" id="reel2">🐾</div>
-                <div class="reel" id="reel3">🐾</div>
-                <div class="reel" id="reel4">🐾</div>
-                <div class="reel" id="reel5">🐾</div>
-            </div>
-            <div style="text-align: center;">
-                <button id="spin-btn" onclick="spin()">SPIN START</button>
+    <div id="slot-container">
+        <div id="slot-frame">
+            <div id="reel-area">
+                <div class="line-numbers"><div>1</div><div>4</div><div>2</div><div>5</div><div>3</div></div>
+                <div id="reels-grid">
+                    <div class="bet-line line-horiz" id="line1"></div>
+                    <div class="bet-line line-horiz" id="line2"></div>
+                    <div class="bet-line line-horiz" id="line3"></div>
+                    <div class="bet-line line-diag" id="line4"></div>
+                    <div class="bet-line line-diag" id="line5"></div>
+                    <div class="cell" id="c0">🏖️</div><div class="cell" id="c1">🏖️</div><div class="cell" id="c2">🏖️</div>
+                    <div class="cell" id="c3">🏖️</div><div class="cell" id="c4">🏖️</div><div class="cell" id="c5">🏖️</div>
+                    <div class="cell" id="c6">🏖️</div><div class="cell" id="c7">🏖️</div><div class="cell" id="c8">🏖️</div>
+                </div>
+                <div class="line-numbers"><div>1</div><div>5</div><div>2</div><div>4</div><div>3</div></div>
             </div>
         </div>
-        <div id="msg"></div>
+
+        <div class="controls">
+            <div class="bet-selector">
+                <button class="bet-btn" id="btn-bet10" onclick="setBet(10)">10 / LINE</button>
+                <button class="bet-btn active" id="btn-bet100" onclick="setBet(100)">100 / LINE</button>
+                <button class="bet-btn" id="btn-bet500" onclick="setBet(500)">500 / LINE</button>
+            </div>
+            <div style="font-size: 18px; color: #ffd700; font-weight: bold; text-shadow: 1px 1px 2px #000;">TOTAL BET: <span id="total-bet">500</span></div>
+            <button id="spin-btn" onclick="spin()">SPIN START</button>
+        </div>
+        <div id="msg">アツい夏にするにゃ！</div>
     </div>
 </div>
 
 <script>
-    // 配当データ
-    const PAYOUTS = {
-        '❤️': { 3: 500, 4: 2500, 5: 12000 },
-        '🐱': { 3: 300, 4: 1000, 5: 5000 },
-        'DEFAULT': { 3: 150, 4: 500, 5: 2000 }
+    /* --- ロジック・図柄定義は一切変更なし --- */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type, duration, vol = 0.1) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+    const sounds = {
+        bet: () => playSound(880, 'sine', 0.1),
+        click: () => playSound(440, 'square', 0.05, 0.05),
+        reel: () => playSound(150, 'triangle', 0.05, 0.02),
+        win: () => [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playSound(f, 'square', 0.4, 0.05), i * 150))
     };
-    const symbols = ['❤️', '🐱', '🐈', '🐟', '🎀', '💝'];
-    const reelEls = [1,2,3,4,5].map(i => document.getElementById(`reel${i}`));
-    const balanceEl = document.getElementById('balance');
-    const machine = document.getElementById('slot-machine');
-    const msg = document.getElementById('msg');
+
+    const symbols = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '🏖️'];
+    const multipliers = { '7️⃣': 50, '🐳': 20, '🦈': 15, '🍉': 10, '🐙': 5, '🦐': 3, '🏖️': 0 };
     
-    // クイズミリオネアと共有される残高（localStorage）
+    const lineIndices = [[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
     let balance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
-    balanceEl.innerText = balance.toLocaleString();
+    let currentBetPerLine = 100;
 
-    function updateBalance(amount) {
-        balance += amount;
-        balanceEl.innerText = balance.toLocaleString();
-        localStorage.setItem('ev_coin_balance', balance);
+    function setBet(amount) {
+        sounds.bet(); currentBetPerLine = amount;
+        document.getElementById('total-bet').innerText = amount * 5;
+        document.querySelectorAll('.bet-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-bet${amount}`));
     }
+    function updateBalance(amount) { balance += amount; document.getElementById('balance').innerText = balance.toLocaleString(); localStorage.setItem('ev_coin_balance', balance); }
 
-    function spin() {
-        if (balance < 100) { 
-            msg.innerText = "コインが足りないにゃ！クイズで稼ぐにゃ！"; 
-            return; 
-        }
-        updateBalance(-100);
-
-        document.getElementById('spin-btn').disabled = true;
-        msg.innerText = "まわるにゃ〜…";
-        machine.classList.remove('reach-mode');
-        reelEls.forEach(el => el.classList.remove('win-glow'));
+    async function spin() {
+        const totalBet = currentBetPerLine * 5;
+        if (balance < totalBet) { document.getElementById('msg').innerText = "コイン不足だにゃ！"; return; }
+        updateBalance(-totalBet);
+        const spinBtn = document.getElementById('spin-btn');
+        const msgEl = document.getElementById('msg');
+        spinBtn.disabled = true;
+        msgEl.innerText = "波に乗るにゃ〜…"; 
+        msgEl.classList.remove('rainbow-text');
+        for(let i=0; i<9; i++) document.getElementById(`c${i}`).classList.remove('win-glow', 'bound');
+        for(let i=1; i<=5; i++) document.getElementById(`line${i}`).classList.remove('line-win-glow');
         
-        // 回転開始
-        const intervals = reelEls.map((el, i) => {
-            return setInterval(() => {
-                el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-            }, 60);
-        });
-
-        // 順次停止
-        reelEls.forEach((el, i) => {
-            let delay = 800 + (i * 500);
-            setTimeout(() => {
-                clearInterval(intervals[i]);
-                // 4枚目停止時にリーチ判定
-                if (i === 3) handleReach(intervals[4]);
-            }, delay);
-        });
+        const isOkure = Math.random() < 0.05;
+        sounds.click();
+        setTimeout(() => {
+            const reelSnd = setInterval(() => sounds.reel(), 100);
+            const spinEff = setInterval(() => {
+                for(let i=0; i<9; i++) document.getElementById(`c${i}`).innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            }, 80);
+            setTimeout(() => { clearInterval(spinEff); clearInterval(reelSnd); finishSpin(); }, 1200);
+        }, isOkure ? 300 : 0);
     }
 
-    function handleReach(lastInterval) {
-        const current = reelEls.slice(0, 4).map(e => e.innerText);
-        const counts = {}; current.forEach(s => counts[s] = (counts[s] || 0) + 1);
-        
-        if (Math.max(...Object.values(counts)) >= 3) {
-            machine.classList.add('reach-mode');
-            msg.innerText = "ドキドキ…リーチだにゃ！！";
-            clearInterval(lastInterval);
-            // 最後のリールをスロー回転
-            let lastReelTick = setInterval(() => {
-                reelEls[4].innerText = symbols[Math.floor(Math.random() * symbols.length)];
-            }, 200);
-            setTimeout(() => { clearInterval(lastReelTick); checkWin(); }, 3500);
-        } else {
-            setTimeout(() => { clearInterval(lastInterval); checkWin(); }, 500);
+    function finishSpin() {
+        const results = [];
+        for(let i=0; i<9; i++) {
+            const s = symbols[Math.floor(Math.random() * symbols.length)];
+            document.getElementById(`c${i}`).innerText = s;
+            results.push(s);
         }
-    }
-
-    function checkWin() {
-        document.getElementById('spin-btn').disabled = false;
-        machine.classList.remove('reach-mode');
-        const res = reelEls.map(el => el.innerText);
-        const counts = {}; res.forEach(s => counts[s] = (counts[s] || 0) + 1);
-        const maxCombo = Math.max(...Object.values(counts));
-        const winSymbol = Object.keys(counts).find(key => counts[key] === maxCombo);
-
-        if (maxCombo >= 3) {
-            reelEls.forEach(el => { if (el.innerText === winSymbol) el.classList.add('win-glow'); });
-            const prize = (PAYOUTS[winSymbol] || PAYOUTS['DEFAULT'])[maxCombo] || 0;
-            
-            if (prize > 0) {
-                msg.innerText = `✨ ${maxCombo}つ揃った！ ${prize}コイン獲得！ ✨`;
-                updateBalance(prize);
-                
-                // 5つ揃いのスペシャル演出
-                if (maxCombo === 5) {
-                    if (winSymbol === '❤️') {
-                        msg.innerText = "❤️ PERFECT HEART! 12000枚獲得！！ ❤️";
-                        launchJackpotRain('❤️');
-                    } else if (winSymbol === '🐱') {
-                        msg.innerText = "🐾 にゃんこ JACKPOT! 5000枚獲得！！ 🐾";
-                        launchJackpotRain('🐱');
-                    } else {
-                        launchJackpotRain('✨');
-                    }
-                }
+        let totalWin = 0;
+        let isBigWin = false;
+        lineIndices.forEach((line, index) => {
+            const [a, b, c] = line;
+            if (results[a] === results[b] && results[b] === results[c] && results[a] !== '🏖️') {
+                const s = results[a];
+                totalWin += currentBetPerLine * multipliers[s];
+                document.getElementById(`line${index + 1}`).classList.add('line-win-glow');
+                line.forEach(idx => {
+                    document.getElementById(`c${idx}`).classList.add('win-glow');
+                    if (s === '7️⃣' || s === '🐳') { document.getElementById(`c${idx}`).classList.add('bound'); isBigWin = true; }
+                });
             }
-        } else {
-            msg.innerText = "残念…またはずれたにゃ。";
-        }
+        });
+        const msgEl = document.getElementById('msg');
+        if (totalWin > 0) {
+            sounds.win(); msgEl.innerText = `✨ ${totalWin} COINS GET!! ✨`;
+            if (isBigWin) msgEl.classList.add('rainbow-text');
+            updateBalance(totalWin);
+        } else { msgEl.innerText = "波が来なかったにゃ…"; }
+        document.getElementById('spin-btn').disabled = false;
     }
-
-    // ジャックポット・レイン演出
-    function launchJackpotRain(symbol) {
-        const count = 100;
-        for (let i = 0; i < count; i++) {
-            setTimeout(() => {
-                const item = document.createElement('div');
-                item.className = 'rain-item';
-                item.innerText = symbol;
-                item.style.left = Math.random() * 100 + 'vw';
-                item.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                document.body.appendChild(item);
-                setTimeout(() => item.remove(), 3000);
-            }, i * 25);
-        }
-    }
+    updateBalance(0);
 </script>
 </body>
 </html>
