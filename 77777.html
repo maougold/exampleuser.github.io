@@ -225,7 +225,7 @@
     function updateMode() {
         const now = new Date();
         const currentTime = now.getHours() * 100 + now.getMinutes();
-        const targets = [950, 1033, 1050, 1155, 1234, 1355, 1511, 1811, 1831, 1955, 2031, 2055, 2111, 2230, 2310, 2323, 2358, 123];
+        const targets = [135, 246, 357, 444, 555, 601, 717, 824, 900, 1010, 1020, 1111, 1212, 1313, 1414, 1515, 1616, 1717, 1818, 1919, 2020, 2121, 2222, 2323, 2345, 2211, 2111, 1955, 1855, 1755, 1655, 1555, 1455, 1355, 1255];
         
         let isTimeActive = targets.some(t => currentTime >= t && currentTime <= t + 1);
         let isBonusActive = Date.now() < bonusEndTime;
