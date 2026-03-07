@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>SEA SIDE SLOT | GORGEOUS GOLD</title>
+    <title>SEA SIDE SLOT | GORGEOUS GOLD COMPLETE</title>
     <style>
-        /* --- 夏 × ゴージャスゴールド デザイン（完全維持） --- */
+        /* --- 夏 × ゴージャスゴールド デザイン --- */
         body { 
             background: linear-gradient(135deg, #001f3f 0%, #0074d9 50%, #7fdbff 100%); 
             color: #fff; 
@@ -12,10 +12,9 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             min-height: 100vh; margin: 0;
             overflow: hidden;
-            transition: background 1s ease; /* 背景変化をスムーズに */
+            transition: background 1s ease;
         }
 
-        /* 高確率ゾーン（ゴールド背景演出） */
         body.golden-mode {
             background: radial-gradient(circle, #fff700 0%, #ff8c00 50%, #b38728 100%);
         }
@@ -83,7 +82,6 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
-        /* 高確率中のWILD演出（虹色アニメ） */
         .wild-text {
             background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
             background-size: 200% auto;
@@ -124,7 +122,7 @@
         #spin-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #8b0000; }
         #spin-btn:disabled { background: #555; box-shadow: 0 4px 0 #333; color: #888; border-color: #777; cursor: not-allowed; }
         
-        #msg { height: 45px; margin-top: 15px; color: #ffd700; font-weight: 900; font-size: 22px; text-shadow: 2px 2px 5px #000; text-align: center; }
+        #msg { height: 50px; margin-top: 15px; color: #ffd700; font-weight: 900; font-size: 22px; text-shadow: 2px 2px 5px #000; text-align: center; display: flex; align-items: center; justify-content: center; }
 
         .line-win-glow { background: #fff !important; box-shadow: 0 0 30px #ffd700, 0 0 60px #fff; height: 8px !important; }
         .win-glow { animation: blink 0.2s infinite alternate; background: #fffde0 !important; z-index: 20; }
@@ -203,11 +201,14 @@
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start(); osc.stop(audioCtx.currentTime + duration);
     }
+    
     const sounds = {
         bet: () => playSound(880, 'sine', 0.1),
         click: () => playSound(440, 'square', 0.05, 0.05),
         reel: () => playSound(150, 'triangle', 0.05, 0.02),
-        win: () => [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playSound(f, 'square', 0.4, 0.05), i * 150))
+        win: () => [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playSound(f, 'square', 0.4, 0.05), i * 150)),
+        // 【追加】キュイン！音
+        kyuin: () => [2093, 2637, 2093, 2637].forEach((f, i) => setTimeout(() => playSound(f, 'sine', 0.15, 0.12), i * 100))
     };
 
     const symbols = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '🏖️'];
@@ -216,26 +217,17 @@
     let balance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
     let currentBetPerLine = 100;
 
-    // --- 新規：ロジック管理変数 ---
     let isHighChance = false;
-    let bonusEndTime = 0; // 図柄ボーナスの終了時刻
-    let ebiCounter = 0;   // エビのトータル揃い数
-    let suikaCounter = 0; // スイカのトータル揃い数
+    let bonusEndTime = 0; 
+    let ebiCounter = 0;   
+    let suikaCounter = 0; 
 
-    // --- 時間判定・モード更新ロジック ---
     function updateMode() {
         const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const currentTime = h * 100 + m;
-        
-        // 元の時間設定
+        const currentTime = now.getHours() * 100 + now.getMinutes();
         const targets = [950, 1033, 1050, 1155, 1234, 1355, 1511, 1811, 1831, 1955, 2031, 2055, 2111, 2230, 2310, 2323, 2358, 123];
         
-        // 時間指定、または図柄ボーナスタイマーのどちらかが有効か
-        let isTimeActive = false;
-        targets.forEach(t => { if (currentTime >= t && currentTime <= t + 1) isTimeActive = true; });
-        
+        let isTimeActive = targets.some(t => currentTime >= t && currentTime <= t + 1);
         let isBonusActive = Date.now() < bonusEndTime;
         const active = isTimeActive || isBonusActive;
 
@@ -257,7 +249,12 @@
         document.getElementById('total-bet').innerText = amount * 5;
         document.querySelectorAll('.bet-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-bet${amount}`));
     }
-    function updateBalance(amount) { balance += amount; document.getElementById('balance').innerText = balance.toLocaleString(); localStorage.setItem('ev_coin_balance', balance); }
+
+    function updateBalance(amount) { 
+        balance += amount; 
+        document.getElementById('balance').innerText = balance.toLocaleString(); 
+        localStorage.setItem('ev_coin_balance', balance); 
+    }
 
     async function spin() {
         const totalBet = currentBetPerLine * 5;
@@ -301,8 +298,7 @@
                 s = "WILD";
                 document.getElementById(`c4`).innerHTML = '<span class="wild-text">WILD</span>';
             } else {
-                let pool = [...symbols];
-                if (isHighChance) pool = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '7️⃣', '🐳']; 
+                let pool = isHighChance ? ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '7️⃣', '🐳'] : [...symbols];
                 s = pool[Math.floor(Math.random() * pool.length)];
                 document.getElementById(`c${i}`).innerText = s;
             }
@@ -311,6 +307,7 @@
 
         let totalWin = 0;
         let isBigWin = false;
+        let triggeredBonus = false;
 
         lineIndices.forEach((line, index) => {
             const [a, b, c] = line;
@@ -324,24 +321,24 @@
                 document.getElementById(`line${index + 1}`).classList.add('line-win-glow');
                 line.forEach(idx => {
                     document.getElementById(`c${idx}`).classList.add('win-glow');
-                    if (s === '7️⃣' || s === '🐳') { document.getElementById(`c${idx}`).classList.add('bound'); isBigWin = true; }
+                    if (s === '7️⃣' || s === '🐳') { 
+                        document.getElementById(`c${idx}`).classList.add('bound'); 
+                        isBigWin = true; 
+                    }
                 });
 
-                // --- 新規：内部カウンター加算 ---
                 if (s === '🦐') {
                     ebiCounter++;
                     if (ebiCounter >= 7) {
-                        // 60秒加算（既にボーナス中なら上乗せ）
                         bonusEndTime = Math.max(bonusEndTime, Date.now()) + 60000;
-                        ebiCounter = 0;
+                        ebiCounter = 0; triggeredBonus = true;
                     }
                 }
                 if (s === '🍉') {
                     suikaCounter++;
                     if (suikaCounter >= 5) {
-                        // 90秒加算
                         bonusEndTime = Math.max(bonusEndTime, Date.now()) + 90000;
-                        suikaCounter = 0;
+                        suikaCounter = 0; triggeredBonus = true;
                     }
                 }
             }
@@ -349,10 +346,22 @@
 
         const msgEl = document.getElementById('msg');
         if (totalWin > 0) {
-            sounds.win(); msgEl.innerText = `✨ ${totalWin} COINS GET!! ✨`;
-            if (isBigWin) msgEl.classList.add('rainbow-text');
+            sounds.win();
+            // 【演出】ボーナス発動時はキュイン音！
+            if (triggeredBonus) {
+                setTimeout(() => {
+                    sounds.kyuin();
+                    msgEl.innerText = "🚨キュイン！超高確率突入🚨";
+                    msgEl.classList.add('rainbow-text');
+                }, 600);
+            } else {
+                msgEl.innerText = `✨ ${totalWin} COINS GET!! ✨`;
+                if (isBigWin) msgEl.classList.add('rainbow-text');
+            }
             updateBalance(totalWin);
-        } else { msgEl.innerText = isHighChance ? "次こそ大当たりの予感！" : "波が来なかったにゃ…"; }
+        } else { 
+            msgEl.innerText = isHighChance ? "次こそ大当たりの予感！" : "波が来なかったにゃ…"; 
+        }
         document.getElementById('spin-btn').disabled = false;
     }
     updateBalance(0);
