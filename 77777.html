@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>SEA SIDE SLOT | GORGEOUS GOLD</title>
     <style>
-        /* --- 夏 × ゴージャスゴールド デザイン --- */
+        /* --- 夏 × ゴージャスゴールド デザイン（完全維持） --- */
         body { 
             background: linear-gradient(135deg, #001f3f 0%, #0074d9 50%, #7fdbff 100%); 
             color: #fff; 
@@ -12,11 +12,17 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             min-height: 100vh; margin: 0;
             overflow: hidden;
+            transition: background 1s ease; /* 背景変化をスムーズに */
+        }
+
+        /* 高確率ゾーン（ゴールド背景演出） */
+        body.golden-mode {
+            background: radial-gradient(circle, #fff700 0%, #ff8c00 50%, #b38728 100%);
         }
         
         #money-bar { 
             background: linear-gradient(to bottom, #ffd700, #ff8c00); 
-            color: #000; padding: 10px 50px; border-radius: 4px; /* 四角形 */
+            color: #000; padding: 10px 50px; border-radius: 4px; 
             font-size: 28px; font-weight: 900; margin-bottom: 25px; 
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px #fff;
             border: 4px solid #fff;
@@ -25,7 +31,6 @@
 
         #game-layout { display: flex; gap: 15px; align-items: stretch; z-index: 10; }
 
-        /* 配当表：四角く高級感のあるパネル */
         #paytable {
             background: rgba(0, 10, 30, 0.85); padding: 15px; border-radius: 4px;
             border: 3px solid #ffd700; 
@@ -44,13 +49,7 @@
             letter-spacing: 1px;
         }
 
-        .pay-list {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-        }
-
+        .pay-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-around; }
         .pay-row { 
             display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 1px solid rgba(255, 215, 0, 0.2);
@@ -59,7 +58,6 @@
         .pay-symbol { font-size: 16px; font-weight: bold; letter-spacing: 1px; }
         .pay-value { color: #ffd700; font-weight: bold; font-size: 22px; text-shadow: 0 0 5px #ff4500; }
 
-        /* スロット筐体：金色の重厚なフレーム */
         #slot-frame {
             background: linear-gradient(145deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #aa771c); 
             padding: 15px 30px; border-radius: 8px;
@@ -74,9 +72,7 @@
         
         #reels-grid { 
             display: grid; grid-template-columns: repeat(3, 110px); grid-template-rows: repeat(3, 110px); 
-            gap: 10px; 
-            background: #000; /* 漆黒 */
-            padding: 10px; border-radius: 4px; position: relative; 
+            gap: 10px; background: #000; padding: 10px; border-radius: 4px; position: relative; 
             border: 4px solid #333;
         }
         .cell { 
@@ -87,7 +83,17 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
-        /* ベットライン（ゴールドネオン） */
+        /* 高確率中のWILD演出（虹色アニメ） */
+        .wild-text {
+            background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowScroll 2s linear infinite;
+            font-weight: 900; font-size: 32px;
+        }
+        @keyframes rainbowScroll { to { background-position: 200% center; } }
+
         .bet-line { position: absolute; background: rgba(255, 215, 0, 0.5); pointer-events: none; z-index: 5; box-shadow: 0 0 10px #ffd700; }
         .line-horiz { height: 4px; width: 350px; left: 10px; }
         #line1 { top: 63px; } #line2 { top: 183px; } #line3 { top: 303px; }
@@ -98,8 +104,7 @@
         .bet-selector { display: flex; gap: 10px; }
         
         .bet-btn { 
-            background: #222; 
-            border: 2px solid #ffd700;
+            background: #222; border: 2px solid #ffd700;
             padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; 
             color: #ffd700; font-size: 16px; transition: 0.2s; 
         }
@@ -121,7 +126,6 @@
         
         #msg { height: 45px; margin-top: 15px; color: #ffd700; font-weight: 900; font-size: 22px; text-shadow: 2px 2px 5px #000; text-align: center; }
 
-        /* 当たり演出（ゴールドフラッシュ） */
         .line-win-glow { background: #fff !important; box-shadow: 0 0 30px #ffd700, 0 0 60px #fff; height: 8px !important; }
         .win-glow { animation: blink 0.2s infinite alternate; background: #fffde0 !important; z-index: 20; }
         @keyframes blink { 
@@ -129,7 +133,6 @@
             to { box-shadow: 0 0 40px #ffd700, inset 0 0 20px #ffd700; transform: scale(1.05); } 
         }
         
-        /* ロジック用アニメーション（変更なし） */
         @keyframes bound-stop { 0% { transform: translateY(0); } 20% { transform: translateY(12px); } 100% { transform: translateY(0); } }
         .bound { animation: bound-stop 0.3s ease-out; }
         @keyframes rainbow { 0% { color: #fff; text-shadow: 0 0 10px red; } 50% { color: #ffd700; text-shadow: 0 0 20px gold; } 100% { color: #fff; text-shadow: 0 0 10px blue; } }
@@ -142,7 +145,7 @@
 
 <div id="game-layout">
     <div id="paytable">
-        <h3>PAYMENT INFO</h3>
+        <h3 id="panel-title">PAYMENT INFO</h3>
         <div class="pay-list">
             <div class="pay-row"><span class="pay-symbol">7️⃣ 7️⃣ 7️⃣</span> <span class="pay-value">x50</span></div>
             <div class="pay-row"><span class="pay-symbol">🐳 🐳 🐳</span> <span class="pay-value">x20</span></div>
@@ -151,7 +154,7 @@
             <div class="pay-row"><span class="pay-symbol">🐙 🐙 🐙</span> <span class="pay-value">x5</span></div>
             <div class="pay-row"><span class="pay-symbol">🦐 🦐 🦐</span> <span class="pay-value">x3</span></div>
         </div>
-        <p style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
+        <p id="sub-msg" style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
             5-LINES VALID SYSTEM<br>
             SUMMER GORGEOUS EDITION
         </p>
@@ -189,7 +192,6 @@
 </div>
 
 <script>
-    /* --- ロジック・図柄定義は一切変更なし --- */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(freq, type, duration, vol = 0.1) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -210,10 +212,34 @@
 
     const symbols = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '🏖️'];
     const multipliers = { '7️⃣': 50, '🐳': 20, '🦈': 15, '🍉': 10, '🐙': 5, '🦐': 3, '🏖️': 0 };
-    
     const lineIndices = [[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
     let balance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
     let currentBetPerLine = 100;
+    let isHighChance = false;
+
+    // --- 時間判定ロジック ---
+    function updateMode() {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const currentTime = h * 100 + m;
+// 例：1時11分、3時33分、5時55分に加えて、7:11や22:22なども追加
+const targets = [111, 1333, 1555, 1711, 1111, 1234, 2222];
+        let active = false;
+        targets.forEach(t => { if (currentTime >= t && currentTime <= t + 1) active = true; });
+
+        if (active && !isHighChance) {
+            isHighChance = true;
+            document.body.classList.add('golden-mode');
+            document.getElementById('panel-title').innerText = "GOLDEN TIME";
+            document.getElementById('msg').innerText = "✨高確率ゾーン突入だにゃ！✨";
+        } else if (!active && isHighChance) {
+            isHighChance = false;
+            document.body.classList.remove('golden-mode');
+            document.getElementById('panel-title').innerText = "PAYMENT INFO";
+        }
+    }
+    setInterval(updateMode, 1000);
 
     function setBet(amount) {
         sounds.bet(); currentBetPerLine = amount;
@@ -229,9 +255,14 @@
         const spinBtn = document.getElementById('spin-btn');
         const msgEl = document.getElementById('msg');
         spinBtn.disabled = true;
-        msgEl.innerText = "波に乗るにゃ〜…"; 
+        msgEl.innerText = isHighChance ? "黄金の波が来てるにゃ！" : "波に乗るにゃ〜…"; 
         msgEl.classList.remove('rainbow-text');
-        for(let i=0; i<9; i++) document.getElementById(`c${i}`).classList.remove('win-glow', 'bound');
+        
+        for(let i=0; i<9; i++) {
+            const cell = document.getElementById(`c${i}`);
+            cell.classList.remove('win-glow', 'bound');
+            cell.innerHTML = cell.innerText; // WILDのspan解除用
+        }
         for(let i=1; i<=5; i++) document.getElementById(`line${i}`).classList.remove('line-win-glow');
         
         const isOkure = Math.random() < 0.05;
@@ -239,7 +270,13 @@
         setTimeout(() => {
             const reelSnd = setInterval(() => sounds.reel(), 100);
             const spinEff = setInterval(() => {
-                for(let i=0; i<9; i++) document.getElementById(`c${i}`).innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                for(let i=0; i<9; i++) {
+                    if (isHighChance && i === 4) {
+                        document.getElementById(`c${i}`).innerHTML = '<span class="wild-text">WILD</span>';
+                    } else {
+                        document.getElementById(`c${i}`).innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                    }
+                }
             }, 80);
             setTimeout(() => { clearInterval(spinEff); clearInterval(reelSnd); finishSpin(); }, 1200);
         }, isOkure ? 300 : 0);
@@ -248,16 +285,33 @@
     function finishSpin() {
         const results = [];
         for(let i=0; i<9; i++) {
-            const s = symbols[Math.floor(Math.random() * symbols.length)];
-            document.getElementById(`c${i}`).innerText = s;
+            let s;
+            if (isHighChance && i === 4) {
+                s = "WILD";
+                document.getElementById(`c4`).innerHTML = '<span class="wild-text">WILD</span>';
+            } else {
+                // 高確率中はハズレ(🏖️)を大幅に減らす
+                let pool = [...symbols];
+                if (isHighChance) pool = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '7️⃣', '🐳']; 
+                s = pool[Math.floor(Math.random() * pool.length)];
+                document.getElementById(`c${i}`).innerText = s;
+            }
             results.push(s);
         }
+
         let totalWin = 0;
         let isBigWin = false;
+
         lineIndices.forEach((line, index) => {
             const [a, b, c] = line;
-            if (results[a] === results[b] && results[b] === results[c] && results[a] !== '🏖️') {
-                const s = results[a];
+            const lineSymbols = [results[a], results[b], results[c]];
+            
+            // WILD判定を含む揃いチェック
+            const activeSymbols = lineSymbols.filter(s => s !== "WILD");
+            const uniqueSymbols = [...new Set(activeSymbols)];
+
+            if ((uniqueSymbols.length === 1 && uniqueSymbols[0] !== '🏖️') || (activeSymbols.length === 0)) {
+                const s = uniqueSymbols[0] || '7️⃣'; // 全部WILDなら7扱い
                 totalWin += currentBetPerLine * multipliers[s];
                 document.getElementById(`line${index + 1}`).classList.add('line-win-glow');
                 line.forEach(idx => {
@@ -266,12 +320,13 @@
                 });
             }
         });
+
         const msgEl = document.getElementById('msg');
         if (totalWin > 0) {
             sounds.win(); msgEl.innerText = `✨ ${totalWin} COINS GET!! ✨`;
             if (isBigWin) msgEl.classList.add('rainbow-text');
             updateBalance(totalWin);
-        } else { msgEl.innerText = "波が来なかったにゃ…"; }
+        } else { msgEl.innerText = isHighChance ? "次こそ大当たりの予感！" : "波が来なかったにゃ…"; }
         document.getElementById('spin-btn').disabled = false;
     }
     updateBalance(0);
