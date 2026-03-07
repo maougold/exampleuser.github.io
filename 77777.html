@@ -215,18 +215,29 @@
     const lineIndices = [[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
     let balance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
     let currentBetPerLine = 100;
-    let isHighChance = false;
 
-    // --- 時間判定ロジック ---
+    // --- 新規：ロジック管理変数 ---
+    let isHighChance = false;
+    let bonusEndTime = 0; // 図柄ボーナスの終了時刻
+    let ebiCounter = 0;   // エビのトータル揃い数
+    let suikaCounter = 0; // スイカのトータル揃い数
+
+    // --- 時間判定・モード更新ロジック ---
     function updateMode() {
         const now = new Date();
         const h = now.getHours();
         const m = now.getMinutes();
         const currentTime = h * 100 + m;
-// 例：1時11分、3時33分、5時55分に加えて、7:11や22:22なども追加
-const targets = [950, 1033,　1050, 1155, 1234, 1355, 1511, 1811,　1831, 1955, 2031, 2055, 2111, 2218,　2310, 2323, 2358, 123];
-        let active = false;
-        targets.forEach(t => { if (currentTime >= t && currentTime <= t + 1) active = true; });
+        
+        // 元の時間設定
+        const targets = [950, 1033, 1050, 1155, 1234, 1355, 1511, 1811, 1831, 1955, 2031, 2055, 2111, 2230, 2310, 2323, 2358, 123];
+        
+        // 時間指定、または図柄ボーナスタイマーのどちらかが有効か
+        let isTimeActive = false;
+        targets.forEach(t => { if (currentTime >= t && currentTime <= t + 1) isTimeActive = true; });
+        
+        let isBonusActive = Date.now() < bonusEndTime;
+        const active = isTimeActive || isBonusActive;
 
         if (active && !isHighChance) {
             isHighChance = true;
@@ -261,7 +272,7 @@ const targets = [950, 1033,　1050, 1155, 1234, 1355, 1511, 1811,　1831, 1955, 
         for(let i=0; i<9; i++) {
             const cell = document.getElementById(`c${i}`);
             cell.classList.remove('win-glow', 'bound');
-            cell.innerHTML = cell.innerText; // WILDのspan解除用
+            cell.innerHTML = cell.innerText; 
         }
         for(let i=1; i<=5; i++) document.getElementById(`line${i}`).classList.remove('line-win-glow');
         
@@ -290,7 +301,6 @@ const targets = [950, 1033,　1050, 1155, 1234, 1355, 1511, 1811,　1831, 1955, 
                 s = "WILD";
                 document.getElementById(`c4`).innerHTML = '<span class="wild-text">WILD</span>';
             } else {
-                // 高確率中はハズレ(🏖️)を大幅に減らす
                 let pool = [...symbols];
                 if (isHighChance) pool = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '7️⃣', '🐳']; 
                 s = pool[Math.floor(Math.random() * pool.length)];
@@ -305,19 +315,35 @@ const targets = [950, 1033,　1050, 1155, 1234, 1355, 1511, 1811,　1831, 1955, 
         lineIndices.forEach((line, index) => {
             const [a, b, c] = line;
             const lineSymbols = [results[a], results[b], results[c]];
-            
-            // WILD判定を含む揃いチェック
             const activeSymbols = lineSymbols.filter(s => s !== "WILD");
             const uniqueSymbols = [...new Set(activeSymbols)];
 
             if ((uniqueSymbols.length === 1 && uniqueSymbols[0] !== '🏖️') || (activeSymbols.length === 0)) {
-                const s = uniqueSymbols[0] || '7️⃣'; // 全部WILDなら7扱い
+                const s = uniqueSymbols[0] || '7️⃣'; 
                 totalWin += currentBetPerLine * multipliers[s];
                 document.getElementById(`line${index + 1}`).classList.add('line-win-glow');
                 line.forEach(idx => {
                     document.getElementById(`c${idx}`).classList.add('win-glow');
                     if (s === '7️⃣' || s === '🐳') { document.getElementById(`c${idx}`).classList.add('bound'); isBigWin = true; }
                 });
+
+                // --- 新規：内部カウンター加算 ---
+                if (s === '🦐') {
+                    ebiCounter++;
+                    if (ebiCounter >= 7) {
+                        // 60秒加算（既にボーナス中なら上乗せ）
+                        bonusEndTime = Math.max(bonusEndTime, Date.now()) + 60000;
+                        ebiCounter = 0;
+                    }
+                }
+                if (s === '🍉') {
+                    suikaCounter++;
+                    if (suikaCounter >= 5) {
+                        // 90秒加算
+                        bonusEndTime = Math.max(bonusEndTime, Date.now()) + 90000;
+                        suikaCounter = 0;
+                    }
+                }
             }
         });
 
