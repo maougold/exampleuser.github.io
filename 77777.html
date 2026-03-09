@@ -30,7 +30,8 @@
 
         #game-layout { display: flex; gap: 15px; align-items: stretch; z-index: 10; }
 
-        #paytable {
+        /* 左パネル(配当)と右パネル(データ)の共通設定 */
+        #paytable, #datatable {
             background: rgba(0, 10, 30, 0.85); padding: 15px; border-radius: 4px;
             border: 3px solid #ffd700; 
             width: 230px;
@@ -38,7 +39,8 @@
             box-sizing: border-box;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
         }
-        #paytable h3 { 
+
+        h3 { 
             margin: 0 0 10px 0; 
             background: linear-gradient(to right, #ffd700, #fff, #ffd700);
             -webkit-background-clip: text;
@@ -48,14 +50,24 @@
             letter-spacing: 1px;
         }
 
-        .pay-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-around; }
-        .pay-row { 
+        .row-item { 
             display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 1px solid rgba(255, 215, 0, 0.2);
-            padding: 4px 0;
+            padding: 6px 0;
         }
-        .pay-symbol { font-size: 16px; font-weight: bold; letter-spacing: 1px; }
-        .pay-value { color: #ffd700; font-weight: bold; font-size: 22px; text-shadow: 0 0 5px #ff4500; }
+
+        .pay-symbol { font-size: 16px; font-weight: bold; }
+        .pay-value, .data-value { color: #ffd700; font-weight: bold; font-size: 22px; text-shadow: 0 0 5px #ff4500; }
+        .data-label { font-size: 14px; color: #7fdbff; }
+
+        /* グラフエリア */
+        #graph-area { margin-top: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .graph-container {
+            flex-grow: 1; height: 100px; background: rgba(0,0,0,0.5); 
+            border: 1px solid #444; display: flex; align-items: flex-end; 
+            gap: 2px; padding: 5px; overflow: hidden;
+        }
+        .graph-bar { background: #ffd700; width: 10px; border-radius: 2px 2px 0 0; transition: height 0.5s ease; }
 
         #slot-frame {
             background: linear-gradient(145deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #aa771c); 
@@ -145,16 +157,15 @@
     <div id="paytable">
         <h3 id="panel-title">PAYMENT INFO</h3>
         <div class="pay-list">
-            <div class="pay-row"><span class="pay-symbol">7️⃣ 7️⃣ 7️⃣</span> <span class="pay-value">x50</span></div>
-            <div class="pay-row"><span class="pay-symbol">🐳 🐳 🐳</span> <span class="pay-value">x20</span></div>
-            <div class="pay-row"><span class="pay-symbol">🦈 🦈 🦈</span> <span class="pay-value">x15</span></div>
-            <div class="pay-row"><span class="pay-symbol">🍉 🍉 🍉</span> <span class="pay-value">x10</span></div>
-            <div class="pay-row"><span class="pay-symbol">🐙 🐙 🐙</span> <span class="pay-value">x5</span></div>
-            <div class="pay-row"><span class="pay-symbol">🦐 🦐 🦐</span> <span class="pay-value">x3</span></div>
+            <div class="row-item"><span class="pay-symbol">7️⃣ 7️⃣ 7️⃣</span> <span class="pay-value">x50</span></div>
+            <div class="row-item"><span class="pay-symbol">🐳 🐳 🐳</span> <span class="pay-value">x20</span></div>
+            <div class="row-item"><span class="pay-symbol">🦈 🦈 🦈</span> <span class="pay-value">x15</span></div>
+            <div class="row-item"><span class="pay-symbol">🍉 🍉 🍉</span> <span class="pay-value">x10</span></div>
+            <div class="row-item"><span class="pay-symbol">🐙 🐙 🐙</span> <span class="pay-value">x5</span></div>
+            <div class="row-item"><span class="pay-symbol">🦐 🦐 🦐</span> <span class="pay-value">x3</span></div>
         </div>
-        <p id="sub-msg" style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
-            5-LINES VALID SYSTEM<br>
-            SUMMER GORGEOUS EDITION
+        <p style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
+            5-LINES VALID SYSTEM<br>SUMMER GORGEOUS EDITION
         </p>
     </div>
 
@@ -187,6 +198,28 @@
         </div>
         <div id="msg">アツい夏にするにゃ！</div>
     </div>
+
+    <div id="datatable">
+        <h3>SLOT DATA</h3>
+        <div class="data-list">
+            <div class="row-item">
+                <span class="data-label">TOTAL SPINS</span>
+                <span class="data-value" id="stat-spins">0</span>
+            </div>
+            <div class="row-item">
+                <span class="data-label">BIG WINS</span>
+                <span class="data-value" id="stat-bigwins">0</span>
+            </div>
+            <div id="graph-area">
+                <div style="font-size: 12px; color: #7fdbff; text-align: center; margin-bottom: 5px;">WIN HISTORY (Recent 15)</div>
+                <div class="graph-container" id="history-graph">
+                    </div>
+            </div>
+        </div>
+        <p style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
+            REALTIME ANALYSIS<br>GORGEOUS SYSTEM
+        </p>
+    </div>
 </div>
 
 <script>
@@ -207,20 +240,31 @@
         click: () => playSound(440, 'square', 0.05, 0.05),
         reel: () => playSound(150, 'triangle', 0.05, 0.02),
         win: () => [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playSound(f, 'square', 0.4, 0.05), i * 150)),
-        // 【追加】キュイン！音
         kyuin: () => [2093, 2637, 2093, 2637].forEach((f, i) => setTimeout(() => playSound(f, 'sine', 0.15, 0.12), i * 100))
     };
 
     const symbols = ['7️⃣', '🐳', '🦈', '🍉', '🐙', '🦐', '🏖️'];
     const multipliers = { '7️⃣': 50, '🐳': 20, '🦈': 15, '🍉': 10, '🐙': 5, '🦐': 3, '🏖️': 0 };
     const lineIndices = [[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
+
+    // --- データ管理 ---
     let balance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
+    let totalSpins = parseInt(localStorage.getItem('ev_total_spins')) || 0;
+    let bigWinCount = parseInt(localStorage.getItem('ev_big_win_count')) || 0;
+    let winHistory = JSON.parse(localStorage.getItem('ev_win_history')) || [];
     let currentBetPerLine = 100;
 
     let isHighChance = false;
     let bonusEndTime = 0; 
-    let ebiCounter = 0;   
+    let ebiCounter = 0;    
     let suikaCounter = 0; 
+
+    // 初回UI更新
+    function initStats() {
+        document.getElementById('stat-spins').innerText = totalSpins;
+        document.getElementById('stat-bigwins').innerText = bigWinCount;
+        updateGraph();
+    }
 
     function updateMode() {
         const now = new Date();
@@ -256,9 +300,29 @@
         localStorage.setItem('ev_coin_balance', balance); 
     }
 
+    function updateGraph() {
+        const container = document.getElementById('history-graph');
+        container.innerHTML = '';
+        winHistory.slice(-15).forEach(winVal => {
+            const bar = document.createElement('div');
+            bar.className = 'graph-bar';
+            // グラフの高さ計算（最大値を100pxとして調整）
+            const h = Math.min(100, (winVal / 5000) * 100); 
+            bar.style.height = (h + 2) + 'px'; 
+            if(winVal >= 5000) bar.style.background = '#ff4500'; // 大当たりは色を変える
+            container.appendChild(bar);
+        });
+    }
+
     async function spin() {
         const totalBet = currentBetPerLine * 5;
         if (balance < totalBet) { document.getElementById('msg').innerText = "コイン不足だにゃ！"; return; }
+        
+        // 回転数アップ
+        totalSpins++;
+        document.getElementById('stat-spins').innerText = totalSpins;
+        localStorage.setItem('ev_total_spins', totalSpins);
+
         updateBalance(-totalBet);
         const spinBtn = document.getElementById('spin-btn');
         const msgEl = document.getElementById('msg');
@@ -306,7 +370,7 @@
         }
 
         let totalWin = 0;
-        let isBigWin = false;
+        let isBigWinEffect = false;
         let triggeredBonus = false;
 
         lineIndices.forEach((line, index) => {
@@ -323,7 +387,7 @@
                     document.getElementById(`c${idx}`).classList.add('win-glow');
                     if (s === '7️⃣' || s === '🐳') { 
                         document.getElementById(`c${idx}`).classList.add('bound'); 
-                        isBigWin = true; 
+                        isBigWinEffect = true; 
                     }
                 });
 
@@ -344,10 +408,22 @@
             }
         });
 
+        // 大当たり(BIG WIN)記録
+        if (totalWin >= currentBetPerLine * 20) {
+            bigWinCount++;
+            document.getElementById('stat-bigwins').innerText = bigWinCount;
+            localStorage.setItem('ev_big_win_count', bigWinCount);
+        }
+
+        // グラフ用履歴更新
+        winHistory.push(totalWin);
+        if(winHistory.length > 15) winHistory.shift();
+        localStorage.setItem('ev_win_history', JSON.stringify(winHistory));
+        updateGraph();
+
         const msgEl = document.getElementById('msg');
         if (totalWin > 0) {
             sounds.win();
-            // 【演出】ボーナス発動時はキュイン音！
             if (triggeredBonus) {
                 setTimeout(() => {
                     sounds.kyuin();
@@ -356,7 +432,7 @@
                 }, 600);
             } else {
                 msgEl.innerText = `✨ ${totalWin} COINS GET!! ✨`;
-                if (isBigWin) msgEl.classList.add('rainbow-text');
+                if (isBigWinEffect) msgEl.classList.add('rainbow-text');
             }
             updateBalance(totalWin);
         } else { 
@@ -364,7 +440,10 @@
         }
         document.getElementById('spin-btn').disabled = false;
     }
+
+    // 起動時処理
     updateBalance(0);
+    initStats();
 </script>
 </body>
 </html>
