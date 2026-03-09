@@ -5,20 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SEA SIDE SLOT | GORGEOUS GOLD COMPLETE</title>
     <style>
-        /* --- 既存のスタイル --- */
+        /* --- スタイル設定（既存のものを維持しつつ最適化） --- */
         body { 
             background: linear-gradient(135deg, #001f3f 0%, #0074d9 50%, #7fdbff 100%); 
             color: #fff; 
             font-family: 'Impact', 'Arial Black', "Hiragino Sans", sans-serif; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             min-height: 100vh; margin: 0;
-            overflow-x: hidden; /* 横スクロール防止 */
-            overflow-y: auto;   /* 縦スクロール許可 */
+            overflow-x: hidden; 
+            overflow-y: auto;
             transition: background 1s ease;
         }
 
-        /* (中略: 既存のbody.golden-modeから.rainbow-textまでのスタイルはそのまま維持) */
-        
         body.golden-mode { background: radial-gradient(circle, #fff700 0%, #ff8c00 50%, #b38728 100%); }
         #money-bar { background: linear-gradient(to bottom, #ffd700, #ff8c00); color: #000; padding: 10px 50px; border-radius: 4px; font-size: 28px; font-weight: 900; margin-bottom: 25px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px #fff; border: 4px solid #fff; text-shadow: 1px 1px 0px rgba(255,255,255,0.5); }
         #game-layout { display: flex; gap: 15px; align-items: stretch; z-index: 10; }
@@ -59,47 +57,12 @@
         @keyframes rainbow { 0% { color: #fff; text-shadow: 0 0 10px red; } 50% { color: #ffd700; text-shadow: 0 0 20px gold; } 100% { color: #fff; text-shadow: 0 0 10px blue; } }
         .rainbow-text { animation: rainbow 0.15s linear infinite; font-size: 28px !important; }
 
-        /* --- ここからレスポンシブ用の追加設定 --- */
         @media (max-width: 950px) {
-            #game-layout {
-                flex-direction: column; /* 横並びを縦並びに */
-                align-items: center;
-                gap: 20px;
-                padding-bottom: 50px;
-            }
-
-            #slot-container {
-                order: 1; /* スロットを一番上に表示 */
-                transform: scale(0.95); /* 少しだけ縮小して収まりを良くする */
-            }
-
-            #paytable {
-                order: 2; /* 2番目に配当表 */
-                width: 350px; /* スロットの幅に合わせる */
-            }
-
-            #datatable {
-                order: 3; /* 3番目にデータ */
-                width: 350px;
-            }
-
-            #money-bar {
-                width: 80%;
-                text-align: center;
-                font-size: 24px;
-                padding: 10px 0;
-            }
-        }
-
-        /* 画面が非常に小さい場合（スマホ縦持ち） */
-        @media (max-width: 420px) {
-            #slot-container {
-                transform: scale(0.85); /* 画面からはみ出さないようさらに縮小 */
-                margin: -20px 0;
-            }
-            #paytable, #datatable {
-                width: 90%;
-            }
+            #game-layout { flex-direction: column; align-items: center; gap: 20px; padding-bottom: 50px; }
+            #slot-container { order: 1; transform: scale(0.95); }
+            #paytable { order: 2; width: 350px; }
+            #datatable { order: 3; width: 350px; }
+            #money-bar { width: 80%; text-align: center; font-size: 24px; padding: 10px 0; }
         }
     </style>
 </head>
@@ -120,6 +83,9 @@
         </div>
         <p style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
             5-LINES VALID SYSTEM<br>SUMMER GORGEOUS EDITION<br><br>
+            <strong>【内部保留システム】</strong><br>
+            🦐×7：高確率 60秒<br>
+            🍉×5：超高確率 90秒<br><br>
             <strong>【コイン獲得】</strong><br>
             スロットコインは、<br>クイズ・ミリオネアで獲得してください
         </p>
@@ -163,13 +129,16 @@
                 <span class="data-value" id="stat-spins">0</span>
             </div>
             <div class="row-item">
-                <span class="data-label">BIG WINS</span>
-                <span class="data-value" id="stat-bigwins">0</span>
+                <span class="data-label">EB-COUNT</span>
+                <span class="data-value" id="stat-ebi">0 / 7</span>
+            </div>
+            <div class="row-item">
+                <span class="data-label">WM-COUNT</span>
+                <span class="data-value" id="stat-suika">0 / 5</span>
             </div>
             <div id="graph-area">
                 <div style="font-size: 12px; color: #7fdbff; text-align: center; margin-bottom: 5px;">WIN HISTORY (Recent 15)</div>
-                <div class="graph-container" id="history-graph">
-                    </div>
+                <div class="graph-container" id="history-graph"></div>
             </div>
         </div>
         <p style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">
@@ -177,7 +146,6 @@
             <strong>【グラフ表示】</strong><br>
             直近15回の獲得コイン数を表示。<br>
             ベット数の20倍以上で橙色に点灯します。
-        </p>
     </div>
 </div>
 
@@ -206,45 +174,59 @@
     const multipliers = { '7️⃣': 50, '🐳': 20, '🦈': 15, '🍉': 10, '🐙': 5, '🦐': 3, '🏖️': 0 };
     const lineIndices = [[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
 
-    // --- データ管理 ---
+    // --- データ管理（内部保留の永続化） ---
     let balance = parseInt(localStorage.getItem('ev_coin_balance')) || 1000;
     let totalSpins = parseInt(localStorage.getItem('ev_total_spins')) || 0;
     let bigWinCount = parseInt(localStorage.getItem('ev_big_win_count')) || 0;
     let winHistory = JSON.parse(localStorage.getItem('ev_win_history')) || [];
+    
+    // 保留データの読み込み
+    let ebiCounter = parseInt(localStorage.getItem('ev_ebi_counter')) || 0;
+    let suikaCounter = parseInt(localStorage.getItem('ev_suika_counter')) || 0;
+    let bonusEndTime = parseInt(localStorage.getItem('ev_bonus_end_time')) || 0;
+
     let currentBetPerLine = 100;
-
     let isHighChance = false;
-    let bonusEndTime = 0; 
-    let ebiCounter = 0;    
-    let suikaCounter = 0; 
 
-    // 初回UI更新
+    function saveInternalState() {
+        localStorage.setItem('ev_ebi_counter', ebiCounter);
+        localStorage.setItem('ev_suika_counter', suikaCounter);
+        localStorage.setItem('ev_bonus_end_time', bonusEndTime);
+        document.getElementById('stat-ebi').innerText = `${ebiCounter} / 7`;
+        document.getElementById('stat-suika').innerText = `${suikaCounter} / 5`;
+    }
+
     function initStats() {
         document.getElementById('stat-spins').innerText = totalSpins;
-        document.getElementById('stat-bigwins').innerText = bigWinCount;
+        saveInternalState();
         updateGraph();
+        updateMode();
     }
 
     function updateMode() {
-        const now = new Date();
-        const currentTime = now.getHours() * 100 + now.getMinutes();
-        const targets = [135, 246, 357, 444, 555, 601, 717, 824, 900, 1010, 1020, 1111, 1212, 1313, 1414, 1515, 1616, 1717, 1818, 1919, 2020, 2121, 2222, 2323, 2345, 2211, 2111, 1955, 1855, 1755, 1655, 1555, 1455, 1355, 1255];
+        const now = Date.now();
+        // 特定時間帯の判定
+        const dateObj = new Date();
+        const currentTimeCode = dateObj.getHours() * 100 + dateObj.getMinutes();
+        const targets = [135, 246, 357, 444, 555, 601, 717, 824, 900, 1010, 1020, 1111, 1212, 1313, 1414, 1515, 1616, 1717, 1818, 1919, 2020, 2121, 2222, 2323];
+        let isTimeActive = targets.some(t => currentTimeCode >= t && currentTimeCode <= t + 1);
         
-        let isTimeActive = targets.some(t => currentTime >= t && currentTime <= t + 1);
-        let isBonusActive = Date.now() < bonusEndTime;
+        // 内部保留（ボーナス時間）の判定
+        let isBonusActive = now < bonusEndTime;
         const active = isTimeActive || isBonusActive;
 
         if (active && !isHighChance) {
             isHighChance = true;
             document.body.classList.add('golden-mode');
             document.getElementById('panel-title').innerText = "GOLDEN TIME";
-            document.getElementById('msg').innerText = "✨高確率ゾーン突入だにゃ！✨";
+            document.getElementById('msg').innerText = "✨状態持ち越し！継続中にゃ！✨";
         } else if (!active && isHighChance) {
             isHighChance = false;
             document.body.classList.remove('golden-mode');
             document.getElementById('panel-title').innerText = "PAYMENT INFO";
         }
     }
+    // モードチェックを頻繁に行う（ボーナス終了の瞬間に切り替えるため）
     setInterval(updateMode, 1000);
 
     function setBet(amount) {
@@ -265,10 +247,9 @@
         winHistory.slice(-15).forEach(winVal => {
             const bar = document.createElement('div');
             bar.className = 'graph-bar';
-            // グラフの高さ計算（最大値を100pxとして調整）
-            const h = Math.min(100, (winVal / 5000) * 100); 
+            const h = Math.min(100, (winVal / (currentBetPerLine * 50)) * 100); 
             bar.style.height = (h + 2) + 'px'; 
-            if(winVal >= 5000) bar.style.background = '#ff4500'; // 大当たりは色を変える
+            if(winVal >= currentBetPerLine * 20) bar.style.background = '#ff4500';
             container.appendChild(bar);
         });
     }
@@ -277,7 +258,6 @@
         const totalBet = currentBetPerLine * 5;
         if (balance < totalBet) { document.getElementById('msg').innerText = "コイン不足だにゃ！"; return; }
         
-        // 回転数アップ
         totalSpins++;
         document.getElementById('stat-spins').innerText = totalSpins;
         localStorage.setItem('ev_total_spins', totalSpins);
@@ -350,31 +330,32 @@
                     }
                 });
 
+                // 内部保留ロジック
                 if (s === '🦐') {
                     ebiCounter++;
                     if (ebiCounter >= 7) {
-                        bonusEndTime = Math.max(bonusEndTime, Date.now()) + 60000;
+                        bonusEndTime = Math.max(bonusEndTime, Date.now()) + 60000; // 60秒追加
                         ebiCounter = 0; triggeredBonus = true;
                     }
                 }
                 if (s === '🍉') {
                     suikaCounter++;
                     if (suikaCounter >= 5) {
-                        bonusEndTime = Math.max(bonusEndTime, Date.now()) + 90000;
+                        bonusEndTime = Math.max(bonusEndTime, Date.now()) + 90000; // 90秒追加
                         suikaCounter = 0; triggeredBonus = true;
                     }
                 }
             }
         });
 
-        // 大当たり(BIG WIN)記録
+        // 状態保存
+        saveInternalState();
+
         if (totalWin >= currentBetPerLine * 20) {
             bigWinCount++;
-            document.getElementById('stat-bigwins').innerText = bigWinCount;
             localStorage.setItem('ev_big_win_count', bigWinCount);
         }
 
-        // グラフ用履歴更新
         winHistory.push(totalWin);
         if(winHistory.length > 15) winHistory.shift();
         localStorage.setItem('ev_win_history', JSON.stringify(winHistory));
@@ -388,6 +369,7 @@
                     sounds.kyuin();
                     msgEl.innerText = "🚨キュイン！超高確率突入🚨";
                     msgEl.classList.add('rainbow-text');
+                    updateMode();
                 }, 600);
             } else {
                 msgEl.innerText = `✨ ${totalWin} COINS GET!! ✨`;
