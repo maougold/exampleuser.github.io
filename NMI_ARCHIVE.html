@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>UNOFFICIAL GUIDE: NYANKO MISSION IMPOSSIBLE</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --accent-pink: #ff4d94;
+            --accent-gold: #d4af37;
+            --cyber-blue: #00ffff;
+            --text-color: #ffccd5;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-image: 
+                linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            border: 2px solid var(--accent-gold);
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 20px var(--accent-pink), inset 0 0 15px rgba(212, 175, 55, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ヘッダー演出 */
+        header {
+            background: linear-gradient(90deg, #1a1a1a, #4a001a);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 3px double var(--accent-gold);
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 3px 3px 0px var(--accent-pink);
+            letter-spacing: 4px;
+        }
+
+        .top-secret-stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 4px solid #f00;
+            color: #f00;
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            opacity: 0.8;
+        }
+
+        /* コンテンツエリア */
+        .content { padding: 40px; }
+
+        .mission-briefing {
+            border-left: 5px solid var(--accent-pink);
+            padding-left: 20px;
+            margin-bottom: 40px;
+            background: rgba(255, 77, 148, 0.05);
+        }
+
+        h2 {
+            color: var(--accent-pink);
+            border-bottom: 1px solid var(--accent-gold);
+            display: inline-block;
+            margin-top: 30px;
+        }
+
+        .point-box {
+            background: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .point-box::before {
+            content: "CAUTION";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: var(--accent-gold);
+            color: #000;
+            font-size: 10px;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* リンクボタンのシミュレーション */
+        .gmap-btn-demo {
+            display: inline-block;
+            color: var(--cyber-blue);
+            border: 1px solid var(--cyber-blue);
+            padding: 5px 15px;
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .gmap-btn-demo:hover { background: var(--cyber-blue); color: #000; }
+
+        .save-btn-demo {
+            background: #004400;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .footer-msg {
+            text-align: center;
+            background: #000;
+            padding: 20px;
+            font-weight: bold;
+            color: #ff0000;
+            border-top: 1px solid #333;
+        }
+
+        .glitch { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-secret-stamp">CLASSIFIED</div>
+    
+    <header>
+        <h1>NYANKO MISSION<br>IMPOSSIBLE</h1>
+        <p style="color: var(--accent-gold); letter-spacing: 2px;">-- 攻略データ・アーカイブ --</p>
+    </header>
+
+    <div class="content">
+        <div class="mission-briefing">
+            <h2>MISSION SUMMARY（ミッションの概要）</h2>
+            <p>
+                このゲームの真の目的は、世界各地に潜伏し、地球征服を企む野望を持つ「スパイニャンコ」の動向を阻止することにある。（※あくまで噂だが…）<br>
+                エージェントである君の任務は、最新鋭の「ニャンコレーダー」を駆使し、世界各地の文化遺産や名所に潜伏するターゲットを特定・確保することだ。
+            </p>
+        </div>
+
+        <h2>OPERATING PROCEDURE（操作手順）</h2>
+        
+        <div class="point-box">
+            <strong style="color: var(--accent-gold);">1. 高倍率スキャンを実行せよ</strong><br>
+            スパイニャンコは非常に巧妙に隠れている。地図を限界まで**「拡大」**しなければ、その姿を捉えることは不可能だ。レーダーの反応を頼りに、怪しいポイントをズームアップせよ！
+        </div>
+
+        <div class="point-box">
+            <strong style="color: var(--accent-gold);">2. [DISK SAVE] を忘れるな</strong><br>
+            発見した情報は、即座に <span class="save-btn-demo">DISK SAVE</span> ボタンで記録せよ。これを怠れば、通信が遮断された際に全てのミッションデータが消失し、再び世界を駆け巡る羽目になる。エージェントに二度手間は許されない。
+        </div>
+
+        <div class="point-box">
+            <strong style="color: var(--accent-gold);">3. 観光名所を徹底調査</strong><br>
+            発見場所には <span class="gmap-btn-demo">🔲 GOOGLE MAP ↗</span> が設置されている。スパイが見ていた景色、その地の文化を記憶せよ。これは単なるゲームではない。君の知らない世界の美しさを知る、至高の暇つぶしだ。
+        </div>
+
+        <h2 class="glitch">⚠️ WARNING（警告）: COUNTERATTACK（反撃）</h2>
+        <p>
+            特に注意すべきは **午前/午後 2時22分** だ。この時間は「にゃんこタイム」となり、スパイ猫たちの逆襲が始まる。画面が騒がしくなっても動じるな。そのカオスさえも楽しむのが一流のエージェントだ。
+        </p>
+
+        <div style="margin-top: 50px; text-align: center; border: 1px dashed var(--accent-gold); padding: 20px;">
+            <p style="font-size: 14px; font-style: italic;">
+                「配信者の諸君、視聴者と共に世界の観光名所を巡り、<br>
+                知的好奇心を満たしながらニャンコを追い詰めよう。」
+            </p>
+        </div>
+    </div>
+
+    <div class="footer-msg">
+        なお、このメッセージは5秒後に自動的に消滅する……（爆発しない）
+    </div>
+
+
+    <div style="text-align: center; margin: 40px 0; padding-top: 20px; border-top: 1px double var(--accent-gold);">
+            <p style="font-size: 12px; color: var(--accent-gold); margin-bottom: 20px; letter-spacing: 3px;">
+                READY TO DEPLOY?
+            </p>
+            <a href="NYANKO_MISSION_IMF.html" style="
+                display: inline-block;
+                padding: 20px 60px;
+                background: linear-gradient(45deg, #4a001a, #000);
+                color: var(--accent-gold);
+                text-decoration: none;
+                font-size: 1.5em;
+                font-weight: bold;
+                border: 2px solid var(--accent-pink);
+                box-shadow: 0 0 15px var(--accent-pink);
+                transition: 0.3s;
+                letter-spacing: 5px;
+                position: relative;
+                overflow: hidden;
+            " onmouseover="this.style.boxShadow='0 0 30px var(--accent-gold)'; this.style.transform='scale(1.05)';" 
+               onmouseout="this.style.boxShadow='0 0 15px var(--accent-pink)'; this.style.transform='scale(1)';"
+            >
+                <span style="position: relative; z-index: 2;">MISSION START</span>
+            </a>
+            <p style="font-size: 10px; color: #555; margin-top: 15px;">
+                ※リンク先：NYANKO_MISSION_IMF.html
+            </p>
+        </div>
+</div>
+
+</body>
+</html>
