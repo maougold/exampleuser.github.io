@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NYANKO GATE 22: SUPER SPARKLE</title>
+    <style>
+        :root { 
+            --main-pink: #ff0077; 
+            --royal-purple: #2a0035; 
+            --royal-purple-opaque: #1a0025; 
+            --gold: #ffd700; 
+            --gold-glow: rgba(255, 215, 0, 0.7);
+            --error-red: #ff4444;
+        }
+        
+        body { 
+            background: radial-gradient(circle at center, #4b0055, #1a001f, #000); 
+            color: #fff; font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0; overflow: hidden; position: relative;
+            perspective: 1000px;
+        }
+
+        .star {
+            position: absolute; color: var(--gold);
+            opacity: 0; animation: starFlash infinite linear;
+            z-index: -1; pointer-events: none;
+        }
+
+        @keyframes starFlash {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        .correct-spin {
+            animation: superSpin 1s cubic-bezier(0.36, 0, 0.66, -0.56) !important;
+        }
+
+        @keyframes superSpin {
+            0% { transform: translateZ(0) rotate(0deg) scale(1); filter: blur(0px); }
+            50% { transform: translateZ(200px) rotate(1080deg) scale(0.5); filter: blur(5px); }
+            100% { transform: translateZ(0) rotate(2160deg) scale(1); filter: blur(0px); }
+        }
+
+        #terminal { 
+            width: 95%; max-width: 600px; padding: 30px; 
+            border: 4px solid var(--gold); 
+            background: rgba(42, 0, 53, 0.95);
+            border-radius: 50px; 
+            box-shadow: 0 0 40px var(--gold-glow), inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative; text-align: center; backdrop-filter: blur(10px);
+            z-index: 10; border-style: double;
+            transition: transform 0.1s;
+        }
+
+        #progress-bar { 
+            display: flex; justify-content: center; flex-wrap: wrap; 
+            margin-bottom: 20px; gap: 6px; padding: 10px;
+            background: rgba(0,0,0,0.5); border-radius: 30px;
+            border: 1px solid var(--gold);
+        }
+        .step { 
+            width: 22px; height: 22px; border-radius: 50%; 
+            background: #fff; border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; transition: 0.4s; position: relative;
+        }
+        .step::after { content: "🐾"; color: #ddd; font-size: 12px; }
+        .step.active { background: var(--main-pink); border-color: #fff; transform: scale(1.1); box-shadow: 0 0 10px var(--main-pink); }
+        .step.active::after { color: #fff; }
+        .step.current { 
+            background: var(--gold); box-shadow: 0 0 20px var(--gold); 
+            animation: pulse 1s infinite alternate; 
+        }
+        .step.current::after { color: #000; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.3); } }
+
+        .timer-container { position: relative; width: 130px; height: 130px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; }
+        .timer-svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+        .timer-circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 10; }
+        .timer-circle-fg { fill: none; stroke: var(--gold); stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 8px var(--gold)); transition: stroke-dashoffset 0.1s linear; }
+        #timer { font-size: 2.8rem; color: var(--gold); font-weight: 900; font-family: 'Garamond', serif; text-shadow: 0 0 15px var(--gold); }
+
+        #question-box { 
+            min-height: 120px; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.7; 
+            background: rgba(255,255,255,0.05); padding: 25px; border-radius: 25px; 
+            border: 1px solid var(--gold); text-align: left; position: relative;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+        #question-box::before { content: "QUESTION"; position: absolute; top: -10px; left: 20px; background: var(--gold); color: #000; font-size: 0.7rem; padding: 2px 10px; border-radius: 10px; font-weight: bold; box-shadow: 0 0 10px var(--gold); }
+
+        input { 
+            width: 80%; background: rgba(0,0,0,0.7); border: 2px solid var(--gold); 
+            border-radius: 15px; color: var(--gold); font-size: 1.8rem; text-align: center; 
+            outline: none; padding: 12px; margin-bottom: 15px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7), 0 0 10px var(--gold-glow);
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--main-pink); box-shadow: 0 0 20px var(--main-pink); color: var(--main-pink); }
+
+        .correct-label { color: var(--gold); font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px var(--gold), 0 0 30px var(--main-pink); margin-bottom: 15px; display: block; animation: labelGlow 1s infinite alternate; }
+        @keyframes labelGlow { from { text-shadow: 0 0 10px var(--gold); } to { text-shadow: 0 0 30px var(--gold), 0 0 40px var(--main-pink); } }
+        
+        .desc-box { 
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(0,0,0,0.5)); 
+            padding: 20px; border-radius: 20px; text-align: left; margin-bottom: 25px; 
+            border-right: 4px solid var(--main-pink); border-left: 1px solid var(--gold); font-size: 0.95rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        #overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,1);
+            display: flex; align-items: center; justify-content: center; 
+            z-index: 1000;
+        }
+        #briefing { 
+            width: 80%; max-width: 420px; padding: 40px; border: 4px solid var(--gold); 
+            background: var(--royal-purple-opaque);
+            border-radius: 60px; text-align: center; 
+            box-shadow: 0 0 60px rgba(255,215,0,0.5);
+            border-style: double;
+        }
+        
+        button { 
+            background: linear-gradient(135deg, var(--gold), #b8860b, var(--gold)); background-size: 200% 200%; animation: btnGlow 3s infinite;
+            color:#000; border:none; padding:20px; font-weight:bold; cursor:pointer; font-size: 1.3rem; 
+            width: 100%; border-radius: 50px; box-shadow: 0 6px 0 #5c4b00; outline: none; transition: 0.2s;
+        }
+        @keyframes btnGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        button:hover { filter: brightness(1.2); box-shadow: 0 8px 0 #5c4b00, 0 0 20px var(--gold-glow); }
+        button:active { transform: translateY(4px); box-shadow: 0 2px 0 #5c4b00; }
+        
+        .hidden { display: none !important; }
+        .flash-wrong { animation: shake 0.2s; border-color: var(--error-red) !important; box-shadow: 0 0 20px var(--error-red) !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
+    </style>
+</head>
+<body>
+
+    <div id="star-container"></div>
+
+    <div id="overlay">
+        <div id="briefing">
+            <h1 style="color: var(--gold); font-size: 2rem; margin-top: 0; text-shadow: 0 0 15px var(--gold);">NYANKO GATE 22</h1>
+            <p style="color: #ffccd5; letter-spacing: 1px;">～ 猫に関する全22問題に挑戦する者よ、至福あれ ～</p>
+            <div style="text-align: left; font-size: 0.9rem; margin: 25px 0; border-left: 3px solid var(--gold); padding-left: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                ・全22問で各問の制限時間は <span style="color:var(--gold); font-weight:bold;">60秒</span><br>
+                ・正解するごとに解説を表示する親切設計<br>
+                ・全問正解すればクイズ王にも勝る栄誉を与えよう
+            </div>
+            <button onclick="pressStart()">試練を開始する 🐾</button>
+        </div>
+    </div>
+
+    <div id="terminal">
+        <div id="progress-bar"></div>
+
+        <div id="timer-ui" class="timer-container">
+            <svg class="timer-svg" width="130" height="130">
+                <circle class="timer-circle-bg" cx="65" cy="65" r="58"></circle>
+                <circle class="timer-circle-fg" id="progress-ring" cx="65" cy="65" r="58"></circle>
+            </svg>
+            <div id="timer">60</div>
+        </div>
+
+        <div id="quiz-ui">
+            <div id="question-box"></div>
+            <input type="text" id="code-input" autocomplete="off" placeholder="答えを入力..." onkeydown="handleEnter(event)">
+            <div style="font-size:0.8rem; color:var(--gold); letter-spacing: 2px; text-shadow: 0 0 5px var(--gold);">PRESS ENTER TO VERIFY</div>
+        </div>
+
+        <div id="answer-ui" class="hidden">
+            <span class="correct-label">✨ EXCELLENT ✨</span>
+            <div class="desc-box" id="desc-text"></div>
+            <button id="next-btn" onclick="nextQuestion()">次の試練へ進む 🐾</button>
+        </div>
+    </div>
+
+<script>
+    const QUESTIONS = [
+        { q: "招き猫発祥の地とされる東京・豪徳寺。元々は「ある虫」を食べるネズミを退治する神様として信仰されていました。その虫とは？", a: "蚕", desc: "養蚕が盛んだった時代、蚕を食べるネズミを駆除してくれる猫は神様のように大切にされていました。" },
+        { q: "生涯で420匹もの子猫を産み、世界一多くの子猫を産んだ猫として記録されている猫の名前は？", a: "ダスティ", desc: "1952年までに420匹。想像を絶する数ですが、これが公式なギネス記録です。" },
+        { q: "『枕草子』に登場する、一条天皇に溺愛された日本最古の猫の名前は「命婦の○○○」？", a: "オトド", desc: "「命婦のおとど」。一条天皇が乳母を付けるほど可愛がった、日本初のセレブ猫です。" },
+        { q: "体だけが消えていく「チェシャ猫」が登場する有名な児童文学のタイトルは？", a: "不思議の国のアリス", desc: "ルイス・キャロルの名作。ニヤリとした笑いだけが空間に残るシーンはあまりにも有名。" },
+        { q: "世界一裕福な猫「ブラッキー」が、飼い主から相続した遺産は約何億円？（数字のみ）", a: "21", desc: "イギリスの骨闘商が愛猫に全財産を遺贈。猫専用の執事がいたという噂も。" },
+        { q: "三毛猫のオスが生まれる確率は非常に低く希少です。一般的に、約何万分の1の確率と言われている？（数字のみ）", a: "3", desc: "染色体の関係でオスが生まれるのは奇跡に近く、日本では福を呼ぶ幸運の象徴です。" },
+        { q: "日光東照宮の彫刻「眠り猫」。ある有名な戦国武将の霊をネズミから守るために彫られたと言われています。その武将とは？", a: "徳川家康", desc: "伝説の彫刻職人・左甚五郎の作。平和な世を象徴すると同時に守護の意味も持ちます。" },
+        { q: "英語で「猫」はキャット。では「子猫」を指す愛称は？", a: "キティ", desc: "英語の正式な子猫はkittenですが、Kittyはより親しみを込めた呼び名です。" },
+        { q: "猫の目は暗闇で光りますが、その網膜裏にある反射層の名前は？ (4文字)", a: "タペタム", desc: "鏡のような役割を果たし、わずかな光を倍増させて暗闇での視力を確保します。" },
+        { q: "名作『猫と庄造と二人のおんな』。作中で庄造が溺愛する、物語の鍵を握る猫の名前は？", a: "オタマ", desc: "谷崎潤一郎による、猫への偏愛を描いた傑作。お玉をめぐり女たちが競い合います。" },
+        { q: "扉にしっぽを挟まれて短くなったという伝説を持つ、イギリス・マン島原産の猫の品種は？", a: "マンクス", desc: "しっぽがないのが最大の特徴。ノアの方舟の扉に挟まれたという伝説があります。" },
+        { q: "「ドラえもん」が片思いしている、のび太の近所に住んでいる三毛猫の恋人の名前は？", a: "ミーチャン", desc: "ドラえもんのガールフレンド。彼女のために秘密道具を使うこともよくあります。" },
+        { q: "エジプト神話に登場する、猫の頭を持つ女神の名前は？", a: "バステト", desc: "豊穣や幸運を司る女神。古代エジプトでは猫は神聖な生き物として崇拝されていました。" },
+        { q: "「吾輩は猫である」の作者の名前は？", a: "夏目漱石", desc: "明治時代の文豪。モデルになった猫は実在し、夏目家で「猫」と呼ばれて可愛がられていました。" },
+        { q: "ハローキティには双子の妹がいます。その妹の名前は何ですか？", a: "ミミィ", desc: "キティの双子の妹の名前はミミィで、キティと見分けるために右の耳に黄色いリボンをつけています。" },
+        { q: "猫がマタタビに反応する原因物質の名前は？（カタカナ7文字）", a: "ネペタラクトン", desc: "中枢神経に作用し、恍惚とした状態にさせると言われています。" },
+        { q: "世界で最も人気のある猫の品種の一つ。特徴的な平たい顔を持つ、イギリス原産の猫は？", a: "ペルシャ", desc: "「猫の王様」とも称される優雅な長毛種。落ち着いた性格で愛されています。" },
+        { q: "映画『メン・イン・ブラック』で、首輪に「銀河」を隠し持っていた猫の名前は何ですか？", a: "オリオン", desc: "この猫の名前はオリオンで、彼の首輪にぶら下がっていた小さな宝石の中に、物語の鍵となる銀河が封じ込められていました。" },
+        { q: "アメリカの漫画に登場する、ラザニアが大好物のオレンジ色の太った猫の名前は？", a: "ガーフィールド", desc: "月曜日が嫌いで皮肉屋。世界で最も広く出版されているコミック・ストリップです。" },
+        { q: "映画『エイリアン』で、主人公リプリーと共に宇宙船ノストロモ号から生き残った茶トラ猫の名前は何ですか？", a: "ジョーンズ", desc: "クルーたちから「ジョーンジー」という愛称でも呼ばれていた、シリーズで最も有名な猫の一匹です。" },
+        { q: "日本で最も有名な駅長猫「たま」が務めていた和歌山電鐵の駅名は？", a: "貴志駅", desc: "廃線の危機にあった路線を救ったスーパー駅長。現在は「たま神社」に祀られています。" },
+        { q: "最後。映画『シュレック2』で初登場し、後に主役としてスピンオフ映画も作られた、剣術の達人である猫の名前は何ですか？", a: "プス", desc: "英語名は「Puss in Boots」で、日本では「長ぐつをはいたネコ」として知られています。" }
+    ];
+
+    let currentIdx = 0;
+    let timeLeft = 60.0;
+    let timerInterval;
+    const FULL_DASH_ARRAY = 2 * Math.PI * 58;
+
+    // 🔊 サウンド演出エンジン
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+            // キラキラ音（和音）
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'wrong') {
+            // 不正解音（ブブー）
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(110, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+    }
+
+    function initStars() {
+        const container = document.getElementById('star-container');
+        const starCount = 150;
+        const types = ['★', '☆', '✦', '✧'];
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.innerText = types[Math.floor(Math.random() * types.length)];
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.fontSize = `${Math.random() * 15 + 5}px`;
+            const duration = Math.random() * 10 + 5;
+            const delay = Math.random() * -20;
+            star.style.animationDuration = `${duration}s`;
+            star.style.animationDelay = `${delay}s`;
+            container.appendChild(star);
+        }
+    }
+
+    function createProgress() {
+        const bar = document.getElementById('progress-bar');
+        for (let i = 0; i < 22; i++) {
+            const step = document.createElement('div');
+            step.className = 'step';
+            step.id = `s${i}`;
+            bar.appendChild(step);
+        }
+    }
+
+    function pressStart() {
+        audioCtx.resume(); // Chrome対策
+        document.getElementById('overlay').classList.add('hidden');
+        createProgress();
+        loadQuestion();
+    }
+
+    function startTimer() {
+        timeLeft = 60.0;
+        updateTimerDisplay();
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                playSound('wrong');
+                alert("TIME OVER... また挑戦してね🐾");
+                location.reload();
+            }
+            updateTimerDisplay();
+        }, 100);
+    }
+
+    function updateTimerDisplay() {
+        const timerEl = document.getElementById('timer');
+        const ringEl = document.getElementById('progress-ring');
+        timerEl.innerText = Math.ceil(timeLeft);
+        const offset = FULL_DASH_ARRAY - (timeLeft / 60.0) * FULL_DASH_ARRAY;
+        ringEl.style.strokeDasharray = `${FULL_DASH_ARRAY} ${FULL_DASH_ARRAY}`;
+        ringEl.style.strokeDashoffset = offset;
+    }
+
+    function loadQuestion() {
+        document.getElementById('quiz-ui').classList.remove('hidden');
+        document.getElementById('answer-ui').classList.add('hidden');
+        document.getElementById('timer-ui').classList.remove('hidden');
+        
+        const terminal = document.getElementById('terminal');
+        terminal.classList.remove('correct-spin');
+
+        const q = QUESTIONS[currentIdx];
+        document.getElementById('question-box').innerText = q.q;
+        
+        const input = document.getElementById('code-input');
+        input.value = "";
+        setTimeout(() => input.focus(), 100);
+
+        updateProgress();
+        startTimer();
+    }
+
+    function handleEnter(e) { if (e.key === 'Enter') checkAnswer(); }
+
+    function checkAnswer() {
+        const inputArea = document.getElementById('code-input');
+        let val = inputArea.value.trim();
+        
+        val = val.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+        let normVal = val.replace(/[ぁ-ん]/g, s => String.fromCharCode(s.charCodeAt(0) + 0x60)).toUpperCase();
+        const correct = QUESTIONS[currentIdx].a.toUpperCase();
+
+        let isCorrect = (normVal === correct);
+        
+        // 漢字・揺れ救済
+        const rescues = { 0:"蚕", 3:"不思議の国のアリス", 6:"徳川家康", 9:"オタマ", 13:"夏目漱石", 20:"貴志駅" };
+        if (rescues[currentIdx] && val === rescues[currentIdx]) isCorrect = true;
+
+        if (isCorrect) {
+            clearInterval(timerInterval);
+            playSound('correct');
+            triggerCorrectEvent();
+        } else {
+            playSound('wrong');
+            document.getElementById('terminal').classList.add('flash-wrong');
+            setTimeout(() => document.getElementById('terminal').classList.remove('flash-wrong'), 300);
+        }
+    }
+
+    function triggerCorrectEvent() {
+        const terminal = document.getElementById('terminal');
+        terminal.classList.add('correct-spin');
+        setTimeout(() => { showAnswer(); }, 1000); 
+    }
+
+    function showAnswer() {
+        document.getElementById('quiz-ui').classList.add('hidden');
+        document.getElementById('timer-ui').classList.add('hidden');
+        document.getElementById('answer-ui').classList.remove('hidden');
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (currentIdx === QUESTIONS.length - 1) {
+            nextBtn.innerText = "エンドロールへ 🐾";
+            nextBtn.style.background = "linear-gradient(135deg, #ff0077, #ff66aa, #ff0077)";
+        } else {
+            nextBtn.innerText = "次の試練へ進む 🐾";
+        }
+        
+        document.getElementById('desc-text').innerHTML = `<strong>正解：${QUESTIONS[currentIdx].a}</strong><br><br>${QUESTIONS[currentIdx].desc}`;
+    }
+
+    function nextQuestion() {
+        if (currentIdx >= QUESTIONS.length - 1) {
+            // 全問クリア：エンドロール（クリア画面）へ
+            window.location.href = "Q22endroll.html";
+        } else {
+            currentIdx++;
+            loadQuestion();
+        }
+    }
+
+    function updateProgress() {
+        for(let i=0; i<22; i++) {
+            const el = document.getElementById(`s${i}`);
+            if(!el) continue;
+            el.className = 'step';
+            if(i < currentIdx) el.classList.add('active');
+            if(i === currentIdx) el.classList.add('active', 'current');
+        }
+    }
+
+    initStars();
+</script>
+</body>
+</html>
