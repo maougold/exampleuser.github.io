@@ -20,7 +20,14 @@
             height: 100vh; margin: 0; overflow: hidden; position: relative;
         }
 
-        /* ⭐️ キラキラ背景（ゲーム本編継承） */
+        /* 再生待機オーバーレイ */
+        #play-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+
         .star {
             position: absolute; color: var(--gold);
             opacity: 0; animation: starFlash infinite linear;
@@ -32,7 +39,6 @@
             100% { transform: scale(0) rotate(360deg); opacity: 0; }
         }
 
-        /* ♥ ハート背景（エンドロール限定ゴージャス版） */
         .heart { 
             position: absolute; color: var(--main-pink); 
             animation: heartFall linear infinite; opacity: 0.5; 
@@ -44,12 +50,15 @@
             100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
         }
 
-        /* 最初の衝撃演出 */
         #initial-clear {
             position: fixed; font-size: 3rem; color: var(--gold);
             text-shadow: 0 0 30px var(--gold), 0 0 50px var(--main-pink); 
             text-align: center; font-weight: bold;
-            animation: initialFade 5s cubic-bezier(0.23, 1, 0.32, 1) forwards; z-index: 1000;
+            display: none; z-index: 1000;
+        }
+        .animate-clear {
+            display: block !important;
+            animation: initialFade 5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
         @keyframes initialFade {
             0% { opacity: 0; transform: scale(0.5) translateZ(200px); filter: blur(10px); }
@@ -58,17 +67,16 @@
             100% { opacity: 0; transform: scale(1.5) translateZ(-100px); filter: blur(5px); pointer-events: none; }
         }
 
-        /* エンドロール共通設定（超ゴージャス版） */
         .end-roll-container {
             position: fixed; top: 100%; left: 0; width: 100%; height: auto;
             text-align: center; z-index: 5; pointer-events: none;
-            display: none; /* 最初は非表示 */
+            display: none;
         }
         .end-roll-text {
             font-size: 1.35rem; line-height: 3.5; color: var(--gold);
             text-shadow: 0 0 15px rgba(255,215,0,0.5), 0 0 5px #000; 
-            padding-bottom: 50vh; /* 無駄な長さを演出 */
-            font-family: 'Garamond', 'Hiragino Mincho ProN', serif; /* 少しロイヤルなフォントに */
+            padding-bottom: 50vh;
+            font-family: 'Garamond', 'Hiragino Mincho ProN', serif;
         }
         .episode-title {
             font-size: 2rem; color: var(--main-pink); font-weight: bold;
@@ -81,25 +89,15 @@
             display: inline-block; margin: 10px 0; font-style: italic;
         }
 
-        /* スピンしながら上昇する超無駄アニメーション */
-        @keyframes scrollUpSpin {
-            0% { transform: translateY(0) rotateY(0deg); }
-            10% { transform: translateY(-10%) rotateY(360deg); }
-            90% { transform: translateY(-90%) rotateY(-360deg); }
-            100% { transform: translateY(-135%) rotateY(0deg); }
-        }
-        /* 通常の上昇アニメーション（読みやすさ重視） */
         @keyframes scrollUpLinear {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-145%); } /* 長くなった分、移動距離も増やす */
+            100% { transform: translateY(-145%); }
         }
 
-        /* 速度調整：長く見せるためにゆっくり（エピソードごとに調整可能） */
         .scrolling-1 { display: block; animation: scrollUpLinear 50s linear forwards; }
         .scrolling-2 { display: block; animation: scrollUpLinear 55s linear forwards; }
-        .scrolling-3 { display: block; animation: scrollUpLinear 60s linear forwards; } /* 最長 */
+        .scrolling-3 { display: block; animation: scrollUpLinear 60s linear forwards; }
 
-        /* 最後に現れるボタンコンテナ */
         #final-ui {
             opacity: 0; text-align: center; z-index: 500;
             transition: opacity 3s ease-in, transform 3s ease-in;
@@ -109,12 +107,7 @@
         }
         .show-ui { opacity: 1 !important; visibility: visible !important; transform: scale(1) !important; }
 
-        #final-ui h1 {
-            color: var(--gold); font-size: 2.5rem; text-shadow: 0 0 20px var(--gold);
-            margin-top: 0;
-        }
-        .result-text { font-size: 1.1rem; line-height: 2.0; margin: 20px 0; color: #ffccd5; }
-        .highlight { color: var(--gold); font-weight: bold; text-shadow: 0 0 10px var(--gold); }
+        #final-ui h1 { color: var(--gold); font-size: 2.5rem; text-shadow: 0 0 20px var(--gold); margin-top: 0; }
         
         button { 
             background: linear-gradient(135deg, var(--gold), #b8860b, var(--gold)); background-size: 200% 200%;
@@ -126,10 +119,15 @@
         @keyframes btnGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         button:hover { filter: brightness(1.2); box-shadow: 0 8px 0 #5c4b00, 0 0 30px var(--gold); }
         button:active { transform: translateY(4px); box-shadow: 0 2px 0 #5c4b00; }
-
     </style>
 </head>
 <body>
+
+    <div id="play-overlay" onclick="startEndRoll()">
+        <span style="font-size: 5rem; margin-bottom: 20px;">🐾</span>
+        <button style="width: auto;">真実の物語（エンドロール）を再生する</button>
+        <p style="margin-top: 20px; color: var(--gold);">※音が出ます</p>
+    </div>
 
     <div id="star-container"></div>
 
@@ -166,7 +164,7 @@
             猫は目を細め、沈黙を返した。<br>
             数秒後、飼い主はため息をつく。<br>
             「……ケガ、してないか？」<br><br>
-            猫は当然のように膝に乗り、喉を鳴らす。<max><br>
+            猫は当然のように膝に乗り、喉を鳴らす。<br>
             その瞬間、飼い主の怒りは霧散した。<br><br>
             翌朝、破片を片付けながら飼い主は気づく。<br>
             昨日も、一昨日も、その前も。<br>
@@ -184,115 +182,137 @@
     <div id="roll-3" class="end-roll-container">
         <div class="end-roll-text">
             <span class="episode-title">―― 最後まで無駄に長い エピソード Ⅲ ――</span>
-            猫との生活も長くなり、<br>
-            飼い主は猫の全てを理解した気でいた。<br><br>
-            高いキャットフード、<br>
-            最高の寝心地のベッド、<br>
-            絶妙な加減のブラッシング。<br><br>
+            猫との生活も長くなり、飼い主は猫の全てを理解した気でいた。<br>
+            高いキャットフード、最高の寝心地のベッド、絶妙な加減のブラッシング。<br><br>
             「どうだ、満足だろう？」<br>
-            飼い主が問いかけると、<br>
-            猫はふい、と向こうへ行ってしまった。<br><br>
-            そして、誰もいない壁の一点を見つめ、<br>
-            カカカッ、と奇妙な声で鳴き始めた。<br><br>
+            飼い主が問いかけると、猫はふい、と向こうへ行ってしまった。<br><br>
+            そして、誰もいない壁の一点を見つめ、カカカッ、と奇妙な声で鳴き始めた。<br><br>
             「……何がいるんだ？」<br>
-            飼い主には何も見えない。<br>
-            ただの壁だ。<br><br>
-            猫は突然、その壁に向かって<br>
-            音もなく大ジャンプを見せた。<br><br>
+            飼い主には何も見えない。ただの壁だ。<br><br>
+            猫は突然、その壁に向かって音もなく大ジャンプを見せた。<br><br>
             飼い主は震えた。<br>
             「……見えない敵と戦っているのか？」<br>
             「それとも、異次元の扉が開いたのか？」<br><br>
-            その夜、猫は飼い主の顔の上に乗り、<br>
-            安らかな寝息を立てた。<br><br>
-            飼い主は、広大なインターネットの海で<br>
-            その現象（壁を見つめる、虚空へのジャンプ）の<br>
-            真実を探した。<br><br>
+            その夜、猫は飼い主の顔の上に乗り、安らかな寝息を立てた。<br><br>
+            飼い主は、広大なインターネットの海でその現象の真実を探した。<br><br>
             そして、ついに答えを見つけた。<br><br>
-            猫の専門家が語る、その真実とは。<br><br>
             <span class="cat-thought">『 ただの、運動不足による “ひとり運動会” です。 』</span><br><br>
-            神秘など、なかった。<max><max><br><br>
+            神秘など、なかった。<br><br>
             🐾 SPECIAL THANKS: YOU, THE CAT LOVER 🐾
         </div>
     </div>
 
-<div id="final-ui">
-        <h1>UNIVERSE CLEARED</h1>
+    <div id="final-ui">
+        <h1>肉球の温もり</h1>
         <p style="font-size: 1.2rem; line-height: 2.0; color: #ffccd5;">
-            22の試練を越え、真理に到達した下僕よ。<br>
-            猫との日々が、より美しく、より理不尽でありますように。<br>
+            「全人類の主、猫様を愛する同志へ。<br>
+            最後までお付き合いいただき、心からの感謝を捧げます。<br>
+            理不尽なパンチも、深夜の運動会も、すべてはあなたへの信頼の証。<br>
+            このエンドロールが終わったとき、あなたの隣に温かい毛玉が丸まっていることを願って。<br>
             最後までご覧いただきありがとうございました。<br>
             街角で猫を見かけたら、あなたに良いことがありますように🐾<br>
+            Thank you for being the best human for cats!」<br>
             <span style="color:var(--gold); font-weight:bold;">Eternal Bond with Cats.</span>
         </p>
         <button onclick="location.href='top.html'">現実へ帰還する</button>
     </div>
 
-    <script>
-        // ⭐️ 星々（⭐️）の超・大幅増量 (ゲーム本編継承)
-        function initStars() {
-            const container = document.getElementById('star-container');
-            const starCount = 100;
-            const types = ['★', '☆', '✦', '✧', '⭐️'];
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.innerText = types[Math.floor(Math.random() * types.length)];
-                star.style.left = `${Math.random() * 100}vw`;
-                star.style.top = `${Math.random() * 100}vh`;
-                star.style.fontSize = `${Math.random() * 10 + 5}px`;
-                const duration = Math.random() * 10 + 5;
-                const delay = Math.random() * -20;
-                star.style.animationDuration = `${duration}s`;
-                star.style.animationDelay = `${delay}s`;
-                container.appendChild(star);
-            }
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let bgmInterval;
+
+    // 🔊 補助関数：音を鳴らす
+    function note(freq, start, duration, type='square', vol=0.05) {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, start);
+        g.gain.setValueAtTime(0, start);
+        g.gain.linearRampToValueAtTime(vol, start + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, start + duration);
+        osc.connect(g); g.connect(audioCtx.destination);
+        osc.start(start); osc.stop(start + duration);
+    }
+
+    // 🔊 ループ用BGM
+    function playBgmBar() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const highScale = [1046.50, 1318.51, 1567.98, 2093.00];
+        for(let i=0; i<12; i++) {
+            const f = highScale[Math.floor(Math.random() * highScale.length)];
+            note(f, now + i * 0.16, 0.4, 'sine', 0.03); 
         }
+        [523, 659, 784].forEach(f => {
+            note(f, now, 0.8, 'square', 0.03);
+            note(f, now + 1.0, 0.8, 'square', 0.03);
+        });
+        note(261.63, now, 0.2, 'triangle', 0.1);
+        note(329.63, now + 0.5, 0.2, 'triangle', 0.08);
+        note(392.00, now + 1.0, 0.2, 'triangle', 0.1);
+        note(523.25, now + 1.5, 0.2, 'triangle', 0.08);
+    }
 
-        // ♥ ハート背景（エンドロール限定ゴージャス版）
-        function createHeart() {
-            const h = document.createElement('div'); h.classList.add('heart');
-            h.innerText = '♥'; h.style.left = Math.random()*100+'vw';
-            h.style.fontSize = `${Math.random() * 20 + 10}px`;
-            h.style.animationDuration = Math.random()*3+4+'s'; // 4〜7秒
-            document.body.appendChild(h);
-            setTimeout(() => h.remove(), 7000);
+    // ⭐ 星の生成（不足していた関数）
+    function initStars() {
+        const container = document.getElementById('star-container');
+        const types = ['★', '☆', '✦', '✧', '⭐️'];
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.innerText = types[Math.floor(Math.random() * types.length)];
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.fontSize = `${Math.random() * 10 + 5}px`;
+            star.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            star.style.animationDelay = `${Math.random() * -20}s`;
+            container.appendChild(star);
         }
-        setInterval(createHeart, 300); // 舞い散る頻度を上げる
+    }
 
-        // ゲートを閉じるボタンの挙動
-        function nextScene() {
-            alert("ゲートは閉じられました。\n現実世界へお戻りください。");
-            location.href='top.html';
-        }
+    // ♥ ハートの生成（不足していた関数）
+    function createHeart() {
+        const h = document.createElement('div');
+        h.classList.add('heart');
+        h.innerText = '♥';
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = `${Math.random() * 20 + 10}px`;
+        h.style.animationDuration = Math.random() * 3 + 4 + 's';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 7000);
+    }
 
-        window.onload = () => {
-            initStars();
+    // 🎬 メイン演出開始
+    function startEndRoll() {
+        document.getElementById('play-overlay').style.display = 'none';
+        
+        // 最初のファンファーレ
+        const now = audioCtx.currentTime;
+        [523, 659, 784, 1046, 1318, 1567, 2093].forEach((f, i) => {
+            note(f, now + i*0.08, 1.5, 'square', 0.1);
+        });
 
-            // タイムライン制御（無駄に長い合計約3分のロード）
-            
-            // 1. エピソード1開始 (5秒後)
-            setTimeout(() => {
-                document.getElementById('roll-1').classList.add('scrolling-1');
-            }, 5000);
+        playBgmBar();
+        bgmInterval = setInterval(playBgmBar, 2000);
 
-            // 2. エピソード2開始 (エピソード1が完全に消えた後の 56秒後)
-            setTimeout(() => {
-                document.getElementById('roll-1').style.display = 'none'; // 完全に非表示にしてメモリ節約
-                document.getElementById('roll-2').classList.add('scrolling-2');
-            }, 56000);
+        initStars();
+        setInterval(createHeart, 300);
+        document.getElementById('initial-clear').classList.add('animate-clear');
 
-            // 3. エピソード3開始 (エピソード2が消えた後の 112秒後)
-            setTimeout(() => {
-                document.getElementById('roll-2').style.display = 'none';
-                document.getElementById('roll-3').classList.add('scrolling-3');
-            }, 112000);
-
-            // 4. 最終UI表示 (エピソード3が完走した後の 175秒後 = 約3分)
-            setTimeout(() => {
-                document.getElementById('roll-3').style.display = 'none';
-                document.getElementById('final-ui').classList.add('show-ui');
-            }, 175000); 
-        };
-    </script>
+        setTimeout(() => document.getElementById('roll-1').classList.add('scrolling-1'), 5000);
+        setTimeout(() => {
+            document.getElementById('roll-1').style.display = 'none';
+            document.getElementById('roll-2').classList.add('scrolling-2');
+        }, 56000);
+        setTimeout(() => {
+            document.getElementById('roll-2').style.display = 'none';
+            document.getElementById('roll-3').classList.add('scrolling-3');
+        }, 112000);
+        setTimeout(() => {
+            document.getElementById('roll-3').style.display = 'none';
+            document.getElementById('final-ui').classList.add('show-ui');
+        }, 175000);
+    }
+</script>
 </body>
 </html>
