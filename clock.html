@@ -2,68 +2,41 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Gimmick Cyber Clock - Toggle</title>
+    <title>Cyber Clock - Smooth Start Edition</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #0d1117;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            perspective: 1000px;
+            margin: 0; padding: 0; overflow: hidden;
+            background-color: #0d1117; display: flex;
+            justify-content: center; align-items: center;
+            height: 100vh; perspective: 1000px;
             font-family: 'Courier New', Courier, monospace;
         }
-
-        #bg {
-            position: absolute;
-            top: 0; left: 0;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
+        #bg { position: absolute; top: 0; left: 0; z-index: -1; opacity: 0.2; }
+        
         .clock-container {
-            text-align: center;
-            border: 3px solid #61dafb;
-            padding: 30px 50px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(97, 218, 251, 0.5);
-            /* transitionを少し長くして、戻る時の動きを滑らかに */
+            text-align: center; border: 3px solid #61dafb;
+            padding: 40px 60px; background: rgba(0, 0, 0, 0.85);
+            border-radius: 20px; box-shadow: 0 0 30px rgba(97, 218, 251, 0.4);
             transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
         }
 
-        #date { font-size: 1.5rem; color: #61dafb; margin-bottom: 10px; text-shadow: 0 0 10px #61dafb; }
-        #clock { font-size: 6rem; color: #61dafb; font-weight: bold; text-shadow: 0 0 20px #61dafb; }
+        #date { font-size: 1.5rem; color: #61dafb; margin-bottom: 10px; }
+        #clock { font-size: 7rem; color: #61dafb; font-weight: bold; text-shadow: 0 0 20px #61dafb; }
 
-        /* 切り替えボタンのスタイル */
-        .toggle-btn {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            padding: 10px 20px;
-            background: transparent;
-            color: #61dafb;
-            border: 2px solid #61dafb;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: bold;
-            transition: 0.3s;
-            z-index: 10;
+        .controls {
+            position: absolute; bottom: 30px; right: 30px;
+            display: flex; gap: 10px;
+            pointer-events: auto;
         }
-        .toggle-btn:hover {
-            background: rgba(97, 218, 251, 0.2);
-            box-shadow: 0 0 15px #61dafb;
+        .ui-btn {
+            padding: 10px 20px; background: transparent; color: #61dafb;
+            border: 2px solid #61dafb; cursor: pointer; border-radius: 5px;
+            font-family: inherit; font-weight: bold; transition: 0.3s;
+            min-width: 120px;
         }
-        /* ON状態の時の見た目 */
-        .toggle-btn.active {
-            background: #61dafb;
-            color: #0d1117;
-        }
+        .ui-btn:hover { background: rgba(97, 218, 251, 0.2); }
+        .ui-btn.active { background: #61dafb; color: #0d1117; }
     </style>
 </head>
 <body>
@@ -75,27 +48,105 @@
         <div id="clock">00:00:00</div>
     </div>
 
-    <button class="toggle-btn" id="tiltBtn">3D MODE: OFF</button>
+    <div class="controls">
+        <button class="ui-btn" id="soundToggle">SOUND: OFF</button>
+        <button class="ui-btn" id="tiltToggle">3D: OFF</button>
+    </div>
 
     <script>
-        // --- 1. 時計と背景の基本機能 ---
-        function updateClock() {
-            const now = new Date();
-            const options = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
-            document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', options);
-            const t = now.toTimeString().split(' ')[0]; // hh:mm:ss形式
-            document.getElementById('clock').textContent = t;
+        let audioCtx = null;
+        let isSoundEnabled = false; 
+        let isTiltEnabled = false;
+
+        // 音声エンジンの初期化（ボタンが押された時に実行）
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // Safariなどのブラウザ対策：停止状態なら再開させる
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
+
+        function playTone(freq, duration, volume) {
+            if (!audioCtx || !isSoundEnabled) return; 
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+function updateClock() {
+            const now = new Date();
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const s = now.getSeconds();
+
+            document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', {year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'});
+            document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+
+            // 毎秒の音
+            playTone(800, 0.05, 0.03);
+
+            // --- 毎時ジャストの時報ギミック ---
+            // 毎時59分57秒、58秒、59秒に予報音
+            if (m === 59 && (s === 57 || s === 58 || s === 59)) {
+                playTone(880, 0.1, 0.15); // ピッ
+            }
+            
+            // 毎時0分0秒に時報音
+            if (m === 0 && s === 0) {
+                playTone(1760, 0.8, 0.2); // ピコーン！
+            }
+        }
+
+        // --- 起動処理 ---
+        // ページ読み込み時に即座に時計を開始（音はまだ出ない）
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 背景マトリックス（前回のまま）
+        // SOUNDボタンが「初めて」押された時に音声権限を取得
+        document.getElementById('soundToggle').addEventListener('click', function() {
+            initAudio(); // ここでユーザー操作を介してAudioContextを有効化
+            isSoundEnabled = !isSoundEnabled;
+            this.classList.toggle('active');
+            this.textContent = isSoundEnabled ? "SOUND: ON" : "SOUND: OFF";
+            
+            if (isSoundEnabled) playTone(1000, 0.1, 0.1);
+        });
+
+        // 3Dチルト切り替え
+        document.getElementById('tiltToggle').addEventListener('click', function() {
+            isTiltEnabled = !isTiltEnabled;
+            this.classList.toggle('active');
+            this.textContent = isTiltEnabled ? "3D: ON" : "3D: OFF";
+            if (!isTiltEnabled) document.getElementById('container').style.transform = `rotateY(0deg) rotateX(0deg)`;
+            
+            if (isSoundEnabled) playTone(isTiltEnabled ? 1200 : 600, 0.2, 0.1);
+        });
+
+        // マウス追従
+        document.addEventListener('mousemove', (e) => {
+            if (!isTiltEnabled) return;
+            const x = (window.innerWidth / 2 - e.pageX) / 20;
+            const y = (window.innerHeight / 2 - e.pageY) / 20;
+            document.getElementById('container').style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+
+        // 背景マトリックス
         const canvas = document.getElementById('bg');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         const drops = Array(Math.floor(canvas.width / 16)).fill(1);
         function drawMatrix() {
-            ctx.fillStyle = 'rgba(13, 17, 23, 0.1)';
+            ctx.fillStyle = 'rgba(13, 17, 23, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#61dafb';
             drops.forEach((y, i) => {
@@ -106,33 +157,6 @@
             });
         }
         setInterval(drawMatrix, 50);
-
-        // --- 2. ギミック：ボタンによる3Dチルトの切り替え ---
-        const container = document.getElementById('container');
-        const tiltBtn = document.getElementById('tiltBtn');
-        let isTiltEnabled = false; // 初期状態はOFF
-
-        tiltBtn.addEventListener('click', () => {
-            isTiltEnabled = !isTiltEnabled; // 真偽値を反転
-            
-            if (isTiltEnabled) {
-                tiltBtn.textContent = '3D MODE: ON';
-                tiltBtn.classList.add('active');
-            } else {
-                tiltBtn.textContent = '3D MODE: OFF';
-                tiltBtn.classList.remove('active');
-                // OFFにした時は強制的に正面（0度）に戻す
-                container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            }
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isTiltEnabled) return; // OFFなら何もしない
-
-            const x = (window.innerWidth / 2 - e.pageX) / 20;
-            const y = (window.innerHeight / 2 - e.pageY) / 20;
-            container.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
-        });
     </script>
 </body>
 </html>
