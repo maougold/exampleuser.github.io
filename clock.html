@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Cyber Clock - Smooth Start Edition</title>
+    <title>Cyber Aquarium - Seamless Edition</title>
     <style>
         body {
             margin: 0; padding: 0; overflow: hidden;
@@ -13,29 +13,35 @@
         }
         #bg { position: absolute; top: 0; left: 0; z-index: -1; opacity: 0.2; }
         
-        .clock-container {
-            text-align: center; border: 3px solid #61dafb;
-            padding: 40px 60px; background: rgba(0, 0, 0, 0.85);
-            border-radius: 20px; box-shadow: 0 0 30px rgba(97, 218, 251, 0.4);
-            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            pointer-events: none;
+        .fish {
+            position: absolute; font-size: 2rem;
+            transition: transform 0.2s linear;
+            pointer-events: none; z-index: -1;
+            /* 魚のネオン発光エフェクト */
+            filter: drop-shadow(0 0 8px #61dafb) brightness(1.2);
         }
 
-        #date { font-size: 1.5rem; color: #61dafb; margin-bottom: 10px; }
+        .clock-container {
+            text-align: center; border: 3px solid #61dafb;
+            padding: 40px 60px; background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px; box-shadow: 0 0 30px rgba(97, 218, 251, 0.4);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            pointer-events: none; backdrop-filter: blur(8px);
+        }
+
+        #date { font-size: 1.5rem; color: #61dafb; margin-bottom: 10px; text-shadow: 0 0 10px #61dafb; }
         #clock { font-size: 7rem; color: #61dafb; font-weight: bold; text-shadow: 0 0 20px #61dafb; }
 
         .controls {
             position: absolute; bottom: 30px; right: 30px;
-            display: flex; gap: 10px;
-            pointer-events: auto;
+            display: flex; gap: 10px; pointer-events: auto;
         }
         .ui-btn {
-            padding: 10px 20px; background: transparent; color: #61dafb;
+            padding: 10px 20px; background: rgba(0,0,0,0.5); color: #61dafb;
             border: 2px solid #61dafb; cursor: pointer; border-radius: 5px;
-            font-family: inherit; font-weight: bold; transition: 0.3s;
-            min-width: 120px;
+            font-family: inherit; font-weight: bold; transition: 0.3s; min-width: 120px;
         }
-        .ui-btn:hover { background: rgba(97, 218, 251, 0.2); }
+        .ui-btn:hover { background: rgba(97, 218, 251, 0.2); box-shadow: 0 0 15px #61dafb; }
         .ui-btn.active { background: #61dafb; color: #0d1117; }
     </style>
 </head>
@@ -44,7 +50,7 @@
     <canvas id="bg"></canvas>
 
     <div class="clock-container" id="container">
-        <div id="date">0000/00/00 (---)</div>
+        <div id="date">LOADING...</div>
         <div id="clock">00:00:00</div>
     </div>
 
@@ -55,22 +61,61 @@
 
     <script>
         let audioCtx = null;
-        let isSoundEnabled = false; 
+        let isSoundEnabled = false;
         let isTiltEnabled = false;
 
-        // 音声エンジンの初期化（ボタンが押された時に実行）
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // --- 1. 魚のAI（上下左右にゆったり移動） ---
+        const fishIcons = ['🐟', '🐠', '🐡', '🐠'];
+        const fishes = [];
+        const numFishes = 10;
+
+        class Fish {
+            constructor() {
+                this.el = document.createElement('div');
+                this.el.className = 'fish';
+                this.el.textContent = fishIcons[Math.floor(Math.random() * fishIcons.length)];
+                document.body.appendChild(this.el);
+                
+                this.x = Math.random() * window.innerWidth;
+                this.y = Math.random() * window.innerHeight;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = 0.4 + Math.random() * 1.2;
+                this.turnSpeed = (Math.random() - 0.5) * 0.015;
             }
-            // Safariなどのブラウザ対策：停止状態なら再開させる
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
+
+            update() {
+                // 壁で跳ね返り
+                if (this.x < 50 || this.x > window.innerWidth - 50) this.angle = Math.PI - this.angle;
+                if (this.y < 50 || this.y > window.innerHeight - 50) this.angle = -this.angle;
+
+                this.angle += this.turnSpeed;
+                if (Math.random() > 0.98) this.turnSpeed = (Math.random() - 0.5) * 0.015;
+
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                const isRight = Math.cos(this.angle) > 0;
+                // 魚の向きを進行方向に合わせる（反転処理）
+                const flip = isRight ? 'scaleX(-1)' : 'scaleX(1)';
+                const tilt = Math.sin(this.angle) * 15;
+
+                this.el.style.left = `${this.x}px`;
+                this.el.style.top = `${this.y}px`;
+                this.el.style.transform = `${flip} rotate(${isRight ? -tilt : tilt}deg)`;
             }
         }
 
+        for (let i = 0; i < numFishes; i++) fishes.push(new Fish());
+
+        function animate() {
+            fishes.forEach(f => f.update());
+            drawMatrix();
+            requestAnimationFrame(animate);
+        }
+
+        // --- 2. サウンド生成 ---
         function playTone(freq, duration, volume) {
-            if (!audioCtx || !isSoundEnabled) return; 
+            if (!audioCtx || !isSoundEnabled) return;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sine';
@@ -83,72 +128,77 @@
             osc.stop(audioCtx.currentTime + duration);
         }
 
+        // --- 3. 時計の更新 ---
 function updateClock() {
-            const now = new Date();
-            const h = now.getHours();
-            const m = now.getMinutes();
-            const s = now.getSeconds();
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
 
-            document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', {year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'});
-            document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+    document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', {year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'});
+    document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+    
+    // 毎秒のチック音 (SOUND: ONの時のみ)
+    if (isSoundEnabled) {
+        playTone(800, 0.05, 0.02);
+    }
 
-            // 毎秒の音
-            playTone(800, 0.05, 0.03);
+    // --- 毎正時の時報ギミック ---
+    if (m === 0 && s === 0) {
+        // 毎時 00分00秒に「ピコーン！」と鳴らす
+        playTone(1760, 0.8, 0.2);
+    }
 
-            // --- 毎時ジャストの時報ギミック ---
-            // 毎時59分57秒、58秒、59秒に予報音
-            if (m === 59 && (s === 57 || s === 58 || s === 59)) {
-                playTone(880, 0.1, 0.15); // ピッ
-            }
-            
-            // 毎時0分0秒に時報音
-            if (m === 0 && s === 0) {
-                playTone(1760, 0.8, 0.2); // ピコーン！
-            }
-        }
-
-        // --- 起動処理 ---
-        // ページ読み込み時に即座に時計を開始（音はまだ出ない）
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // SOUNDボタンが「初めて」押された時に音声権限を取得
+    // (オプション) 時報の3秒前から予報音を鳴らしたい場合はこちら
+    /*
+    if (m === 59 && (s === 57 || s === 58 || s === 59)) {
+        playTone(880, 0.1, 0.1);
+    }
+    */
+}
+        // --- 4. コントロール（SOUNDボタンでAudioContextを起動） ---
         document.getElementById('soundToggle').addEventListener('click', function() {
-            initAudio(); // ここでユーザー操作を介してAudioContextを有効化
+            // 初回クリック時にオーディオコンテキストを作成/再開
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
             isSoundEnabled = !isSoundEnabled;
-            this.classList.toggle('active');
-            this.textContent = isSoundEnabled ? "SOUND: ON" : "SOUND: OFF";
+            this.classList.toggle('active', isSoundEnabled);
+            this.textContent = `SOUND: ${isSoundEnabled ? 'ON' : 'OFF'}`;
             
-            if (isSoundEnabled) playTone(1000, 0.1, 0.1);
+            if (isSoundEnabled) playTone(1000, 0.1, 0.1); // 起動確認音
         });
 
-        // 3Dチルト切り替え
+        const container = document.getElementById('container');
         document.getElementById('tiltToggle').addEventListener('click', function() {
             isTiltEnabled = !isTiltEnabled;
-            this.classList.toggle('active');
-            this.textContent = isTiltEnabled ? "3D: ON" : "3D: OFF";
-            if (!isTiltEnabled) document.getElementById('container').style.transform = `rotateY(0deg) rotateX(0deg)`;
-            
-            if (isSoundEnabled) playTone(isTiltEnabled ? 1200 : 600, 0.2, 0.1);
+            this.classList.toggle('active', isTiltEnabled);
+            this.textContent = `3D: ${isTiltEnabled ? 'ON' : 'OFF'}`;
+            if (!isTiltEnabled) container.style.transform = `rotateY(0deg) rotateX(0deg)`;
         });
 
-        // マウス追従
         document.addEventListener('mousemove', (e) => {
             if (!isTiltEnabled) return;
-            const x = (window.innerWidth / 2 - e.pageX) / 20;
-            const y = (window.innerHeight / 2 - e.pageY) / 20;
-            document.getElementById('container').style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+            const x = (window.innerWidth / 2 - e.pageX) / 25;
+            const y = (window.innerHeight / 2 - e.pageY) / 25;
+            container.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
         });
 
-        // 背景マトリックス
+        // --- 5. 背景マトリックス ---
         const canvas = document.getElementById('bg');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+
         function drawMatrix() {
             ctx.fillStyle = 'rgba(13, 17, 23, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#61dafb';
+            ctx.font = "15px monospace";
             drops.forEach((y, i) => {
                 const text = String.fromCharCode(Math.random() * 128);
                 ctx.fillText(text, i * 16, y * 16);
@@ -156,7 +206,16 @@ function updateClock() {
                 drops[i]++;
             });
         }
-        setInterval(drawMatrix, 50);
+
+        // 初期化
+        setInterval(updateClock, 1000);
+        updateClock();
+        animate(); // アニメーションループ開始
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
