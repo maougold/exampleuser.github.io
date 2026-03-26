@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Alien Mystery - Sound & Star Terminal Master</title>
+  <style>
+    :root {
+      --size: 450px;
+      --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --accent: #3498db;
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --gold: #FFD700;
+      --gold-dim: rgba(255, 215, 0, 0.3);
+      --bg: #0d1117;
+    }
+    body { margin: 0; background: var(--bg); color: #ecf0f1; height: 100vh; display: flex; align-items: center; justify-content: center; perspective: 2000px; overflow: hidden; font-family: 'Courier New', monospace; }
+    canvas#bg-canvas { position: absolute; top: 0; left: 0; z-index: -2; opacity: 0.6; }
+    .mini-stats { position: absolute; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.9); border: 2px solid var(--gold); padding: 12px; border-radius: 10px; z-index: 100; min-width: 160px; text-align: right; }
+    #mini-clock { font-size: 1.4rem; font-weight: bold; color: var(--gold); }
+    .scene { width: var(--size); height: var(--size); transform-style: preserve-3d; transition: transform 0.8s var(--bounce); transform: rotateX(-15deg) rotateY(15deg); }
+    .wall { position: absolute; width: var(--size); height: var(--size); border: 6px solid #333; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; backface-visibility: hidden; background: #1a1a1a; box-shadow: inset 0 0 100px rgba(0,0,0,1); }
+    .front { transform: translateZ(225px); } .back { transform: rotateY(180deg) translateZ(225px); } .right { transform: rotateY(90deg) translateZ(225px); } .left { transform: rotateY(-90deg) translateZ(225px); } .top { transform: rotateX(90deg) translateZ(225px); } .bottom { transform: rotateX(-90deg) translateZ(225px); }
+    .sticky-note { position: absolute; top: 20px; background: #f1c40f; color: #333; padding: 10px; width: 280px; font-size: 0.6rem; font-weight: bold; transform: rotate(-1deg); border-left: 4px solid #d4ac0d; }
+    .door { width: 130px; height: 190px; background: #111; border: 4px solid #222; border-radius: 8px 8px 0 0; transition: 0.5s; cursor: pointer; }
+    .door.solved { background: #fff; box-shadow: 0 0 80px #fff; border-color: #fff; }
+    .led { width: 16px; height: 16px; border-radius: 50%; background: #200; border: 1px solid #000; margin-bottom: 12px; transition: 0.4s; }
+    .led.unlocked { background: var(--success); box-shadow: 0 0 20px var(--success); }
+    .disk { width: 200px; height: 200px; border: 10px double #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.5s var(--bounce); background: #0a0a0a; margin-bottom: 20px; font-size: 2rem; }
+    .level-1 { border-color: #e74c3c; box-shadow: 0 0 25px #e74c3c; color: #e74c3c; }
+    .level-3 { border-color: var(--gold); box-shadow: 0 0 40px var(--gold); color: var(--gold); }
+    .monitor-screen { width: 360px; height: 260px; background: #000; color: #0f0; padding: 20px; box-sizing: border-box; font-size: 0.85rem; opacity: 0; transition: 0.8s; border: 8px solid #444; line-height: 1.4; overflow: hidden; }
+    .monitor-screen.booted { opacity: 1; box-shadow: 0 0 40px rgba(0,255,0,0.3); }
+    .mask { background: #0f0; color: #000; font-weight: bold; padding: 0 3px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 60px); gap: 12px; }
+    .box { width: 60px; height: 60px; background: #222; border: 1px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; }
+    .box.active { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
+    .toggle { width: 70px; height: 35px; background: #222; border-radius: 20px; position: relative; cursor: pointer; border: 2px solid #555; }
+    .toggle.on { background: var(--success); }
+    .toggle::after { content: ''; position: absolute; width: 27px; height: 27px; background: #888; border-radius: 50%; top: 4px; left: 4px; transition: 0.3s; }
+    .toggle.on::after { left: 37px; background: #fff; }
+    .tile-display { width: 60px; height: 85px; background: #000; border: 2px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 10px 0; }
+    .controls { position: fixed; bottom: 20px; display: flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; }
+    .nav { padding: 12px 18px; background: #333; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; }
+    #audio-init { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <div id="audio-init">
+    <h1 style="color:var(--gold)">STAR TERMINAL: ELIEZE Edition</h1>
+    <p>CLICK TO INITIALIZE SYSTEM (SOUND ON)</p>
+  </div>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="mini-stats">
+    <div id="mini-date">--/--</div>
+    <div id="mini-clock">00:00:00</div>
+    <div style="font-size: 0.7rem; color: #666;">LOCATION: MATSUYAMA</div>
+  </div>
+
+  <div class="scene" id="room">
+    <div class="wall front">
+      <div class="sticky-note">【ヒント】<br>1.[16 + RED225 = Main power]<br>2.[1416 + 16X + GOLD180 = PC monitor]</div>
+      <div style="display:flex; align-items:flex-end; gap:30px; margin-top:80px;">
+        <div class="door" id="exit-door" onclick="tryOpenDoor()"></div>
+        <div style="background:#000; padding:15px; border:2px solid #333; border-radius:8px;">
+          <div class="led" id="led-1"></div><div class="led" id="led-2"></div><div class="led" id="led-3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wall back">
+      <div class="disk" id="disk">▲</div>
+      <div style="display:flex; gap:10px;">
+        <button onclick="controlDial('left')">◀</button>
+        <button onclick="controlDial('right')">▶</button>
+        <button onclick="controlDial('reset')">RESET</button>
+      </div>
+    </div>
+    <div class="wall right"><h2 style="color:var(--accent);">GRID</h2><div class="grid" id="power-grid"></div></div>
+    <div class="wall left"><div class="monitor-screen" id="monitor"><div id="terminal-text"></div></div></div>
+    <div class="wall top"><h2>POWER</h2><div style="display:flex; gap:50px;">
+        <div style="text-align:center;">MAIN<div class="toggle" id="sw-main" onclick="toggleSwitch('main')"></div></div>
+        <div style="text-align:center;">COMP<div class="toggle" id="sw-comp" onclick="toggleSwitch('comp')"></div></div>
+    </div></div>
+    <div class="wall bottom"><div style="display:flex; gap:20px;">
+        <div style="text-align:center;"><button onclick="changeTile(0, 1)">▲</button><div class="tile-display">0</div><button onclick="changeTile(0, -1)">▼</button></div>
+        <div style="text-align:center;"><button onclick="changeTile(1, 1)">▲</button><div class="tile-display">0</div><button onclick="changeTile(1, -1)">▼</button></div>
+        <div style="text-align:center;"><button onclick="changeTile(2, 1)">▲</button><div class="tile-display">0</div><button onclick="changeTile(2, -1)">▼</button></div>
+    </div></div>
+  </div>
+
+  <div class="controls">
+    <button class="nav" onclick="rotateRoom('X', -90)">上面</button>
+    <button class="nav" onclick="rotateRoom('Y', 0)">正面</button>
+    <button class="nav" onclick="rotateRoom('Y', -90)">右面</button>
+    <button class="nav" onclick="rotateRoom('X', 90)">下面</button>
+    <button class="nav" onclick="rotateRoom('Y', 180)">背面</button>
+    <button class="nav" onclick="rotateRoom('Y', 90)">左面</button>
+  </div>
+
+  <script>
+    let audioCtx = null;
+    const CHARS = ["0","1","2","3","4","5","6","X","Y","Z","U","F","N"];
+    const state = { 
+      mainPower: false, 
+      compSystem: false, 
+      dialAngle: 0, 
+      tileIndices: [0, 0, 0], 
+      activeGrid: new Set(), 
+      unlocked: false, 
+      readyToEscape: false,
+      mission1Ok: false, mission2Ok: false, mission3Ok: false 
+    };
+
+    function playSound(type) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+      switch(type) {
+        case 'click':
+          osc.type = 'sine'; osc.frequency.setValueAtTime(880, now);
+          gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(); osc.stop(now + 0.1); break;
+        case 'dial':
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(110, now);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.start(); osc.stop(now + 0.05); break;
+        case 'correct':
+          [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = 'sine'; o.frequency.setValueAtTime(f, now + i*0.1);
+            g.gain.setValueAtTime(0.1, now + i*0.1); g.gain.exponentialRampToValueAtTime(0.01, now + i*0.1 + 0.3);
+            o.connect(g); g.connect(audioCtx.destination); o.start(now + i*0.1); o.stop(now + i*0.1 + 0.3);
+          }); break;
+        case 'error':
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now);
+          osc.frequency.exponentialRampToValueAtTime(50, now + 0.4);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.4);
+          osc.start(); osc.stop(now + 0.4); break;
+        case 'alarm':
+          osc.type = 'square'; osc.frequency.setValueAtTime(1200, now);
+          gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
+          osc.start(); osc.stop(now + 0.5); break;
+      }
+    }
+
+    document.getElementById('audio-init').onclick = function() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      this.style.display = 'none';
+      playSound('correct');
+    };
+
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(13, 17, 23, 0.2)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = state.readyToEscape ? '#FFD700' : '#3498db';
+      ctx.font = "15px monospace";
+      drops.forEach((y, i) => {
+        const text = state.readyToEscape ? "⭐" : String.fromCharCode(Math.random() * 128);
+        ctx.fillText(text, i * 16, y * 16);
+        if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      });
+      requestAnimationFrame(drawMatrix);
+    }
+    drawMatrix();
+
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('mini-date').textContent = now.toLocaleDateString('ja-JP', {month:'2-digit', day:'2-digit'});
+      document.getElementById('mini-clock').textContent = now.toTimeString().split(' ')[0];
+    }, 1000);
+
+    const gridEl = document.getElementById('power-grid');
+    for (let i = 0; i < 16; i++) {
+      const box = document.createElement('div'); box.className = 'box'; box.innerText = i + 1;
+      box.onclick = () => { 
+        playSound('click'); 
+        box.classList.toggle('active'); 
+        if(box.classList.contains('active')) state.activeGrid.add(i); else state.activeGrid.delete(i); 
+        updateAll(); 
+      };
+      gridEl.appendChild(box);
+    }
+
+    function rotateRoom(axis, deg) { playSound('dial'); const room = document.getElementById('room'); room.style.transform = (axis === 'Y') ? `rotateX(-15deg) rotateY(${deg}deg)` : `rotateX(${deg}deg) rotateY(0deg)`; }
+
+    function toggleSwitch(type) {
+      const laps = Math.floor(Math.abs(state.dialAngle) / 360);
+      const angle = Math.abs(state.dialAngle % 360);
+      const code = state.tileIndices.map(i => CHARS[i]).join("");
+
+      if (type === 'main') {
+        if (state.mainPower) { playSound('click'); state.mainPower = false; document.getElementById('sw-main').classList.remove('on'); }
+        else if (state.activeGrid.has(15) && laps === 1 && angle === 225) { playSound('correct'); state.mainPower = true; document.getElementById('sw-main').classList.add('on'); }
+        else { playSound('error'); }
+      } else if (type === 'comp') {
+        if (state.compSystem) { playSound('click'); state.compSystem = false; document.getElementById('sw-comp').classList.remove('on'); }
+        else if (state.mainPower && state.activeGrid.has(13) && state.activeGrid.has(15) && code === "16X" && laps >= 3 && angle === 180) { playSound('correct'); state.compSystem = true; document.getElementById('sw-comp').classList.add('on'); }
+        else { playSound('error'); }
+      }
+      updateAll();
+    }
+
+    function changeTile(idx, dir) { playSound('click'); state.tileIndices[idx] = (state.tileIndices[idx] + dir + CHARS.length) % CHARS.length; document.querySelectorAll('.tile-display')[idx].innerText = CHARS[state.tileIndices[idx]]; updateAll(); }
+
+    function controlDial(type) {
+      playSound('dial');
+      if(type==='reset') state.dialAngle=0; 
+      else if(type==='left') state.dialAngle-=45; 
+      else if(type==='right') state.dialAngle+=45;
+      const disk = document.getElementById('disk'); disk.style.transform = `rotate(${state.dialAngle}deg)`;
+      const laps = Math.floor(Math.abs(state.dialAngle) / 360);
+      disk.className = 'disk' + (laps === 1 ? ' level-1' : laps >= 3 ? ' level-3' : '');
+      updateAll();
+    }
+
+    function updateAll() {
+      const laps = Math.floor(Math.abs(state.dialAngle) / 360);
+      const angle = Math.abs(state.dialAngle % 360);
+      const code = state.tileIndices.map(i => CHARS[i]).join("");
+      
+      const prevM1 = state.mission1Ok, prevM2 = state.mission2Ok, prevM3 = state.mission3Ok;
+      if (code === "UF0") state.mission1Ok = true;
+      const primes = [1, 2, 4, 6, 10, 12];
+      const currentGridOk = primes.every(p => state.activeGrid.has(p)) && state.activeGrid.size === primes.length;
+      if (state.mission1Ok && currentGridOk) state.mission2Ok = true;
+      if (state.mission2Ok && laps === 1 && angle === 180) state.mission3Ok = true;
+      if ((!prevM1 && state.mission1Ok) || (!prevM2 && state.mission2Ok) || (!prevM3 && state.mission3Ok)) playSound('correct');
+
+      const floorOk = code === "123";
+      const dialOk = laps >= 3;
+      const gridOk = state.activeGrid.has(1) && state.activeGrid.has(5) && state.activeGrid.size === 2;
+      document.getElementById('led-1').className = 'led' + (floorOk ? ' unlocked' : '');
+      document.getElementById('led-2').className = 'led' + (dialOk ? ' unlocked' : '');
+      document.getElementById('led-3').className = 'led' + (gridOk ? ' unlocked' : '');
+
+      const mon = document.getElementById('monitor');
+      const text = document.getElementById('terminal-text');
+      if (state.mainPower && state.compSystem) {
+        mon.classList.add('booted');
+        if (floorOk && dialOk && gridOk) {
+          text.innerHTML = `<span style="color:red; font-size:1.1rem;">!! EMERGENCY !!</span><br>すべての電源を遮断せよ<br>SHUTDOWN POWER TO ESCAPE`;
+          if(!state.readyToEscape) playSound('alarm');
+          state.readyToEscape = true;
+        } else {
+          let m1 = state.mission1Ok ? `1 2 3` : `<span class="mask">■■■</span>`;
+          let m2 = state.mission2Ok ? `GOLD` : `<span class="mask">■■■</span>`;
+          let m3 = state.mission3Ok ? `2 & 6` : `<span class="mask">■■■</span>`;
+          let hint = !state.mission1Ok ? "MISSION 1: 「宇宙人の乗り物」" : !state.mission2Ok ? "MISSION 2: 「素数のみ」点灯" : !state.mission3Ok ? "MISSION 3: 「五角形の内角」まで回転" : "HINTS UNLOCKED.";
+          text.innerHTML = `L1 KEY: ${m1}<br>L2 KEY: ${m2}<br>L3 KEY: ${m3}<hr>${hint}`;
+        }
+      } else { mon.classList.remove('booted'); }
+
+      // 【最終解脱ロジック：0への帰還】
+      const dialReset = (state.dialAngle === 0); // 背面ダイヤルリセット
+      if (state.readyToEscape && 
+          !state.mainPower && !state.compSystem && 
+          state.activeGrid.size === 0 && 
+          code === "0FF" && 
+          dialReset) {
+        if(!state.unlocked) { 
+          playSound('correct'); 
+          document.getElementById('exit-door').classList.add('solved'); 
+          state.unlocked = true; 
+        }
+      } else {
+        document.getElementById('exit-door').classList.remove('solved');
+        state.unlocked = false;
+      }
+    }
+
+    function tryOpenDoor() { 
+      if(state.unlocked) { 
+        playSound('correct'); 
+        setTimeout(() => { window.location.href = "credits.html"; }, 1000); 
+      } else { playSound('error'); } 
+    }
+  </script>
+</body>
+</html>
