@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>STAR TERMINAL: ETERNAL GLORY</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-bright: #fff380;
+            --bg: #05070a;
+        }
+        body {
+            background-color: var(--bg);
+            color: #e0e0e0;
+            font-family: 'Times New Roman', 'Hiragino Mincho ProN', serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* ゴージャスなゴールド背景用のCanvas */
+        #gold-matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .crawl-container {
+            position: absolute;
+            width: 85%;
+            max-width: 800px;
+            text-align: center;
+            animation: scrollUp 100s linear forwards;
+            top: 100vh;
+        }
+
+        @keyframes scrollUp {
+            0% { top: 100vh; }
+            100% { top: -9500px; }
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 4.5rem;
+            letter-spacing: 1.5rem;
+            margin-bottom: 400px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 50px var(--gold);
+        }
+
+        p {
+            font-size: 1.6rem;
+            line-height: 2.5;
+            margin-bottom: 120px;
+            letter-spacing: 0.15rem;
+            /* 背景が明るくても読めるようにシャドウを強化 */
+            text-shadow: 2px 2px 8px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .highlight {
+            color: var(--gold-bright);
+            font-weight: bold;
+            font-size: 2rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            display: inline-block;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 243, 128, 1); }
+        }
+
+        #final-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 3s ease;
+            z-index: 100;
+        }
+
+        .show-seal {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .medal {
+            font-size: 7rem;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 30px var(--gold));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        #exit-btn {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 25px 70px;
+            color: #000;
+            background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.3rem;
+            border-radius: 5px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.6);
+            transition: 0.4s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        #exit-btn:hover {
+            background: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 60px rgba(255, 255, 255, 1);
+        }
+
+        .signature {
+            margin-top: 800px; 
+            padding-bottom: 500px; 
+            font-size: 1.2rem;
+            color: var(--gold);
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="gold-matrix"></canvas>
+
+<div class="crawl-container" id="crawl-text">
+    <h1>⭐️ ESCAPE SUCCESS ⭐️</h1>
+
+    <p>……え、マジで？<br>脱出、成功です。</p>
+
+    <p>おめでとうございます。<br>いや本当に。</p>
+
+    <p>正直に言います。</p>
+
+    <p>この「スター・ターミナル」——<br>クリアされる想定、ほぼしてませんでした。</p>
+
+    <p>だってあの操作、意味わかりました？</p>
+
+    <p>開発者ですら、<br>たまに手順忘れます。</p>
+
+    <p>それをあなたは……<br>全部やりきったんですよね？</p>
+
+    <p>……暇なんですか？😏</p>
+
+    <p>いえ、褒めてます。褒めてます。</p>
+
+    <p>普通の人は途中でこうなります↓<br>「もういいや」→ブラウザ閉じる</p>
+
+    <p>あなたは違った。</p>
+
+    <p>意味不明なヒントに悩み、<br>ダイヤルをぐるぐる回し、<br>「今の何だった？」を何度も繰り返し——</p>
+
+    <p>それでもやめなかった。</p>
+
+    <p>……いや、ほんとなんで？</p>
+
+    <p>特に最後の全消灯。</p>
+
+    <p>あれはもう、<br>クリアさせる気ゼロのやつです。</p>
+
+    <p>「解けたらすごい」じゃなくて、<br>「解く人いるの？」って設計です。</p>
+
+    <p>それを突破したあなたは、<br><span class="highlight">ちょっと様子がおかしいレベル</span>です。</p>
+
+    <p>（最大級の賛辞です）</p>
+
+    <p>今この瞬間、システムはあなたを——</p>
+
+    <p><span class="highlight">「想定外の存在」</span>として記録しました。</p>
+
+    <p>おめでとうございます。<br>バグ側の人間です。</p>
+
+    <p>……そして今。</p>
+
+    <p>長きにわたる（たぶん数十分〜数時間の）戦いの末、<br>ついに扉は開きました。</p>
+
+    <p>その代償として、<br>あなたは大事な何か（時間）を失いました。</p>
+
+    <p>でも安心してください。</p>
+
+    <p>みんな同じです。</p>
+
+    <p>ここまで来た人、だいたいそうです。</p>
+
+    <p>あなたは今、<br><span class="highlight">「スター・ターミナルを最後までやりきった人」</span>です。</p>
+
+    <p>……たぶん少数派です。</p>
+
+    <p>かなり少数派です。</p>
+
+    <p>いや、ほぼいません。</p>
+
+    <p>なので胸を張ってください。</p>
+
+    <p>誰にも理解されない達成感を、<br>今あなたは手にしています。</p>
+
+    <p>すごいのかどうかは置いといて、<br>とにかくすごいです。</p>
+
+    <p>最後に一言だけ。</p>
+
+    <p>……またやります？😏</p>
+
+    <p>——システムログ：<br>「この人、もう一回やりそう」</p>
+
+    <p>本当にお疲れさまでした。😂✨</p>
+</div>
+
+        <div class="signature">
+            PRODUCED BY ELIEZE VANESSA<br>
+            <span style="font-size: 0.8rem; opacity: 0.6;">2026.03 - </span>
+        </div>
+    </div>
+
+    <div id="final-screen">
+        <div class="medal">🎖️</div>
+        <p style="font-size: 1.8rem; color: #fff;">「誇り高き探求者に、敬礼。」</p>
+        <button id="exit-btn" onclick="location.href='top.html'">栄光と共に、現実へ戻る</button>
+    </div>
+
+<script>
+    const canvas = document.getElementById('gold-matrix');
+    const ctx = canvas.getContext('2d');
+    const text = document.getElementById('crawl-text');
+    const screen = document.getElementById('final-screen');
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const stars = ["⭐️", "✨", "🌟", "✧", "°"];
+    const fontSize = 20;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(0);
+
+    function draw() {
+        // 背景を薄く塗りつぶして残像を作る
+        ctx.fillStyle = 'rgba(5, 7, 10, 0.15)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < drops.length; i++) {
+            const star = stars[Math.floor(Math.random() * stars.length)];
+            
+            // 黄金の輝きをランダムに設定
+            const opacity = Math.random();
+            ctx.fillStyle = `rgba(212, 175, 55, ${opacity})`;
+            ctx.font = fontSize + "px serif";
+            
+            ctx.fillText(star, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    // アニメーションループ
+    setInterval(draw, 50);
+
+    text.addEventListener('animationend', () => {
+        screen.classList.add('show-seal');
+    });
+</script>
+</body>
+</html>
