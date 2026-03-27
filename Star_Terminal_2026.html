@@ -192,18 +192,37 @@
 
     function rotateRoom(axis, deg) { playSound('dial'); const room = document.getElementById('room'); room.style.transform = (axis === 'Y') ? `rotateX(-15deg) rotateY(${deg}deg)` : `rotateX(${deg}deg) rotateY(0deg)`; }
 
-    function toggleSwitch(type) {
+function toggleSwitch(type) {
       const laps = Math.floor(Math.abs(state.dialAngle) / 360);
       const angle = Math.abs(state.dialAngle % 360);
       const code = state.tileIndices.map(i => CHARS[i]).join("");
 
       if (type === 'main') {
-        if (state.mainPower) { playSound('click'); state.mainPower = false; document.getElementById('sw-main').classList.remove('on'); }
-        else if (state.activeGrid.has(15) && laps === 1 && angle === 225) { playSound('correct'); state.mainPower = true; document.getElementById('sw-main').classList.add('on'); }
+        if (state.mainPower) { 
+          playSound('click'); 
+          state.mainPower = false; 
+          document.getElementById('sw-main').classList.remove('on'); 
+        }
+        // 【厳密判定】16番(index 15)のみが押されている(sizeが1)こと
+        else if (state.activeGrid.has(15) && state.activeGrid.size === 1 && laps === 1 && angle === 225) { 
+          playSound('correct'); 
+          state.mainPower = true; 
+          document.getElementById('sw-main').classList.add('on'); 
+        }
         else { playSound('error'); }
-      } else if (type === 'comp') {
-        if (state.compSystem) { playSound('click'); state.compSystem = false; document.getElementById('sw-comp').classList.remove('on'); }
-        else if (state.mainPower && state.activeGrid.has(13) && state.activeGrid.has(15) && code === "16X" && laps >= 3 && angle === 180) { playSound('correct'); state.compSystem = true; document.getElementById('sw-comp').classList.add('on'); }
+      } 
+      else if (type === 'comp') {
+        if (state.compSystem) { 
+          playSound('click'); 
+          state.compSystem = false; 
+          document.getElementById('sw-comp').classList.remove('on'); 
+        }
+        // 【厳密判定】14番(idx 13)と16番(idx 15)の2つのみが押されている(sizeが2)こと
+        else if (state.mainPower && state.activeGrid.has(13) && state.activeGrid.has(15) && state.activeGrid.size === 2 && code === "16X" && laps >= 3 && angle === 180) { 
+          playSound('correct'); 
+          state.compSystem = true; 
+          document.getElementById('sw-comp').classList.add('on'); 
+        }
         else { playSound('error'); }
       }
       updateAll();
