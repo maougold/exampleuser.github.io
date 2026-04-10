@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💛 HAPPY PROTOCOL 💛 | ULTIMATE CUTE & STRATEGY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 基本スタイル --- */
+        body {
+            background: radial-gradient(circle, #e0f7fa 0%, #81d4fa 100%);
+            color: #444; font-family: 'Kosugi Maru', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden;
+        }
+        #game-container { display: flex; width: 95%; max-width: 1100px; gap: 30px; align-items: flex-end; }
+        #main-area { flex: 3; display: flex; flex-direction: column; align-items: center; position: relative; }
+        
+        /* セクション制御 */
+        #opening-screen, #menu-screen, #game-ui, #success-screen { display: none; width: 100%; text-align: center; }
+
+        /* --- オープニングデザイン --- */
+        #opening-screen { display: block; }
+        .logo-text { font-family: 'Poppins', sans-serif; font-size: 80px; color: #ff80ab; text-shadow: 4px 4px 0 #fff; margin-bottom: 0; line-height: 1; }
+        .sub-logo { font-size: 20px; color: #546e7a; letter-spacing: 4px; margin-bottom: 40px; }
+
+        /* --- ボタン・ボックスデザイン --- */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .menu-btn {
+            display: block; width: 100%; padding: 18px;
+            font-size: 18px; font-weight: bold; border-radius: 50px;
+            cursor: pointer; transition: 0.3s ease;
+            background: #fff; border: 4px solid #ff80ab; color: #ff80ab;
+            box-shadow: 0 6px 0 #ff80ab; position: relative; top: 0;
+            box-sizing: border-box;
+        }
+        .menu-btn:hover { background: #ff80ab; color: #fff; top: 3px; box-shadow: 0 3px 0 #ff80ab; }
+
+        #question-box {
+            width: 100%; padding: 35px; margin-bottom: 25px; font-size: 22px; line-height: 1.5;
+            background: #fff; border: 6px solid #81d4fa; border-radius: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); box-sizing: border-box;
+        }
+
+        .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .answer-btn {
+            background: #fff; border: 3px solid #b3e5fc; border-radius: 40px; padding: 15px 20px;
+            color: #555; font-size: 18px; text-align: left; cursor: pointer; 
+            transition: 0.2s; position: relative; top: 0; box-shadow: 0 4px 0 #b3e5fc;
+        }
+        .answer-btn:hover:not(.hidden-opt) { background: #ffecb3; border-color: #ffca28; top: 2px; box-shadow: 0 2px 0 #ffca28; }
+        .label { color: #ff80ab; font-weight: bold; margin-right: 12px; font-size: 20px;}
+        .hidden-opt { visibility: hidden; pointer-events: none; }
+
+        /* --- カスタムダイアログ（浮かぶカード） --- */
+        .custom-modal {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); background: white;
+            border-radius: 30px; padding: 30px; z-index: 100;
+            box-shadow: 0 0 0 100vh rgba(0,0,0,0.4); width: 85%; max-width: 420px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+
+        .modal-title { font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #ff4081; }
+        #confirm-modal { border: 6px solid #ff80ab; text-align: center; }
+        #info-modal { border: 6px solid #81d4fa; text-align: center; }
+
+        .modal-btn { padding: 12px 30px; border-radius: 25px; border: none; font-weight: bold; cursor: pointer; font-size: 18px; }
+        .yes-btn { background: #ff80ab; color: white; margin: 5px; }
+        .no-btn { background: #eee; color: #777; margin: 5px; }
+
+        /* --- オーディエンスグラフ用 --- */
+        .graph-container { margin-top: 15px; text-align: left; }
+        .graph-row { display: flex; align-items: center; margin-bottom: 8px; }
+        .graph-label { width: 25px; font-weight: bold; color: #ff80ab; }
+        .graph-bar-bg { flex: 1; background: #eee; height: 15px; border-radius: 10px; overflow: hidden; margin: 0 10px; }
+        .graph-bar-fill { background: #ff80ab; height: 100%; transition: width 1s ease-out; }
+
+        /* サイドバー */
+        #sidebar { flex: 1; background: rgba(255, 255, 255, 0.9); border: 4px solid #ff80ab; border-radius: 30px; padding: 25px; min-width: 220px; opacity: 0; pointer-events: none; transition: 0.5s; }
+        .money-step { display: flex; justify-content: space-between; padding: 6px 15px; color: #ff80ab; font-size: 18px; font-weight: bold; border-radius: 15px; }
+        .current-step { background: #ff80ab; color: #fff; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        .passed-step { color: #b3e5fc; opacity: 0.6; }
+        .lifeline-btn {
+            width: 65px; height: 65px; border-radius: 50%; border: 4px solid #fff;
+            background: linear-gradient(135deg, #ff80ab, #ff4081); color: #fff;
+            font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .lifeline-btn.used { opacity: 0.2; text-decoration: line-through; pointer-events: none; }
+        #walk-away-btn { margin-top: 30px; background: #ffebee; color: #ef5350; border: 2px solid #ef5350; padding: 12px 30px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="main-area">
+        <!-- 1. オープニング画面 -->
+        <div id="opening-screen">
+            <h1 class="logo-text">HAPPY<br>PROTOCOL</h1>
+            <p class="sub-logo">ULTIMATE STRATEGY MISSION</p>
+            <button class="menu-btn" style="width: 300px; margin: 0 auto;" onclick="showMenu()">ENTER STAGE</button>
+        </div>
+
+        <!-- 2. カテゴリー選択画面 -->
+        <div id="menu-screen">
+            <h1 style="color: #ff4081; text-shadow: 0 4px 0 #fff; font-size: 36px; margin-bottom: 30px;">⭐ クイズを選択してください ⭐</h1>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="startGame('MARIO')">🍄 マリオ & 任天堂</button>
+                <button class="menu-btn" onclick="startGame('MILITARY')">🚀 軍事 & 兵器</button>
+                <button class="menu-btn" onclick="startGame('HISTORY')">🌍 世界史 & 指導者</button>
+                <button class="menu-btn" onclick="startGame('COMMON')">📖 一般常識</button>
+                <button class="menu-btn" onclick="startGame('TAKASHI')">🧠 たかしくんの成長</button>
+                <button class="menu-btn" onclick="startGame('SLANG')">📱 ネット流行語</button>
+            </div>
+        </div>
+
+        <!-- 3. ゲームUI -->
+        <div id="game-ui">
+            <div id="question-box"></div>
+            <div class="answer-grid">
+                <button class="answer-btn" id="btn-A" onclick="askFinal('A')"><span class="label">A</span> <span id="opt-A"></span></button>
+                <button class="answer-btn" id="btn-B" onclick="askFinal('B')"><span class="label">B</span> <span id="opt-B"></span></button>
+                <button class="answer-btn" id="btn-C" onclick="askFinal('C')"><span class="label">C</span> <span id="opt-C"></span></button>
+                <button class="answer-btn" id="btn-D" onclick="askFinal('D')"><span class="label">D</span> <span id="opt-D"></span></button>
+            </div>
+            <button id="walk-away-btn" onclick="walkAway()">ここでリタイアする (賞金を確定💖)</button>
+        </div>
+
+        <!-- 4. モーダル類 -->
+        <div id="confirm-modal" class="custom-modal">
+            <div class="modal-title" id="confirm-title">ファイナルアンサー？</div>
+            <div class="confirm-btns">
+                <button class="modal-btn yes-btn" id="confirm-yes-btn" onclick="confirmYes()">はい！</button>
+                <button class="modal-btn no-btn" onclick="closeModal('confirm-modal')">ちがうかも</button>
+            </div>
+        </div>
+
+        <div id="info-modal" class="custom-modal">
+            <div id="info-emoji" style="font-size: 50px; margin-bottom: 10px;">✨</div>
+            <div class="modal-title" id="info-title">お知らせ</div>
+            <div id="info-content" style="color: #555; font-size: 18px; line-height: 1.5;"></div>
+            <div id="info-footer" style="margin-top: 20px;">
+                <button class="modal-btn yes-btn" id="info-close-btn" onclick="closeModal('info-modal')">OK</button>
+            </div>
+        </div>
+
+        <!-- 5. 成功画面 -->
+        <div id="success-screen">
+            <h1 style="color: #ff4081; font-size: 42px;">💖 MISSION COMPLETE 💖</h1>
+            <p id="reward-display" style="font-size: 22px;"></p>
+            <button class="menu-btn" onclick="location.reload()">タイトルに戻る</button>
+        </div>
+    </div>
+
+    <!-- サイドバー (ゲーム開始まで非表示) -->
+    <div id="sidebar">
+        <div style="display:flex; justify-content: space-around; margin-bottom: 20px;">
+            <button id="fifty-fifty" class="lifeline-btn" onclick="useLifeline('50:50')">50:50</button>
+            <button id="phone" class="lifeline-btn" onclick="useLifeline('phone')">💌</button>
+            <button id="audience" class="lifeline-btn" onclick="useLifeline('audience')">✨</button>
+        </div>
+        <div id="money-ladder"></div>
+    </div>
+</div>
+
+<script>
+/* --- 音響設定 --- */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playFreq(f, d, v=0.1, type='sine') {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.type = type; o.frequency.value = f; g.gain.value = v;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + d);
+}
+function playCorrectRhythm() {
+    const now = audioCtx.currentTime;
+    [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.type = 'square'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.1, now + i * 0.08); g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.1);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.1);
+    });
+}
+
+/* --- クイズデータ --- */
+const moneyList = ["10,000", "20,000", "30,000", "50,000", "100,000", "250,000", "500,000", "1,000,000", "2,500,000", "10,000,000"];
+const quizData = {
+    MARIO: [
+        { q: "『スーパーマリオブラザーズ』で、マリオがキノコを食べて大きくなるアイデアの元になった児童文学は？", a: "ピーターパン", b: "ガリバー旅行記", c: "不思議の国のアリス", d: "オズの魔法使い", ans: "C" },
+        { q: "ルイージの名前の由来について、宮本茂氏が語った日本語の言葉遊びは？", a: "留守", b: "類似", c: "流儀", d: "隣人", ans: "B" },
+        { q: "マリオのデビュー作『ドンキーコング』での、当初の名前は何だった？", a: "ジャンプマン", b: "ピコピコくん", c: "Mr.ビデオ", d: "大工さん", ans: "A" },
+        { q: "クッパ（Koopa）の名前の由来となった、韓国料理の名前は？", a: "ビビンバ", b: "キムチ", c: "クッパ", d: "トッポギ", ans: "C" },
+        { q: "マリオのライバル、ワリオの帽子のマークは「W」ですが、ワルイージは？", a: "Lの逆さま", b: "Wの逆さま", c: "Mの逆さま", d: "Γ（ガンマ）", ans: "A" },
+        { q: "ゲーム『スーパーマリオ ヨッシーアイランド』でのヨッシーのフルネームは？", a: "ヨッシー・ザ・ダイナソー", b: "T.ヨシザウルス・ムンチャクッパス", c: "ヨッシー・マリオ", d: "グリーン・ダイナソー", ans: "B" },
+        { q: "『スーパーマリオ64』で、マリオが初めて喋った時の声優さんの名前は？", a: "チャールズ・マーティネー", b: "トム・ハンクス", c: "野沢雅子", d: "クリス・プラット", ans: "A" },
+        { q: "ピーチ姫がさらわれなかった、マリオが主役ではない1992年のパズルゲームは？", a: "マリオペイント", b: "スーパーマリオランド2", c: "マリオとワリオ", d: "マリオのピクロス", ans: "C" },
+        { q: "ゲームボーイ版『スーパーマリオランド』の舞台となった国は？", a: "キノコ王国", b: "サラサ・ランド", c: "ドルピック島", d: "ビーンバレー", ans: "B" },
+        { q: "任天堂が創業した1889年に最初に販売していたものは何？", a: "トランプ", b: "花札", c: "おもちゃ", d: "タクシー", ans: "B" }
+    ],
+    MILITARY: [
+        { q: "冷戦中、アメリカが開発した超音速偵察機「SR-71」の愛称は？", a: "ブラックバード", b: "ナイトホーク", c: "ファントム", d: "ラプター", ans: "A" },
+        { q: "攻撃機A-10「サンダーボルトII」の主武装である30mmガトリング砲の名前は？", a: "バルカン", b: "アベンジャー", c: "ブッシュマスター", d: "イージス", ans: "B" },
+        { q: "世界初のステルス戦闘機「F-117」の別名は？", a: "ナイトホーク", b: "スカイホーク", c: "イーグル", d: "スピリット", ans: "A" },
+        { q: "戦車などで、砲弾の貫通を防ぐために装甲の上に板状の爆薬を貼る装甲を何と呼ぶ？", a: "コンポジット装甲", b: "リアクティブアーマー", c: "セラミック装甲", d: "ケージ装甲", ans: "B" },
+        { q: "日本の護衛艦「いずも」型が実質的に空母化される際、搭載される予定の戦闘機は？", a: "F-15J", b: "F-35B", c: "F-22", d: "F-35A", ans: "B" },
+        { q: "潜水艦が水中を航行中、自艦の位置を特定するために使用する航法は？", a: "GPS航法", b: "慣性航法", c: "天測航法", d: "地形照合航法", ans: "B" },
+        { q: "核爆弾の威力を表す単位「TNT換算」で、1キロトンは何トン分のTNT火薬に相当する？", a: "100トン", b: "1,000トン", c: "10,000トン", d: "100,000トン", ans: "B" },
+        { q: "ベトナム戦争で多用された、特徴的なローター音を持つ多用途ヘリコプターは？", a: "アパッチ", b: "ヒューイ（UH-1）", c: "ブラックホーク", d: "チヌーク", ans: "B" },
+        { q: "「戦艦大和」が装備していた世界最大の主砲の口径は？", a: "40cm", b: "46cm", c: "51cm", d: "80cm", ans: "B" },
+        { q: "巡航ミサイル「トマホーク」が目標に突入する際、地形を読み取って飛行するシステムを何と言う？", a: "TERCOM", b: "GPS", c: "イージスシステム", d: "CIWS", ans: "A" }
+    ],
+    HISTORY: [
+        { q: "古代エジプトの「ロゼッタ・ストーン」の解読に成功したフランス人は？", a: "ナポレオン", b: "シャンポリオン", c: "ジャン・ルノワール", d: "パスツール", ans: "B" },
+        { q: "1453年、ビザンツ帝国を滅ぼし、コンスタンティノープルを陥落させたオスマン帝国の皇帝は？", a: "スレイマン1世", b: "メフメト2世", c: "セリム1世", d: "アブデュルハミト2世", ans: "B" },
+        { q: "1789年、フランス革命の口火を切った出来事とされるのは？", a: "テルミドールの反動", b: "バスティーユ牢獄の襲撃", c: "三部会の開催", d: "ルイ16世の処刑", ans: "B" },
+        { q: "第2次世界大戦後、ドイツを東西に分断した壁の名前は？", a: "ミュンヘンの壁", b: "ベルリンの壁", c: "ハンブルクの壁", d: "フランクフルトの壁", ans: "B" },
+        { q: "第一次世界大戦の引き金となった、オーストリア皇太子暗殺事件が起きた都市は？", a: "ウィーン", b: "サラエボ", c: "ベオグラード", d: "プラハ", ans: "B" },
+        { q: "ナポレオンが最後に敗北し、皇帝の座を追われた戦いは？", a: "アウステルリッツの戦い", b: "ワーテルローの戦い", c: "トラファルガーの海戦", d: "ライプツィヒの戦い", ans: "B" },
+        { q: "アメリカ独立戦争の際、イギリス軍に対して「独立宣言」を起草した中心人物は？", a: "ワシントン", b: "ジェファーソン", c: "リンカーン", d: "ルーズベルト", ans: "B" },
+        { q: "19世紀、イギリスが中国（清）に対して茶の代価としてアヘンを輸出したことで起きた戦争は？", a: "アロー戦争", b: "アヘン戦争", c: "太平天国の乱", d: "義和団事件", ans: "B" },
+        { q: "ソ連の最後の指導者で、ペレストロイカを推進した人物は？", a: "スターリン", b: "ゴルバチョフ", c: "フルシチョフ", d: "ブレジネフ", ans: "B" },
+        { q: "「賽は投げられた」の言葉で有名な、古代ローマの終身独裁官は？", a: "アウグストゥス", b: "カエサル", c: "ネロ", d: "コンスタンティヌス", ans: "B" }
+    ],
+    COMMON: [
+        { q: "日本の「1円玉」の重さは正確に何グラム？", a: "0.5g", b: "1g", c: "1.5g", d: "2g", ans: "B" },
+        { q: "「春の七草」のうち、別名をペンペン草というものは？", a: "ナズナ", b: "ゴギョウ", c: "ホトケノザ", d: "ハコベラ", ans: "A" },
+        { q: "野球の試合で、バッターが三振することを何と言う？", a: "K", b: "S", c: "OUT", d: "F", ans: "A" },
+        { q: "世界で一番面積が広い国はロシアですが、2番目は？", a: "アメリカ", b: "中国", c: "カナダ", d: "ブラジル", ans: "C" },
+        { q: "100円ショップの「ダイソー」。創業当時の社名は？", a: "広島100円ショップ", b: "矢野商店", c: "ワンコインショップ", d: "大創産業", ans: "B" },
+        { q: "お札の肖像画で、初めて「女性」が採用されたのは誰？", a: "樋口一葉", b: "紫式部", c: "津田梅子", d: "清少納言", ans: "A" },
+        { q: "「カメレオン」の語源はギリシャ語で何という意味？", a: "虹のトカゲ", b: "地上のライオン", c: "変身する蛇", d: "木の精霊", ans: "B" },
+        { q: "マクドナルドのロゴマークの「M」は何の略？", a: "McDonald's", b: "Mickey", c: "2つのアーチ", d: "Money", ans: "C" },
+        { q: "「1リットル」は何ミリリットル？", a: "100ml", b: "500ml", c: "1000ml", d: "10000ml", ans: "C" },
+        { q: "日本の救急車の電話番号は119ですが、警察は？", a: "110", b: "118", c: "171", d: "999", ans: "A" }
+    ],
+    TAKASHI: [
+        { q: "【身体能力の覚醒】（小学生時代）「たかし君は1個70円のりんごと1個30円のみかんを握り潰して言いました。『次はお前がこうなる番だ』。さて、りんごを握り潰せる彼の握力は？」", a: "20kg", b: "30kg", c: "50kg", d: "80kg", ans: "D" },
+        { q: "【滅びゆく世界と経済】（青年期・存在の希薄化）「たかし君は1個60円のりんごを握りしめ、滅びゆく世界の中、決意の眼差しで空を仰ぎ、静かに呟きました。『例え明日世界が滅亡しようとも、今日僕はりんごの木を植えるよ』。常に希望を捨てず、最後まで生き抜こうとするたかし君の目には、どのような未来が映っているでしょうか。」", a: "豊かな実りを結んだ、平和なりんご園", b: "握り潰したりんごの果汁で汚れた、血塗られた世界", c: "1個60円のりんごが、インフレで1兆円になる経済的成功", d: "りんごの木を「鈍器」として使い、滅亡の原因と戦う未来", ans: "C" },
+        { q: "【詐欺と純利益】（14歳未満・触法少年期）「たかし君は1000円を持ってデパートに行き、高級チョコを一つ買いました。同じクラスの女の子から貰った、とお母さんに嘘をつくと、お母さんは『よかったねえ。お小遣いをあげるから、ちゃんとお返しするんだよ』と5000円をくれました。たかしくんは何を得て、何を失ったか答えなさい。」", a: "「高級チョコ」と「ホワイトデーの予算」", b: "「4000円の純利益」と「お母さんからの純粋な信頼」", c: "「デュエル用の軍資金」と「たかし君の良心」", d: "「5000円」と「実在しない女の子の連絡先」", ans: "B" },
+        { q: "【価値の転換】（青年期・存在の希薄化）「たかし君は1個70円のりんごと1個30円のみかんを握り潰してこう言いました。『次はお前がこうなる番だ』。さて、たかし君自身が70円として換算された時、残されたみかんの価値はいくらになるでしょうか。」", a: "0円（たかし君の握力によって無に帰したため）", b: "30円（ただし、たかし君に握り潰されるまでの命）", c: "40円（たかし君との差額）", d: "プライスレス（たかし君の怒りを買ったため）", ans: "B" },
+        { q: "【資本主義の限界と愛】（現在・28歳）「たかし君には金がありました。50円のりんご5個だって、80円のみかん7個だって、なんだって手に入りました。だが、あの女は違いました。『お金なんていらないわ』。彼女は差し出された紙幣をつまらなそうな顔で押し戻します。こんなことは初めてでした。一体いくら積めば、あいつは俺のものになるのでしょうか。」", a: "810円（りんご5個とみかん7個の合計代金", b: "5000円（お母さんからもらった軍資金）", c: "算出不能（または「全財産を捨てて時速6kmで追いかける誠実さ」）", d: "1個240円の「高しｗｗｗ」リンゴを1万個分", ans: "C" },
+        { q: "【自己のゲシュタルト崩壊】（中高生・デュエリスト期）「たかし君はスーパーで1個240円のリンゴを見つけ、草を大量に生やしながら（ｗを多数入力しながら）こう叫びました。『高しｗｗｗｗｗｗｗｗｗ』。この時、たかし君が直面している状況として、論理的に最も適切なものはどれ？」", a: "単純なリンゴの物価高に対する、消費者としての抗議", b: "自分の名前（たかし）と価格（高し）が一致したことによる、アイデンティティの崩壊", c: "「高し」という古語（形容詞ク活用・終止形）を用いた、雅な感情表現", d: "リンゴを買うために必要な金額が、70円だった頃に比べて増えたことへの驚き", ans: "B" },
+        { q: "【万引きと司法】（14歳未満・触法少年期）「たかし君は、500円を持ってスーパーへ行き、ひとつ60円のりんごとひとつ30円のみかんを合わせて5個万引きした後、店員に捕まりました。警察に引き渡されたたかし君を待ち受ける運命として、日本の法律上、最も可能性が高いものはどれ？」（※たかし君は14歳未満の『触法少年』と仮定する）", a: "家庭裁判所から少年院送致", b: "保護観察処分からお父さんとお母さんにめちゃくちゃ怒られる", c: "窃盗罪で50万円以下の罰金", d: "窃盗罪で10年以下の懲役", ans: "B" },
+        { q: "【深淵の底】（現在・28歳）「たかし君は1個80円のリンゴと60円のミカンに齧りつき、480円のビールを一気に飲み干しました。『どいつもこいつも、俺の事なんて覚えちゃいない』。時速6kmの勢いで店主に歩み寄って言う。『誰のおかげで算数を覚えられたと思ってるんだ』。この時、彼の心の闇の深さは何mでしょうか。」", a: "620m（消費した合計金額分の深さ）", b: "測定不能（または、ドローしたカードが黒く染まるほどの深淵）", c: "6,000m（店主に詰め寄る時速に比例した深さ）", d: "1個分（リンゴを齧った際に失われた純粋さの分だけ）", ans: "B" },
+        { q: "【聖夜の虚無】（現在・28歳）「たかし君は7000円を持って買い出しに出かけました。ケーキ屋さんで1200円のケーキを、スーパーで600円の七面鳥と300円のサラダと1600円のシャンパンを買いました。これらを自宅で一人きりで食べた、たかし君（28）の気持ちとして、最も適切な説明を選びなさい。」", a: "「お母さんに嘘をついて得た5000円（前述）を使い切るための、義務的な作業」", b: "「3300円の出費で『一人の方が気楽だ』という嘘を自分にドローさせた」という、虚無的な納得感", c: "「1200円のケーキを握り潰す快感が、孤独の寂しさを上回った」という、狂気の高揚感", d: "「時速6kmで詰め寄った店主との絆を思い出し、涙する」という、歪んだ愛", ans: "B" },
+        { q: "【運命のドロー】（中高生・デュエリスト期）「たかし君が40枚一組のデッキの中から特定の切り札1枚を、第n回目のドローで引き当てる確率を求めなさい。ただし、たかしくんは真のデュエリストとし、たかしくんとカードの間の絆は十分に深いものとする。」", a: "0%（デッキに入っていない）", b: "100% 俺のターン！", c: "1/(40 - n + 1)", d: "40分の1", ans: "B" }
+    ],
+    SLANG: [
+        { q: "2024年に流行った、理解不能な状況で使われる「し◯のじ」という言葉の元ネタは？", a: "将棋", b: "しなもんの地獄", c: "死の呪文", d: "しかのこのこのここしたんたん", ans: "D" },
+        { q: "「それな」という言葉をさらに強調して同意する際に使われる言葉は？", a: "それなオブザイヤー", b: "それなティーティー", c: "それな1000", d: "それなMAX", ans: "A" },
+        { q: "SNSで、自分の得意分野について熱心に、早口で語り続ける様子を何という？", a: "オタク特有の早口", b: "脱水機", c: "マシンガントーク", d: "炊飯器", ans: "A" },
+        { q: "「〇〇、完全に理解した」というミーム。実際にはどういう状態？", a: "プロ級に詳しい", b: "ちょっと触って概要を知っただけ", c: "何もわかっていない", d: "本を1冊読んだ", ans: "B" },
+        { q: "かつて「なう」が流行りましたが、今はその代わりに若者が使う言葉は？", a: "なうい", b: "〇〇わず(was)", c: "〇〇なう(復活)", d: "〇〇にいる", ans: "B" },
+        { q: "YouTubeのコメント欄などで見かける「草」の意味は？", a: "野菜を食べる", b: "笑い(w)", c: "つまらない", d: "環境保護", ans: "B" },
+        { q: "実際には存在しないのに、ネット上でまことしやかに語られる「怪談」を何という？", a: "都市伝説", b: "クリーピーパスタ", c: "洒落怖", d: "偽ニュース", ans: "C" },
+        { q: "相手を論破した際や、決定的な証拠を突きつけた際に使われる「〇〇が、〇〇した」は？", a: "論破王がきた", b: "証拠が、踊った", c: "事実が、勝った", d: "答えが、出た", ans: "B" },
+        { q: "「タピる」という言葉が流行った後、次に流行るとされた「飲むチーズケーキ」などは？", a: "チズる", b: "スイーツる", c: "名前はない", d: "飲む系", ans: "C" },
+        { q: "「てぇてぇ」というネット用語、本来の日本語で何という意味？", a: "照れる", b: "尊い", c: "手を繋ぐ", d: "手ごわい", ans: "B" }
+    ]
+};
+
+let currentLevel = '', currentStep = 0, selectedPick = '';
+
+/* --- 進行制御 --- */
+function showMenu() {
+    playFreq(880, 0.1);
+    document.getElementById('opening-screen').style.display = 'none';
+    document.getElementById('menu-screen').style.display = 'block';
+}
+
+function startGame(lv) {
+    playFreq(1100, 0.1);
+    currentLevel = lv; currentStep = 0;
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('game-ui').style.display = 'block';
+    document.getElementById('sidebar').style.opacity = '1';
+    document.getElementById('sidebar').style.pointerEvents = 'auto';
+    initLadder(); updateView();
+}
+
+function initLadder() {
+    const ladder = document.getElementById('money-ladder'); ladder.innerHTML = '';
+    for (let i = moneyList.length - 1; i >= 0; i--) {
+        const div = document.createElement('div'); div.id = `step-${i}`; div.className = 'money-step';
+        div.innerHTML = `<span>STEP ${i+1}</span> <span>¥${moneyList[i]}</span>`; ladder.appendChild(div);
+    }
+}
+
+function updateView() {
+    if (currentStep >= 10) { showResult(moneyList[9]); return; }
+    for (let i = 0; i < 10; i++) {
+        const el = document.getElementById(`step-${i}`);
+        el.className = 'money-step ' + (i === currentStep ? 'current-step' : (i < currentStep ? 'passed-step' : ''));
+    }
+    const data = quizData[currentLevel][currentStep];
+    document.getElementById('question-box').innerText = data.q;
+    ['A', 'B', 'C', 'D'].forEach(id => {
+        const btn = document.getElementById('btn-' + id); btn.classList.remove('hidden-opt');
+        document.getElementById('opt-' + id).innerText = data[id.toLowerCase()];
+    });
+}
+
+/* --- モーダル制御 --- */
+function openInfo(emoji, title, content, showClose = true) {
+    document.getElementById('info-emoji').innerText = emoji;
+    document.getElementById('info-title').innerText = title;
+    document.getElementById('info-content').innerHTML = content;
+    document.getElementById('info-footer').style.display = showClose ? 'block' : 'none';
+    document.getElementById('info-modal').style.display = 'block';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+/* --- 回答ロジック --- */
+function askFinal(pick) {
+    selectedPick = pick;
+    playFreq(660, 0.05);
+    document.getElementById('confirm-modal').style.display = 'block';
+}
+function confirmYes() {
+    closeModal('confirm-modal');
+    const correct = quizData[currentLevel][currentStep].ans;
+    if (selectedPick === correct) {
+        playCorrectRhythm();
+        openInfo("💖", "正解！", "すごーい！その通りだにゃ♪", false);
+        currentStep++;
+        setTimeout(() => { closeModal('info-modal'); updateView(); }, 1800);
+    } else {
+        playFreq(220, 0.6, 0.2, 'sawtooth');
+        openInfo("😨", "残念...", "ここまでだにゃ... また挑戦してね！", true);
+        document.getElementById('info-close-btn').onclick = () => location.reload();
+    }
+}
+
+/* --- ライフライン --- */
+function useLifeline(type) {
+    if (type === '50:50') {
+        const correct = quizData[currentLevel][currentStep].ans;
+        const options = ['A', 'B', 'C', 'D'].filter(opt => opt !== correct);
+        for (let i = 0; i < 2; i++) {
+            const target = options.splice(Math.floor(Math.random() * options.length), 1)[0];
+            document.getElementById(`btn-${target}`).classList.add('hidden-opt');
+        }
+        document.getElementById('fifty-fifty').classList.add('used');
+        openInfo("✨", "50:50 発動！", "選択肢が2つ消えたにゃ！チャンスだにゃ！");
+    } 
+    else if (type === 'phone') {
+        const correct = quizData[currentLevel][currentStep].ans;
+        document.getElementById('phone').classList.add('used');
+        openInfo("💌", "メッセージ受信", `「たぶん答えは <b>${correct}</b> だと思うにゃ！信じるかはあなた次第...！」`);
+    } 
+    else if (type === 'audience') {
+        document.getElementById('audience').classList.add('used');
+        const correct = quizData[currentLevel][currentStep].ans;
+        const rates = {A:5, B:5, C:5, D:5};
+        rates[correct] = 70 + Math.floor(Math.random()*15);
+        let graphHtml = '<div class="graph-container">';
+        ['A','B','C','D'].forEach(opt => {
+            graphHtml += `<div class="graph-row">
+                <div class="graph-label">${opt}</div>
+                <div class="graph-bar-bg"><div class="graph-bar-fill" style="width:${rates[opt]}%"></div></div>
+                <div style="font-size:12px;">${rates[opt]}%</div>
+            </div>`;
+        });
+        graphHtml += '</div>';
+        openInfo("✨", "オーディエンスの結果", graphHtml);
+    }
+}
+
+function walkAway() {
+    if (currentStep === 0) return;
+    document.getElementById('confirm-title').innerText = `¥${moneyList[currentStep-1]} を持って辞める？`;
+    document.getElementById('confirm-yes-btn').onclick = () => showResult(moneyList[currentStep-1]);
+    document.getElementById('confirm-modal').style.display = 'block';
+}
+
+function showResult(amount) {
+    closeModal('confirm-modal');
+    document.getElementById('game-ui').style.display = 'none';
+    document.getElementById('sidebar').style.opacity = '0';
+    document.getElementById('success-screen').style.display = 'block';
+    document.getElementById('reward-display').innerText = `獲得実績: ¥${amount}💖`;
+}
+</script>
+</body>
+</html>
