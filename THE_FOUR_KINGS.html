@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FOUR KINGS | MAKE THE WORLD GREAT AGAIN</title>
+    <style>
+        :root {
+            --sidebar-width: 320px;
+            /* MAGA パレット */
+            --maga-red: #B22234; /* Old Glory Red */
+            --maga-blue: #3C3B6E; /* Old Glory Blue */
+            --maga-gold: #D4AF37; 
+            --main-bg: #f4f4f4;
+            --paper-bg: #ffffff;
+            --text-color: #1a1a1a;
+            --sidebar-bg: #3C3B6E;
+            --border-color: #d1d1d1;
+            --hover-bg: rgba(178, 34, 52, 0.1);
+            --shadow-color: rgba(0,0,0,0.2);
+        }
+
+        body.dark-mode {
+            --main-bg: #0a0a0a;
+            --paper-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: #050505;
+            --border-color: #333;
+            --maga-gold: #FFD700;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: 'Arial Black', 'Gadget', sans-serif; /* 力強いフォント */
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        body.size-s { font-size: 0.9em; }
+        body.size-m { font-size: 1.0em; }
+        body.size-l { font-size: 1.2em; }
+
+        /* ツールバー */
+        .toolbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: 60px;
+            background: var(--maga-red);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 25px;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .toolbar button {
+            background: white;
+            color: var(--maga-red);
+            border: none;
+            padding: 8px 16px;
+            margin-left: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* サイドバー */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            color: white;
+            position: fixed;
+            overflow-y: auto;
+            border-right: 5px solid var(--maga-gold);
+        }
+
+        .sidebar-header {
+            padding: 50px 25px;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--maga-blue), #1e1e3f);
+            border-bottom: 5px solid var(--maga-red);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.8em;
+            margin: 0;
+            letter-spacing: 2px;
+            color: white;
+            text-shadow: 2px 2px 0px var(--maga-red);
+        }
+
+        .sidebar-header p {
+            color: var(--maga-gold);
+            font-weight: bold;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .episode-list { list-style: none; padding: 0; margin: 0; }
+        .episode-list li a {
+            display: block;
+            padding: 20px 25px;
+            text-decoration: none;
+            color: #ddd;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .episode-list li a:hover, .episode-list li a.active {
+            background: var(--maga-red);
+            color: white;
+            padding-left: 35px;
+            border-left: 10px solid var(--maga-gold);
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 60px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .paper {
+            background-color: var(--paper-bg);
+            max-width: 850px;
+            width: 90%;
+            padding: 60px;
+            margin: 40px;
+            box-shadow: 0 15px 50px var(--shadow-color);
+            position: relative;
+            border: 2px solid var(--border-color);
+        }
+
+        /* 国旗風アクセント */
+        .paper::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 15px;
+            background: repeating-linear-gradient(90deg, var(--maga-red), var(--maga-red) 50px, #fff 50px, #fff 100px);
+        }
+
+        .episode-title {
+            font-size: 2.8em;
+            text-align: center;
+            color: var(--maga-blue);
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            border-bottom: 5px solid var(--maga-red);
+            display: inline-block;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        body.dark-mode .episode-title {
+            color: var(--maga-gold);
+        }
+
+        .content {
+            font-family: 'Georgia', serif; /* 本文は読みやすく、かつ伝統的に */
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .content p { margin-bottom: 1.5em; text-indent: 1em; }
+
+        .separator {
+            text-align: center;
+            margin: 50px 0;
+            font-size: 2em;
+            color: var(--maga-red);
+        }
+
+        .episode-content { display: none; }
+        .episode-content.active { display: block; }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 5px solid var(--maga-gold); }
+            .toolbar { left: 0; width: 100%; padding: 0 10px; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body class="dark-mode size-m">
+
+<div class="toolbar">
+    <button onclick="changeSize('s')">SMALL</button>
+    <button onclick="changeSize('m')">MEDIUM</button>
+    <button onclick="changeSize('l')">LARGE</button>
+    <button onclick="toggleLight()" style="background: var(--maga-blue); color: white;">NIGHT MODE</button>
+</div>
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h2>THE FOUR KINGS</h2>
+        <p>MAKE THE WORLD GREAT AGAIN</p>
+    </div>
+    <ul class="episode-list">
+        <li><a onclick="showEpisode(1)" id="link-1" class="active">01: 成功報酬</a></li>
+        <li><a onclick="showEpisode(2)" id="link-2">02: 長い行列</a></li>
+        <li><a onclick="showEpisode(3)" id="link-3">03: 資源大国</a></li>
+        <li><a onclick="showEpisode(4)" id="link-4">04: 自由の神話</a></li>
+        <li><a onclick="showEpisode(5)" id="link-5">05: オンラインゲーム</a></li>
+        <li><a onclick="showEpisode(6)" id="link-6">06: 最弱決定戦</a></li>
+    </ul>
+</nav>
+
+<main class="main-content">
+    <article class="paper">
+
+        <!-- 第1話 -->
+        <div id="ep-1" class="episode-content active">
+            <h1 class="episode-title">EPISODE 01: 成功報酬</h1>
+            <div class="content">
+                <p>ある秘密の会議室で、世界を動かすメディアの重鎮たちが顔を突き合わせていた。自らを情報の支配者――「四天王」と自負する彼らの顔は、しかし苦渋に満ちていた。<br><br>
+
+「また失敗か。あの男の演説を切り貼りして、暴動を煽っているように見せかけたのが裏目に出た。ディレクターが総辞職する騒ぎだ。しかも巨額賠償金の訴訟まで喰らう羽目に⋯⋯（涙）。」<br><br>
+　BBCの編集長が涙混じりの溜息をつくと、隣に座っていたCBSプロデューサーが冷笑した。<br><br>
+「ククク……貴様は我ら四天王の中でも最弱よ。しかし、我も前副大統領の支離滅裂な回答と気持ち悪い笑いを『賢い発言』に編集し直したのがバレて、生原稿の公開を迫られている⋯⋯まあ私に比べれば、まだ可愛いものだよ（涙）。」<br><br>
+「二人とも低レベルすぎる。」<br><br>
+　NYTとCNNのベテラン記者が、冷ややかな声を重ねた。<br><br>
+「我らを見ろ。ロシアとの共謀説を何年も煽り続け、今さらそれが捏造だったと蒸し返されている。FBIが動いているとの情報も⋯⋯。我らは捏造の規模が違うのだよ。」<br><br>
+「どの口が言う。君たちだって、大統領が歴史的偉人の胸像を撤去したとデマを流し、即座に謝罪放送に追い込まれたじゃないか。」<br><br>
+
+互いの無能を嘲笑い、責任をなすりつけ合う四天王。自分たちこそが世論を作り、我らを「フェイクニュース」と呼ぶあの男を破滅させる選ばれしエリートだと信じて疑わなかった。<br><br>
+
+その時だ。壁の大型モニターに、突如として「あの男」の顔が映し出された。
+<br><br>
+「やあ諸君、最高の仕事ぶりだよ！」<br><br>
+
+トランプは画面越しに、満面の笑みで親指を立て、YMCAの音楽とともに少し踊ってみせた。<br><br>
+「君たちがせっせと嘘を流してくれたおかげで、メディア各社から巨額の和解金が取れた。数千万ドル、いや億単位の金が、私の『大統領図書館』の建設口座に直行したよ。おかげで建築費は1セントもかからず、タダで完成だ。感謝するよ、諸君！」<br><br>
+
+メディアの四天王が呆然とする中、画面の隅に別のニュース映像が流れ始めた。<br><br>
+それは、かつてのライバル、オバマの大統領図書館オープンセレモニーのニュースだった。<br><br>
+『建設費は８億ドルを突破、地元自治体の負担は２億ドルを超え、寄付金は予定の数百分の一……。地域財政は破綻寸前です！オープンセレモニーを前にかつてのオバマ支持者たちが抗議に集まっています。』<br><br>
+
+トランプは腹を抱えて大笑いした。<br><br>
+「皮肉だろ？ フェイクニュースから聖人君子と持ち上げられたあいつの図書館は税金の無駄遣いで赤字。一方、君たちが悪魔のように叩いた私の図書館は、君たちの『慰謝料』のおかげで全額無料だ。さあ、次はどんなデマで私を倒しに来るんだ？ 待ってるぞ、私の最高のスポンサー諸君よ！わっはっは。」<br><br>
+
+通信が切れた後、会議室には死のような静寂が流れた。<br><br>
+自分たちは世界を操る情報の四天王などではなかった。ただ、あの男の野望を叶えるために、せっせと無償で働く「忠実な道化師」に過ぎなかったのだ。<br><br>
+
+皮肉なことに、次に彼らが書くべき「真実」は、自分たちの完全敗北という記事だけだった。</p>
+                <div class="separator">★★★</div>
+            </div>
+        </div>
+
+        <!-- 第2話 -->
+        <div id="ep-2" class="episode-content">
+            <h1 class="episode-title">EPISODE 02: 長い行列</h1>
+            <div class="content">
+                <p>地獄の奥底、常に熱風が吹き荒れる岩場で、四人の男たちが所在なげに座り込んでいた。彼らはいずれも、生前にある「大きな標的」を狙った者たちだった。<br><br>
+
+「また失敗か……。私の放った弾は、奴の耳をかすめただけだった。それどころか奴は拳を突き上げ、支持率を爆上げさせやがった。」<br><br>
+　一人の青年がうなだれると、隣の男が冷笑を浮かべた。<br><br>
+「ククク……まだ良い。そこの奴は我ら暗殺四天王の中でも最弱。ゴルフ場の茂みで構えていただけで、引き金を引く前に見つかって捕まるとはな。あの男の引き立て役になっただけだ。」<br><br>
+「貴様に言われたくない。私などは外国政府からの依頼で工作員として、周到な暗殺計画を立てていたというのに。」<br><br>
+　三番目の男が吐き捨てると、四人目の男が自撮り棒をいじるような手つきで力なく笑った。<br><br>
+「俺なんて、ホワイトハウス記者夕食会直前に、武器を満載した自分の姿を自撮りして悦に入っていたんだ。そのまま金属探知機を強行突破して英雄になるはずが、膝を撃たれて転がっただけ。その後、あの男は何事もなかったかのように記者会見をしていたよ……。」<br><br>
+
+四人は、自分たちこそが歴史を変えるはずだった特別な存在――「暗殺四天王」だと信じ、互いの不運を嘆き合っていた。<br><br>
+
+やがて、彼らは巨大な門の前へと連行された。そこには地平線の彼方まで続く、果てしない行列があった。<br><br>
+「ここに並べばいいのか？」<br><br>
+暗殺四天王の一人が尋ねると、退屈そうに爪を研いでいた門番の悪魔がニヤリと笑った。
+「ああ。ここは『あの男』の命を狙って失敗した連中専用の列だ。ほら、最後尾が見えないほど長いが、大人しく並べ（笑）。」<br><br>
+
+四人は絶望的な気分で列の最後尾に加わり、前の男に声をかけた。<br><br>
+「……あんたも、あの男を？」<br><br>
+「ああ。俺は2016年にラスベガスで警官の銃を奪って、その銃で奴を狙おうとした。」<br><br>
+隣の違う男も振り返る。<br><br>
+「私は2024年に海外から送り込まれた工作員だ。実行前に当局に潰されたよ。」<br><br>
+さらにその前の男からも声が響く。<br><br>
+「俺は2025年の偽装脅迫状の黒幕だ。表には出ていないが、奴のスケジュールはすべて把握していたはずなんだがな……。」<br><br>
+
+行列には、表沙汰にならなかったプロの殺し屋、左翼に扇動された過激派の男、単独犯を装った組織の末端たちが、数えきれないほど並んでいた。<br><br>
+暗殺四天王は顔を見合わせ、真っ青になった。自分たちは「選ばれし四天王」などではなかった。この果てしない行列の中の、単なる「最弱の四人組」に過ぎなかったのだ。<br><br>
+
+門番の悪魔は、行列の長さを楽しそうに眺めながら呟いた。<br><br>
+「さて、地上では奴がまだピンピンしている。明日はこの列に、何人追加されるかな？ 楽しみだぜ。」<br><br>
+誰かが悪魔に尋ねた。<br><br>
+「なぜあの男は死なないんだ。」<br><br>
+悪魔は笑みを浮かべながら、行列が目指す先の建物を指さした。<br><br>
+そこにはこう書かれていた「地獄を再び偉大に（Make Hell Great Again）」――。<br><br>
+
+地獄の熱風に吹かれながら、四人は自分たちの順番が来るのを永遠に待つしかなかった。もちろん、彼らの狙った標的がこの門をくぐる日は、まだ当分来そうになかった。</p>
+<div class="separator">★★★</div>
+            </div>
+        </div>
+
+        <!-- 第3話 -->
+        <div id="ep-3" class="episode-content">
+            <h1 class="episode-title">EPISODE 03: 資源大国</h1>
+            <div class="content">
+                <p>地獄の奥底、かつて世界を震撼させた独裁者たちが、冷え切った溶岩の椅子に座り込んでいた。彼ら「独裁の四天王」の顔には、もはやかつての威厳など微塵もなかった。<br><br>
+
+「……わずか四十五分だった。私と妻が拘束されるまで、一時間もかからなかった。夜間の奇襲であっけなく終わるとは。」<br><br>
+南米の独裁者が肩を落とすと、隣に座る中東の指導者が鼻で笑った。<br><br>
+「ククク……。奴は我ら四天王の中でも最弱。主要施設を吹き飛ばされ、内部反乱を誘発されるなど、私を見ろ、いまだに革命防衛隊が体制の瓦解……寸前で耐えているぞ。まあ私は最初の攻撃で排除されたがな。」<br><br>
+「どちらも大差ない。我らの面汚しだ。」<br><br>
+カリブ海の指導者が毒づいた。「支援元の石油が止まり、島全体が飢えと停電に飲み込まれた。戦う前に、国そのものが消滅したようなものだ。だが私はあの男に排除されたのではない、天命をまっとうしたのだ。」<br><br>
+最後に、東アジアの大国の指導者が重々しく口を開いた。<br><br>
+「……お前ら、現実はもっと残酷だぞ。隣の北の大国は、あの男と裏で手を結び、制裁を解かれてほくそ笑んでいる。その一方で、あの男を軽んじた隣国や同盟諸国は、資金も武器も絶たれて悲鳴を上げている。世界は完全に、あの男の手のひらの上だ。」<br><br>
+
+独裁の四天王は互いの不遇を嘆き、あの「傲慢な男」への恨みつらみを吐き散らした。自分たちは選ばれし強者であり、いつか必ず復讐を果たすのだと。<br><br>
+
+その時、空間が歪むようにして、眩いばかりの光の中に「あの男」の姿が浮かび上がった。<br><br>
+
+「やあ諸君、最高の協力に感謝するよ！」<br><br>
+
+トランプは眩い光の中から、実に楽しげに笑いかけてきた。<br><br>
+「君たちが自滅してくれたおかげで、アメリカは世界一のエネルギー覇権を手に入れた。君たちの油田は我が国の企業が再建し、中東の安い原油ルートは断たれ、同盟国だった国々は今や私の売る原油やLNG（液化天然ガス）を喉から手が出るほど欲しがり、アメリカ湾（メキシコ湾）には空のタンカーが押し寄せている。すべてはタダ、いや、むしろ莫大な利益を上げながら手に入ったぞ！」<br><br>
+
+独裁の四天王は、言葉を失い凍りついた。<br><br>
+自分たちは世界を支配する強大な悪の組織などではなかった。ただ、あの男がアメリカを史上最強のエネルギー帝国へと作り変えるための、安っぽい「引き立て役」に過ぎなかったのだ。<br><br>
+
+男は最後に、豪快な笑い声を響かせて光の中へ消えた。<br><br>
+「次はどの独裁者が、私の石油帝国に投資……いや、挑んでくるんだ？ 楽しみに待っているよ！」<br><br>
+
+眩い光が消えた後、独裁の四天王は絶望に打ちひしがれ、座り込んだ。<br><br>
+「……結局、我々は利用されただけか。挙句の果てに、この地獄で永遠に灼熱に焼かれ、血の海に沈むだけとはな。」<br><br>
+
+一人がそうこぼすと、傍らで退屈そうにしていた門番の悪魔が、皮肉たっぷりに口を挟んだ。<br><br>
+
+「おい、そんなに悲観するな。お前たちは幸運だぞ。」<br><br>
+
+暗殺の四天王たちが怪訝そうに顔を上げると、悪魔は足元のマグマと、煮え滾る血の池を指差してニヤリと笑った。<br><br>
+
+「お前たちが今味わっているこの凄まじい熱風も、この煮えたぎる血の海も、すべてはあの男が『格安』で提供してくれた最新の燃料で動いているんだよ。地獄のインフラまで、あの男が提供するエネルギーに依存するとはな。ほら、喜べ、わっはっは。お前たちが望んだ通りの、最高にホットな独裁者専用ルームだ。」<br><br>
+
+四天王は、自分たちを焼き続ける炎すらも「あの男」の商売道具に過ぎないことを知り、声もなく震え上がった。</p>
+                <div class="separator">MAKE HELL GREAT AGAIN</div>
+            </div>
+        </div>
+        
+        <!-- 第4話 -->
+        <div id="ep-4" class="episode-content">
+            <h1 class="episode-title">EPISODE 04: 自由の神話</h1>
+            <div class="content">
+                <p>　むかしむかし、あるところに「Twitter」という名の、青い鳥が住む巨大な楽園がありました。<br><br>
+そこでは世界中の人々が自由に言葉を交わしていましたが、いつしか楽園の番人たちは「正義」という名の独裁を始めました。彼らは自分たちの気に入らない意見を持つ者を次々と牢獄へ放り込み、ついには時の王であったトランプ大統領のアカウントを「永久追放」という呪いで封印してしまいました。<br><br>
+楽園は、番人たちが望む声だけが響く「検閲の温床」となり、本当の真実は深い霧の中に隠されてしまいました。<br><br>
+そんなある日のこと、空から一人の異端児が舞い降りました。その名はイーロン・マスク。彼は「言論の自由」という名の巨大なハンマーを振り下ろし、青い鳥の楽園を買い叩いて、古びた掟をすべて粉砕してしまいました。<br><br>
+「今日からここは『X』だ。誰もが、自分の目で見た真実を語る場所だ！」<br><br>
+イーロンがそう叫ぶと、封印されていた保守派の人々が暗い牢獄から解き放たれ、抑圧されていた怒りと真実を爆発させました。<br><br>
+その言論の自由のまばゆい光と共に、四人の戦士――「真実の四天王」が姿を現しました。<br><br>
+まず、軍事の女皇ルーマーが、隠蔽されていた戦地の生々しい記録をXの空に放ち、メディアが描いた虚偽の戦況を打ち砕きました。<br><br>
+次に、経済の知略を持つシャーリーが、支配者たちが裏で操る資金の流れを白日の下に晒し、国民を欺く不当な増税の正体を暴きました。<br><br>
+情報の天才ジョンソンは、メディアが必死に編集して隠した「60 Minutes」や「J6」の真実の断片をつなぎ合わせ、捏造の城壁を跡形もなく焼き払いました。<br><br>
+そして教団の長ラピッドが、抑圧されていた人々の心に「真実を語る勇気」という灯をともし、巨大なうねりを作り出しました。<br><br>
+かつての支配者だったオールドメディアの老人たちは、「Xはデマとヘイトの肥溜めだ！」と連日叫びましたが、四天王が先陣を切って放つ「一次情報」という名の聖なる矢の前に、彼らの嘘は次々と崩れ去っていきました。<br><br>
+皮肉なことに、彼らが必死に隠してきた編集捏造、ハリス副大統領の失態、バイデン政権の失政の証拠を、次々と暴いていったのは、この四人の背中を見て勇気を得たXの一般市民たちが掲げた「スマホ」という名の魔法の小箱でした。<br><br>
+CNNやNYTがどんなに嘘の城を築いても、Xの荒野から飛んでくる一次情報の矢が、その城壁を次々と射抜いていきました。<br><br>
+若者たちは気づきました。テレビの中の偉そうな解説者よりも、現場で震えながら動画を撮る名もなき個人のほうが、ずっと信じるに値することに。彼らは再びキーボードという武器を手に取り、ただの「ユーザー」という記号ではなく、血の通った一人の「人間」として立ち上がったのです。<br><br>
+自分の目で見た一次情報と、尖った言葉を武器に、腐ったメディアに喧嘩を売る日々。Xは、世界で最も激しく、最も正直な「正義の戦場」となりました。<br><br>
+こうして、嘘で塗り固められた古い時代は一気に弱体化し、終わりを告げようとしています。そして人々は、自分の足で真実を探しに行く自由を手に入れました。<br><br>
+めでたし、めでたし。　</p>
+<div class="separator">TRUMP TOWER</div>
+            </div>
+        </div>
+                
+        <!-- 第5話 -->
+        <div id="ep-5" class="episode-content">
+            <h1 class="episode-title">EPISODE 05: オンラインゲーム</h1>
+            <div class="content">
+                <p>　
+                    むかしむかし、世界の裏側には「権力者のギルド」という名の秘密のオンラインゲームサーバーがありました。<br><br>
+
+そこでは四人のベテランプレイヤーたちが、世界という名のゲームを自分たちに都合よく書き換えて（パッチを当てて）楽しんでいました。しかし、ある日突然、運営の想定を無視して暴れ回る「伝説のレイドボス」が現れたのです。<br><br>
+
+四天王は絶叫しました。「全プレイヤーを動員して、奴をBAN（凍結）しろ！」<br><br>
+
+【戦闘開始：ギルド・ディープステート vs ラスボス・トランプ】<br><br>
+オバマ（ジョブ：説教の賢者）<br><br>
+「僕のパッシブスキル『ノーベル平和賞の残光』を展開！ 全フィールドに『希望』という名の霧を撒き、ボスの視界を遮るんだ。さあ、みんな、僕の美しい演説をBGMに一斉攻撃だ！」<br><br>
+
+ヒラリー（ジョブ：深淵の呪術師）<br><br>
+「私の禁じられた呪文『DEPLORABLES（嘆かわしい奴ら）』を詠唱するわ！ これで有権者の半分をスタン（気絶）させて、二度と立ち上がれないように……ちょっと、なんで私のMP（支持率）が勝手にゼロになってるの！？ サーバーが重すぎるわ！」<br><br>
+
+ソロス（ジョブ：強欲の暗黒商人）<br><br>
+「焦るな、小娘が。私の奥義『マネー・洪水』で、全フィールドの検察官と司法ギルドを味方に買収した。これでボスの動きを裁判で封じ込める……おい！ ファウチ！ 早くデバフ（弱体化）を撒け！」<br><br>
+
+ファウチ（ジョブ：毒霧の錬金術師）<br><br>
+「やってるよ！ 秘薬『科学の盾』を展開中だ！ 全プレイヤーにマスク装備を強制し、家の中から出られないようにロックダウンをかけた！ これでボスの集会イベントは中止に……ああっ！ ボスがスマホを取り出したぞ！」<br><br>
+
+【バトルログ：トランプのターン】<br><br>
+ドナルド・トランプがスキル『TRUTH BOMB（真実の爆弾）』を発動！<br><br>
+
+ヒラリーの秘密サーバーに9999の直撃ダメージ！<br><br>
+
+ソロスの買収工作が「コミュニティノート」により完全に無効化された！<br><br>
+
+ファウチの『科学の盾』が、過去のメール流出により自爆！<br><br>
+
+オバマの演説は「低視聴率」デバフにより誰にも聞こえなくなった！<br><br>
+
+トランプ（画面端でハンバーガーを食べながら）<br><br>
+「おいおい、そんな低レベルの装備で俺に挑むのか？
+お前らが俺を攻撃すればするほど、俺の『不屈のリーガル・アーマー』が光り輝いて、経験値（支持率）がカンストしちまったぞ。<br>
+おいヴァンス、次は『MAGA・サンダー』を全画面にぶち込んでやれ！」<br><br>
+
+【GAME OVER】<br><br>
+四天王は、自分たちが勇者パーティーではなく、「ボスのボーナスステージでボコボコにされる、ただのザコキャラ」に過ぎなかったことに気づき、コントローラーを投げ捨てて沈黙しました。<br><br>
+
+地獄のサーバーには、ただトランプの勝利を祝うゴールドの紙吹雪が舞い散っていました。<br><br>
+
+Make Game Great Again.<br><br>
+
+めでたし、めでたし。　</p>
+<div class="separator">[GAME OVER]  ▶ NEXT</div>
+            </div>
+        </div>
+                
+        <!-- 第6話 -->
+        <div id="ep-6" class="episode-content">
+            <h1 class="episode-title">EPISODE 06: 最弱決定戦</h1>
+            <div class="content">
+                <p>かつてWEF（世界経済フォーラム）が密議を凝らした巨大な地下コロシアム。今は「X」の生配信スタジオと化したその場所に、六組の自称「四天王」が集結していた。かつての威厳はどこへやら、そこにあるのは剥き出しの虚栄心と、互いへの憎悪だけだった。<br><br>
+
+                    【地獄の罵倒合戦、開幕】<br>
+まず、ディープステート四天王（FBI・CIA・DOJ・IRS幹部）が、血走った目で円卓を叩いた。<br>
+「我こそが最強だ！ 8年間に及ぶ裁判地獄、法の武器化……我々の『影の政府（ディープステート）』なしに、誰がトランプを止められたというのだ！」<br><br>
+
+それに対し、ハリウッド・セレブ四天王が鼻で笑う。クルーニーが優雅に、しかし冷酷に言い放つ。<br>
+「地味な公務員の工作など古いわ。我々がオスカーで『ファシスト！』と一喝すれば、若者の脳みそは一瞬で洗浄される。テイラーの一言で数億ドルが動くのよ。文化を支配する我々こそが頂点だ」<br><br>
+
+「笑わせるな」<br>
+割り込んだのは、アカデミア四天王（アイビーリーグの学長ら）だ。「DEI（多様性・公平性・包摂）」の旗を掲げ、目を細める。「次世代の頭脳を培養しているのは我々だ。キャンパスを占拠させ、デモを扇動すれば、どんな政権も膝を屈する」<br><br>
+
+グローバル四天王（シュワブ、国連、WHOの首領たち）が、高価なワインを傾けながら冷笑する。
+「愚か者どもよ。国境などという概念に縛られている時点で二流だ。『グレート・リセット』の旗の下、気候変動を理由に全人類の私有財産を没収する。お前たちは何も所有せず、そして（強制的に）幸福になるのだ」<br><br>
+
+ビッグテック残党四天王（GAFAの幹部）が、スマホの画面から目を離さずに嘲笑した。
+「全部時代遅れ。アルゴリズムひとつで世論をねじ曲げ、検索結果から不都合な真実を消し去っているのは我々だ。Xというイレギュラーを除けば、世界は我々のコードの中にある」<br><br>
+
+最後に、民主党急進派四天王（AOC、ニューサム、カマラら）が一斉に立ち上がる。
+AOCが叫ぶ。「全員黙りなさい！ 私たちが毎日議会で『民主主義の敵！』と叫ぶパフォーマンスが一番効いてるの！」<br>
+カマラがそれに続く。「そして私が副大統領として……その……文脈の中の、螺旋のような……頑張りを見せたのよ！（沈黙）」<br><br>
+
+【阿鼻叫喚の最弱認定】<br>
+沈黙は一瞬。次の瞬間、コロシアムは怒号の渦に飲み込まれた。<br><br>
+
+「最弱はハリウッドだ！ 落ち目の芸能人が何様だ！」<br>
+「アカデミアこそ最弱！ 学生デモなんて警察一列で鎮圧されるわ！」<br>
+「グローバルが最弱！ ダボスの老人会でワインを飲んでるだけじゃないか！」<br>
+「ビッグテックこそ最弱！ マスク一人にプラットフォームを奪われた負け犬ども！」<br>
+「民主党急進派が最弱！ 支持率底辺のコメディ集団が！」<br>
+「ディープステートが最弱！ トランプに裏工作を全部ポストされてるじゃないか！」
+<br><br>
+ワインが飛び交い、Zoomの仮想背景が乱れ、権威の象徴だった高級スーツが引き裂かれる。醜い大乱闘が絶頂に達したその時――。
+<br><br>
+【真の勝者の高笑い】<br>
+天井が開き、巨大な4Kスクリーンが降りてきた。画面には、山盛りのポップコーンを頬張りながら、ヴァンス副大統領と肩を組んで大爆笑するトランプの姿が映し出された。
+<br><br>
+「おーい、諸君！ 最高のショーをありがとう！ この『最弱決定戦』の生配信、Xで既に3億ビューを超えたぞ。広告収入が過去最高だ！」
+<br><br>
+トランプは親指を立て、満面の笑みでトドメを刺した。
+「正直に言おう。お前ら全員、同率で『最弱』だ！ お前らが騒げば騒ぐほど、俺の支持率は上がり、Xは最強のインフラになり、俺の図書館の資料は無料で揃う。最高のエンターテイナーたちに感謝するぜ！」
+<br><br>
+ヴァンスがニヤリと笑う。「シーズン2のバトルロイヤルも期待してるよ。次は泥沼の中でやってくれ」
+<br><br>
+スクリーンが消え、静寂が訪れ⋯⋯<br>
+静まり返った会議室に、また聞き覚えのある乾いた笑い声が響いた。
+<br>
+「……素晴らしいデータが取れたよ。サンキュー、みんな」
+<br><br>
+モニターに映し出されたのは、サイバートラックの運転席で優雅にコーヒーを啜るイーロン・マスクだった。
+<br>
+「君たちの今の罵り合い、すべてAI『Grok』に学習させた。おかげで『旧人類の非論理的な発狂パターン』のデータが完璧に揃ったよ。これ、Starshipの自動操縦システムには不要なデータなんだ。つまり――」
+<br><br>
+イーロンはスマホをタップし、一枚の搭乗チケットを表示させた。<br>
+「Make Life Multi-Planetary. （生命を多惑星種にせよ）」
+<br><br>
+「君たち全員に、火星移住の『第一陣』としての権利をプレゼントする。片道だけどね。地球にはもう、君たちの居場所（サーバー）は残っていない。君たちは火星で、思う存分『DEI』や『検閲』の理想郷を作ればいい。相手は岩石と砂嵐だけだがね」
+<br><br>
+四天王たちは、自分たちがもはや人間としてではなく、「火星に捨てるべきバグデータ」として処理されたことに気づき、膝から崩れ落ちた。
+<br><br>
+「THE FUTURE IS COMING」 (未来はやってくる)<br>
+めでたし、めでたし。</p>
+<div class="separator">THE END.</div>
+            </div>
+        </div>
+
+    </article>
+</main>
+
+<script>
+    function changeSize(size) {
+        document.body.classList.remove('size-s', 'size-m', 'size-l');
+        document.body.classList.add('size-' + size);
+    }
+
+    function toggleLight() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+    function showEpisode(num) {
+        document.querySelectorAll('.episode-content').forEach(ep => ep.classList.remove('active'));
+        document.getElementById('ep-' + num).classList.add('active');
+        document.querySelectorAll('.episode-list li a').forEach(link => link.classList.remove('active'));
+        document.getElementById('link-' + num).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
