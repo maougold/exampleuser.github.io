@@ -21,53 +21,35 @@
         canvas#canvas { max-width: 100%; max-height: 100%; object-fit: contain; z-index: 10; }
         #effectCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
         #bgCanvas { position: fixed; inset: 0; z-index: -10; }
-
-        /* 見やすく豪華な結果画面 */
         #result-overlay {
-            position: absolute; inset: 0; 
-            background: rgba(2, 6, 23, 0.85);
+            position: absolute; inset: 0; background: rgba(2, 6, 23, 0.85);
             display: none; align-items: center; justify-content: center;
             z-index: 50; backdrop-filter: blur(8px);
         }
         .fortune-card {
             background: linear-gradient(135deg, #1c1408 0%, #2c1f14 50%, #1c1408 100%);
             border: 2px solid #d4af37;
-            box-shadow: 0 0 70px rgba(212, 175, 55, 0.5),
-                        0 0 30px rgba(239, 68, 68, 0.3);
-            width: 90%; max-width: 460px; 
-            padding: 2.8rem 2rem;
-            border-radius: 24px;
-            text-align: center;
-            position: relative;
+            box-shadow: 0 0 70px rgba(212, 175, 55, 0.5), 0 0 30px rgba(239, 68, 68, 0.3);
+            width: 90%; max-width: 460px; padding: 2.8rem 2rem;
+            border-radius: 24px; text-align: center; position: relative;
             animation: cardPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
-        @keyframes cardPop {
-            from { transform: scale(0.75) translateY(30px); opacity: 0; }
-            to { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        .btn-premium {
-            background: linear-gradient(to right, #b91c1c, #ef4444);
-            box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4);
-            transition: all 0.3s ease;
-        }
-        .btn-premium:hover { transform: scale(1.05); filter: brightness(1.15); }
+        @keyframes cardPop { from { transform: scale(0.75) translateY(30px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
     <canvas id="bgCanvas"></canvas>
     <canvas id="effectCanvas"></canvas>
 
-    <!-- 入口 -->
     <div id="overlay" class="fixed inset-0 bg-[#020617] flex items-center justify-center z-[100]">
         <div class="text-center p-8 relative">
             <div class="mb-4 text-8xl animate-bounce">⛩️</div>
             <h1 class="text-7xl font-black text-white mb-2" style="font-family: 'Noto Serif JP', serif;">極 <span class="text-red-500">阿弥陀</span> 占</h1>
             <p class="text-amber-200/60 mb-12 tracking-[0.5em] text-sm uppercase">Supreme Amida Fortune</p>
-            <button onclick="startGame()" class="btn-premium text-white font-bold px-16 py-5 rounded-full text-xl tracking-widest shadow-2xl">参拝する</button>
+            <button onclick="startGame()" class="bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold px-16 py-5 rounded-full text-xl tracking-widest shadow-2xl">参拝する</button>
         </div>
     </div>
 
-    <!-- メイン -->
     <div id="mainContent" class="w-full max-w-[900px] mx-auto px-4 opacity-0 scale-95">
         <div class="glass-panel p-6 relative">
             <div class="flex justify-between items-center z-10 px-2">
@@ -85,14 +67,10 @@
                 <div id="result-overlay" onclick="closeResult()">
                     <div id="result-card" class="fortune-card" onclick="event.stopPropagation()">
                         <div class="text-amber-400 text-xs tracking-widest mb-2">—— 神 託 ——</div>
-                        <div id="res-fortune" class="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-amber-100" 
-                             style="font-family: 'Noto Serif JP', serif; text-shadow: 0 4px 20px #ca8a04, 0 0 40px #b45309;"></div>
+                        <div id="res-fortune" class="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-amber-100" style="font-family: 'Noto Serif JP', serif; text-shadow: 0 4px 20px #ca8a04, 0 0 40px #b45309;"></div>
                         <div id="res-desc" class="text-slate-100 text-[15.8px] leading-relaxed mb-8 px-2"></div>
                         <div id="res-fun" class="bg-amber-950/60 border border-amber-400/30 p-5 rounded-2xl text-amber-100 text-[14.5px] italic"></div>
-                        <button onclick="closeResult()" 
-                                class="mt-9 w-full bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-500 hover:to-red-500 text-white py-3.5 rounded-full font-bold tracking-widest text-sm shadow-xl transition-all">
-                            もう一度占う
-                        </button>
+                        <button onclick="closeResult()" class="mt-9 w-full bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-500 hover:to-red-500 text-white py-3.5 rounded-full font-bold tracking-widest text-sm shadow-xl transition-all">もう一度占う</button>
                     </div>
                 </div>
             </div>
@@ -101,33 +79,38 @@
     </div>
 
     <script>
-        // （前回と同じ本体コードを使用し、結果画面部分のみ強化）
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const bgCanvas = document.getElementById('bgCanvas');
         const bgCtx = bgCanvas.getContext('2d');
         const effCanvas = document.getElementById('effectCanvas');
         const effCtx = effCanvas.getContext('2d');
-       
+
         const COLUMNS = 17;
         let horizontalLines = [], topLabels = [], bottomLabels = [], selectedIndex = -1;
         let shieldAlpha = 1.0, isRevealing = false, resultShown = false;
         let tiles = [];
         const MAX_ROWS = 20, TOP_Y = 60, BOTTOM_Y = 500;
 
+        // ==================== 17種類すべて実装 ====================
         const fortuneData = {
             "大大吉": { desc: "天の恵みが降り注ぐ至福の時。万事が望み通りに進むでしょう。", fun: "今日は宝くじや福袋に縁があるかもしれません。" },
             "大吉": { desc: "最高潮の運気。迷わず突き進むことで大きな成果が得られます。", fun: "赤いものを身に付けると、さらに運気が安定します。" },
             "凶後大吉": { desc: "序盤の苦労は成功への伏線。逆境を笑顔で乗り越えて。", fun: "失敗しても「ネタになる」と笑い飛ばすと吉です。" },
-            "末大吉": { desc: "晩成の運勢。一歩ずつ着実に進むことで最後に大きな華が咲きます。", fun: "整理整頓をすると、幸運の舞い込むスペースが生まれます。" },
+            "凶後吉": { desc: "最初は凶だが、後半で吉に転じる。忍耐が報われます。", fun: "雨の日に傘を忘れると凶後吉フラグが立つかも。" },
+            "末大吉": { desc: "晩成の運勢。一歩ずつ着実に進むことで最後に大きな華が咲きます。", fun: "年末の大掃除をすると末大吉が確定する説。" },
+            "末吉": { desc: "今は普通だけど、将来的に良くなるタイプ。", fun: "寝る前に「明日も頑張る」とつぶやくと効果絶大。" },
+            "向大吉": { desc: "大吉に向かって運気が上昇中。良い流れが近づいています。", fun: "朝、右足から降りるとさらに吉寄りになります。" },
             "吉": { desc: "平穏で恵まれた運気。周囲への感謝を忘れずに過ごせば安泰です。", fun: "小銭を募金すると、巡り巡って大きな福となります。" },
-            "中吉": { desc: "安定した幸せが訪れる日。足元を固めるのに適した時期です。", fun: "温かい飲み物で一息つくと、新しいアイデアが浮かぶかも。" },
-            "小吉": { desc: "ささやかな幸せが点在する日。小さな喜びを大切に拾い集めて。", fun: "身近な人に小さな親切をすると運気が向上します。" },
-            "末吉": { desc: "今は準備期間。焦らずに力を蓄えれば、将来必ず報われます。", fun: "読書をしたり新しい知識を得るのに最適な日です。" },
-            "凶": { desc: "立ち止まり、自分を見つめ直すべき時。無理な決断は禁物です。", fun: "早めに帰宅して、ゆっくりお風呂に浸かると厄落としになります。" },
-            "大凶": { desc: "静かに過ごすことで難を逃れます。嵐が過ぎ去るのを待ちましょう。", fun: "アイスや好きなスイーツを食べて、自分を労ってください。" },
-            "吉凶相半": { desc: "吉と凶が入り混じる激動の気配。冷静な判断が求められます。", fun: "深呼吸を3回してから行動すると、吉の面が強く出ます。" },
-            "吉凶相央": { desc: "可能性は無限大。あなたの行動一つで未来はどちらにも転びます。", fun: "明るい色の服を選ぶと、心のバランスが整います。" }
+            "中吉": { desc: "安定した幸せが訪れる日。足元を固めるのに適した時期です。", fun: "温かいおでんを買うと中吉が確定する。" },
+            "小吉": { desc: "ささやかな幸せが点在する日。小さな喜びを大切に拾い集めて。", fun: "猫を3回撫でると小吉が大吉に進化するかも。" },
+            "小凶後吉": { desc: "小さな凶の後に吉が訪れる。", fun: "塩をひとつまみ肩に振ると凶が薄れます。" },
+            "後吉": { desc: "後から吉がやってくる。", fun: "今日の頑張りが後で報われます。" },
+            "吉凶未分末大吉": { desc: "吉凶がまだ分からないが、最終的には大吉。", fun: "最後まで諦めなければ大逆転あり。" },
+            "吉凶相半": { desc: "吉と凶が半々。バランスが大事。", fun: "朝、右足から降りると吉の割合が増える。" },
+            "吉凶相交": { desc: "吉と凶が混在。行動次第でどちらにも転ぶ。", fun: "今日の晩ご飯をカレーにするともう少し吉寄り。" },
+            "凶": { desc: "注意が必要。慎重に行動しましょう。", fun: "早めに帰宅してゆっくりお風呂に浸かると厄落とし。" },
+            "大凶": { desc: "今日は最悪…家で大人しくしてた方が無難です。", fun: "大凶の日はアイスを2個食べると少しマシになる説。" }
         };
 
         const fortuneList17 = Object.keys(fortuneData);
@@ -189,7 +172,8 @@
         function getX(col) { return 40 + col * ((canvas.width - 80) / (COLUMNS - 1)); }
         function getY(row) { return TOP_Y + row * ((BOTTOM_Y - TOP_Y) / MAX_ROWS); }
 
-        function render() {
+        // render(), createLuckyTiles(), updateEffects(), showResult() などは前回と同じなので省略せず動作します
+        function render() { /* 前回と同じコード */ 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.lineWidth = 2;
             for (let i = 0; i < COLUMNS; i++) {
@@ -293,7 +277,6 @@
             } else {
                 playSound(200, 'sine', 0.5);
             }
-
             document.getElementById('result-overlay').style.display = 'flex';
             document.getElementById('status-text').textContent = "運命の糸を確認し、次へ進みなさい";
         }
