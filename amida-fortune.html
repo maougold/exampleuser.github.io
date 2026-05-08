@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>極・阿弥陀占 - 祝祭全画面版 -</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #020617; overflow: hidden; margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        #mainContent { height: 92vh; max-height: 850px; display: flex; flex-direction: column; transition: all 1s ease; z-index: 30; position: relative; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            border-radius: 32px;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .canvas-area { flex: 1; position: relative; background: rgba(0,0,0,0.4); border-radius: 20px; margin: 10px 0; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        canvas#canvas { max-width: 100%; max-height: 100%; object-fit: contain; z-index: 10; }
+        #effectCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
+        #bgCanvas { position: fixed; inset: 0; z-index: -10; }
+
+        /* 見やすく豪華な結果画面 */
+        #result-overlay {
+            position: absolute; inset: 0; 
+            background: rgba(2, 6, 23, 0.85);
+            display: none; align-items: center; justify-content: center;
+            z-index: 50; backdrop-filter: blur(8px);
+        }
+        .fortune-card {
+            background: linear-gradient(135deg, #1c1408 0%, #2c1f14 50%, #1c1408 100%);
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 70px rgba(212, 175, 55, 0.5),
+                        0 0 30px rgba(239, 68, 68, 0.3);
+            width: 90%; max-width: 460px; 
+            padding: 2.8rem 2rem;
+            border-radius: 24px;
+            text-align: center;
+            position: relative;
+            animation: cardPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes cardPop {
+            from { transform: scale(0.75) translateY(30px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .btn-premium {
+            background: linear-gradient(to right, #b91c1c, #ef4444);
+            box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-premium:hover { transform: scale(1.05); filter: brightness(1.15); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <canvas id="bgCanvas"></canvas>
+    <canvas id="effectCanvas"></canvas>
+
+    <!-- 入口 -->
+    <div id="overlay" class="fixed inset-0 bg-[#020617] flex items-center justify-center z-[100]">
+        <div class="text-center p-8 relative">
+            <div class="mb-4 text-8xl animate-bounce">⛩️</div>
+            <h1 class="text-7xl font-black text-white mb-2" style="font-family: 'Noto Serif JP', serif;">極 <span class="text-red-500">阿弥陀</span> 占</h1>
+            <p class="text-amber-200/60 mb-12 tracking-[0.5em] text-sm uppercase">Supreme Amida Fortune</p>
+            <button onclick="startGame()" class="btn-premium text-white font-bold px-16 py-5 rounded-full text-xl tracking-widest shadow-2xl">参拝する</button>
+        </div>
+    </div>
+
+    <!-- メイン -->
+    <div id="mainContent" class="w-full max-w-[900px] mx-auto px-4 opacity-0 scale-95">
+        <div class="glass-panel p-6 relative">
+            <div class="flex justify-between items-center z-10 px-2">
+                <div>
+                    <label class="block text-[10px] font-black text-red-500 mb-1 tracking-widest uppercase opacity-70">Fortune Mode</label>
+                    <select id="fortuneMode" onchange="generateAmida()" class="bg-slate-900 text-white border border-red-900/50 rounded-md px-3 py-1.5 text-xs outline-none focus:border-red-500 transition-all">
+                        <option value="classic17">秘伝 17種之運勢</option>
+                        <option value="standard7" selected>現代 7種之運勢</option>
+                    </select>
+                </div>
+                <button onclick="generateAmida()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-600/40 px-6 py-2 rounded-md text-[11px] font-black transition-all uppercase tracking-widest shadow-lg">新しい運命を再構築</button>
+            </div>
+            <div class="canvas-area">
+                <canvas id="canvas" width="800" height="700"></canvas>
+                <div id="result-overlay" onclick="closeResult()">
+                    <div id="result-card" class="fortune-card" onclick="event.stopPropagation()">
+                        <div class="text-amber-400 text-xs tracking-widest mb-2">—— 神 託 ——</div>
+                        <div id="res-fortune" class="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-amber-100" 
+                             style="font-family: 'Noto Serif JP', serif; text-shadow: 0 4px 20px #ca8a04, 0 0 40px #b45309;"></div>
+                        <div id="res-desc" class="text-slate-100 text-[15.8px] leading-relaxed mb-8 px-2"></div>
+                        <div id="res-fun" class="bg-amber-950/60 border border-amber-400/30 p-5 rounded-2xl text-amber-100 text-[14.5px] italic"></div>
+                        <button onclick="closeResult()" 
+                                class="mt-9 w-full bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-500 hover:to-red-500 text-white py-3.5 rounded-full font-bold tracking-widest text-sm shadow-xl transition-all">
+                            もう一度占う
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="status-text" class="text-center text-slate-500 tracking-[0.4em] text-[10px] uppercase h-4">A〜Qの柱より一つ選びなさい</div>
+        </div>
+    </div>
+
+    <script>
+        // （前回と同じ本体コードを使用し、結果画面部分のみ強化）
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const bgCanvas = document.getElementById('bgCanvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        const effCanvas = document.getElementById('effectCanvas');
+        const effCtx = effCanvas.getContext('2d');
+       
+        const COLUMNS = 17;
+        let horizontalLines = [], topLabels = [], bottomLabels = [], selectedIndex = -1;
+        let shieldAlpha = 1.0, isRevealing = false, resultShown = false;
+        let tiles = [];
+        const MAX_ROWS = 20, TOP_Y = 60, BOTTOM_Y = 500;
+
+        const fortuneData = {
+            "大大吉": { desc: "天の恵みが降り注ぐ至福の時。万事が望み通りに進むでしょう。", fun: "今日は宝くじや福袋に縁があるかもしれません。" },
+            "大吉": { desc: "最高潮の運気。迷わず突き進むことで大きな成果が得られます。", fun: "赤いものを身に付けると、さらに運気が安定します。" },
+            "凶後大吉": { desc: "序盤の苦労は成功への伏線。逆境を笑顔で乗り越えて。", fun: "失敗しても「ネタになる」と笑い飛ばすと吉です。" },
+            "末大吉": { desc: "晩成の運勢。一歩ずつ着実に進むことで最後に大きな華が咲きます。", fun: "整理整頓をすると、幸運の舞い込むスペースが生まれます。" },
+            "吉": { desc: "平穏で恵まれた運気。周囲への感謝を忘れずに過ごせば安泰です。", fun: "小銭を募金すると、巡り巡って大きな福となります。" },
+            "中吉": { desc: "安定した幸せが訪れる日。足元を固めるのに適した時期です。", fun: "温かい飲み物で一息つくと、新しいアイデアが浮かぶかも。" },
+            "小吉": { desc: "ささやかな幸せが点在する日。小さな喜びを大切に拾い集めて。", fun: "身近な人に小さな親切をすると運気が向上します。" },
+            "末吉": { desc: "今は準備期間。焦らずに力を蓄えれば、将来必ず報われます。", fun: "読書をしたり新しい知識を得るのに最適な日です。" },
+            "凶": { desc: "立ち止まり、自分を見つめ直すべき時。無理な決断は禁物です。", fun: "早めに帰宅して、ゆっくりお風呂に浸かると厄落としになります。" },
+            "大凶": { desc: "静かに過ごすことで難を逃れます。嵐が過ぎ去るのを待ちましょう。", fun: "アイスや好きなスイーツを食べて、自分を労ってください。" },
+            "吉凶相半": { desc: "吉と凶が入り混じる激動の気配。冷静な判断が求められます。", fun: "深呼吸を3回してから行動すると、吉の面が強く出ます。" },
+            "吉凶相央": { desc: "可能性は無限大。あなたの行動一つで未来はどちらにも転びます。", fun: "明るい色の服を選ぶと、心のバランスが整います。" }
+        };
+
+        const fortuneList17 = Object.keys(fortuneData);
+        const fortuneList7 = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"];
+        const alphabet = "ABCDEFGHIJKLMNOPQ".split("");
+        let audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+
+        function playSuperFanfare() {
+            const now = audioCtx.currentTime;
+            const notes = [523, 659, 784, 1046, 1318, 1568];
+            notes.forEach((freq, i) => setTimeout(() => {
+                playSound(freq, 'sine', 0.6, 0.18);
+                playSound(freq * 1.5, 'triangle', 0.4, 0.08);
+            }, i * 70));
+        }
+
+        function playSound(freq, type = 'sine', duration = 0.4, vol = 0.1) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('mainContent').classList.remove('opacity-0', 'scale-95');
+                generateAmida();
+            }, 500);
+        }
+
+        function generateAmida() {
+            topLabels = [...alphabet];
+            const mode = document.getElementById('fortuneMode').value;
+            let source = (mode === "classic17") ? fortuneList17 : fortuneList7;
+            bottomLabels = Array.from({length: COLUMNS}, (_, i) => source[i % source.length]).sort(() => Math.random() - 0.5);
+            horizontalLines = []; selectedIndex = -1; shieldAlpha = 1.0; isRevealing = false; resultShown = false;
+            tiles = [];
+            document.getElementById('result-overlay').style.display = 'none';
+            document.getElementById('status-text').textContent = "A〜Qの柱より一つ選びなさい";
+           
+            for (let r = 0; r < MAX_ROWS; r++) {
+                let start = (r % 2 === 0) ? 0 : 1;
+                for (let c = start; c < COLUMNS - 1; c += 2) {
+                    if (Math.random() > 0.25) horizontalLines.push({ row: r, col: c });
+                }
+            }
+            render();
+        }
+
+        function getX(col) { return 40 + col * ((canvas.width - 80) / (COLUMNS - 1)); }
+        function getY(row) { return TOP_Y + row * ((BOTTOM_Y - TOP_Y) / MAX_ROWS); }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.lineWidth = 2;
+            for (let i = 0; i < COLUMNS; i++) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.beginPath(); ctx.moveTo(getX(i), TOP_Y); ctx.lineTo(getX(i), BOTTOM_Y); ctx.stroke();
+            }
+            ctx.lineWidth = 1.5;
+            horizontalLines.forEach(l => {
+                ctx.strokeStyle = `rgba(251, 191, 36, ${0.4 * (1 - shieldAlpha)})`;
+                ctx.beginPath(); ctx.moveTo(getX(l.col), getY(l.row)); ctx.lineTo(getX(l.col + 1), getY(l.row)); ctx.stroke();
+            });
+            if (selectedIndex !== -1 && isRevealing) {
+                ctx.save();
+                ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 5; ctx.shadowBlur = 15; ctx.shadowColor = '#ef4444';
+                ctx.beginPath();
+                let curCol = selectedIndex; ctx.moveTo(getX(curCol), TOP_Y);
+                for (let r = 0; r < MAX_ROWS; r++) {
+                    let hLine = horizontalLines.find(l => l.row === r && (l.col === curCol || l.col === curCol - 1));
+                    if (hLine) {
+                        ctx.lineTo(getX(curCol), getY(r));
+                        curCol = (hLine.col === curCol) ? curCol + 1 : curCol - 1;
+                        ctx.lineTo(getX(curCol), getY(r));
+                    }
+                }
+                ctx.lineTo(getX(curCol), BOTTOM_Y); ctx.stroke();
+                ctx.restore();
+                if (shieldAlpha <= 0 && !resultShown) {
+                    showResult(bottomLabels[curCol]);
+                    resultShown = true;
+                }
+            }
+            if (shieldAlpha > 0) {
+                const sY = (TOP_Y + BOTTOM_Y) / 2;
+                const grad = ctx.createLinearGradient(0, sY - 150, 0, sY + 150);
+                grad.addColorStop(0, 'rgba(2, 6, 23, 0)'); grad.addColorStop(0.5, `rgba(185, 28, 28, ${shieldAlpha * 0.8})`); grad.addColorStop(1, 'rgba(2, 6, 23, 0)');
+                ctx.fillStyle = grad; ctx.fillRect(0, sY - 150, canvas.width, 300);
+                ctx.fillStyle = `rgba(255, 255, 255, ${shieldAlpha * 0.3})`;
+                ctx.font = '900 24px serif'; ctx.textAlign = 'center';
+                ctx.fillText("神 域 禁 足", canvas.width / 2, sY + 10);
+            }
+            ctx.textAlign = 'center';
+            topLabels.forEach((label, i) => {
+                ctx.font = 'bold 16px sans-serif'; ctx.fillStyle = (i === selectedIndex) ? '#ef4444' : '#475569';
+                ctx.fillText(label, getX(i), TOP_Y - 20);
+            });
+            bottomLabels.forEach((label, i) => {
+                ctx.fillStyle = (shieldAlpha <= 0) ? '#fbbf24' : 'rgba(251, 191, 36, 0.1)';
+                ctx.font = '900 15px serif';
+                label.split('').forEach((ch, j) => ctx.fillText(ch, getX(i), BOTTOM_Y + 30 + j * 16));
+            });
+        }
+
+        function createLuckyTiles(text) {
+            tiles = [];
+            const cols = 8, rows = 6;
+            const tileW = effCanvas.width / cols;
+            const tileH = effCanvas.height / rows;
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    tiles.push({
+                        x: x * tileW + Math.random() * 30 - 15,
+                        y: y * tileH + Math.random() * 30 - 15,
+                        text: text,
+                        alpha: 0.09 + Math.random() * 0.06,
+                        size: 88 + Math.random() * 32,
+                        rot: (Math.random() - 0.5) * 12
+                    });
+                }
+            }
+        }
+
+        function updateEffects() {
+            effCtx.clearRect(0, 0, effCanvas.width, effCanvas.height);
+            tiles.forEach(t => {
+                effCtx.save();
+                effCtx.globalAlpha = t.alpha;
+                effCtx.translate(t.x + t.size/2, t.y + t.size/2);
+                effCtx.rotate(t.rot * Math.PI / 180);
+                effCtx.font = `900 ${t.size}px 'Noto Serif JP', serif`;
+                effCtx.fillStyle = '#fcd34d';
+                effCtx.shadowColor = '#ca8a04';
+                effCtx.shadowBlur = 20;
+                effCtx.textAlign = 'center';
+                effCtx.textBaseline = 'middle';
+                effCtx.fillText(t.text, 0, 0);
+                effCtx.restore();
+            });
+            requestAnimationFrame(updateEffects);
+        }
+
+        function showResult(fortune) {
+            const data = fortuneData[fortune] || { desc: "運勢は自ら切り開くもの。", fun: "笑顔を絶やさぬように。" };
+            document.getElementById('res-fortune').textContent = fortune;
+            document.getElementById('res-desc').textContent = data.desc;
+            document.getElementById('res-fun').textContent = "助言： " + data.fun;
+
+            const isSuperLucky = fortune.includes("大吉") || fortune === "大大吉";
+            if (isSuperLucky) {
+                playSuperFanfare();
+                createLuckyTiles(fortune);
+            } else {
+                playSound(200, 'sine', 0.5);
+            }
+
+            document.getElementById('result-overlay').style.display = 'flex';
+            document.getElementById('status-text').textContent = "運命の糸を確認し、次へ進みなさい";
+        }
+
+        function closeResult() {
+            document.getElementById('result-overlay').style.display = 'none';
+            tiles = [];
+            render();
+        }
+
+        function revealAnimation() {
+            if (shieldAlpha > 0) {
+                shieldAlpha -= 0.05;
+                render();
+                requestAnimationFrame(revealAnimation);
+            }
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (isRevealing) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const x = (e.clientX - rect.left) * scaleX;
+            for (let i = 0; i < COLUMNS; i++) {
+                if (Math.abs(x - getX(i)) < 25) {
+                    selectedIndex = i; isRevealing = true;
+                    playSound(150, 'sawtooth', 0.5);
+                    revealAnimation();
+                    break;
+                }
+            }
+        });
+
+        function initSizes() {
+            bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
+            effCanvas.width = window.innerWidth; effCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', initSizes);
+        initSizes(); 
+        updateEffects();
+
+        let p = Array.from({length: 60}, () => ({ x: Math.random()*2000, y: Math.random()*1000, sy: -Math.random()*0.5-0.1, s: Math.random()*2 }));
+        function animBg() {
+            bgCtx.fillStyle = '#020617'; bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+            p.forEach(i => {
+                i.y += i.sy; if (i.y < -10) i.y = bgCanvas.height + 10;
+                bgCtx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+                bgCtx.beginPath(); bgCtx.arc(i.x % bgCanvas.width, i.y, i.s, 0, Math.PI*2); bgCtx.fill();
+            });
+            requestAnimationFrame(animBg);
+        }
+        animBg();
+    </script>
+</body>
+</html>
