@@ -1,217 +1,200 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【議論】日本に静かに進行する変化【イスラム／シャリーア】</title>
-    <style>
-        body {
-            background-color: #efefef; /* 2ch特有の背景色 */
-            color: #000000;
-            font-family: "MS PGothic", "IPAMonaPGothic", "Mona", sans-serif;
-            font-size: 16px;
-            line-height: 1.4;
-            margin: 0;
-            padding: 20px;
-        }
+<meta charset="UTF-8">
+<title>5chまとめ風：【議論】日本に静かに進行する変化【イスラム／シャリーア】</title>
+<style>
+    body { background-color: #efefef; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.7; margin: 0; padding-bottom: 100px; }
+    .container { max-width: 1100px; margin: 0 auto; display: flex; gap: 20px; padding: 20px; }
+    
+    /* メインスレッドエリア */
+    .main-content { flex: 7.5; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px; padding: 20px; }
+    
+    /* スレタイ・ヘッダー */
+    .thread-header { border-bottom: 2px solid #0055a5; padding-bottom: 15px; margin-bottom: 25px; }
+    .category-tag { background: #0055a5; color: #fff; font-size: 11px; padding: 2px 8px; font-weight: bold; border-radius: 2px; display: inline-block; margin-bottom: 8px; }
+    .thread-title { font-size: 22px; font-weight: bold; color: #0055a5; margin: 5px 0; line-height: 1.4; }
+    .thread-meta { font-size: 12px; color: #666; }
 
-        /* 掲示板タイトル部分 */
-        .board-header {
-            border-bottom: 2px solid #ff0000;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
+    /* レス（書き込み）スタイル */
+    .post { margin-bottom: 25px; font-size: 15px; border-bottom: 1px dashed #ddd; padding-bottom: 20px; }
+    .post:last-of-type { border-bottom: none; }
+    .post-meta { font-size: 13px; color: #008000; font-weight: bold; margin-bottom: 6px; }
+    .post-id { color: #444; font-weight: normal; margin-left: 10px; }
+    .post-body { color: #000; padding-left: 10px; white-space: pre-wrap; word-wrap: break-word; }
+    
+    /* 強調用（まとめサイト風） */
+    .highlight-red { color: #ef0000; font-weight: bold; }
+    .highlight-blue { color: #0000ef; font-weight: bold; }
+    .marker-yellow { background-color: #ffff00; font-weight: bold; }
+    .anchor { color: #0000ff; text-decoration: underline; cursor: pointer; }
 
-        .board-title {
-            color: #ff0000;
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
-        }
+    /* サイドバー */
+    .sidebar { flex: 2.5; }
+    .sidebar-box { background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; font-size: 13px; }
+    .sidebar-title { font-size: 14px; font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 12px; color: #0055a5; }
+    
+    /* テーブルスタイル */
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 5px; }
+    .summary-table th, .summary-table td { border: 1px solid #ccc; padding: 6px; text-align: left; line-height: 1.4; }
+    .summary-table th { background-color: #f5f5f5; color: #333; }
 
-        /* スレッド全体 */
-        .thread {
-            background-color: #efefef;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .thread-title {
-            color: #ff0000;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        /* レス（書き込み）単位 */
-        .post {
-            margin-bottom: 30px;
-        }
-
-        .post-header {
-            color: #228b22; /* 名無しさんの緑色 */
-            font-weight: bold;
-        }
-
-        .post-id {
-            color: #228b22;
-            font-weight: normal;
-        }
-
-        .post-content {
-            margin-top: 5px;
-            margin-left: 5px;
-            word-break: break-all;
-        }
-
-        .anchor {
-            color: #0000ff;
-            text-decoration: none;
-        }
-
-        /* 過去ログ・案内 */
-        .notice-box {
-            background-color: #ffffcc;
-            border: 1px solid #ffcc00;
-            padding: 15px;
-            margin: 40px 0;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .footer-nav {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .footer-nav a {
-            color: #0000ff;
-            font-weight: bold;
-        }
-
-        /* スマホ対応 */
-        @media (max-width: 600px) {
-            body { padding: 10px; font-size: 14px; }
-            .board-title { font-size: 18px; }
-        }
-    </style>
+    /* 過去ログ通知 */
+    .archive-notice { background: #f2f2f2; border: 1px solid #ccc; border-radius: 4px; padding: 15px; text-align: center; font-weight: bold; color: #666; font-size: 14px; margin-top: 30px; }
+</style>
 </head>
 <body>
 
-<div class="board-header">
-    <a href="#" class="board-title">社会・世論情勢＠2ch過去ログ</a>
-</div>
+<div class="container">
+    <main class="main-content">
+        <!-- スレッドヘッダー -->
+        <header class="thread-header">
+            <span class="category-tag">社会・国際情勢議論板</span>
+            <h1 class="thread-title">【議論】日本に静かに進行する変化【イスラム／シャリーア】</h1>
+            <div class="thread-meta">
+                <span>掲示板：ニュース極東速報＠5ちゃんねる</span>
+            </div>
+        </header>
 
-<div class="thread">
-    <div class="thread-title">【議論】日本に静かに進行する変化【イスラム／シャリーア】</div>
+        <!-- レス 1 -->
+        <div class="post">
+            <div class="post-meta">1：エリス・ヴァネッサ ：2026/01/25(日) 12:01:03.11<span class="post-id">ID:EV_VNS001</span></div>
+            <div class="post-body">最近、世界の「生の声」を翻訳してて気づいちゃったんだけど、日本のイスラム化、これ想像以上に<span class="highlight-red">「静かなる侵食」</span>すぎて笑えないレベルだった件。
 
-    <div class="post">
-        <div class="post-header">
-            1 ：<span class="name">エリス・ヴァネッサ</span> ：2026/01/25(日) 12:01:03.11 <span class="post-id">ID:EV_VNS001</span>
+表向きは「カレー美味しいね！」とか「多様性だね！」ってニコニコしてるけど、裏ではイマーム（宗教指導者）たちが着々と<span class="highlight-blue">「シャリーアOS」</span>を日本にインストールし始めてる。これ、マズくない？</div>
         </div>
-        <div class="post-content">
-            最近、世界の「生の声」を翻訳してて気づいちゃったんだけど、日本のイスラム化、これ想像以上に「静かなる侵食」すぎて笑えないレベルだった件。<br>
-            表向きは「カレー美味しいね！」とか「多様性だね！」ってニコニコしてるけど、裏ではイマーム（宗教指導者）たちが着々と「シャリーアOS」を日本にインストールし始めてる。これ、マズくない？
-        </div>
-    </div>
 
-    <div class="post">
-        <div class="post-header">
-            2 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:03:41.92 <span class="post-id">ID:JP0002_N</span>
+        <!-- レス 2 -->
+        <div class="post">
+            <div class="post-meta">2：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:03:41.92<span class="post-id">ID:JP0002_N</span></div>
+            <div class="post-body"><span class="anchor">&gt;&gt;1</span>
+「穏健」「共生」「対話」。
+この三種の神器さえ唱えてれば、日本人はコロッと騙されるからな。
+<span class="marker-yellow">「穏健派」っていうのは、「今はまだ牙を隠してる派」のこと</span>だと理解した方がいい。</div>
         </div>
-        <div class="post-content">
-            <a href="#" class="anchor">&gt;&gt;1</a><br>
-            「穏健」「共生」「対話」。<br>
-            この三種の神器さえ唱えてれば、日本人はコロッと騙されるからな。<br>
-            「穏健派」っていうのは、「今はまだ牙を隠してる派」のことだと理解した方がいい。
-        </div>
-    </div>
 
-    <div class="post">
-        <div class="post-header">
-            3 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:06:18.55 <span class="post-id">ID:JP0003_N</span>
-        </div>
-        <div class="post-content">
-            イギリスや豪州の先輩たちが、すでに「最初はいい人だったのに、気づいたらシャリーア法を公然と要求してきた」っていう前例を山ほど作ってくれてる。<br>
-            これ、偶発的なエラーじゃなくて「仕様（戦略）」なんだよね。<br>
-            アップデートが進むごとに、自由が削られていくバグ付き。
-        </div>
-    </div>
+        <!-- レス 3 -->
+        <div class="post">
+            <div class="post-meta">3：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:06:18.55<span class="post-id">ID:JP0003_N</span></div>
+            <div class="post-body">イギリスや豪州の先輩たちが、すでに「最初はいい人だったのに、気づいたらシャリーア法を公然と要求してきた」っていう前例を山ほど作ってくれてる。
 
-    <div class="post">
-        <div class="post-header">
-            4 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:09:50.27 <span class="post-id">ID:JP0004_N</span>
+これ、偶発的なエラーじゃなくて<span class="highlight-red">「仕様（戦略）」</span>なんだよね。
+アップデートが進むごとに、自由が削られていくバグ付き。</div>
         </div>
-        <div class="post-content">
-            日本人「宗教？ ああ、初詣とかお葬式のアレでしょ？」<br>
-            イマーム「違います。生活、法律、教育、ファッション、全部私の指示に従ってもらいます」<br>
-            この温度差よ。コミュニティ内部じゃ、日本の法律よりイマームの言葉の方が強い「治外法権」が育ってる。
-        </div>
-    </div>
 
-    <div class="post">
-        <div class="post-header">
-            5 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:12:33.08 <span class="post-id">ID:JP0005_N</span>
-        </div>
-        <div class="post-content">
-            欧州「最初は小さな配慮から始まったんだ。給食のメニューとかね。気づいたら参政権要求されてた。どうしてこうなった」<br>
-            日本「……（カレーを食べている）」<br>
-            この見落としやすさは、ある意味日本の才能。
-        </div>
-    </div>
+        <!-- レス 4 -->
+        <div class="post">
+            <div class="post-meta">4：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:09:50.27<span class="post-id">ID:JP0004_N</span></div>
+            <div class="post-body">日本人「宗教？ ああ、初詣とかお葬式のアレでしょ？」
+イマーム「違います。生活、法律、教育、ファッション、全部私の指示に従ってもらいます」
 
-    <div class="post">
-        <div class="post-header">
-            6 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:15:19.66 <span class="post-id">ID:JP0006_N</span>
+この温度差よ。コミュニティ内部じゃ、<span class="highlight-blue">日本の法律よりイマームの言葉の方が強い「治外法権」</span>が育ってる。</div>
         </div>
-        <div class="post-content">
-            感情論で「差別だー！」って叫ぶ前に、まずは「OSの互換性」を議論すべき。<br>
-            日本の民主主義OSと、シャリーア法OS、一緒に動かしたらシステムクラッシュするの目に見えてるだろ。<br>
-            排除じゃなくて、単なる「仕様の確認」だよ。
-        </div>
-    </div>
 
-    <div class="post">
-        <div class="post-header">
-            7 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:18:02.14 <span class="post-id">ID:JP0007_N</span>
-        </div>
-        <div class="post-content">
-            「宗教の自由」って言葉は万能じゃない。<br>
-            服装、女性の権利、表現の自由をフリーズさせる法律を「宗教です」って言えば全部通ると思ったら大間違い。<br>
-            行き着く先は「自由（アンインストール済み）」な社会。
-        </div>
-    </div>
+        <!-- レス 5 -->
+        <div class="post">
+            <div class="post-meta">5：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:12:33.08<span class="post-id">ID:JP0005_N</span></div>
+            <div class="post-body">欧州「最初は小さな配慮から始まったんだ。給食のメニューとかね。気づいたら参政権要求されてた。どうしてこうなった」
+日本「……（カレーを食べている）」
 
-    <div class="post">
-        <div class="post-header">
-            8 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:21:47.90 <span class="post-id">ID:JP0008_N</span>
+この見落としやすさは、ある意味日本の才能。</div>
         </div>
-        <div class="post-content">
-            過剰にビビる必要はないけど、無関心は一番の毒。<br>
-            言葉のデコレーションに惑わされず、中身の「ビターすぎる現実」を直視しよう。<br>
-            手遅れになってから「翻訳し忘れてた！」じゃ済まされないんだから。
-        </div>
-    </div>
 
-    <div class="post">
-        <div class="post-header">
-            9 ：<span class="name">名無しさん＠お腹いっぱい。</span> ：2026/01/25(日) 12:24:10.33 <span class="post-id">ID:JP0009_N</span>
+        <!-- レス 6 -->
+        <div class="post">
+            <div class="post-meta">6：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:15:19.66<span class="post-id">ID:JP0006_N</span></div>
+            <div class="post-body">感情論で「差別だー！」って叫ぶ前に、まずは<span class="highlight-red">「OSの互換性」</span>を議論すべき。
+日本の民主主義OSと、シャリーア法OS、一緒に動かしたらシステムクラッシュするの目に見えてるだろ。
+排除じゃなくて、単なる「仕様の確認」だよ。</div>
         </div>
-        <div class="post-content">
-            <a href="#" class="anchor">&gt;&gt;1</a><br>
-            欧州が20年かけて爆死したルートを、日本がRTA（リアルタイムアタック）してる感ある。<br>
-            エリスさん、これもっと「翻訳」して拡散してくれ。
+
+        <!-- レス 7 -->
+        <div class="post">
+            <div class="post-meta">7：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:18:02.14<span class="post-id">ID:JP0007_N</span></div>
+            <div class="post-body">「宗教の自由」って言葉は万能じゃない。
+服装、女性の権利、表現の自由をフリーズさせる法律を「宗教です」って言えば全部通ると思ったら大間違い。
+行き着く先は<span class="highlight-red">「自由（アンインストール済み）」</span>な社会。</div>
         </div>
-    </div>
 
-    <div class="notice-box">
-        このスレッドは過去ログ倉庫に格納されています。<br>
-        掲示板の設定により、新しい書き込みはできません。
-    </div>
+        <!-- レス 8 -->
+        <div class="post">
+            <div class="post-meta">8：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:21:47.90<span class="post-id">ID:JP0008_N</span></div>
+            <div class="post-body">過剰にビビる必要はないけど、無関心は一番の毒。
+言葉のデコレーションに惑わされず、中身の「ビターすぎる現実」を直視しよう。
+手遅れになってから「翻訳し忘れてた！」じゃ済まされないんだから。</div>
+        </div>
 
-    <div class="footer-nav">
-        <a href="top.html">← インデックスページに戻る</a>
-    </div>
+        <!-- レス 9 -->
+        <div class="post">
+            <div class="post-meta">9：名無しさん＠お腹いっぱい。 ：2026/01/25(日) 12:24:10.33<span class="post-id">ID:JP0009_N</span></div>
+            <div class="post-body"><span class="anchor">&gt;&gt;1</span>
+欧州が20年かけて爆死したルートを、<span class="marker-yellow">日本がRTA（リアルタイムアタック）してる感</span>ある。
+エリスさん、これもっと「翻訳」して拡散してくれ。</div>
+        </div>
+
+        <!-- 過去ログ倉庫通知 -->
+        <div class="archive-notice">
+            🗄️ このスレッドは過去ログ倉庫に格納されています。<br>
+            <span style="font-size: 12px; font-weight: normal; color: #888; display: block; margin-top: 5px;">掲示板の設定により、新しい書き込みはできません。</span>
+        </div>
+    </main>
+
+    <!-- サイドバー -->
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div class="sidebar-title">💻 社会OSの互換性検証</div>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>項目</th>
+                        <th>日本の民主主義OS</th>
+                        <th>シャリーア法OS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>最高法規</b></td>
+                        <td>日本国憲法・国内法</td>
+                        <td style="color:#b50000; font-weight:bold;">宗教法・イマームの言葉</td>
+                    </tr>
+                    <tr>
+                        <td><b>個人の自由</b></td>
+                        <td>表現、服装、信教の自由</td>
+                        <td>規律によるフリーズ（制限）</td>
+                    </tr>
+                    <tr>
+                        <td><b>女性の権利</b></td>
+                        <td>男女平等・法的権利</td>
+                        <td>伝統的な役割・行動制限</td>
+                    </tr>
+                    <tr>
+                        <td><b>最終結果</b></td>
+                        <td>現行の自由社会</td>
+                        <td style="color:#b50000; font-weight:bold;">自由（アンインストール）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sidebar-box">
+            <div class="sidebar-title">⚠️ 欧州の爆死前例に学ぶ「侵食プロセス」</div>
+            <div style="font-size:12px; line-height: 1.6;">
+                <b style="color:#0055a5;">フェーズ①：小さな配慮（今ここ？）</b><br>
+                「カレー美味しいね」「給食のハラール対応」といったマイルドな多文化共生からスタート。<br><br>
+                <b style="color:#0055a5;">フェーズ②：治外法権の形成</b><br>
+                コミュニティ内部で日本の法律よりイマームの指示が優先され、独自の「ミニ国家」化が進む。<br><br>
+                <b style="color:#b50000;">フェーズ③：制度・参政権の要求</b><br>
+                人口増加に伴い、宗教法（シャリーア）の公認や参政権、独自の法的特権を社会へ要求しクラッシュへ。
+            </div>
+        </div>
+
+        <div class="sidebar-box" style="text-align:center; background:#fdf9f9; border:1px solid #ffdfdf;">
+            <span style="font-weight:bold; color:#b50000; display:block; margin-bottom:5px;">📢 スレの核心的教訓</span>
+            <p style="font-size:11px; margin:0; text-align:left; line-height:1.5;">
+                無関心は一番の毒。「共生」や「対話」というデコレーション言葉に騙されず、仕様（戦略）の中身である「ビターな現実」を直視し、手遅れになる前に対策を議論する必要がある。
+            </p>
+        </div>
+    </aside>
 </div>
 
 </body>
