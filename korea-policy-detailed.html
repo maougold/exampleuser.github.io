@@ -1,205 +1,200 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日韓関係・竹島問題の詳細考察</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(-45deg, #001f3f, #003366, #000033, #1a1a1a);
-            background-size: 400% 400%;
-            animation: gradientBG 25s ease infinite;
-            color: #FFFFFF;
-            margin: 0;
-            padding: 40px 20px;
-            line-height: 1.8;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-        }
+<meta charset="UTF-8">
+<title>Yahoo!ニュース風：日韓関係・竹島問題の詳細考察と現実的提言</title>
+<style>
+    body { background-color: #f0f2f5; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.6; margin: 0; padding-bottom: 50px; }
+    .container { max-width: 1050px; margin: 0 auto; display: flex; gap: 20px; padding: 20px; }
+    
+    /* メインコンテンツ */
+    .main-content { flex: 7; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+    .article-header { padding: 25px 20px; border-bottom: 1px solid #eee; }
+    .category-tag { background: #1e3a8a; color: #fff; font-size: 10px; padding: 2px 6px; font-weight: bold; border-radius: 2px; margin-bottom: 10px; display: inline-block; }
+    .article-title { font-size: 24px; font-weight: 800; color: #000; margin: 10px 0; letter-spacing: -0.5px; line-height: 1.4; }
+    .publish-date { font-size: 12px; color: #888; }
+    
+    .article-body { padding: 20px; font-size: 16px; border-bottom: 8px solid #f0f2f5; }
+    .summary-point { border-left: 4px solid #1e3a8a; padding-left: 12px; margin: 15px 0; font-weight: bold; background: #f3f4f6; padding: 12px; font-size: 15px; color: #1f2937; }
+    .section-title { font-size: 18px; font-weight: bold; color: #111827; border-bottom: 2px solid #1e3a8a; padding-bottom: 5px; margin-top: 30px; margin-bottom: 15px; }
+    .sub-section-title { font-size: 15px; font-weight: bold; color: #1f2937; margin-top: 20px; margin-bottom: 8px; border-left: 3px solid #3b82f6; padding-left: 8px; }
+    
+    /* リスト・テキスト修飾 */
+    .bold-keyword { font-weight: bold; color: #000; }
+    .alert-text { color: #dc2626; font-weight: bold; }
+    
+    /* 考察用ハイライトボックス */
+    .insight-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; margin: 20px 0; border-radius: 4px; font-size: 15px; border-left: 4px solid #64748b; }
+    .quote-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 15px; margin: 20px 0; font-style: italic; color: #451a03; }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    /* サイドバー */
+    .sidebar { flex: 3; }
+    .sidebar-box { background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .sidebar-title { font-size: 14px; font-weight: bold; border-bottom: 2px solid #111827; padding-bottom: 5px; margin-bottom: 15px; color: #1e3a8a; }
+    
+    /* テーブルスタイル */
+    .analysis-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    .analysis-table th, .analysis-table td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; line-height: 1.4; }
+    .analysis-table th { background-color: #f8fafc; font-weight: bold; color: #1f2937; }
 
-        .emojis-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .emoji-particle {
-            position: absolute;
-            font-size: 40px;
-            opacity: 0.8;
-            animation: floatUpEmoji 18s linear infinite;
-        }
-
-        @keyframes floatUpEmoji {
-            0% { bottom: -100px; opacity: 0; transform: translateX(0) rotate(0deg); }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { bottom: 100%; opacity: 0; transform: translateX(80px) rotate(20deg); }
-        }
-
-        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; }
-        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 45px; }
-        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 40px; }
-        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; }
-        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 50px; }
-        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 40px; }
-        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 45px; }
-        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; }
-        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 35px; }
-        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 50px; }
-
-        .content {
-            position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #FFD700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-        }
-
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #E0E0E0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            text-align: left;
-        }
-
-        .section {
-            background-color: rgba(0, 0, 30, 0.85);
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            text-align: left;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-        }
-
-        h2 {
-            font-size: 24px;
-            color: #FFD700;
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #FFD700;
-            padding-bottom: 8px;
-        }
-
-        ul {
-            margin-left: 1.5em;
-            text-align: left;
-            font-size: 16px;
-            color: #E0E0E0;
-        }
-
-        .quote {
-            background: rgba(255, 215, 0, 0.1);
-            padding: 20px;
-            border-left: 4px solid #FFD700;
-            margin: 30px 0;
-            text-align: left;
-            border-radius: 8px;
-            font-style: italic;
-            font-size: 18px;
-            color: #FFFFFF;
-        }
-
-        footer {
-            margin-top: 50px;
-            font-size: 14px;
-            color: #E0E0E0;
-        }
-
-        a.back-link {
-            display: block;
-            margin-bottom: 30px;
-            color: #FFD700;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-        }
-    </style>
+    /* コメント欄 */
+    .comment-section { padding: 20px; background: #fff; }
+    .comment-header { font-weight: bold; font-size: 18px; border-bottom: 2px solid #111827; padding-bottom: 10px; margin-bottom: 20px; }
+    .comment-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .user-name { font-weight: bold; font-size: 14px; color: #1e40af; margin-bottom: 5px; display: block; }
+    .comment-body { font-size: 15px; margin-bottom: 10px; white-space: pre-wrap; }
+    .stats { display: flex; gap: 10px; font-size: 13px; color: #666; }
+    .btn { padding: 4px 12px; border: 1px solid #ddd; border-radius: 16px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; }
+    .btn-up { color: #ff5a5f; border-color: #ff5a5f; font-weight: bold; }
+</style>
 </head>
 <body>
-    <div class="emojis-container">
-        <div class="emoji-particle">🎍</div>
-        <div class="emoji-particle">⛩</div>
-        <div class="emoji-particle">🧧</div>
-        <div class="emoji-particle">🍊</div>
-        <div class="emoji-particle">🐍</div>
-        <div class="emoji-particle">🎉</div>
-        <div class="emoji-particle">🥮</div>
-        <div class="emoji-particle">🪭</div>
-        <div class="emoji-particle">💮</div>
-        <div class="emoji-particle">🀄</div>
-    </div>
 
-    <div class="content">
-        <a href="top.html" class="back-link">← 注意書きページに戻る</a>
-        <h1>日韓関係・竹島問題の詳細考察</h1>
-        <p>本ページは、日韓関係の構造的問題、特に竹島（韓国側呼称：独島）問題に対する現実的な政策提言を、過去の事例を詳細に検証した上で記録するものです。感情論ではなく、帰納的判断に基づいた考察です。</p>
+<div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">安全保障・外交構造分析</span>
+            <h1 class="article-title">【日韓関係・竹島問題の詳細考察】「善意外交」が招いた譲歩の連鎖、失敗の歴史から導き出される帰納的結論――経済・人的交流の段階的解消と国際司法の場での「恒久的摩擦化」への現実的提言</h1>
+            <p class="publish-date">アーカイブ記録日: 2025/12/31（※将来の検証・引用を目的とした記録ページです）</p>
+        </article>
 
-        <div class="section">
-            <h2>過去政策の詳細検証</h2>
-            <p>これまでの日韓関係では、複数のアプローチが試みられましたが、いずれも日本側の不利益を増大させる結果となりました。具体例を挙げて検証いたします。</p>
+        <div class="article-body">
+            <p>本稿は、日韓関係の構造的問題、特に竹島（韓国側呼称：独島）問題に対する現実的な政策提言を、過去の事例を詳細に検証した上で記録するものである。感情論を徹底的に排し、冷徹な帰納的判断に基づいた国家主権および国益最優先の考察である。</p>
+            
+            <div class="summary-point">
+                【核心的結論】
+                「仲良くすれば相手が変わる」という仮説は、度重なる事後検証により明確に否定された。痛みを伴わない説得は存在せず、交流継続下での主権問題解決は構造的に不可能である。日本が取るべき唯一の合理解は、静かに席を立ち、交流を絶ち、主権・法・国益のみを軸にした最小限の対応に切り替えることである。
+            </div>
+
+            <div class="section-title">1. 過去政策の詳細検証：なぜ譲歩は失敗し続けたのか</div>
+            <p>これまでの日韓関係では、複数の政治的・外交的アプローチが試みられてきたが、いずれも日本側の国益を損ない、不利益を増大させる結果に終わっている。これらは単なる主観的な感想ではなく、歴史的に実証済みの事実である。</p>
+            
+            <div class="sub-section-title">① 選別・管理・最小化政策の破綻</div>
+            <p>特定の問題を棚上げ、あるいは限定的に処理しようとする試みは、韓国側において<span class="alert-text">「日本が折れた証拠」</span>として国内政治に消費される結果となった。これによりさらなる要求を引き出す悪循環（例: 慰安婦合意後の追加要求）を招いた。</p>
+
+            <div class="sub-section-title">② 国家・制度・構造の問題として諦める態度</div>
+            <p>「相手国の司法判断や国内事情だから仕方がない」と現状を追認・放置する姿勢は、結果として不当な既成事実化を助長した。追加の不利益を止める防波堤としては機能しなかった（例: 徴用工問題での韓国裁判所の判決無視と日本企業資産の差し押さえ）。</p>
+
+            <div class="sub-section-title">③ 戦略的距離＋民間交流維持の限界</div>
+            <p>政治と民間を切り離すアプローチは、日本側のみが経済的・人的コスト（インフラや市場の提供）を一方的に負担する構造を固定化させた。日本側に政治的レバレッジ（交渉の札）を生み出すことはできなかった（例: GSOMIA騒動での韓国側の破棄脅迫と日本側の譲歩）。</p>
+
+            <div class="insight-box">
+                <b>事後検証が示す事実：</b><br>
+                これらの歴史的経緯は、「対話や交流を維持すれば関係が改善する」という前提そのものが誤りであったことを示している。過去の政策失敗を踏まえた帰納的結論として、<b>「人的交流・経済的交流を段階的に解消する」</b>アプローチこそが、国益を守るための最も合理的な選択肢となる。
+            </div>
+
+            <div class="section-title">2. 竹島問題の解決策：二国間交渉の不可能性と必要条件</div>
+            <p>結論から言えば、<b>竹島問題の解決は二国間交渉の枠組みでは構造的に不可能</b>である。韓国国内の政治構造上、「竹島問題での譲歩＝売国行為」と定義されるため、いかなる政権が誕生しようとも自発的な譲歩を引き出すことは期待できない。</p>
+            <p>現状の黙認（実効支配の放置）という最悪の選択を回避し、解決（争点化）に近づくための唯一の現実的なアプローチは、以下の必要条件をパッケージとして断行することである。</p>
+
             <ul>
-                <li>選別・管理・最小化政策：韓国側で「日本が折れた証拠」として国内政治に消費され、譲歩の連鎖を招きました（例: 慰安婦合意後の追加要求）。</li>
-                <li>国家・制度・構造の問題として諦める態度：既成事実化を助長し、追加要求を止められませんでした（例: 徴用工問題での韓国裁判所の判決無視と資産差し押さえ）。</li>
-                <li>戦略的距離＋民間交流維持：日本のみが経済的・人的コストを負い、政治的レバレッジを生み出せませんでした（例: GSOMIA騒動での韓国側の破棄脅迫と日本側の譲歩）。</li>
+                <li><span class="bold-keyword">人的・経済的交流の縮小（カード化）：</span>韓国側に「日本から失うもの（経済的損失・孤立）」の実感を直接与え、交渉の前提条件そのものを変える。</li>
+                <li><span class="bold-keyword">二国間交渉の完全停止：</span>交渉のテーブル自体が日本側の譲歩を引き出す舞台として利用される悪循環を遮断する。</li>
+                <li><span class="bold-keyword">国際司法裁判所（ICJ）への単独提訴＋第三国世論形成：</span>単なる勝敗の追求を超えて、国際法上の争点（係争地）として世界に明示し続ける。</li>
+                <li><span class="bold-keyword">実効支配を国際問題として固定化：</span>静かな現状維持を打破し、永続的な外交的摩擦状態を維持することこそが、日本の主権主張を国際社会に残す鍵となる。</li>
             </ul>
-            <p>これらの事例は、単なる感想ではなく、実証済みの事実です。「仲良くすれば相手が変わる」という仮説は、繰り返しの検証により明確に否定されました。</p>
-        </div>
 
-        <div class="section">
-            <h2>結論：交流の段階的解消</h2>
-            <p>したがって、韓国とは人的交流・経済的交流を段階的に解消すべきという判断は、過去の政策失敗を踏まえた帰納的結論として成立します。このアプローチは強硬論ではなく、国益を守るための合理的な選択です。</p>
-        </div>
+            <div class="section-title">3. 最終的な整理と提言</div>
+            <p>日本外交がこれまでの歴史から学ぶべき「三つの教訓」は以下の通りに整理される。</p>
+            
+            <table class="analysis-table" style="font-size: 14px;">
+                <tr style="background:#f1f5f9;">
+                    <th style="width: 25%;">これまでのアプローチ</th>
+                    <th>もたらされた現実（検証結果）</th>
+                </tr>
+                <tr>
+                    <td><b>1. 交流維持</b></td>
+                    <td>日本側の経済的・人的負担および不利益のみを増大させる。</td>
+                </tr>
+                <tr>
+                    <td><b>2. 善意外交</b></td>
+                    <td>韓国国内向けの「政治パフォーマンス（対日強硬姿勢）」の材料を提供するだけに終わる。</td>
+                </tr>
+                <tr>
+                    <td><b>3. 妥協</b></td>
+                    <td>問題の解決ではなく、さらなる追加要求（新たなゴールポストの移動）の起点となる。</td>
+                </tr>
+            </table>
 
-        <div class="section">
-            <h2>竹島問題の解決策の詳細</h2>
-            <p>結論から申し上げますと、二国間交渉では構造的に不可能です。韓国国内の政治構造（竹島譲歩＝売国行為）により、任何の政権も譲歩を引き出せません。解決に近づく唯一の現実的な方法は以下の必要条件を満たすことです。</p>
-            <ul>
-                <li>人的・経済的交流の縮小（カード化）：韓国側に「日本から失うもの」の実感を生み、交渉の前提を変える。</li>
-                <li>二国間交渉の完全停止：交渉自体が日本譲歩の舞台となる悪循環を遮断。</li>
-                <li>国際司法裁判所（ICJ）への単独提訴＋第三国世論形成：勝敗を超えて、法的に争点化し続けることが目的。</li>
-                <li>実効支配を国際問題として固定化：現状の黙認が最悪の選択。争点の継続が日本の主張を維持する鍵。</li>
-            </ul>
-            <p>痛みを伴わない説得は存在せず、交流継続下での主権問題解決は構造的に不可能です。交流を絶ち、国際化し、長期的に圧力をかける以外に手段はありません。</p>
-        </div>
+            <p style="margin-top: 20px;">この三点が繰り返し証明された以上、韓国とは人的・経済的交流を原則停止し、<b>主権・法・国益のみを軸にした最小限の国家対応（クール・ディスタンス）</b>に切り替えることが、事後検証に耐えうる唯一の合理解である。</p>
 
-        <div class="section">
-            <h2>最終的な整理と提言</h2>
-            <ul>
-                <li>交流維持：日本の不利益のみを増大させる。</li>
-                <li>善意外交：韓国国内向けパフォーマンスの材料を提供するだけ。</li>
-                <li>妥協：追加要求の起点となる。</li>
-            </ul>
-            <p>この三点が繰り返し証明された以上、韓国とは人的・経済的交流を原則停止し、主権・法・国益のみを軸にした最小限の国家対応に切り替えることが、事後検証に耐える唯一の合理解です。</p>
-            <div class="quote">
-            皮肉な話ですが、「距離を取ること」だけが、初めて日本を対等な存在として意識させる。<br>
-            外交とは友情ではなく、計算が合わない相手から静かに席を立つ技術なのでしょう。
+            <div class="quote-box">
+                「皮肉な話ですが、『距離を取ること』だけが、初めて日本を対等な存在として意識させる。外交とは友情ではなく、計算が合わない相手から静かに席を立つ技術なのでしょう。」
             </div>
         </div>
 
-        <footer>
-            <p>本ページは将来の検証・引用を目的とした記録です。保守的な視点から、国家主権と国益を優先した考察です。<br>
-            最終更新：2025年12月31日</p>
-        </footer>
-    </div>
+        <div class="comment-section">
+            <div class="comment-header">意見・議論（1,450件）</div>
+
+            <div class="comment-card">
+                <span class="user-name">国際法・外交史研究ナショナリスト</span>
+                <div class="comment-body">感情論を排した極めて現実的かつ合理的な論考。これまでの日本外交は「関係悪化を恐れるあまりの妥協」がすべて裏目に出てきた。ICJへの単独提訴を繰り返し、国際的な係争地として固定化させる提案は、現状のサイレントな実効支配を許さないために必須の戦略だと思う。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 支持する 18,920</div>
+                    <div class="btn">👎 支持しない 112</div>
+                </div>
+            </div>
+
+            <div class="comment-card">
+                <span class="user-name">リアルポリティクス重視</span>
+                <div class="comment-body">「外交とは友情ではなく、計算が合わない相手から静かに席を立つ技術」という一文にすべてが凝縮されている。民間交流という名目で日本側がコストを払い続ける限り、向こうは痛みを伴わないので態度を変える動機がない。カード化のための交流縮小は至当。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 支持する 15,400</div>
+                    <div class="btn">👎 支持しない 85</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div class="sidebar-title">📊 失敗した日韓アプローチの帰納検証</div>
+            <table class="analysis-table">
+                <thead>
+                    <tr>
+                        <th>政策アプローチ</th>
+                        <th>実証された破綻例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>選別・管理政策</b><br>（限定的な決着）</td>
+                        <td><span class="alert-text">慰安婦合意</span>後の追加要求・合意の事実上形骸化。</td>
+                    </tr>
+                    <tr>
+                        <td><b>構造的諦め</b><br>（司法等の追認）</td>
+                        <td><span class="alert-text">徴用工判決</span>による日本企業資産の不当な差し押さえ。</td>
+                    </tr>
+                    <tr>
+                        <td><b>民間交流維持</b><br>（政治と民間の分離）</td>
+                        <td><span class="alert-text">GSOMIA騒動</span>に見る、日本側の一方的コスト負担。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sidebar-box">
+            <div class="sidebar-title">🛡️ 竹島問題：4つの現実的解決必要条件</div>
+            <div style="font-size:12px; line-height: 1.7;">
+                <b style="color:#1e3a8a;">1. 交流の縮小（カード化）</b><br>
+                経済・人的交流を「札」とし、損失の実感を与える。<br><br>
+                <b style="color:#1e3a8a;">2. 二国間交渉の完全停止</b><br>
+                譲歩を引き出されるだけの対話プラットフォームを遮断。<br><br>
+                <b style="color:#1e3a8a;">3. ICJ単独提訴の継続</b><br>
+                国際法上の「係争地」として世界に法的な争点を提示し続ける。<br><br>
+                <b style="color:#1e3a8a;">4. 国際問題としての固定化</b><br>
+                「静かな現状維持」を拒否し、永続的摩擦による実効支配の無効化を狙う。
+            </div>
+        </div>
+
+        <div class="sidebar-box" style="background:#f8fafc; border:1px solid #cbd5e1; text-align:center;">
+            <span style="font-weight:bold; color:#1e3a8a; font-size:13px; display:block; margin-bottom:5px;">📌 提言の要約</span>
+            <p style="font-size:11px; text-align:left; margin:0; line-height:1.5;">
+                善意や妥協がさらなる要求を生む構造が証明された以上、原則として距離を置く「最小限の国家対応」のみが、日本の主権と国益を守る唯一の合理解となる。
+            </p>
+        </div>
+    </aside>
+</div>
+
 </body>
 </html>
