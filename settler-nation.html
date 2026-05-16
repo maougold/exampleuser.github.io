@@ -1,216 +1,176 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>「移民の国」は間違いである｜アメリカの本質</title>
+<meta charset="UTF-8">
+<title>Yahoo!ニュース風：アメリカの国家アイデンティティ考察</title>
+<style>
+    body { background-color: #f0f2f5; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.6; margin: 0; padding-bottom: 50px; }
+    .container { max-width: 1050px; margin: 0 auto; display: flex; gap: 20px; padding: 20px; }
+    
+    /* メインコンテンツ */
+    .main-content { flex: 7; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+    .article-header { padding: 25px 20px; border-bottom: 1px solid #eee; }
+    .category-tag { background: #0f172a; color: #fff; font-size: 10px; padding: 2px 6px; font-weight: bold; border-radius: 2px; margin-bottom: 10px; display: inline-block; }
+    .article-title { font-size: 24px; font-weight: 800; color: #000; margin: 10px 0; letter-spacing: -0.5px; line-height: 1.4; }
+    .publish-date { font-size: 12px; color: #888; }
+    
+    .article-body { padding: 20px; font-size: 16px; border-bottom: 8px solid #f0f2f5; }
+    .summary-point { border-left: 4px solid #0f172a; padding-left: 12px; margin: 15px 0; font-weight: bold; background: #f8fafc; padding: 12px; font-size: 15px; color: #1e293b; }
+    .section-title { font-size: 18px; font-weight: bold; color: #0f172a; border-bottom: 2px solid #0f172a; padding-bottom: 5px; margin-top: 30px; margin-bottom: 15px; }
+    .sub-section-title { font-size: 15px; font-weight: bold; color: #334155; margin-top: 20px; margin-bottom: 8px; border-left: 3px solid #64748b; padding-left: 8px; }
+    
+    /* テキスト装飾 */
+    .bold-keyword { font-weight: bold; color: #000; }
+    .focus-text { color: #1e3a8a; font-weight: bold; }
+    
+    /* ハイライトボックス */
+    .insight-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 15px; margin: 20px 0; border-radius: 4px; font-size: 15px; border-left: 4px solid #475569; }
+    .quote-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 15px; margin: 20px 0; font-weight: bold; color: #451a03; }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Georgia", "Times New Roman", serif;
-            background-color: #0b1c2d; /* ネイビー */
-            color: #1a1a1a;
-        }
+    /* サイドバー */
+    .sidebar { flex: 3; }
+    .sidebar-box { background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .sidebar-title { font-size: 14px; font-weight: bold; border-bottom: 2px solid #0f172a; padding-bottom: 5px; margin-bottom: 15px; color: #0f172a; }
+    
+    /* テーブルスタイル */
+    .analysis-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    .analysis-table th, .analysis-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; line-height: 1.4; }
+    .analysis-table th { background-color: #f8fafc; font-weight: bold; color: #334155; }
 
-        .page {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
-
-        .paper {
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 6px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-        }
-
-        .flag-line {
-            height: 6px;
-            width: 100%;
-            background: linear-gradient(
-                to right,
-                #b22234 0%,
-                #b22234 33%,
-                #ffffff 33%,
-                #ffffff 66%,
-                #3c3b6e 66%,
-                #3c3b6e 100%
-            );
-            margin-bottom: 30px;
-        }
-
-        a.back-link {
-            display: inline-block;
-            margin-bottom: 30px;
-            color: #b22234;
-            text-decoration: none;
-            font-weight: bold;
-            letter-spacing: 0.05em;
-        }
-
-        a.back-link:hover {
-            text-decoration: underline;
-        }
-
-        h1 {
-            font-size: 32px;
-            text-align: center;
-            margin-bottom: 40px;
-            color: #0b1c2d;
-            border-bottom: 3px solid #b22234;
-            padding-bottom: 20px;
-            letter-spacing: 0.04em;
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-top: 40px;
-            margin-bottom: 15px;
-            color: #3c3b6e;
-            border-left: 6px solid #b22234;
-            padding-left: 12px;
-        }
-
-        p {
-            font-size: 18px;
-            line-height: 1.9;
-            margin-bottom: 22px;
-        }
-
-        footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px solid #ccc;
-            font-size: 14px;
-            color: #555;
-            text-align: center;
-        }
-
-        @media (max-width: 600px) {
-            .paper {
-                padding: 30px 20px;
-            }
-            h1 {
-                font-size: 24px;
-            }
-            p {
-                font-size: 16px;
-            }
-        }
-    </style>
+    /* コメント欄 */
+    .comment-section { padding: 20px; background: #fff; }
+    .comment-header { font-weight: bold; font-size: 18px; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 20px; }
+    .comment-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .user-name { font-weight: bold; font-size: 14px; color: #1e40af; margin-bottom: 5px; display: block; }
+    .comment-body { font-size: 15px; margin-bottom: 10px; white-space: pre-wrap; }
+    .stats { display: flex; gap: 10px; font-size: 13px; color: #666; }
+    .btn { padding: 4px 12px; border: 1px solid #ddd; border-radius: 16px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; }
+    .btn-up { color: #ff5a5f; border-color: #ff5a5f; font-weight: bold; }
+</style>
 </head>
-
 <body>
-    <div class="page">
-        <div class="paper">
 
-            <div class="flag-line"></div>
+<div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">米国政治・歴史思想検証</span>
+            <h1 class="article-title">【米国アイデンティティ論】「移民の国」という神話の崩壊――アメリカの本質は「入植者（Settler）と開拓者（Pioneer）」にあり。トランプ第2期政権の厳格な移民抑制が目指す「建国精神」の再生を紐解く</h1>
+            <p class="publish-date">最終更新：2026年1月22日（※本ページは保守的視点からの考察記録です。読者自身による事実検証を推奨します）</p>
+        </article>
 
-            <a href="top.html" class="back-link">← 注意書きページに戻る</a>
+        <div class="article-body">
+            <p>「アメリカは移民の国である」――この聞き慣れたフレーズは、現代社会において半ば絶対的な「正解」のように扱われている。しかし、歴史の真実と国家のアイデンティティを厳密に考察するならば、この定義は根本的に誤りであると言わざるを得ない。正確な歴史認識に立つならば、<b>「アメリカは入植者（Settler）と開拓者（Pioneer）によって創設された国」</b>である。</p>
+            
+            <div class="summary-point">
+                【論考の核心】
+                既存のインフラや法の支配に後から加わる「移民」と、未開の荒野に自らの手で文明と法の支配を設計した「入植者」は、概念として決定的に異なる。「移民の国」という耳ざわりの良い言説に逃げ込むことは、リスクを背負って国家の土台を築いた開拓者精神に対する歴史的冒涜である。
+            </div>
 
-            <h1>
-                「移民の国」は間違いである<br>
-                アメリカの本質は「入植者と開拓者の国」にある
-            </h1>
+            <div class="section-title">1. 「移民」と「入植者」の決定的な相違</div>
+            <p>著名な保守派の知性であるマーク・ステイン氏は、この二つの概念の混同が現代の歪みを生んでいると鋭く指摘する。氏の厳格な定義に基づけば、その相違は以下のように整理される。</p>
+            
+            <div class="sub-section-title">◎ 「移民（Immigrant）」の定義</div>
+            <p>既に完成された法、整備されたインフラ、安定した経済システムが強固に存在する社会に対して、<span class="focus-text">「後発の参入者（客）」</span>として加わる人々を指す。</p>
 
-            <p>
-                「アメリカは移民の国である」――この聞き慣れたフレーズは、
-                現代において半ば「正解」のように扱われている。
-                しかし、歴史の真実と国家のアイデンティティを
-                厳密に考察するならば、この定義は根本的に誤りである。
-                正解は、「アメリカは入植者（Settler）と開拓者（Pioneer）
-                によって創設された国」である。
-            </p>
+            <div class="sub-section-title">◎ 「入植者（Settler）」の定義</div>
+            <p>アメリカの礎を築いた人々が足を踏み入れたのは、既存の統治機構も文明的利便性も一切存在しない広大な荒野であった。彼らは誰かに客として招かれたのではなく、<b>自らの手で法の支配を確立し、自己責任と個人主義に基づく新たな社会システムをゼロから設計・具現化</b>した存在である。</p>
+            <p>この「国家創設」という壮絶なプロセスを欠いたまま、後発の移住者と同じ「移民」という安易な括りで語ることは、歴史の真実を歪めることに等しい。</p>
 
-            <h2>「移民」と「入植者」の決定的な相違</h2>
+            <div class="section-title">2. 建国精神の希薄化への警鐘と果実の享受</div>
+            <p>「移民の国」という現代リベラル派のナラティブが危険視されるのは、それがアメリカの本質的な建国精神、すなわちメイフラワー号の時代から脈々と続く<span class="bold-keyword">「開拓者精神（フロンティア・スピリット）」</span>を希薄化させ、忘却させるからである。</p>
+            <p>入植者たちは自らの命と財産という莫大なリスクを背負い、無から文明を「構築」した。これに対し、現代の移民（とりわけ不法移民）の多くは、先人たちが築き上げた既存の繁栄や制度という「果実」を安全に享受することを第一の目的としている傾向が強い。この動機の差を無視した同列の議論は、国家の土台を揺るがしかねない。</p>
 
-            <p>
-                保守派の知性として知られるマーク・ステイン氏は、
-                この概念の混同を鋭く指摘している。
-                氏の定義によれば、「移民」とは、
-                既に完成された法、インフラ、経済システムが
-                存在する社会に後から加わる人々を指す。
-            </p>
+            <div class="section-title">3. 国家主権の回復と「入植者遺産」の再確認</div>
+            <p>ドナルド・J・トランプ大統領の第二期政権が現在断行している極めて厳格な国境管理・移民政策の本質は、単なる排他主義ではなく、<b>「入植者の国」としての誇りと主権を正常に取り戻す国家的な回帰運動</b>に他ならない。</p>
+            
+            <p>現実に、2025年に米国の純移民数が半世紀ぶりにマイナスへと転じ、明けた2026年現在もその厳格な抑制傾向が継続しているという法執行のファクトは、アメリカがリベラル的な多文化融和の幻想を排し、自らの根源的なアイデンティティ（入植者の遺産）を再確認し始めた強力な証左といえる。</p>
 
-            <p>
-                対して、アメリカの礎を築いた人々は「入植者」であった。
-                彼らが足を踏み入れたのは、既存の統治機構も
-                文明的利便性も存在しない荒野である。
-                彼らは「客」として招かれたのではなく、
-                自らの手で法の支配を確立し、
-                自己責任と個人主義に基づく
-                新たな社会をゼロから設計し、具現化した。
-            </p>
-
-            <p>
-                この「創設」というプロセスを欠いたまま、
-                後発の移住者と同じ「移民」という括りで語ることは、
-                歴史に対する冒涜に近い。
-            </p>
-
-            <h2>建国精神の希薄化への警鐘</h2>
-
-            <p>
-                「移民の国」という言説が危険なのは、
-                それがアメリカの建国精神、
-                すなわちメイフラワー号から続く
-                開拓者精神（フロンティア・スピリット）を
-                希薄化させるからだ。
-            </p>
-
-            <p>
-                入植者は、リスクを背負って文明を「構築」した。
-                一方、現代の移民、特に不法移民の多くは、
-                既に存在する繁栄という「果実」を
-                享受することを目的としている。
-            </p>
-
-            <h2>国家主権の回復と「入植者遺産」の再確認</h2>
-
-            <p>
-                ドナルド・J・トランプ大統領の第二期政権が
-                断行している厳格な移民政策は、
-                「入植者の国」としての誇りを
-                取り戻す動きに他ならない。
-            </p>
-
-            <p>
-                2025年に純移民数が半世紀ぶりにマイナスへ転じ、
-                2026年もその傾向が続いているという事実は、
-                アメリカが自らの根源的な
-                アイデンティティを再確認し始めたことを示している。
-            </p>
-
-            <h2>結論：真実に基づいた覚悟</h2>
-
-            <p>
-                アメリカは、不屈の開拓者たちが
-                命を懸けて地盤を固め、
-                その価値観に同化することを誓った
-                適正な移民を迎え入れることで発展してきた。
-            </p>
-
-            <p>
-                「移民の国」という耳ざわりの良い神話に
-                逃げ込むのではなく、
-                「入植者の国」という真実の歴史に立ち返ること。
-                それこそが、次世代に
-                強固なアメリカを継承するために
-                今求められている覚悟である。
-            </p>
-
-            <div class="flag-line" style="margin-top:40px;"></div>
-
-            <footer>
-                本ページは保守的視点からの考察です。<br>
-                読者自身による事実検証を推奨します。<br>
-                最終更新：2026年1月22日
-            </footer>
-
+            <div class="quote-box">
+                【結論：真実に基づいた覚悟】
+                アメリカという国家は、不屈の開拓者たちが命を懸けて地盤を固め、その「建国の価値観と法の支配」に完全に同化（アッシミレーション）することを誓った適正な移民を受け入れることで発展してきた。<br><br>
+                「移民の国」という美名に満ちた神話でお茶を濁すのではなく、「入植者の国」という真実の歴史に立ち返ること。それこそが、強く強固なアメリカを次世代に継承するために、今まさに米国人に求められている歴史的覚悟である。
+            </div>
         </div>
-    </div>
+
+        <div class="comment-section">
+            <div class="comment-header">ユーザー意見・レビュー（854件）</div>
+
+            <div class="comment-card">
+                <span class="user-name">フロンティア史研究家</span>
+                <div class="comment-body">マーク・ステイン氏の「入植者」と「移民」の定義の切り分けは極めて本質的。ルールやインフラが既にある中に乗っかる人と、荒野でインフラそのものを命がけで作った人を同列に扱うのは、歴史の解釈としてあまりに不誠実。トランプ政権の政策は、この建国前提の修正プロセスと見ると合点が行く。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 14,210</div>
+                    <div class="btn">👎 そう思わない 88</div>
+                </div>
+            </div>
+
+            <div class="comment-card">
+                <span class="user-name">保守派リアルポリティクス</span>
+                <div class="comment-body">2025〜2026年にかけて純移民数が半世紀ぶりにマイナスへ向かっているという数字こそ、アメリカが「果実のタダ乗り」を許さない主権国家へ戻ろうとしている証拠。価値観への同化を誓う合法的な手続きを経た人だけを迎え入れるのが、本来のあるべき姿。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 11,540</div>
+                    <div class="btn">👎 そう思わない 42</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div class="sidebar-title">📊 マーク・ステインの概念定義比較</div>
+            <table class="analysis-table">
+                <thead>
+                    <tr>
+                        <th>項目</th>
+                        <th>入植者（Settler）</th>
+                        <th>移民（Immigrant）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>舞台環境</b></td>
+                        <td style="color:#1e3a8a; font-weight:bold;">未開の荒野</td>
+                        <td>完成された法・インフラ</td>
+                    </tr>
+                    <tr>
+                        <td><b>社会への役割</b></td>
+                        <td style="color:#1e3a8a; font-weight:bold;">ゼロからの「創設者」</td>
+                        <td>後発の「参入者・客」</td>
+                    </tr>
+                    <tr>
+                        <td><b>行動動機</b></td>
+                        <td>リスクを伴う文明構築</td>
+                        <td>既存の繁栄（果実）の享受</td>
+                    </tr>
+                    <tr>
+                        <td><b>行動規範</b></td>
+                        <td>自己責任・個人主義</td>
+                        <td>既存システムへの同化必要</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sidebar-box">
+            <div class="sidebar-title">🛡️ 米国主権回復へのタイムライン（2025-2026）</div>
+            <div style="font-size:12px; line-height: 1.7;">
+                <b style="color:#0f172a;">● 2025年：劇的な構造転換</b><br>
+                トランプ第2期政権の厳格な国境管理・法執行により、米国の純移民数が<span class="focus-text">半世紀ぶりにマイナス</span>へと転じる。<br><br>
+                <b style="color:#0f172a;">● 2026年：アイデンティティの定着</b><br>
+                「移民の国」という神話を排し、「入植者の国」としての誇り、法の支配、価値観への同化要求を強めるトレンドが継続。<br><br>
+                <b style="color:#0f172a;">● 次世代への遺産</b><br>
+                フロンティア・スピリット（開拓者精神）の再確認による、強固な国家基盤の再構築。
+            </div>
+        </div>
+
+        <div class="sidebar-box" style="background:#f8fafc; border:1px solid #cbd5e1; text-align:center;">
+            <span style="font-weight:bold; color:#0f172a; font-size:13px; display:block; margin-bottom:5px;">📌 考察の要約</span>
+            <p style="font-size:11px; text-align:left; margin:0; line-height:1.5;">
+                誰かがリスクを背負って作ったシステムに乗っかるだけの存在を「移民」と呼び、システムそのものを無から生み出した者を「入植者」と呼ぶ。この言葉の厳密な使い分けにこそ、アメリカ再生の鍵がある。
+            </p>
+        </div>
+    </aside>
+</div>
+
 </body>
 </html>
