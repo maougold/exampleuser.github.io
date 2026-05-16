@@ -1,440 +1,196 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【悲報】玉川徹さん、トランプ関税で「米国は貧しくなる」と予言するも大外れ…経済音痴露呈でスレ民失笑 : 保守ニュース速報</title>
-    <style>
-        /* 基本デザイン */
-        body { background-color: #efefef; font-family: "MS PGothic", "IPAMonaPGothic", sans-serif; margin: 0; padding: 0; color: #333; }
-        #container { width: 900px; margin: 20px auto; background-color: #fff; border: 1px solid #ccc; padding: 30px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-        header { border-bottom: 3px solid #cc0000; margin-bottom: 30px; padding-bottom: 10px; }
-        h1 { font-size: 22px; color: #cc0000; margin: 0; line-height: 1.4; }
-        .entry-date { font-size: 12px; color: #999; margin-top: 5px; }
+<meta charset="UTF-8">
+<title>Yahoo!ニュース風：メディアの「逆神」と投資家の爆益</title>
+<style>
+    body { background-color: #f0f2f5; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.5; margin: 0; padding-bottom: 50px; }
+    .container { max-width: 1050px; margin: 0 auto; display: flex; gap: 20px; padding: 20px; }
+    
+    /* メインコンテンツ */
+    .main-content { flex: 7; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+    .article-header { padding: 25px 20px; border-bottom: 1px solid #eee; }
+    .category-tag { background: #005087; color: #fff; font-size: 10px; padding: 2px 6px; font-weight: bold; border-radius: 2px; margin-bottom: 10px; display: inline-block; }
+    .article-title { font-size: 26px; font-weight: 800; color: #000; margin: 10px 0; letter-spacing: -0.5px; line-height: 1.3; }
+    .publish-date { font-size: 12px; color: #888; }
+    
+    .article-body { padding: 20px; font-size: 16px; border-bottom: 8px solid #f0f2f5; }
+    .summary-point { border-left: 4px solid #cc0000; padding-left: 12px; margin: 15px 0; font-weight: bold; background: #f9f9f9; padding: 10px; }
 
-        /* 投稿スタイル */
-        .post { margin-bottom: 25px; border-bottom: 1px dashed #ccc; padding-bottom: 15px; }
-        .post-header { color: #008000; font-weight: bold; margin-bottom: 5px; font-size: 13px; }
-        .post-number { color: #000; font-size: 14px; }
-        .post-content { font-size: 16px; line-height: 1.7; padding-left: 10px; color: #000; }
-        
-        /* 装飾 */
-        .res-quote { color: #789922; text-decoration: none; }
-        .highlight { color: #ff0000; font-weight: bold; }
-        .media-quote { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin: 10px 0; font-size: 15px; color: #444; border-left: 5px solid #ccc; }
+    /* サイドバー */
+    .sidebar { flex: 3; }
+    .sidebar-box { background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .sidebar-title { font-size: 16px; font-weight: bold; border-bottom: 2px solid #005087; padding-bottom: 5px; margin-bottom: 15px; }
+    .doge-counter { background: #1a1a1a; color: #00ff66; padding: 12px; border-radius: 4px; font-family: 'Courier New', monospace; text-align: center; font-size: 18px; font-weight: bold; }
+    .prediction-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ddd; font-size: 13px; }
+    .prediction-fail { color: #d0021b; font-weight: bold; }
+    .result-win { color: #008800; font-weight: bold; }
 
-        /* 埋め込みパーツのデザイン */
-        .inner-widget { background-color: #fcfcfc; border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 5px; }
-        .widget-label { font-weight: bold; font-size: 15px; border-bottom: 1px solid #cc0000; color: #cc0000; display: block; margin-bottom: 10px; padding-bottom: 3px; }
-        .check-list { list-style: none; padding-left: 5px; margin: 10px 0; }
-        .check-list li { margin-bottom: 5px; }
+    /* アンケート */
+    .poll-bar { background: #eee; height: 20px; border-radius: 10px; margin: 8px 0; overflow: hidden; }
+    .poll-fill { background: #cc0000; height: 100%; color: #fff; font-size: 10px; line-height: 20px; padding-left: 10px; }
 
-        /* フッター・ボタン */
-        .stop-msg { color: #ff0000; font-weight: bold; font-size: 20px; text-align: center; padding: 20px; border: 4px double #ff0000; margin: 30px 0; background-color: #fffafa; }
-        .back-to-index { text-align: center; margin: 30px 0; }
-        .index-btn { display: inline-block; padding: 10px 30px; background-color: #f0f0f0; color: #333; text-decoration: none; border: 1px solid #ccc; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 0 #ddd; }
-        footer { text-align: center; font-size: 12px; color: #999; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; }
-    </style>
+    /* コメント欄 */
+    .comment-section { padding: 20px; background: #fff; }
+    .comment-header { font-weight: bold; font-size: 18px; border-bottom: 2px solid #cc0000; padding-bottom: 10px; margin-bottom: 20px; }
+    .comment-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .user-name { font-weight: bold; font-size: 14px; color: #005087; margin-bottom: 5px; display: block; }
+    .comment-body { font-size: 15px; margin-bottom: 10px; white-space: pre-wrap; }
+    .stats { display: flex; gap: 10px; font-size: 13px; color: #666; }
+    .btn { padding: 4px 12px; border: 1px solid #ddd; border-radius: 16px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; }
+    .btn-up { color: #ff5a5f; border-color: #ff5a5f; font-weight: bold; }
+    .reply-area { margin-left: 35px; border-left: 2px solid #eee; padding-left: 15px; margin-top: 10px; background: #fafafa; padding: 10px; border-radius: 4px; }
+</style>
 </head>
 <body>
 
-<div style="text-align: center; margin: 40px 0;">
-    <button id="roller-coaster-btn" onclick="startRollerCoaster()" style="padding: 15px 30px; background: #000; color: #fff; border: 2px solid #555; cursor: pointer; font-weight: bold;">
-        ⏩ 忙しい人のための「爆速自動スクロール」
-    </button>
+<div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">メディア・経済トピックス</span>
+            <h1 class="article-title">玉川徹氏の「トランプ関税で米国沈没」予測が大外れ？ネット上で「最強の逆指標」としてまさかの大感謝祭へ</h1>
+            <p class="publish-date">1/27(火) 18:30配信</p>
+        </article>
+
+        <div class="article-body">
+            <p>テレビ朝日のコメンテーター玉川徹氏がワイドショー番組内で放った「関税を上げたら確実にアメリカの中は貧しくなる」という経済予測を巡り、インターネット上の投資家コミュニティが異常な盛り上がりを見せている。現実の米国経済が株価最高値を更新し、製造業の復活劇を遂げる中で、玉川氏の「逆神（ぎゃくしん）」ぶりが改めて証明された形だ。</p>
+            <div class="summary-point">
+                ・玉川氏の「米国経済危機」の警告とは裏腹に、米国株は連日の最高値更新で絶好調<br>
+                ・ネット上では勝率100%の投資指標「玉川指数（Tama-Index）」を提唱する猛者が登場<br>
+                ・皮肉たっぷりに危機を煽るメディアと、市場の実態との「二重の分断」に失笑の声も
+            </div>
+            <p>ネット上のスレッドでは、「玉川氏が顔を真っ赤にして批判した政策は、必ず空前の好景気を呼び込む」という法則がまことしやかに囁かれており、お馴染みの「バカ発言ランキング」では堂々の1位に選出。スタジオで批判の声を上げるだけのサラリーマンコメンテーターが、総資産数千億の不動産王に対して経済を説教する構図の滑稽さが浮き彫りになっている。</p>
+        </div>
+
+        <div class="comment-section">
+            <div class="comment-header">コメント（12,544件）</div>
+
+            <div class="comment-card">
+                <span class="user-name">Trader_A</span>
+                <div class="comment-body">本当にありがとうございました！
+番組で玉川さんが「やったらいいんじゃないかと思います、僕は。で、結局物価が上がって…」と皮肉全開で喋った瞬間にドル円ロングとダウ買い増しをブチ込みました。
+おかげさまで新車が買えました。これもう実質的に個人投資家向けの救済番組だろ。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 64,210</div>
+                    <div class="btn">👎 そう思わない 950</div>
+                </div>
+            </div>
+
+            <div class="comment-card">
+                <span class="user-name">実体経済重視のビジネスマン</span>
+                <div class="comment-body">自分の名前を冠したビルを世界中に建てて、数々の破産危機をレジリエンス（回復力）で乗り越えてきた実業家に向かって、テレビの中で喋ってるだけの人間が「経済を知らない」とかどの口が言ってるんだか。
+教習所のペーパードライバーがF1レーサーに運転の説教をしてるようなもんで、見ていて本当に痛々しい。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 51,302</div>
+                    <div class="btn">👎 そう思わない 1,210</div>
+                </div>
+            </div>
+
+            <div class="comment-card">
+                <span class="user-name">ラストベルト視察組</span>
+                <div class="comment-body">結局、自由貿易の弊害で死にかけていた製造業地帯（ラストベルト）に国内雇用を戻した「アメリカ・ファースト」のメリットが遥かにデカかった。
+日本のリベラルメディアは「左派の願望」を「経済予測」としてすり替えて報じるから、都合のいい負の側面しか見えなくなっているんだろうね。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 38,400</div>
+                    <div class="btn">👎 そう思わない 420</div>
+                </div>
+            </div>
+
+            <div class="comment-card">
+                <span class="user-name">実家を除染した息子</span>
+                <div class="comment-body">最近、実家の親がワイドショーを見て「アメリカはもうすぐ崩壊するんだね」って騙されてたから、米国の失業率データと株価のグラフを直接見せてあげた。
+「テレビの人は嘘つきなの？」って絶望してたけど、こうやって自分の足で事実を取りに行くのが洗脳から抜け出す第一歩。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 29,150</div>
+                    <div class="btn">👎 そう思わない 680</div>
+                </div>
+
+                <div class="reply-area">
+                    <span class="user-name">サンモト視聴者</span>
+                    <div class="comment-body">@実家を除染した息子さん
+本当にそれです。サンデーモーニングの長老たちもニュース23も、みんな揃って「トランプ関税＝世界恐慌」って台本を読んでるのに、いざ雇用データが出ると通夜みたいな顔で「予想外の雇用増です…」って報じるのが様式美になってますよね（笑）。</div>
+                    <div class="stats">
+                        <div class="btn btn-up">👍 そう思う 14,200</div>
+                        <div class="btn">👎 そう思わない 105</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comment-card">
+                <span class="user-name">名無しさん＠経済チェッカー</span>
+                <div class="comment-body">トランプの関税はただの保護主義じゃなくて、相手国から有利な条件を引き出すための「ディール（交渉術）」だってビジネスやってる人間なら一瞬でわかる。
+教科書通りの経済学しか知らないコメンテーターには、この高次元の戦略がただの「いじめ」に見えるんだろうな。一度自分で会社経営してみればいいのに。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 33,502</div>
+                    <div class="btn">👎 そう思わない 510</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding: 20px; color: #005087; font-weight: bold; cursor: pointer;">
+                もっと見る
+            </div>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div style="font-weight:bold; font-size:14px; margin-bottom:10px;">📈 逆張り「玉川指数」本日の爆益額</div>
+            <div class="doge-counter">+¥3,510,000</div>
+            <p style="font-size:10px; text-align:right; color:#666; margin-top:5px;">※ドル円・ダウ全力買い増し分</p>
+        </div>
+
+        <div class="sidebar-box">
+            <div class="sidebar-title">🤡 メディア「逆神」日誌</div>
+            <ul class="prediction-list">
+                <li class="prediction-item">
+                    <span class="prediction-label">玉川徹氏：</span>
+                    <span class="prediction-fail">「トランプ関税で米国は確実に貧しくなる！」</span><br>
+                    <span class="result-win">→ 現実：米株最高値更新、ラストベルト大復活</span>
+                </li>
+                <li class="prediction-item">
+                    <span class="prediction-label">某ワイドショー：</span>
+                    <span class="prediction-fail">「不法移民は貴重な労働力だから受け入れろ」</span><br>
+                    <span class="result-win">→ 現実：治安悪化で身内のNY市民からも大ブチギレされる</span>
+                </li>
+                <li class="prediction-item">
+                    <span class="prediction-label">某大手新聞社：</span>
+                    <span class="prediction-fail">「ポリコレを無視するコンテンツはすべて滅びる」</span><br>
+                    <span class="result-win">→ 現実：ポリコレ映画が大爆死、保守系ゲームが世界的大ヒット</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-box">
+            <div style="font-weight:bold; font-size:14px; margin-bottom:10px;">📊 リベラルメディア洗脳度チェッカー</div>
+            <p style="font-size:12px;">あなたにはいくつチェックが入る？</p>
+            <div style="font-size:11px; color:#333; line-height: 1.6; margin-bottom: 10px;">
+                □ トランプと聞くだけで嫌悪感が出る<br>
+                □ 関税政策は「消費者が損するだけ」と盲信<br>
+                □ 玉川氏の皮肉を「鋭い風刺」と勘違い
+            </div>
+            <div class="poll-bar">
+                <div class="poll-fill" style="width: 5%;">洗脳度 (5%)</div>
+            </div>
+            <p style="font-size:10px; color:#cc0000; font-weight:bold; margin-top:5px;">※1つでも該当したら今すぐFox Newsで除染してください。</p>
+        </div>
+
+        <div class="sidebar-box">
+            <div style="font-weight:bold; margin-bottom:10px;">🔗 注目ワード</div>
+            <ul style="list-style:none; padding:0; font-size:13px; color:#005087;">
+                <li style="margin-bottom:8px;">▶ 勝率100%の「玉川指数（Tama-Index）」</li>
+                <li style="margin-bottom:8px;">▶ トランプ・タワーと実体のある経済実績</li>
+                <li style="margin-bottom:8px;">▶ ワイドショー信者とネット民の「世界分断」</li>
+                <li style="margin-bottom:8px;">▶ 通夜状態の雇用統計ニュース報道</li>
+            </ul>
+        </div>
+        
+    </aside>
 </div>
 
-<style>
-    /* 画面がガクガク揺れるアニメーション */
-    @keyframes super-shake {
-        0% { transform: translate(0, 0) rotate(0deg); }
-        25% { transform: translate(10px, 15px) rotate(2deg); }
-        50% { transform: translate(-10px, -15px) rotate(-2deg); }
-        75% { transform: translate(15px, -10px) rotate(1deg); }
-        100% { transform: translate(0, 0) rotate(0deg); }
-    }
-    .riding { animation: super-shake 0.1s infinite; }
-</style>
-
-<script>
-function startRollerCoaster() {
-    const btn = document.getElementById('roller-coaster-btn');
-    const body = document.body;
-    
-    btn.disabled = true;
-    btn.innerText = "うわああああああああ！！";
-    
-    // 画面を揺らす
-    body.classList.add('riding');
-
-    let currentPos = window.scrollY;
-    const targetPos = document.documentElement.scrollHeight;
-    const speed = 50; // スクロールの速さ
-
-    const scrollInterval = setInterval(() => {
-        currentPos += speed;
-        window.scrollTo(0, currentPos);
-
-        // 一番下まで行ったら終了
-        if (currentPos >= targetPos - window.innerHeight) {
-            clearInterval(scrollInterval);
-            finishRollerCoaster();
-        }
-    }, 10);
-}
-
-function finishRollerCoaster() {
-    const body = document.body;
-    body.classList.remove('riding');
-    
-    // 少し遅れて煽りメッセージ
-    setTimeout(() => {
-        alert("【速報】あまりに早すぎて、あなたの脳には何も残りませんでした。");
-        
-        // 追い打ち：一番上まで一瞬で戻す
-        const goBack = confirm("もう一度最初から読み直しますか？（真面目に）");
-        if (goBack) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.getElementById('roller-coaster-btn').disabled = false;
-            document.getElementById('roller-coaster-btn').innerText = "⏩ もう一度乗る（おすすめしません）";
-        }
-    }, 500);
-}
-</script>
-    
-<div id="container">
-    <header>
-        <h1>【悲報】玉川徹さん、トランプ関税で「米国は貧しくなる」と予言するも大外れ…経済音痴露呈でスレ民失笑</h1>
-        <div class="entry-date">2026年01月27日 18:30 | カテゴリ：テレビ・メディア、政治</div>
-    </header>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">1</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:10:00.00 ID:AntiWoke</div>
-        <div class="post-content">
-            テレビ朝日の玉川氏、トランプ大統領の関税政策をボロクソに叩くも、現実の米国経済は絶好調な模様。<br><br>
-            玉川氏「関税を上げたら確実にアメリカの中は貧しくなる（キリッ」<br>
-            玉川氏「経済を知らないトランプが物価を上げて経済危機を招く！」<br><br>
-            現実はトランプ・タワーを築いた超一流ビジネスマンの勝利。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">2</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:11:45.12 ID:TrumpTrain</div>
-        <div class="post-content">
-            また予言外したのかｗ<br>
-            この人、トランプが大統領になった時からずっと「米国は終わる」って言ってるよね。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">3</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) ID:RankingMan</div>
-        <div class="post-content">
-            恒例のテンプレ貼っとくわｗ<br>
-            <div class="inner-widget">
-                <span class="widget-label">★今週のバカ発言ランキング（メディア編）</span>
-                <b>1位：玉川徹</b><br>
-                「トランプ関税で米国沈没」→ 現実：米株最高値更新、製造業復活<br><br>
-                <b>2位：某ワイドショー</b><br>
-                「不法移民は貴重な労働力」→ 現実：治安悪化でNY市民もブチギレ<br><br>
-                <b>3位：某新聞社</b><br>
-                「ポリコレ無視するコンテンツは滅びる」→ 現実：ポリコレ映画が大爆死、保守系ゲームが大ヒット
-            </div>
-            いつまで逆神やってるんだろうな、この人たち。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">7</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:13:20.05 ID:BizExpert</div>
-        <div class="post-content">
-            トランプは不動産王として修羅場くぐり抜けてきてるからな。<br>
-            サラリーマンコメンテーターが「経済を知らない」とかどの口が言ってるんだか。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">12</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:18:02.88 ID:NoMoreMedia</div>
-        <div class="post-content">
-            <a class="res-quote">&gt;&gt;1</a><br>
-            「やったらいいんじゃないかと思います、僕は。で、結局物価が上がって…」<br>
-            この皮肉たっぷりの言い方、本当に不快。視聴者の不安を煽るのが仕事。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">15</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) ID:Hoshu999</div>
-        <div class="post-content">
-            トランプの経済実績を「運」とか「前政権の遺産」で片付けようとするのが目に見えてるわ。<br>
-            ビジネスの最前線で戦ったことない奴ほど、実業家をバカにするよな。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">20</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:25:33.40 ID:Americana</div>
-        <div class="post-content">
-            現地の声を聞けよ。<br>
-            関税のおかげで不公正貿易が是正されて、国内雇用が戻ってきてるんだよ。<br>
-            リベラルメディアは都合の悪い「雇用創出」の事実は一切報じない。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">32</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) ID:CheckMaster</div>
-        <div class="post-content">
-            <a class="res-quote">&gt;&gt;15</a><br>
-            それな。テレビの「上から目線」に騙されてる層に向けたチェッカー置いとく。<br>
-            <div class="inner-widget" style="border-left: 5px solid #0000ee;">
-                <span class="widget-label" style="color: #0000ee; border-bottom-color: #0000ee;">【リベラルメディア洗脳度チェッカー】</span>
-                <ul class="check-list">
-                    <li>□ 「トランプ大統領」と聞くだけで嫌悪感が出る</li>
-                    <li>□ 関税政策は「消費者が損するだけ」だと信じている</li>
-                    <li>□ 玉川氏の皮肉を「鋭い社会風刺」だと勘違いしている</li>
-                </ul>
-                <b>※1つでもチェックが入ったら末期。今すぐ Fox News を見て除染しろ。</b>
-            </div>
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">38</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:40:11.99 ID:FactCheck</div>
-        <div class="post-content">
-            結局、人物攻撃に終始してて政策の本質を見てないんだよな。<br>
-            自由貿易の弊害で死んでたラストベルト（製造業地帯）がトランプで復活したのを無視。<br>
-            日本のメディア全体がこの「玉川病」に侵されてるわ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">45</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 15:55:44.00 ID:AntiWoke</div>
-        <div class="post-content">
-            <div class="media-quote">
-                <b>保守の視点による玉川氏の分析まとめ：</b><br>
-                ・事実に基づかない「米国経済悪化」の予言で不安を煽る<br>
-                ・トランプ氏のビジネス実績（リスク管理と回復力）を完全に無視<br>
-                ・国家の主権と伝統的価値観を軽視し、リベラルな一面を押し付け<br>
-                ・建設的な議論を阻害し、日本自身の戦略にも悪影響を与える
-            </div>
-            メディア改革しないとマジで国民の判断力が奪われるぞこれ。
-        </div>
-    </div>
-
-
-<div class="post">
-        <div class="post-header"><span class="post-number">50</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 16:10:22.11 ID:RealAsset</div>
-        <div class="post-content">
-            玉川は「トランプは経済を知らない」とか言ってるけど、<br>
-            自分の名前を冠したビルを世界中に建てて、数十億ドルの資産を築いた男に対して失礼すぎるだろｗ<br>
-            トランプ・タワー、パームビーチのマー・ア・ラゴ、世界トップクラスのゴルフコース…<br>
-            これ全部「実体のある経済」で作ってきた実績なんだよなぁ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">72</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 16:25:44.00 ID:ConcreteBiz</div>
-        <div class="post-content">
-            <a class="res-quote">&gt;&gt;50</a><br>
-            ほんこれ。テレビの中で喋ってるだけの人間が、実際に雇用を生んでビルを建ててきた人間を批判する滑稽さよ。<br>
-            トランプは数回の破産危機すら乗り越えて今の地位がある。リスクを取って復活する「回復力（レジリエンス）」こそが保守が尊ぶ経済精神なのに、リベラルメディアは「失敗したこともあるｗ」としか報じない。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">105</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 16:40:15.88 ID:DataMan</div>
-        <div class="post-content">
-            実績で言えば、トランプ政権下の2019年までに失業率は3.5%と半世紀ぶりの低水準だったし、株価も爆上げだった。<br>
-            関税についても、中国の不公正な輸出を抑え込んで国内に工場を戻す「アメリカ・ファースト」の成功例が山ほどある。<br>
-            玉川が恐れている「インフレ」よりも、「国内の雇用と主権」を取り戻したメリットの方が遥かにデカいのが現実。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">138</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 16:55:00.33 ID:AntiBias_Japan</div>
-        <div class="post-content">
-            結局、玉川みたいなリベラル知識人は「成功した金持ち」が嫌いなんだろうな。<br>
-            トランプがビジネスで培った交渉術（ディール）を「下品」と切り捨てて、<br>
-            結果的に国民が豊かになっている事実から目を逸らしてる。<br>
-            日本のメディアも、トランプの経済政策（トランプノミクス）の負の側面だけを100倍に膨らませて報じるから、視聴者が真実に辿り着けない。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">182</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 17:15:22.45 ID:GoldStandard</div>
-        <div class="post-content">
-            トランプの資産背景を知ってると、関税政策の見方も変わるぞ。<br>
-            彼は「場所の価値」と「交渉の重み」を熟知してる。<br>
-            関税を外交の武器として使って、相手国から有利な条件を引き出す手法は、<br>
-            教科書通りの経済学しか知らない学者やコメンテーターには理解できない高次元のビジネス戦略なんだよ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">200</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 17:30:00.00 ID:RealAsset</div>
-        <div class="post-content">
-            200ゲット。<br>
-            結論：玉川はトランプの爪の垢でも飲んで、一度自分で会社経営してみろ。<br>
-            「経済を知らない」のがどちらか、一瞬で理解できるはず。
-        </div>
-    </div>
-
-<div class="post">
-        <div class="post-header"><span class="post-number">256</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 17:45:12.00 ID:ReverseGod_Bet</div>
-        <div class="post-content">
-            ちょっと待て、お前ら。これ世紀の大発見じゃないか？<br>
-            玉川が「関税で米国経済は終わる」と断言したってことは……<br>
-            <span class="highlight">「今すぐ米国株を全力買いすれば勝てる」</span>っていう最強のサインなんじゃないか？<br><br>
-            過去の玉川の予言と逆のことが起きた確率を計算したら、勝率100%近い「玉川指数（Tama-Index）」が作れるぞこれｗ
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">280</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 17:55:30.44 ID:Trader_A</div>
-        <div class="post-content">
-            <a class="res-quote">&gt;&gt;256</a><br>
-            天才現るｗｗｗ<br>
-            確かに「玉川が顔を真っ赤にして批判した政策」は、大抵あとで米国を空前の好景気へ導いてるからな。<br>
-            俺のNISA枠、全部「玉川逆張り投資」に突っ込もうかな。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">315</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 18:10:05.10 ID:Wara_News</div>
-        <div class="post-content">
-            テレ朝「今日の玉川氏のコメントです（米国は貧しくなる！）」<br>
-            投資家「よし、ドル円ロング、NYダウ買い増しだ！」<br>
-            数ヶ月後……<br>
-            投資家「玉川様、一生ついていきます（爆益）」<br><br>
-            これもう実質的に個人投資家への救済番組だろ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">350</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 18:25:44.22 ID:Logic_King</div>
-        <div class="post-content">
-            マジレスすると、玉川氏は「左派リベラルの願望」を「経済予測」として喋ってるだけだからな。<br>
-            願望（こうなってほしい）と現実（市場の動き）が真逆なのは当然の結果。<br>
-            トランプが関税をかけるのは、相手国から譲歩を引き出すための「ディール（取引）」だってビジネスマンなら一瞬でわかるのに、玉川氏は「いじめ」だと思ってる節がある。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">410</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 18:40:11.99 ID:Tama_Hater</div>
-        <div class="post-content">
-            <div class="inner-widget" style="border-left: 5px solid #ff8c00;">
-                <span class="widget-label" style="color: #ff8c00; border-bottom-color: #ff8c00;">【検証：玉川氏の逆神伝説】</span>
-                ・「トランプ当選は世界の終わり」→ 米国、空前の好景気へ<br>
-                ・「関税で米国内の物価が爆上がりして暴動が起きる」→ 雇用回復、株価最高値<br>
-                ・「トランプはビジネスを知らない」→ 本人は総資産数千億の不動産王
-            </div>
-            これもう、トランプからの「営業妨害」で訴えられても文句言えないレベルの逆指標だろ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">455</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 18:55:00.00 ID:Future_Watcher</div>
-        <div class="post-content">
-            お前ら笑ってるけど、日本のワイドショー信じてる層はマジで「アメリカはもうすぐ崩壊するんだ」って本気で信じてるからな。<br>
-            真実を知ってる俺たちと、テレビしか見ない層の間で、もう「住んでる世界」が完全に分断されてるわ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">490</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 19:10:22.11 ID:ReverseGod_Bet</div>
-        <div class="post-content">
-            490ゲット。とりあえず明日の朝、玉川がまた何か批判してたら、俺は全力で買い増しするわ。<br>
-            玉川徹こそ、日本で唯一の「確実に勝てる投資指標」として歴史に刻まれるべき。
-        </div>
-    </div>
-
-
-
-<div class="post">
-        <div class="post-header"><span class="post-number">510</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 19:20:15.00 ID:TV_Died</div>
-        <div class="post-content">
-            　　　 　 　 　 ＿＿＿_<br>
-            　　　 　 　 ／　　 　 　＼　　　　「トランプ関税で米国は貧しくなる！」<br>
-            　　　 　 ／　　 　 　 　 　＼　　　　「経済を知らないトランプがー」<br>
-            　　　 ／ 　　 　 　 　 　 　 ＼<br>
-            　　　 |　 　 　 　 　 　 　 　 |　　　　　　　　（ ;;;;（ ） ;;;;）<br>
-            　　　 ＼　 　 　 　 　 　 　 ／　　　　　　　　（ 　 旦 　 ）<br>
-            　　　 　 ￣￣￣￣￣￣￣　　　　　　　　　　　 ￣￣<br>
-            この「現実見えてない感」がたまらんｗ<br>
-            もはや玉川は経済コメンテーターじゃなくて、古典落語の演者だろ。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">620</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 19:45:33.40 ID:Broadcaster_X</div>
-        <div class="post-content">
-            玉川だけじゃないぞ。サンデーモーニングの長老たちも、ニュース23のキャスターも、<br>
-            みんな揃って「トランプ関税＝世界恐慌」って台本読んでる。<br>
-            一方で、米国の雇用データが出るたびに「……予想外の雇用増です」って通夜みたいな顔して報じるのがセット。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">750</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 20:10:11.22 ID:Trump_Tower_Fan</div>
-        <div class="post-content">
-            　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 ＿<br>
-            　　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ｜Ｔ｜<br>
-            　　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ｜Ｒ｜<br>
-            　　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ｜Ｕ｜<br>
-            　　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ｜Ｍ｜<br>
-            　　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ｜Ｐ｜<br>
-            　　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ￣￣<br>
-            トランプ「お前らは一生、スタジオで吠えてろ。俺はまたビルを建てる」<br>
-            これが王者の余裕よな。実業家としての格が違いすぎる。<br>
-            玉川がトランプの経済を語るのって、教習所のペーパードライバーがF1レーサーに運転を説教するようなもん。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">880</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 20:35:44.05 ID:GoodBye_TV</div>
-        <div class="post-content">
-            最近、親が玉川の発言に「へぇ〜アメリカ大変なんだね」って騙されてたから、<br>
-            米国の失業率と株価のグラフ見せて、トランプ・タワーの資産価値を教えてやったわ。<br>
-            「テレビの人は嘘つきなの？」って絶望してたけど、これが「除染」への第一歩。
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">950</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 20:50:22.99 ID:Profit_Hunter</div>
-        <div class="post-content">
-             　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　,へ<br>
-             　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　 /　/　　　玉川さんが<br>
-             　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　/　/　　　　「ダメ」と言ったら<br>
-             　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 /　/　　　　　「買い」の合図！<br>
-             　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　/　/　　　　　　 <br>
-            ありがとう玉川さん。おかげで新車買えました。<br>
-            明日も元気に「トランプ批判」よろしくお願いしますｗ
-        </div>
-    </div>
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">998</span> 名前：：名無しさん＠ニュース速報 2026/01/27(火) 20:58:11.05 ID:AntiWoke</div>
-        <div class="post-content">
-            さあ、1000なら玉川徹、トランプ関税で全財産失う！<br>
-            （まあそんな勇気ないだろうけどｗ）
-        </div>
-    </div>
-
-
-    <div class="post">
-        <div class="post-header"><span class="post-number">1000</span> 名前：：１０００ 2026/01/27(火) 17:00:00.00 ID:STOPPER</div>
-        <div class="post-content">
-            <div class="stop-msg">
-                1000なら、次期のテレビ朝日の社長はドナルド・トランプ！
-            </div>
-            このスレッドは１０００を超えました。<br>
-            玉川氏の皮肉が止まらないので、新しいスレッドで真実を語りましょう。
-        </div>
-    </div>
-
-    <div class="back-to-index">
-        <a href="top.html" class="index-btn">≪ インデックスに戻る</a>
-    </div>
-
-    <footer>
-        Copyright &copy; 2026 保守ニュース速報 All Rights Reserved.
-    </footer>
+<div style="text-align: center; margin: 30px 0;">
+    <a href="#" style="color: #005087; text-decoration: none; font-weight: bold;">
+        ← ニュースのトップへ戻る
+    </a>
 </div>
 
 </body>
