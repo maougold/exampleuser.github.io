@@ -1,193 +1,178 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>メディアの「経済音痴」を解剖する</title>
+<title>Yahoo!ニュース風：メディアの「経済音痴」を解剖する</title>
 <style>
-    body {
-        margin: 0;
-        font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
-        background: #0b0d12;
-        color: #f2f2f2;
-        line-height: 1.9;
-    }
+    body { background-color: #f0f2f5; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.6; margin: 0; padding-bottom: 50px; }
+    .container { max-width: 1050px; margin: 0 auto; display: flex; gap: 20px; padding: 20px; }
+    
+    /* メインコンテンツ */
+    .main-content { flex: 7; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+    .article-header { padding: 25px 20px; border-bottom: 1px solid #eee; }
+    .category-tag { background: #047857; color: #fff; font-size: 10px; padding: 2px 6px; font-weight: bold; border-radius: 2px; margin-bottom: 10px; display: inline-block; }
+    .article-title { font-size: 24px; font-weight: 800; color: #000; margin: 10px 0; letter-spacing: -0.5px; line-height: 1.4; }
+    .publish-date { font-size: 12px; color: #888; }
+    
+    .article-body { padding: 20px; font-size: 16px; border-bottom: 8px solid #f0f2f5; }
+    .summary-point { border-left: 4px solid #047857; padding-left: 12px; margin: 15px 0; font-weight: bold; background: #f0fdf4; padding: 12px; font-size: 15px; color: #166534; }
+    .section-title { font-size: 18px; font-weight: bold; color: #111827; border-bottom: 2px solid #047857; padding-bottom: 5px; margin-top: 30px; margin-bottom: 15px; }
+    .sub-section-title { font-size: 15px; font-weight: bold; color: #374151; margin-top: 20px; margin-bottom: 8px; border-left: 3px solid #059669; padding-left: 8px; }
+    
+    /* テキスト修飾 */
+    .bold-keyword { font-weight: bold; color: #000; }
+    .focus-text { color: #059669; font-weight: bold; }
+    .alert-text { color: #dc2626; font-weight: bold; }
+    
+    /* ハイライトボックス */
+    .insight-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; margin: 20px 0; border-radius: 4px; font-size: 15px; border-left: 4px solid #64748b; }
+    .quote-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; font-weight: bold; color: #14532d; font-style: italic; }
 
-    .flag-line {
-        height: 6px;
-        background: linear-gradient(
-            to right,
-            #b22234 0%,
-            #b22234 33%,
-            #ffffff 33%,
-            #ffffff 66%,
-            #3c3b6e 66%,
-            #3c3b6e 100%
-        );
-    }
+    /* サイドバー */
+    .sidebar { flex: 3; }
+    .sidebar-box { background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .sidebar-title { font-size: 14px; font-weight: bold; border-bottom: 2px solid #111827; padding-bottom: 5px; margin-bottom: 15px; color: #047857; }
+    
+    /* テーブルスタイル */
+    .analysis-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    .analysis-table th, .analysis-table td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; line-height: 1.4; }
+    .analysis-table th { background-color: #f9fafb; font-weight: bold; color: #111827; }
 
-    .container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 60px 20px 80px;
-    }
-
-    h1 {
-        font-size: 2.4rem;
-        letter-spacing: 0.05em;
-        margin-bottom: 10px;
-    }
-
-    h2 {
-        font-size: 1.6rem;
-        color: #ff4c4c;
-        margin-top: 60px;
-        margin-bottom: 20px;
-    }
-
-    h3 {
-        font-size: 1.2rem;
-        color: #9bbcff;
-        margin-top: 40px;
-        margin-bottom: 10px;
-    }
-
-    p {
-        margin-bottom: 20px;
-    }
-
-    .lead {
-        font-size: 1.1rem;
-        color: #dddddd;
-        border-left: 4px solid #ff4c4c;
-        padding-left: 16px;
-        margin-bottom: 40px;
-    }
-
-    .highlight {
-        color: #ff4c4c;
-        font-weight: bold;
-    }
-
-    .quote {
-        background: rgba(255,255,255,0.05);
-        border-left: 4px solid #3c3b6e;
-        padding: 20px;
-        margin: 40px 0;
-        font-style: italic;
-    }
-
-    .footer {
-        margin-top: 80px;
-        font-size: 0.9rem;
-        color: #aaaaaa;
-        text-align: center;
-    }
-
-    @media (max-width: 600px) {
-        h1 {
-            font-size: 1.9rem;
-        }
-        h2 {
-            font-size: 1.4rem;
-        }
-    }
+    /* コメント欄 */
+    .comment-section { padding: 20px; background: #fff; }
+    .comment-header { font-weight: bold; font-size: 18px; border-bottom: 2px solid #111827; padding-bottom: 10px; margin-bottom: 20px; }
+    .comment-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .user-name { font-weight: bold; font-size: 14px; color: #1e40af; margin-bottom: 5px; display: block; }
+    .comment-body { font-size: 15px; margin-bottom: 10px; white-space: pre-wrap; }
+    .stats { display: flex; gap: 10px; font-size: 13px; color: #666; }
+    .btn { padding: 4px 12px; border: 1px solid #ddd; border-radius: 16px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; }
+    .btn-up { color: #ff5a5f; border-color: #ff5a5f; font-weight: bold; }
 </style>
 </head>
 <body>
-<a href="top.html" class="back-link">← 注意書きページに戻る</a>
-<div class="flag-line"></div>
 
 <div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">経済構造・データ検証</span>
+            <h1 class="article-title">【経済動向検証】主要メディアの「経済音痴」を解剖する――フェイクな悲観論を暴く、データという名の“レントゲン写真”と崩れ去ったインフレ神話</h1>
+            <p class="publish-date">配信日: 2026/05/17（※本ページはデータ検証と引用を目的とした論評記録です）</p>
+        </article>
 
-    <h1>メディアの「経済音痴」を解剖する</h1>
-    <p class="lead">
-        ――データという名のレントゲン写真――
-    </p>
+        <div class="article-body">
+            <p>もし現在の国家経済を一つの「身体」にたとえるなら、主要メディアはいまなお、<b>40度の高熱を出していた過去のカルテ</b>を血相を変えて振り回しながら、「患者は重症だ」「危機だ」と叫び続けている医者のようなものである。しかし、最新の精密な血液検査――すなわち、CPI（消費者物価指数）、実質賃金、可処分所得の推移――は、全く異なる真実を明確に示している。熱は下がり、脈拍は安定し、むしろ健康的な筋肉が戻り始めているのだ。</p>
+            
+            <div class="summary-point">
+                【検証の核心】
+                「関税＝即インフレ」というメディアのドグマは、現場の複合的な要因を無視した机上の空論に過ぎなかった。生活インフラ（卵、ガソリン）の値下げという「レジでの真実」は、どれほど巧妙に仕組まれた悲観論の解説よりも雄弁に、経済の正常化を物語っている。
+            </div>
 
-    <p>
-        もし経済を「身体」にたとえるなら、主要メディアはいまなお
-        <span class="highlight">40度の高熱を出していた過去のカルテ</span>
-        を振り回しながら、「患者は重症だ」と叫び続ける医者のようなものだ。
-    </p>
+            <div class="section-title">1. 「関税＝インフレ」という教条主義的神話の崩壊</div>
+            <p>関税というマクロ経済の政策を、ただ一方的な「インフレの万能の悪役」としてのみ描写するメディアの論調は、<b>料理を一度もしたことのない人間がレシピ本の上辺だけを批判している</b>ようなものである。現実の市場は、単一の変数だけで動くほど単純ではない。</p>
+            
+            <p>実際のサプライチェーンにおいては、エネルギー価格の劇的な低下、グローバルおよび国内物流コストの縮小、そして何よりも国内供給力（生産体制）の力強い回復が、関税によって生じるはずだった理論上の上昇圧力を完全に相殺・打ち消している。この多角的なダイナミズムをメディアは全く見ようとしない。</p>
 
-    <p>
-        だが最新の血液検査――CPI、実質賃金、可処分所得――は明確に示している。
-        熱は下がり、脈は安定し、むしろ
-        <span class="highlight">筋肉が戻り始めている</span>。
-    </p>
+            <div class="insight-box">
+                <b>🇺🇸 国家経済会議（NEC）委員長 ケビン・ハセット氏の分析：</b><br>
+                「今回のCPI（消費者物価指数）は <span class="focus-text">Absolute Blockbuster（絶対的な大勝利）</span>だ」<br><br>
+                事前の市場予測に関わった61人の経済エコノミストのうち、誰一人としてこの良好な数値を正確に言い当てられなかった。この劇的なミスマッチという事実は、彼らの「予測が外れた」というレベルの話ではない。彼らが拠って立つ<b>「経済の地図そのものが根本から間違っていた」</b>ことを意味している。
+            </div>
 
-    <h2>「関税＝インフレ」という神話の崩壊</h2>
+            <div class="section-title">2. 「レジでの真実」はどの評論よりも雄弁である</div>
+            <p>どれほどメディアが紙面や画面を通じて「経済危機」のナラティブを叫び立てようとも、日々キッチンに立ち、生活を営む市井の人間は肌感覚で真実を掴んでいる。株価のような抽象的なチャートの話をしているのではない。私たちの「生活の重さ」そのものが確実に軽くなっているというファクトだ。</p>
+            
+            <ul>
+                <li><span class="bold-keyword">卵の価格：</span>前年比で<span class="focus-text">25％安</span>を記録</li>
+                <li><span class="bold-keyword">エネルギー：</span>ガソリン価格の明確な下落</li>
+                <li><span class="bold-keyword">サービス：</span>航空運賃および宿泊費の負担軽減</li>
+            </ul>
+            <p>数字そのものは決して嘘をつかないが、特定の意図を持ったメディアによる「解釈」は平然と嘘をつく。レジの前で目にする現実こそが、最も信頼に足る経済指標である。</p>
 
-    <p>
-        関税を万能の悪役として描く論調は、
-        <span class="highlight">料理を一度もしたことのない人間がレシピを批判する</span>
-        ようなものだ。
-    </p>
+            <div class="section-title">3. ブームは「これから」始まる</div>
+            <p>ホワイトハウスが現在提示している一連のデータは、これが単なる一時的な回復（終着点）ではないという事実を示している。<span class="bold-keyword">「インフレの低下」と「実質賃金の上昇」が同時に発生している状態</span>は、航海にたとえるなら、船に対して「強力な追い風」と「完全に張られた帆」が同時に揃った絶好の瞬間に等しい。</p>
 
-    <p>
-        現実には、エネルギー価格の低下、物流コストの縮小、国内供給力の回復が、
-        関税による理論上の上昇圧力を完全に打ち消している。
-    </p>
+            <div class="quote-box">
+                「ブームは、始まったばかりだ（The boom has just begun.）」<br>
+                ―― カロライン・レヴィット報道官
+            </div>
+            
+            <p>報道官のこの言葉は、過剰な演出ではなく、現在の実体経済の堅実な足取りをそのまま言語化したものだ。イデオロギーに染まったフェイクな悲観論に耳を貸す必要はない。私たちが目を向けるべきは、静かに、しかし雄弁に横たわる客観的なデータである。「卵が安くなった」――市民にとって、答えはそれだけで十分に担保されているのだ。</p>
+        </div>
 
-    <div class="quote">
-        国家経済会議（NEC）委員長 ケビン・ハセット<br>
-        「今回のCPIは Absolute Blockbuster（絶対的な大勝利）だ」
-    </div>
+        <div class="comment-section">
+            <div class="comment-header">読者の意見（942件）</div>
 
-    <p>
-        61人のエコノミストが誰一人として正解を出せなかったという事実は、
-        <span class="highlight">予測が外れた</span>のではなく、
-        <span class="highlight">地図そのものが間違っていた</span>
-        ことを意味している。
-    </p>
+            <div class="comment-card">
+                <span class="user-name">実体経済ウォッチマスター</span>
+                <div class="comment-body">「40度の高熱を出していた過去のカルテを振り回す医者」という比喩が秀逸すぎる。メディアは自分たちが望む「不況・インフレ地獄」というストーリーに現実が従わないから、最新のCPIデータが出ても無理やりネガティブな要素を探して報道している。もうレジの価格を見れば誤魔化せない。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 16,840</div>
+                    <div class="btn">👎 そう思わない 72</div>
+                </div>
+            </div>
 
-    <h2>「レジでの真実」は評論より雄弁だ</h2>
+            <div class="comment-card">
+                <span class="user-name">キッチンに立つ一市民</span>
+                <div class="comment-body">本当にそう。卵が25%安くなったのは、毎日の買い物で一番実感できる。テレビのエコノミストが難しい顔をして「関税の長期的リスクが〜」とか言っている横で、生活費が軽くなっている事実。ハセット氏の「地図が間違っている」という指摘は的を射ている。</div>
+                <div class="stats">
+                    <div class="btn btn-up">👍 そう思う 13,910</div>
+                    <div class="btn">👎 そう思わない 38</div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    <p>
-        卵は25％安い。ガソリンは下がった。航空運賃も、宿泊費も軽くなった。
-        これは株価の話ではない。
-        <span class="highlight">生活の重さが軽くなった</span>という話だ。
-    </p>
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div class="sidebar-title">📊 経済の「カルテ（旧解釈）」vs「血液検査（現実）」</div>
+            <table class="analysis-table">
+                <thead>
+                    <tr>
+                        <th>指標・論点</th>
+                        <th>メディアの悲観論カルテ</th>
+                        <th>最新のデータ血液検査</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>関税の影響</b></td>
+                        <td class="alert-text">即座にインフレ直撃</td>
+                        <td>エネルギー下落・国内供給力回復で<span class="focus-text">完全に相殺</span></td>
+                    </tr>
+                    <tr>
+                        <td><b>市場予測</b></td>
+                        <td>61人の専門家が危機を予測</td>
+                        <td>全員が予測を外し、CPIは<span class="focus-text">「絶対的大勝利」</span></td>
+                    </tr>
+                    <tr>
+                        <td><b>生活実感</b></td>
+                        <td>物価高騰の継続を主張</td>
+                        <td><b>卵25%下落</b>、ガソリン・航空運賃が軒並み軽量化</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <p>
-        どれほど「危機」を叫んでも、日々キッチンに立つ人間は知っている。
-        <br>
-        <span class="highlight">
-            数字は嘘をつかないが、解釈は嘘をつく。
-        </span>
-    </p>
+        <div class="sidebar-box">
+            <div class="sidebar-title">⚓ 経済ブームを加速させる「揃った両輪」</div>
+            <div style="font-size:12px; line-height: 1.7;">
+                <b style="color:#047857;">● 追い風：インフレ率の確実な低下</b><br>
+                サプライチェーンの効率化とエネルギーコストの引き下げにより、物価上昇圧力が急速に沈静化。<br><br>
+                <b style="color:#047857;">● 強固な帆：実質賃金・可処分所得の上昇</b><br>
+                物価が下がる一方で、労働者の手取りと実質的な購買力が向上。消費主導の健全な経済基盤を構築。<br><br>
+                <b style="color:#047857;">● 報道官の総括</b><br>
+                「ブームは、始まったばかりだ。」フェイクな悲観の地図を捨て、現場のファクトを見る局面へ。
+            </div>
+        </div>
 
-    <h2>ブームは「これから」だ</h2>
-
-    <p>
-        ホワイトハウスが示しているのは、これは終着点ではないという事実だ。
-        インフレ低下と実質賃金上昇が同時に起きる状態は、
-        <span class="highlight">追い風と帆が同時に揃った船</span>
-        に等しい。
-    </p>
-
-    <p>
-        カロライン・レヴィット報道官の言葉は、そのまま現実を言い表している。
-    </p>
-
-    <div class="quote">
-        「ブームは、始まったばかりだ」
-    </div>
-
-    <p>
-        フェイクな悲観論より、静かなデータを見よ。
-        卵が安くなった――それだけで、答えは十分だ。
-    </p>
-
-    <div class="footer">
-        © Column / Economic Analysis – Trump Administration 2.0
-    </div>
-
+        <div class="sidebar-box" style="background:#f0fdf4; border:1px solid #bbf7d0; text-align:center;">
+            <span style="font-weight:bold; color:#166534; font-size:13px; display:block; margin-bottom:5px;">📌 提言の要約</span>
+            <p style="font-size:11px; text-align:left; margin:0; line-height:1.5;">
+                数字は嘘をつかないが、解釈（メディア）は嘘をつく。理論上の恐怖を煽る評論よりも、目の前の「卵の値下げ」というレジでの真実こそが、現在の経済の正しさを証明している。
+            </p>
+        </div>
+    </aside>
 </div>
-
-<div class="flag-line"></div>
 
 </body>
 </html>
