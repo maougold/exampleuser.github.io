@@ -2,334 +2,326 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=420, initial-scale=1.0">
-<title>スペイン政治用語・スラング｜Xスクショ用</title>
-
+<title>【スペイン政治スラング】Xスクショで一発理解！情熱と冷笑のネット俗語・政党辞典</title>
 <style>
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: radial-gradient(circle at top, #FFD700, #ffffff 60%);
-    display: flex;
-    justify-content: center;
-}
+    body { background-color: #f8fafc; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #0f172a; line-height: 1.7; margin: 0; padding-bottom: 50px; }
+    .container { max-width: 1100px; margin: 0 auto; display: flex; gap: 25px; padding: 20px; }
+    
+    /* メインコンテンツ */
+    .main-content { flex: 7; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+    .article-header { padding: 30px 25px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #fab005 0%, #ff3e3e 100%); color: #fff; }
+    .category-tag { background: #1e293b; color: #fff; font-size: 11px; padding: 3px 8px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+    .article-title { font-size: 24px; font-weight: 800; margin: 5px 0 15px 0; line-height: 1.4; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+    .publish-date { font-size: 12px; color: #ffebcc; }
+    
+    .article-body { padding: 25px; font-size: 16px; }
+    .intro-box { background: #fffbeb; border-left: 5px solid #d97706; padding: 15px; margin-bottom: 30px; border-radius: 0 4px 4px 0; font-size: 15px; }
+    
+    .section-title { font-size: 19px; font-weight: bold; color: #0f172a; border-bottom: 2px solid #ef4444; padding-bottom: 6px; margin-top: 35px; margin-bottom: 15px; }
+    
+    /* Xスクショ風ボックス */
+    .x-post { background: #ffffff; border: 1px solid #e1e8ed; border-radius: 12px; padding: 15px; margin: 12px 0 25px 0; max-width: 550px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .x-user-info { display: flex; align-items: center; margin-bottom: 10px; }
+    .x-avatar { width: 40px; height: 40px; background: #94a3b8; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; font-size: 14px; }
+    .x-name { font-weight: bold; color: #0f172a; font-size: 14px; }
+    .x-handle { color: #536471; font-size: 13px; margin-left: 5px; }
+    .x-text { font-size: 15px; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
+    .x-context-tag { font-size: 12px; color: #475569; font-weight: bold; margin-top: 8px; display: block; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; width: fit-content; }
+    
+    /* 単語タイトル */
+    .word-definition { font-size: 18px; font-weight: bold; color: #1e3a8a; margin-top: 25px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+    .word-es { font-size: 19px; color: #b91c1c; font-weight: 800; }
+    .word-ja { font-size: 14px; color: #475569; font-weight: bold; }
+    .word-desc { font-size: 14px; color: #334155; margin-left: 5px; margin-bottom: 10px; }
+    .warning-badge { background: #fee2e2; color: #991b1b; font-size: 11px; padding: 2px 6px; font-weight: bold; border-radius: 4px; }
 
-.wrapper {
-    width: 420px;
-    background: linear-gradient(180deg, #fff0f0, #ffffff);
-    padding: 18px 14px 40px;
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 18px;
-}
-.header .flag { font-size: 42px; }
-.header h1 {
-    margin: 6px 0 0;
-    font-size: 20px;
-    font-weight: 900;
-    color: #C60B1E;
-}
-.header p {
-    margin: 4px 0 0;
-    font-size: 12px;
-    color: #444;
-}
-
-.term-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 18px;
-    margin: 24px 0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    position: relative;
-}
-
-.term-badge {
-    position: absolute;
-    top: -12px;
-    left: 16px;
-    background: linear-gradient(45deg, #C60B1E, #FFAA00);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 12px;
-}
-
-.term-title {
-    font-size: 26px;
-    font-weight: 900;
-    color: #C60B1E;
-}
-.term-sub {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-.term-desc {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #333;
-}
-
-.warning {
-    margin-top: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #d40000;
-}
-
-.tweet {
-    margin-top: 12px;
-    background: #f5f8fa;
-    border-radius: 14px;
-    padding: 12px;
-    font-size: 13px;
-}
-.tweet .user {
-    font-weight: 700;
-    color: #C60B1E;
-}
-.tweet .note {
-    margin-top: 6px;
-    font-size: 12px;
-    color: #555;
-}
-
-.footer {
-    text-align: center;
-    font-size: 11px;
-    color: #555;
-    margin-top: 30px;
-}
+    /* サイドバー */
+    .sidebar { flex: 3; }
+    .sidebar-box { background: #fff; padding: 18px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .sidebar-title { font-size: 14px; font-weight: bold; border-bottom: 2px solid #0f172a; padding-bottom: 6px; margin-bottom: 15px; color: #b91c1c; }
+    
+    /* ミニテーブル */
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .mini-table th, .mini-table td { border: 1px solid #e2e8f0; padding: 6px; text-align: left; }
+    .mini-table th { background: #f8fafc; }
 </style>
 </head>
-
 <body>
-<div class="wrapper">
 
-<div class="header">
-    <a href="top.html" class="back-link">← 注意書きページに戻る</a>
-    <div class="flag">🇪🇸</div>
-    <h1>スペイン政治用語・スラング</h1>
-    <p>Xスクショで一発理解</p>
+<div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">欧州政治・タイムライン解説</span>
+            <h1 class="article-title">【欧州右派躍進vs左派連合】これぞ現代のプロレス！スペイン政治の主要政党・キーマンとSNS飛び交う「三大蔑称」一発マスター</h1>
+            <p class="publish-date">最終更新：2026年5月17日 / 欧州ネット動向検証班</p>
+        </article>
+
+        <div class="article-body">
+            <div class="intro-box">
+                <b>🇪🇸 伝統の国スペイン、タイムラインはカオス状態</b><br>
+                不法移民問題、カタルーニャ独立騒動、そして連立政権の駆け引き。スペインのX（旧Twitter）では、伝統的な大政党から急進派、新興右派までが入り乱れ、日々火花を散らしています。現地の政治バトルを読み解く重要ワードを、スクショ風投稿とともに一挙解説！
+            </div>
+
+            <div class="section-title">1. スペインを動かす「主要4大政党＋アルファ」</div>
+            
+            <div class="word-definition">
+                <span class="word-es" style="color:#00a352;">Vox</span>
+                <span class="word-ja">（ボックス）</span>
+            </div>
+            <div class="word-desc">スペインの右派・国民保守政党。反移民、強力な国家主義、カトリック等の伝統的価値観を重視。左派メディアと真っ向から戦う姿勢でネット上の熱狂的ファンが多い。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#00a352;">V</div>
+                    <div><span class="x-name">保守派の愛国スピリット</span><span class="x-handle">@esp_patriot</span></div>
+                </div>
+                <div class="x-text">Voxは国家を守るために正しい選択だ。</div>
+                <span class="x-context-tag">👉 右派保守政党への支持表明</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es" style="color:#0055a5;">PP</span>
+                <span class="word-ja">（国民党）</span>
+            </div>
+            <div class="word-desc">スペインの伝統的な主要中道右派政党。経済自由主義や安定的保守を掲げ、ビジネス層や高齢層から手堅い支持を集める。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#0055a5;">P</div>
+                    <div><span class="x-name">安定経済クラブ</span><span class="x-handle">@barna_eco</span></div>
+                </div>
+                <div class="x-text">PPは経済と安定のための選択だ。</div>
+                <span class="x-context-tag">👉 中道右派政党による現実路線を評価</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es" style="color:#ff0000;">PSOE</span>
+                <span class="word-ja">（社会労働党）</span>
+            </div>
+            <div class="word-desc">現在政権の中枢を担う、主要中道左派政党。福祉の充実や社会民主主義を掲げ、労働組合や地方自治州に強固な地盤を持つ。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#ff0000;">S</div>
+                    <div><span class="x-name">社会保障を考える会</span><span class="x-handle">@obrero_psoe</span></div>
+                </div>
+                <div class="x-text">PSOEの政策は労働者に優しい。</div>
+                <span class="x-context-tag">👉 中道左派政党の福祉政策への肯定</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es" style="color:#eb6100;">Ciudadanos</span>
+                <span class="word-ja">（市民党）</span>
+            </div>
+            <div class="word-desc">親EU、経済自由主義を掲げる中道リベラル政党。マドリードやバルセロナなど都市部のインテリ・現役世代に支持者が多い（通称 C's）。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#eb6100;">C</div>
+                    <div><span class="x-name">アーバン・リベラル</span><span class="x-handle">@ciudadano_urban</span></div>
+                </div>
+                <div class="x-text">C’sの政策は都会向けだね。</div>
+                <span class="x-context-tag">👉 中道リベラルの都市型政策への言及</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es" style="color:#7b1fa2;">Podemos</span>
+                <span class="word-ja">（ポデモス）</span>
+            </div>
+            <div class="word-desc">リーマンショック後の緊縮財政に怒った若者たちが作った左派急進政党。「社会正義」や格差是正を叫び、ネット戦略に非常に長けている。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#7b1fa2;">P</div>
+                    <div><span class="x-name">新世代の波</span><span class="x-handle">@jovenes_unidos</span></div>
+                </div>
+                <div class="x-text">Podemitasは若者の支持が厚い。</div>
+                <span class="x-context-tag">👉 左派急進派のコア層を分析</span>
+            </div>
+
+            <div class="section-title">2. タイムラインの主役：重要政治家と注目地域</div>
+
+            <div class="word-definition">
+                <span class="word-es">Santiago Abascal</span>
+                <span class="word-ja">（サンティアゴ・アバスカル）</span>
+            </div>
+            <div class="word-desc">新興右派Voxのカリスマ党首。たくましい髭を蓄え、熱い演説で「古き良き強いスペインを取り戻す」と語りかける、右派コミュニティの絶対的アイコン。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#0f172a;">A</div>
+                    <div><span class="x-name">マドリード愛国青年</span><span class="x-handle">@viva_santi</span></div>
+                </div>
+                <div class="x-text">アバスカルの演説はいつも熱い。</div>
+                <span class="x-context-tag">👉 Vox党首のカリスマ性を賞賛</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es">Pedro Sánchez</span>
+                <span class="word-ja">（ペロド・サンチェス）</span>
+            </div>
+            <div class="word-desc">現スペイン首相にしてPSOE党首。端正なルックスと冷徹な政治手腕を持ち、左派・地域政党と果敢に連立を組む中道左派のリーダー。右派からは徹底的に「国を切り売りする男」と叩かれる。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#ef4444;">S</div>
+                    <div><span class="x-name">マドリード進歩派ジャーナル</span><span class="x-handle">@moncloa_view</span></div>
+                </div>
+                <div class="x-text">サンチェスの政策は中道左派色が強い。</div>
+                <span class="x-context-tag">👉 首相の政治的スタンスへの指摘</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es">Pablo Iglesias</span>
+                <span class="word-ja">（パブロ・イグレシアス）</span>
+            </div>
+            <div class="word-desc">ポデモス（Podemos）の元党首であり、左派急進運動の象徴。ポニーテールがトレードマークだった。政界引退後もメディア等を通じて若者左派層への影響力を保持している。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#6d28d9;">I</div>
+                    <div><span class="x-name">左派思想アカデミー</span><span class="x-handle">@pablo_legacy</span></div>
+                </div>
+                <div class="x-text">イグレシアスはまだ若者の支持を集める。</div>
+                <span class="x-context-tag">👉 元左派エースの底力を評価</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es">María Guardiola</span>
+                <span class="word-ja">（マリア・グアルディオラ）</span>
+            </div>
+            <div class="word-desc">中道右派PP（国民党）所属。地方選挙で右派Voxとの連立交渉を巡り、妥協しない姿勢を見せて全国的な話題となった、地域政治で強い発言力を持つ女性政治家。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#2563eb;">G</div>
+                    <div><span class="x-name">地方自治ウオッチ</span><span class="x-handle">@guardiola_fans</span></div>
+                </div>
+                <div class="x-text">グアルディオラは政策に新風を吹き込む。</div>
+                <span class="x-context-tag">👉 地方発の注目政治家への期待</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-ja">注目自治州：Aragón（アラゴン）／ Extremadura（エストレマドゥーラ）</span>
+            </div>
+            <div class="word-desc"><b>アラゴン：</b>北東部に位置し、歴史的にアラゴン王国として名高い。<b>エストレマドゥーラ：</b>ポルトガル国境沿いの農業が盛んな西部地域。これら地方自治州の選挙結果や右派・左派の連立劇が、スペイン全体の国政を揺るがすためXのトレンドの常連。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#475569;">E</div>
+                    <div><span class="x-name">自治州選挙速報</span><span class="x-handle">@elecciones_ccaa</span></div>
+                </div>
+                <div class="x-text">アラゴンの政治情勢は注目だ。／ エストレマドゥーラは伝統文化が残る。</div>
+                <span class="x-context-tag">👉 地方の動向が国政のキャスティングボートを握る</span>
+            </div>
+
+            <div class="section-title">3. レスバで使われる「三大蔑称・ネット俗語」</div>
+            <p>※相手を皮肉ったり、思考停止の支持者だと煽る際にタイムラインに大量投下されるスラングです。</p>
+
+            <div class="word-definition">
+                <span class="word-es">Casta</span>
+                <span class="word-ja">（カスタ／既得権益エリート）</span>
+                <span class="warning-badge">⚠️ 汎用批判ワード</span>
+            </div>
+            <div class="word-desc">国民の苦しみを無視して、自分たちの身分や甘い汁を守り続ける政治家や特権階級を指す蔑称。元々は左派ポデモスが叫び始めたが、今では右派も左派政権の腐敗を叩く時に使うブーメランワード。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#334155;">C</div>
+                    <div><span class="x-name">怒れるタックスペイヤー</span><span class="x-handle">@indignado_vlc</span></div>
+                </div>
+                <div class="x-text">もうカスタは変わらない。</div>
+                <span class="x-context-tag">👉 政治エリート層全体への強い不信感</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es">Podemita</span>
+                <span class="word-ja">（ポデミタ／お花畑左派）</span>
+                <span class="warning-badge">⚠️ 左派急進派への蔑称</span>
+            </div>
+            <div class="word-desc">ポデモス（Podemos）の熱狂的な支持者たちを右派や中道が揶揄する時の呼称。「理想ばかりで財源を無視する」「過激なポリコレに染まっている」という冷笑の意味。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#1e3a8a;">R</div>
+                    <div><span class="x-name">リアル経済現実主義</span><span class="x-handle">@realista_bcn</span></div>
+                </div>
+                <div class="x-text">Podemitasは現実を見ろ。</div>
+                <span class="x-context-tag">👉 理想主義的な左派急進支持者への一喝</span>
+            </div>
+
+            <div class="word-definition">
+                <span class="word-es">Abascalista / Voxero</span>
+                <span class="word-ja">（アバスカリスタ／ボクセロ／極右信者）</span>
+                <span class="warning-badge">⚠️ 右派への蔑称</span>
+            </div>
+            <div class="word-desc">Vox党首アバスカルの熱狂信者（Abascalista）、およびVox支持者（Voxero）をリベラル・左派側が冷笑する言葉。「陰謀論者」「ネット右翼」的なニュアンスを含んで使われる。</div>
+            <div class="x-post">
+                <div class="x-user-info">
+                    <div class="x-avatar" style="background:#7f1d1d;">Z</div>
+                    <div><span class="x-name">反ファシズム戦線</span><span class="x-handle">@antifa_vlc</span></div>
+                </div>
+                <div class="x-text">Abascalistasはまた騒いでいる。</div>
+                <span class="x-context-tag">👉 Vox支持者たちのSNS運動を冷笑</span>
+            </div>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div class="sidebar-title">📊 スペイン政党・右派左派マップ</div>
+            <table class="mini-table">
+                <thead>
+                    <tr>
+                        <th>政党</th>
+                        <th>スタンス</th>
+                        <th>代表アイコン</th>
+                        <th>ネットの俗称</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#00a352; font-weight:bold;">Vox</td>
+                        <td>右派・国家主義</td>
+                        <td>S.アバスカル</td>
+                        <td style="color:#b91c1c;">Voxero / Abascalista</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#0055a5; font-weight:bold;">PP</td>
+                        <td>中道右派・経済重視</td>
+                        <td>M.グアルディオラ(地方)</td>
+                        <td>保守派・現実路線</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#eb6100; font-weight:bold;">C's</td>
+                        <td>中道リベラル</td>
+                        <td>都市インテリ層</td>
+                        <td>都会向けリベラル</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#ff0000; font-weight:bold;">PSOE</td>
+                        <td>中道左派・政権与党</td>
+                        <td>P.サンチェス(首相)</td>
+                        <td>エスタブリッシュメント</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#7b1fa2; font-weight:bold;">Podemos</td>
+                        <td>左派急進・反緊縮</td>
+                        <td>P.イグレシアス</td>
+                        <td style="color:#b91c1c;">Podemita</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sidebar-box">
+            <div class="sidebar-title">⚡ ネットレスバの対立軸</div>
+            <div style="font-size: 11px; line-height: 1.6;">
+                <b style="color:#b91c1c;">【右派（Voxeros）の武器】</b><br>
+                ・不法移民問題の告発<br>
+                ・伝統的な「一つのスペイン」の死守<br>
+                ・サンチェス首相への「売国」批判<br><br>
+                <b style="color:#7b1fa2;">【左派（Podemitas）の武器】</b><br>
+                ・LGBTQ・社会正義の連呼<br>
+                ・Voxに対する「ファシスト」認定<br>
+                ・格差是正、富裕層増税の要求
+            </div>
+        </div>
+
+        <div class="sidebar-box" style="background: #fff5f5; border: 1px solid #fed7d7; font-size: 11px;">
+            <b style="color:#9b1c1c; display:block; margin-bottom:5px;">📌 観戦のポイント</b>
+            スペインのタイムラインの特徴は、かつての経済危機のトラウマ（反緊縮）と、カタルーニャ地方などの「国体の分裂リスク」という2つの地雷が常に埋まっている点です。「Casta（特権階級）」という単語が流れてきたら、それが現政権（左派）に向けられているのか、あるいは伝統的な右派エリートに向けられているのか、文脈を見極めるのがコツです。
+        </div>
+    </aside>
 </div>
 
-<!-- Vox -->
-<div class="term-card">
-<div class="term-badge">右派政党</div>
-<div class="term-title">Vox</div>
-<div class="term-sub">ボックス</div>
-<div class="term-desc">
-スペインの右派・国民保守政党。反移民、国家主義、伝統価値重視。
-</div>
-<div class="tweet">
-<div class="user">@usuario1</div>
-Voxは国家を守るために正しい選択だ。
-<div class="note">👉 右派保守政党</div>
-</div>
-</div>
-
-<!-- PP -->
-<div class="term-card">
-<div class="term-badge">中道右派</div>
-<div class="term-title">PP</div>
-<div class="term-sub">国民党</div>
-<div class="term-desc">
-主要中道右派政党。経済自由主義・保守価値観を掲げる。
-</div>
-<div class="tweet">
-<div class="user">@usuario2</div>
-PPは経済と安定のための選択だ。
-<div class="note">👉 中道右派政党</div>
-</div>
-</div>
-
-<!-- PSOE -->
-<div class="term-card">
-<div class="term-badge">中道左派</div>
-<div class="term-title">PSOE</div>
-<div class="term-sub">社会労働党</div>
-<div class="term-desc">
-主要中道左派政党。福祉重視・社会民主主義。
-</div>
-<div class="tweet">
-<div class="user">@usuario3</div>
-PSOEの政策は労働者に優しい。
-<div class="note">👉 中道左派政党</div>
-</div>
-</div>
-
-<!-- Ciudadanos -->
-<div class="term-card">
-<div class="term-badge">中道リベラル</div>
-<div class="term-title">Ciudadanos</div>
-<div class="term-sub">市民党</div>
-<div class="term-desc">
-中道リベラル政党。親EU・経済自由主義。都市部支持者が多い。
-</div>
-<div class="tweet">
-<div class="user">@usuario4</div>
-C’sの政策は都会向けだね。
-<div class="note">👉 中道リベラル政党</div>
-</div>
-</div>
-
-<!-- Podemos -->
-<div class="term-card">
-<div class="term-badge">左派急進</div>
-<div class="term-title">Podemos</div>
-<div class="term-sub">ポデモス</div>
-<div class="term-desc">
-左派急進政党。反緊縮・社会正義・若者支持。
-</div>
-<div class="tweet">
-<div class="user">@usuario5</div>
-Podemitasは若者の支持が厚い。
-<div class="note">👉 左派急進派</div>
-</div>
-</div>
-
-<!-- Santiago Abascal -->
-<div class="term-card">
-<div class="term-badge">党首</div>
-<div class="term-title">Santiago Abascal</div>
-<div class="term-sub">サンティアゴ・アバスカル</div>
-<div class="term-desc">
-Vox党の党首。右派リーダーとして全国的に知られる。
-</div>
-<div class="tweet">
-<div class="user">@usuario6</div>
-アバスカルの演説はいつも熱い。
-<div class="note">👉 Vox党首</div>
-</div>
-</div>
-
-<!-- Pedro Sánchez -->
-<div class="term-card">
-<div class="term-badge">首相</div>
-<div class="term-title">Pedro Sánchez</div>
-<div class="term-sub">ペドロ・サンチェス</div>
-<div class="term-desc">
-PSOE党首・首相。中道左派。政策は福祉重視。
-</div>
-<div class="tweet">
-<div class="user">@usuario7</div>
-サンチェスの政策は中道左派色が強い。
-<div class="note">👉 PSOE党首・首相</div>
-</div>
-</div>
-
-<!-- Pablo Iglesias -->
-<div class="term-card">
-<div class="term-badge">左派急進</div>
-<div class="term-title">Pablo Iglesias</div>
-<div class="term-sub">パブロ・イグレシアス</div>
-<div class="term-desc">
-元Podemos党首。左派急進の象徴。
-</div>
-<div class="tweet">
-<div class="user">@usuario8</div>
-イグレシアスはまだ若者の支持を集める。
-<div class="note">👉 Podemos元党首</div>
-</div>
-</div>
-
-<!-- María Guardiola -->
-<div class="term-card">
-<div class="term-badge">政治家</div>
-<div class="term-title">María Guardiola</div>
-<div class="term-sub">マリア・グアルディオラ</div>
-<div class="term-desc">
-前回選挙で注目された政治家。地域政治で発言力あり。
-</div>
-<div class="tweet">
-<div class="user">@usuario9</div>
-グアルディオラは政策に新風を吹き込む。
-<div class="note">👉 注目政治家</div>
-</div>
-</div>
-
-<!-- Aragón -->
-<div class="term-card">
-<div class="term-badge">自治州</div>
-<div class="term-title">Aragón</div>
-<div class="term-sub">アラゴン</div>
-<div class="term-desc">
-スペイン北東部の自治州。歴史的には中世王国アラゴン。
-</div>
-<div class="tweet">
-<div class="user">@usuario10</div>
-アラゴンの政治情勢は注目だ。
-<div class="note">👉 北東部自治州</div>
-</div>
-</div>
-
-<!-- Extremadura -->
-<div class="term-card">
-<div class="term-badge">自治州</div>
-<div class="term-title">Extremadura</div>
-<div class="term-sub">エストレマドゥーラ</div>
-<div class="term-desc">
-スペイン西部、ポルトガル国境近くの農業中心地域。
-</div>
-<div class="tweet">
-<div class="user">@usuario11</div>
-エストレマドゥーラは伝統文化が残る。
-<div class="note">👉 西部自治州</div>
-</div>
-</div>
-
-<!-- スラング・蔑称 -->
-<div class="term-card">
-<div class="term-badge">蔑称</div>
-<div class="term-title">Casta</div>
-<div class="term-sub">カスタ</div>
-<div class="term-desc">
-政治エリート・既得権益層を指す蔑称。広く批判対象に使われる。
-</div>
-<div class="tweet">
-<div class="user">@usuario12</div>
-もうカスタは変わらない。
-<div class="note">👉 政治エリート批判</div>
-</div>
-</div>
-
-<div class="term-card">
-<div class="term-badge">蔑称</div>
-<div class="term-title">Podemita</div>
-<div class="term-sub">ポデミタ</div>
-<div class="term-desc">
-Podemos支持者を揶揄する呼称。左派急進支持者を批判。
-</div>
-<div class="tweet">
-<div class="user">@usuario13</div>
-Podemitasは現実を見ろ。
-<div class="note">👉 Podemos支持者蔑称</div>
-</div>
-</div>
-
-<div class="term-card">
-<div class="term-badge">蔑称</div>
-<div class="term-title">Abascalista / Voxero</div>
-<div class="term-sub">アバスカリスタ / ボクセロ</div>
-<div class="term-desc">
-Vox党支持者の俗称。ネットでは皮肉・批判文脈で使用。
-</div>
-<div class="tweet">
-<div class="user">@usuario14</div>
-Abascalistasはまた騒いでいる。
-<div class="note">👉 Vox支持者蔑称</div>
-</div>
-</div>
-
-<div class="footer">
-2026年版｜Xスクショ前提政治用語集
-</div>
-
-</div>
 </body>
 </html>
