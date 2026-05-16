@@ -1,232 +1,199 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elise Vanessaの超入門ガイド：アメリカ政治・用語集</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(-45deg, #228B22, #FF0000, #FFFFFF, #FFD700, #006400);
-            background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
-            color: #333333;
-            margin: 0;
-            padding: 40px 20px;
-            line-height: 1.7;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-        }
+<meta charset="UTF-8">
+<title>【超入門】アメリカ政治の「裏ルール」とスラング解剖ガイド</title>
+<style>
+    body { background-color: #f4f6f9; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #1e293b; line-height: 1.7; margin: 0; padding-bottom: 50px; }
+    .container { max-width: 1100px; margin: 0 auto; display: flex; gap: 25px; padding: 20px; }
+    
+    /* メインコンテンツ */
+    .main-content { flex: 7; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+    .article-header { padding: 30px 25px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: #fff; }
+    .category-tag { background: #ef4444; color: #fff; font-size: 11px; padding: 3px 8px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+    .article-title { font-size: 26px; font-weight: 800; margin: 5px 0 15px 0; line-height: 1.4; }
+    .publish-date { font-size: 12px; color: #93c5fd; }
+    
+    .article-body { padding: 25px; font-size: 16px; }
+    .summary-box { background: #f8fafc; border-left: 5px solid #3b82f6; padding: 15px; margin-bottom: 30px; border-radius: 0 4px 4px 0; }
+    
+    .section-title { font-size: 20px; font-weight: bold; color: #0f172a; border-bottom: 2px solid #1e3a8a; padding-bottom: 6px; margin-top: 35px; margin-bottom: 15px; }
+    .sub-section-title { font-size: 16px; font-weight: bold; color: #1e3a8a; margin-top: 20px; margin-bottom: 8px; display: flex; align-items: center; }
+    
+    /* スラングハイライト */
+    .slang-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #ef4444; }
+    .slang-name { font-size: 17px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
+    .slang-translation { font-size: 12px; color: #64748b; font-weight: normal; margin-left: 8px; }
+    
+    /* 色分け */
+    .dem-blue { color: #1d4ed8; font-weight: bold; }
+    .rep-red { color: #b91c1c; font-weight: bold; }
+    .focus-text { color: #d97706; font-weight: bold; }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .emojis-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .emoji-particle {
-            position: absolute;
-            font-size: 40px;
-            opacity: 0.8;
-            animation: floatUpEmoji 18s linear infinite;
-        }
-
-        @keyframes floatUpEmoji {
-            0% { bottom: -100px; opacity: 0; transform: translateX(0) rotate(0deg); }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { bottom: 100%; opacity: 0; transform: translateX(80px) rotate(20deg); }
-        }
-
-        .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; font-size: 50px; }
-        .emoji-particle:nth-child(2) { left: 15%; animation-delay: 2s; font-size: 45px; }
-        .emoji-particle:nth-child(3) { left: 25%; animation-delay: 4s; font-size: 40px; }
-        .emoji-particle:nth-child(4) { left: 35%; animation-delay: 6s; font-size: 55px; }
-        .emoji-particle:nth-child(5) { left: 45%; animation-delay: 8s; font-size: 50px; }
-        .emoji-particle:nth-child(6) { left: 55%; animation-delay: 10s; font-size: 40px; }
-        .emoji-particle:nth-child(7) { left: 65%; animation-delay: 12s; font-size: 45px; }
-        .emoji-particle:nth-child(8) { left: 75%; animation-delay: 14s; font-size: 60px; }
-        .emoji-particle:nth-child(9) { left: 85%; animation-delay: 16s; font-size: 35px; }
-        .emoji-particle:nth-child(10) { left: 95%; animation-delay: 1s; font-size: 50px; }
-
-        .content {
-            position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            color: #FF0000;
-        }
-
-        h2 {
-            font-size: 24px;
-            color: #228B22;
-            margin-top: 40px;
-            border-bottom: 2px solid #1da1f2;
-            padding-bottom: 8px;
-        }
-
-        .term {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 12px;
-            text-align: left;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .term-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #1da1f2;
-            margin-bottom: 8px;
-        }
-
-        .term-desc {
-            font-size: 16px;
-        }
-
-        footer {
-            margin-top: 60px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        a.back-link {
-            display: block;
-            margin: 30px 0;
-            color: #1da1f2;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-        }
-    </style>
+    /* サイドバー */
+    .sidebar { flex: 3; }
+    .sidebar-box { background: #fff; padding: 18px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .sidebar-title { font-size: 14px; font-weight: bold; border-bottom: 2px solid #0f172a; padding-bottom: 6px; margin-bottom: 15px; color: #0f172a; }
+    
+    /* ミニテーブル */
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .mini-table th, .mini-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+    .mini-table th { background: #f8fafc; }
+</style>
 </head>
 <body>
-    <div class="emojis-container">
-        <div class="emoji-particle">🎍</div>
-        <div class="emoji-particle">⛩</div>
-        <div class="emoji-particle">🧧</div>
-        <div class="emoji-particle">🍊</div>
-        <div class="emoji-particle">🐍</div>
-        <div class="emoji-particle">🎉</div>
-        <div class="emoji-particle">🥮</div>
-        <div class="emoji-particle">🪭</div>
-        <div class="emoji-particle">💮</div>
-        <div class="emoji-particle">🀄</div>
-    </div>
 
-    <div class="content">
-        <a href="top.html" class="back-link">← 注意書きページに戻る</a>
-        <h1>世界政治・アメリカ政治の超入門ガイド</h1>
-        <p>Elise Vanessaの投稿でよく出てくる政治用語やシンボルを、日本人にわかりやすく解説します。<br>
-        風刺画でよく見る「ロバ」や「ゾウ」が何を意味するのかも一目でわかります。</p>
+<div class="container">
+    <main class="main-content">
+        <article class="article-header">
+            <span class="category-tag">アメリカ政治・SNS解読編</span>
+            <h1 class="article-title">【悪用厳禁】Elise Vanessaの投稿が100倍わかる！アメリカ政治の「超入門シンボル」とSNS最旬爆笑スラング大解剖</h1>
+            <p class="publish-date">最終更新日：2026年5月17日 / 政治初心者向けオピニオンアーカイブ</p>
+        </article>
 
-        <h2>基本シンボル</h2>
-        <div class="term">
-            <div class="term-title">民主党（Democratic Party）</div>
-            <div class="term-desc">象徴動物：ロバ（donkey）<br>
-            色：青（blue）<br>
-            イメージ：リベラル・左派・多様性・福祉拡大・気候変動対策・移民受け入れ推進<br>
-            風刺画では「頑固で騒がしいロバ」として描かれることが多いです。</div>
+        <div class="article-body">
+            <div class="summary-box">
+                <b>💡 これさえ読めばアメリカの風刺画やSNSバトルが丸わかり！</b><br>
+                リベラルと保守が毎日血で血を洗う（？）レスバを繰り広げるアメリカSNS界隈。風刺画でおなじみの「ロバとゾウ」の秘密から、ニュースでは教えてくれない痛快な裏スラングまで、日本一わかりやすく解説します！
+            </div>
+
+            <div class="section-title">1. 基本のキ：二大政党の「動物」と「イメージカラー」</div>
+            <p>アメリカのニュースや風刺画で、なぜか頻繁に登場する「ロバ」と「ゾウ」。これは単なる動物園ではなく、二大政党のシンボルです。</p>
+            
+            <div class="sub-section-title"><span class="dem-blue">■ 民主党（Democratic Party）</span></div>
+            <p><b>【象徴動物】</b> <span class="dem-blue">ロバ（Donkey）</span> ／ <b>【テーマカラー】</b> 青<br>
+            <b>【イメージ】</b> リベラル・左派・多様性・福祉拡大・気候変動対策・移民ウェルカム。<br>
+            風刺画では、理想ばかり高くて言うことを聞かない<b>「頑固で騒がしいロバ」</b>としてイジられるのが定番です。</p>
+
+            <div class="sub-section-title"><span class="rep-red">■ 共和党（Republican Party）</span></div>
+            <p><b>【象徴動物】</b> <span class="rep-red">ゾウ（Elephant）</span> ／ <b>【テーマカラー】</b> 赤<br>
+            <b>【イメージ】</b> 保守・右派・伝統重視・減税・銃規制反対・国境強化・アメリカ第一主義（MAGA）。<br>
+            風刺画では、パワーはあるけれど小回りが利かず、トランプ氏に振り回される<b>「大きくて不器用なゾウ」</b>として描かれます。</p>
+
+            <div class="section-title">2. SNS投稿で頻出する「基本用語＆シンボル」</div>
+            
+            <div class="slang-card">
+                <div class="slang-name">MAGA<span class="slang-translation">（Make America Great Again）</span></div>
+                <div>トランプ大統領の不変のスローガン「アメリカを再び偉大に」。これを支持する人々はトレードマークの<b>「赤いMAGA帽子」</b>をかぶっており、今や保守派そのものを指す言葉。</div>
+            </div>
+
+            <div class="slang-card">
+                <div class="slang-name">Woke<span class="slang-translation">（ウォーク／目覚めた）</span></div>
+                <div>元々は「差別や社会的不正に目覚める」という良い意味だった。しかし現在、ネット上では<b>「行き過ぎた政治的正しさ（ポリコレ）」や「極端すぎるヴィーガン・LGBTQ・環境活動家」を冷笑・批判する際のマストワード</b>に。</div>
+            </div>
+
+            <div class="slang-card">
+                <div class="slang-name">Deep State<span class="slang-translation">（ディープステート）</span></div>
+                <div>選挙で選ばれたわけでもないのに、政府の裏で国家を牛耳る「終身官僚」「諜報機関（CIA/FBI）」「軍産複合体」などの影の権力機構。トランプ派にとっての「最大の敵」。</div>
+            </div>
+
+            <div class="slang-card">
+                <div class="slang-name">Fake News / Legacy Media<span class="slang-translation">（フェイクニュース／オールドメディア）</span></div>
+                <div>トランプ氏の代名詞的セリフ。CNNやニューヨーク・タイムズなど、リベラル側に偏った報道ばかりして世論を誘導する主要メディアへの強烈なパンチライン。</div>
+            </div>
+
+            <div class="slang-card">
+                <div class="slang-name">Antifa<span class="slang-translation">（アンティファ）</span></div>
+                <div>「反ファシズム」を掲げつつ、裏では覆面をして街で暴動や破壊行為、略奪を行う極左過激派グループ。トランプ政権時代に「国内テロ組織」としてマークされた。</div>
+            </div>
+
+            <div class="slang-card">
+                <div class="slang-name">RINO<span class="slang-translation">（ライノ／Republican In Name Only）</span></div>
+                <div><b>「名ばかり共和党員」</b>の略称（動物のサイのRhinocerosとかけている）。党籍は共和党なのに、身内であるはずのトランプ氏を批判したりリベラルに日和ったりする裏切り者議員への蔑称。</div>
+            </div>
+
+            <div class="slang-card">
+                <div class="slang-name">Uniparty<span class="slang-translation">（ユニパーティ／一党独裁）</span></div>
+                <div>「民主党も共和党も、プロレスみたいに表で喧嘩してるだけで、裏では同じ利権構造で甘い汁を吸っている一つの巨大政党だ！」という、ワシントンの既得権益層（エスタブリッシュメント）への強烈な批判。</div>
+            </div>
+
+            <div class="section-title">🔥 【追加版】投稿が爆発的に面白くなる最旬アメリカ政治スラング</div>
+            <p>ここからが本番！Elise Vanessa氏の投稿や、アメリカ右派コミュニティで大爆笑を誘っているスパイスの効いた追加スラングです。</p>
+
+            <div class="slang-card" style="border-left-color: #d97706;">
+                <div class="slang-name">NPC<span class="slang-translation">（エヌピーシー／ゲームの背景キャラ）</span></div>
+                <div>ゲームで決まったセリフしか喋らない村人のこと。<b>「メディアの言うことを100%鵜呑みにし、自分で思考せずに『トランプは悪！環境を守れ！』と同じスローガンだけを念仏のように繰り返すリベラル派」</b>を煽る最高に煽り度の高いスラング。</div>
+            </div>
+
+            <div class="slang-card" style="border-left-color: #d97706;">
+                <div class="slang-name">Redpilled<span class="slang-translation">（レッドピルを飲んだ／覚醒した）</span></div>
+                <div>映画『マトリックス』で主人公が真実を知る「赤い薬」を飲んだことに由来。メディアの嘘（青い薬）に気づき、<b>「保守派のリアリズム（真実）に目覚めた元リベラル」</b>を指す。</div>
+            </div>
+
+            <div class="slang-card" style="border-left-color: #d97706;">
+                <div class="slang-name">Based<span class="slang-translation">（ベースド／芯が通った、ブレない）</span></div>
+                <div>周りの批判やポリコレ（Woke）の圧力に屈せず、自分の信念や「不都合な真実」を堂々と言い放つカッコいい政治姿勢への最大級の褒め言葉。「トランプのあの発言、超Basedだわ」という風に使う。</div>
+            </div>
+
+            <div class="slang-card" style="border-left-color: #d97706;">
+                <div class="slang-name">Crying Liberal / TDS<span class="slang-translation">（号泣リベラル／トランプ錯乱症候群）</span></div>
+                <div>トランプ氏が選挙で勝ったり政策を成功させたりするたびに、髪をかきむしって発狂・号泣するリベラル派の様子、および何でもかんでもトランプのせいにする精神状態（Trump Derangement Syndrome）を指すミーム。</div>
+            </div>
+
+            <div class="section-title">3. 歴史的ファクト：民主党側の「隠蔽と捏造」ミーム</div>
+            <p>保守派の投稿で、リベラル派や民主党が徹底的に「ブーメラン」として叩かれる鉄板ネタがこちらです。</p>
+            <ul>
+                <li><b>ロシア疑惑（Russia Hoax）：</b>2016年、オバマ政権・民主党陣営が「トランプはロシアの工作員だ」と大騒ぎしたものの、数年の国家調査で証拠ゼロ。最終的に「民主党側が仕掛けた歴史的捏造（Hoax）」と結論づけられ、メディアの信頼性を失墜させた事件。</li>
+                <li><b>ヒラリーの健康隠蔽（2016）：</b>大統領選中、ヒラリー・クリントン候補が式典で文字通り「卒倒」し、車に荷物のように投げ込まれた衝撃映像。陣営は「ただの肺炎」と押し通したが、保守派からは「国家のリーダーの重篤な問題を隠蔽した」と今でもイジられる。</li>
+                <li><b>バイデン前大統領の機能低下＆がん隠蔽疑惑：</b>在任中、虚空と握手をしたり階段で何度も転んだりしたバイデン氏。側近やリベラルメディアは「健在だ」と言い張り続けたが、退任間際に前立腺がん（骨転移）の公表や認知能力の崩壊が露呈。保守派から「ホワイトハウス最大の隠蔽工作（ガスライティング）」として大批判を浴びた。</li>
+            </ul>
+
+            <p style="margin-top: 30px; font-weight: bold; text-align: center;">
+                さあ、これらの用語を頭に入れて、もう一度Elise Vanessa氏の投稿を読み返してみましょう。<br>
+                アメリカ政治という名の「地上最高のエンターテインメント」の裏側が、クッキリ見えてくるはずです！
+            </p>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <div class="sidebar-title">🇺🇸 二大政党シンボル早見表</div>
+            <table class="mini-table">
+                <thead>
+                    <tr>
+                        <th>政党</th>
+                        <th>動物</th>
+                        <th>カラー</th>
+                        <th>揶揄される特徴</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="dem-blue">民主党</td>
+                        <td>ロバ</td>
+                        <td style="background:#dbeafe; text-align:center;">青</td>
+                        <td>頑固、騒がしい、理想主義（Woke）</td>
+                    </tr>
+                    <tr>
+                        <td class="rep-red">共和党</td>
+                        <td>ゾウ</td>
+                        <td style="background:#fee2e2; text-align:center;">赤</td>
+                        <td>不器用、巨大、トランプに追従</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="term">
-            <div class="term-title">共和党（Republican Party）</div>
-            <div class="term-desc">象徴動物：ゾウ（elephant）<br>
-            色：赤（red）<br>
-            イメージ：保守・右派・伝統重視・減税・銃規制反対・国境強化・アメリカ第一主義<br>
-            風刺画では「大きくて力強いゾウ」として描かれます。</div>
+        <div class="sidebar-box">
+            <div class="sidebar-title">⚡ ネット世論の「二大属性」</div>
+            <div style="font-size: 12px; line-height: 1.6;">
+                <b style="color:#b91c1c;">【Redpill（真実の覚醒）】</b><br>
+                ・メディアの嘘を見抜いた人<br>
+                ・信念がブレない（Based）<br>
+                ・国境強化、減税を支持<br><br>
+                <b style="color:#1d4ed8;">【Woke / NPC（思考停止）】</b><br>
+                ・メディアのオウム返し（NPC）<br>
+                ・過激なポリコレ、環境至上主義<br>
+                ・トランプを見ると発狂（TDS）
+            </div>
         </div>
 
-        <h2>よく出てくる用語</h2>
-        <div class="term">
-            <div class="term-title">MAGA（Make America Great Again）</div>
-            <div class="term-desc">トランプ大統領のスローガン。「アメリカを再び偉大に」。赤い帽子（MAGA帽）が有名。</div>
+        <div class="sidebar-box" style="background: #fffbeb; border: 1px solid #fef3c7; font-size: 11px;">
+            <b style="color:#b45309; display:block; margin-bottom:5px;">📌 観戦のススメ</b>
+            アメリカの政治風刺は「お上品な綺麗ごと」を徹底的に剥ぎ取るブラックユーモアが真髄です。どちらの陣営がより「Based（ブレないファクト）」を提示できているか、数字とデータで見極めるのが通の楽しみ方です。
         </div>
+    </aside>
+</div>
 
-        <div class="term">
-            <div class="term-title">woke（覚醒）</div>
-            <div class="term-desc">元々は「社会的不正に目覚める」という意味だが、今は「過激な政治的正しさ」「極端なリベラル思想」を批判するときに使われる。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">Deep State（ディープステート）</div>
-            <div class="term-desc">政府内の官僚・諜報機関・軍産複合体などが、選挙で選ばれた大統領を裏で操る「影の権力」。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">Fake News（フェイクニュース）</div>
-            <div class="term-desc">トランプ大統領がよく使う言葉。主流メディア（CNN、NYTなど）が偏った報道をしていると批判する際に使う。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">Antifa</div>
-            <div class="term-desc">反ファシズムを掲げる極左過激派グループ。暴動や破壊行為を行うこともあり、トランプ政権時代に「国内テロ組織」指定された。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">RINO（Republican In Name Only）</div>
-            <div class="term-desc">「名ばかり共和党員」。表向きは共和党だが、実際はリベラル寄りでトランプを批判する議員を指す蔑称。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">Uniparty</div>
-            <div class="term-desc">「一つの政党」。共和党と民主党が表向き対立しているように見えて、実際は同じ利権構造で動いているという批判。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">Border Wall（国境の壁）</div>
-            <div class="term-desc">トランプ政権がメキシコ国境に建設した壁。不法移民防止の象徴。</div>
-        </div>
-
-        <h2>トランプ政権関連</h2>
-        <div class="term">
-            <div class="term-title">トランプ政権の重要政策</div>
-            <div class="term-desc">ドナルド・J・トランプ大統領の政権（第1期および第2期）で推進された主な政策には、減税と規制緩和（経済成長促進）、国境壁建設と移民制限（国家安全保障強化）、エネルギー自給（シェールガス開発）、貿易協定見直し（アメリカ第一主義に基づく関税措置）などがあります。これらは伝統的なアメリカの価値と経済主権を重視した保守的なアプローチです。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">トランプ大統領の口癖</div>
-            <div class="term-desc">ドナルド・J・トランプ大統領は、「Make America Great Again（アメリカを再び偉大に）」をスローガンに、「Fake News（フェイクニュース）」で偏向報道を批判、「Tremendous（素晴らしい）」で成功を強調する表現を頻用します。これらは彼の直接的で力強いコミュニケーションスタイルを象徴しています。</div>
-        </div>
-
-        <h2>民主党側関連</h2>
-        <div class="term">
-            <div class="term-title">ロシア疑惑捏造事件</div>
-            <div class="term-desc">2016年大統領選挙で、オバマ政権時代に民主党側がトランプ陣営とロシアの共謀を主張した疑惑は、調査で証拠が見つからず、民主党側の政治的捏造（hoax）と結論づけられました。これはメディアと情報機関の偏向を示す事例として、保守派から強く批判されています。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">ヒラリー・クリントンの健康問題隠蔽疑惑（2016年選挙時）</div>
-            <div class="term-desc">2016年大統領選挙中、ヒラリー・クリントン候補は演説中の咳や追悼式典での卒倒など健康不安が指摘されましたが、陣営はこれを肺炎と説明し、重篤な問題を隠蔽したとの保守派からの批判があります。これは選挙の透明性に関する議論を呼んでいます。</div>
-        </div>
-
-        <div class="term">
-            <div class="term-title">ジョー・バイデンの認知症・がん隠蔽疑惑</div>
-            <div class="term-desc">ジョー・バイデン前大統領は在任中、認知機能低下の兆候が指摘されましたが、側近がこれを隠蔽したとの報道があります。また、2025年に前立腺がん（骨転移）が公表された際、在任中の診断隠蔽疑惑が浮上しました。保守派はこれを政権の透明性欠如として問題視しています。</div>
-        </div>
-
-        <footer>
-            <p>このページは2026年1月時点の一般的な理解に基づいています。<br>
-            ご質問はXのDMまたはリプライでお気軽にどうぞ。<br>
-            最終更新：2026年1月1日</p>
-        </footer>
-    </div>
 </body>
 </html>
