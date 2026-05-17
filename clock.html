@@ -2,220 +2,553 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Cyber Aquarium - Seamless Edition</title>
+    <title>G-SHOCK DW-6900 Cyber Gold Edition</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
         body {
             margin: 0; padding: 0; overflow: hidden;
-            background-color: #0d1117; display: flex;
-            justify-content: center; align-items: center;
-            height: 100vh; perspective: 1000px;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        #bg { position: absolute; top: 0; left: 0; z-index: -1; opacity: 0.2; }
-        
-        .fish {
-            position: absolute; font-size: 2rem;
-            transition: transform 0.2s linear;
-            pointer-events: none; z-index: -1;
-            /* 魚のネオン発光エフェクト */
-            filter: drop-shadow(0 0 8px #61dafb) brightness(1.2);
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'VT323', monospace;
+            user-select: none;
         }
 
-        .clock-container {
-            text-align: center; border: 3px solid #61dafb;
-            padding: 40px 60px; background: rgba(0, 0, 0, 0.6);
-            border-radius: 20px; box-shadow: 0 0 30px rgba(97, 218, 251, 0.4);
-            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            pointer-events: none; backdrop-filter: blur(8px);
+        /* 3Dゴールドワープ背景 & ビニエッティ */
+        #canvas-3d-warp { position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
+        .cyber-vignette { 
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 85%); 
+            z-index:3; pointer-events:none; 
         }
 
-        #date { font-size: 1.5rem; color: #61dafb; margin-bottom: 10px; text-shadow: 0 0 10px #61dafb; }
-        #clock { font-size: 7rem; color: #61dafb; font-weight: bold; text-shadow: 0 0 20px #61dafb; }
+        /* 筐体デザイン：ゴールドに映えるガンメタリックと漆黒の2層 */
+        .watch-case {
+            width: 440px;
+            height: 420px;
+            background: linear-gradient(#252525, #0c0c0c, #252525);
+            border: 32px solid #141414;
+            border-radius: 52px;
+            box-shadow: 0 0 0 16px #1c1c1c, 0 0 45px rgba(255, 170, 0, 0.25), 0 40px 80px rgba(0,0,0,0.95),
+                        inset 0 10px 20px rgba(255,255,255,0.05), inset 0 -10px 20px rgba(0,0,0,0.9);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
 
-        .controls {
-            position: absolute; bottom: 30px; right: 30px;
-            display: flex; gap: 10px; pointer-events: auto;
+        .watch-face {
+            width: 100%; height: 100%;
+            background: #090909;
+            border: 14px solid #1c1c1c;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(255, 170, 0, 0.08);
+            transition: box-shadow 0.1s ease;
         }
-        .ui-btn {
-            padding: 10px 20px; background: rgba(0,0,0,0.5); color: #61dafb;
-            border: 2px solid #61dafb; cursor: pointer; border-radius: 5px;
-            font-family: inherit; font-weight: bold; transition: 0.3s; min-width: 120px;
+
+        /* ロゴもサイバーゴールド化 */
+        .gshock-logo {
+            position: absolute;
+            top: 18px; left: 50%; transform: translateX(-50%);
+            font-size: 1.35rem; font-weight: bold;
+            color: #ffaa00; text-shadow: 0 0 12px #ff6600;
+            letter-spacing: 4px; z-index: 10;
         }
-        .ui-btn:hover { background: rgba(97, 218, 251, 0.2); box-shadow: 0 0 15px #61dafb; }
-        .ui-btn.active { background: #61dafb; color: #0d1117; }
+
+        /* === 三つ目インジケーター（ゴールド発光）=== */
+        .triple-graph {
+            position: absolute;
+            top: 52px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 11;
+        }
+        .graph-eye {
+            width: 26px; height: 26px;
+            border: 2.5px solid #ffaa00;
+            border-radius: 50%;
+            background: #0d0800;
+            box-shadow: 0 0 10px rgba(255,170,0,0.6), inset 0 0 6px rgba(255,170,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .graph-eye.large { width: 32px; height: 32px; }
+        .eye-segment {
+            position: absolute; inset: 0;
+            background: conic-gradient(from 0deg, #ffbb00 0deg, transparent 0deg);
+            opacity: 0.9;
+        }
+
+        .mode-label {
+            position: absolute;
+            top: 88px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: #ff4444;
+            letter-spacing: 3px;
+            z-index: 12;
+            text-shadow: 0 0 6px #ff0000;
+        }
+
+        /* 琥珀色の漆黒液晶 */
+        .display {
+            position: absolute;
+            top: 118px;
+            left: 38px; right: 38px;
+            height: 148px;
+            background: #1a1100;
+            border: 8px solid #222;
+            border-radius: 6px;
+            box-shadow: 0 0 25px rgba(255, 150, 0, 0.4), inset 0 0 35px rgba(0,0,0,0.95);
+            padding: 12px;
+            color: #ffbb00;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        #main-display {
+            font-size: 4.6rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            text-shadow: 0 0 15px #ffaa00;
+            line-height: 1;
+        }
+
+        #sub-display {
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            margin-top: 6px;
+            color: #ff9900;
+            height: 24px;
+        }
+
+        /* ボタン */
+        .btn {
+            position: absolute; width: 52px; height: 52px;
+            background: linear-gradient(#2a2a2a, #151515);
+            border: 4px solid #333; border-radius: 50%;
+            box-shadow: 0 6px 0 #0a0a0a, inset 0 2px 2px rgba(255,255,255,0.2);
+            cursor: pointer;
+            outline: none;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #0a0a0a; }
+
+        .btn-left1  { bottom: 64px; left: 42px; }
+        .btn-left2  { bottom: 64px; left: 118px; }
+        .btn-right1 { bottom: 64px; right: 42px; }
+        .btn-right2 { bottom: 64px; right: 118px; }
+
+        .btn-label {
+            position: absolute; font-size: 0.78rem; color: #888;
+            text-align: center; width: 60px; bottom: 40px;
+            font-weight: bold;
+        }
+
+        .status-bar {
+            position: absolute; bottom: 22px; left:0; right:0;
+            text-align: center; font-size: 1rem; color: #ffaa00;
+            text-shadow: 0 0 5px rgba(255,170,0,0.5);
+        }
+
+        /* アラーム時のフラッシュもレッドゴールドに */
+        @keyframes alarm-flash { 0%,100% {background:#0b0b0b;} 50% {background:#3a1400; box-shadow: inset 0 0 80px #ff5500;} }
+        .alarm-active { animation: alarm-flash 0.4s infinite; }
     </style>
 </head>
 <body>
+    <!-- 3Dゴールド・ワープ背景 -->
+    <canvas id="canvas-3d-warp"></canvas>
+    <div class="cyber-vignette"></div>
 
-    <canvas id="bg"></canvas>
+    <div class="watch-case">
+        <div class="watch-face">
+            <div class="gshock-logo">G-SHOCK</div>
+            
+            <!-- 三つ目インジケーター -->
+            <div class="triple-graph">
+                <div class="graph-eye" id="eye-1"><div class="eye-segment" id="seg-1"></div></div>
+                <div class="graph-eye" id="eye-2"><div class="eye-segment" id="seg-2"></div></div>
+                <div class="graph-eye large" id="eye-3"><div class="eye-segment" id="seg-3"></div></div>
+            </div>
 
-    <div class="clock-container" id="container">
-        <div id="date">LOADING...</div>
-        <div id="clock">00:00:00</div>
-    </div>
+            <div class="mode-label" id="mode-label">TIME</div>
 
-    <div class="controls">
-        <button class="ui-btn" id="soundToggle">SOUND: OFF</button>
-        <button class="ui-btn" id="tiltToggle">3D: OFF</button>
+            <div class="display">
+                <div id="sub-display">--/-- ---</div>
+                <div id="main-display">00:00:00</div>
+            </div>
+
+            <div class="status-bar" id="status">NORMAL</div>
+
+            <button class="btn btn-left1" id="btn-mode" aria-label="Mode"></button>
+            <button class="btn btn-left2" id="btn-start" aria-label="Start/Stop"></button>
+            <button class="btn btn-right1" id="btn-reset" aria-label="Reset/Adjust"></button>
+            <button class="btn btn-right2" id="btn-light" aria-label="Light"></button>
+
+            <div class="btn-label" style="left:37px;">MODE</div>
+            <div class="btn-label" style="left:113px;">START</div>
+            <div class="btn-label" style="right:113px;">RESET</div>
+            <div class="btn-label" style="right:37px;">LIGHT</div>
+        </div>
     </div>
 
     <script>
-        let audioCtx = null;
-        let isSoundEnabled = false;
-        let isTiltEnabled = false;
-
-        // --- 1. 魚のAI（上下左右にゆったり移動） ---
-        const fishIcons = ['🐟', '🐠', '🐡', '🐠'];
-        const fishes = [];
-        const numFishes = 10;
-
-        class Fish {
-            constructor() {
-                this.el = document.createElement('div');
-                this.el.className = 'fish';
-                this.el.textContent = fishIcons[Math.floor(Math.random() * fishIcons.length)];
-                document.body.appendChild(this.el);
-                
-                this.x = Math.random() * window.innerWidth;
-                this.y = Math.random() * window.innerHeight;
-                this.angle = Math.random() * Math.PI * 2;
-                this.speed = 0.4 + Math.random() * 1.2;
-                this.turnSpeed = (Math.random() - 0.5) * 0.015;
-            }
-
-            update() {
-                // 壁で跳ね返り
-                if (this.x < 50 || this.x > window.innerWidth - 50) this.angle = Math.PI - this.angle;
-                if (this.y < 50 || this.y > window.innerHeight - 50) this.angle = -this.angle;
-
-                this.angle += this.turnSpeed;
-                if (Math.random() > 0.98) this.turnSpeed = (Math.random() - 0.5) * 0.015;
-
-                this.x += Math.cos(this.angle) * this.speed;
-                this.y += Math.sin(this.angle) * this.speed;
-
-                const isRight = Math.cos(this.angle) > 0;
-                // 魚の向きを進行方向に合わせる（反転処理）
-                const flip = isRight ? 'scaleX(-1)' : 'scaleX(1)';
-                const tilt = Math.sin(this.angle) * 15;
-
-                this.el.style.left = `${this.x}px`;
-                this.el.style.top = `${this.y}px`;
-                this.el.style.transform = `${flip} rotate(${isRight ? -tilt : tilt}deg)`;
-            }
-        }
-
-        for (let i = 0; i < numFishes; i++) fishes.push(new Fish());
-
-        function animate() {
-            fishes.forEach(f => f.update());
-            drawMatrix();
-            requestAnimationFrame(animate);
-        }
-
-        // --- 2. サウンド生成 ---
-        function playTone(freq, duration, volume) {
-            if (!audioCtx || !isSoundEnabled) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
-        }
-
-        // --- 3. 時計の更新 ---
-function updateClock() {
-    const now = new Date();
-    const h = now.getHours();
-    const m = now.getMinutes();
-    const s = now.getSeconds();
-
-    document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', {year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'});
-    document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
-    
-    // 毎秒のチック音 (SOUND: ONの時のみ)
-    if (isSoundEnabled) {
-        playTone(800, 0.05, 0.02);
-    }
-
-    // --- 毎正時の時報ギミック ---
-    if (m === 0 && s === 0) {
-        // 毎時 00分00秒に「ピコーン！」と鳴らす
-        playTone(1760, 0.8, 0.2);
-    }
-
-    // (オプション) 時報の3秒前から予報音を鳴らしたい場合はこちら
-    /*
-    if (m === 59 && (s === 57 || s === 58 || s === 59)) {
-        playTone(880, 0.1, 0.1);
-    }
-    */
-}
-        // --- 4. コントロール（SOUNDボタンでAudioContextを起動） ---
-        document.getElementById('soundToggle').addEventListener('click', function() {
-            // 初回クリック時にオーディオコンテキストを作成/再開
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            isSoundEnabled = !isSoundEnabled;
-            this.classList.toggle('active', isSoundEnabled);
-            this.textContent = `SOUND: ${isSoundEnabled ? 'ON' : 'OFF'}`;
-            
-            if (isSoundEnabled) playTone(1000, 0.1, 0.1); // 起動確認音
-        });
-
-        const container = document.getElementById('container');
-        document.getElementById('tiltToggle').addEventListener('click', function() {
-            isTiltEnabled = !isTiltEnabled;
-            this.classList.toggle('active', isTiltEnabled);
-            this.textContent = `3D: ${isTiltEnabled ? 'ON' : 'OFF'}`;
-            if (!isTiltEnabled) container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isTiltEnabled) return;
-            const x = (window.innerWidth / 2 - e.pageX) / 25;
-            const y = (window.innerHeight / 2 - e.pageY) / 25;
-            container.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
-        });
-
-        // --- 5. 背景マトリックス ---
-        const canvas = document.getElementById('bg');
+        // ==========================================
+        // 奥行き感MAX：3Dゴールド・ワープ・マトリックス
+        // ==========================================
+        const canvas = document.getElementById('canvas-3d-warp');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+        
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(13, 17, 23, 0.15)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#61dafb';
-            ctx.font = "15px monospace";
-            drops.forEach((y, i) => {
-                const text = String.fromCharCode(Math.random() * 128);
-                ctx.fillText(text, i * 16, y * 16);
-                if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+        // 粒子の初期設定
+        const numStars = 220;
+        const stars = [];
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * width - width / 2,
+                y: Math.random() * height - height / 2,
+                z: Math.random() * width,
+                color: Math.random() > 0.3 ? '#ffaa00' : '#ffd700' // 2パターンのゴールド
             });
         }
 
-        // 初期化
-        setInterval(updateClock, 1000);
-        updateClock();
-        animate(); // アニメーションループ開始
+        function draw3DWarp() {
+            // 前のフレームをうっすら残して残像（スピード感）を作る
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, width, height);
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const cx = width / 2;
+            const cy = height / 2;
+
+            for (let i = 0; i < numStars; i++) {
+                const star = stars[i];
+                
+                // 手前に向かってZ軸を減らす
+                star.z -= 4.5; 
+
+                // 画面より前に出たら奥（無限遠）にリセット
+                if (star.z <= 0) {
+                    star.z = width;
+                    star.x = Math.random() * width - cx;
+                    star.y = Math.random() * height - cy;
+                }
+
+                // 3Dのパースペクティブ（奥行き）計算
+                // 3D座標を2Dスクリーン座標へ投影
+                const px = (star.x / star.z) * width + cx;
+                const py = (star.y / star.z) * height + cy;
+
+                // 画面外に出たらスルー
+                if (px < 0 || px > width || py < 0 || py > height) continue;
+
+                // 手前に来るほどサイズを大きく、光を強く
+                const size = (1 - star.z / width) * 5;
+                const alpha = (1 - star.z / width);
+
+                ctx.beginPath();
+                ctx.arc(px, py, size, 0, Math.PI * 2);
+                ctx.fillStyle = star.color;
+                ctx.globalAlpha = alpha;
+                ctx.shadowBlur = size * 2;
+                ctx.shadowColor = '#ffaa00';
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1.0; // アルファのリセット
+            ctx.shadowBlur = 0;    // シャドウのリセット
+
+            requestAnimationFrame(draw3DWarp);
+        }
+        requestAnimationFrame(draw3DWarp);
+
+
+        // ==========================================
+        // 時計＆モード＆三つ目グラフ 制御ロジック（GOLD版）
+        // ==========================================
+        let currentMode = 0; 
+        const modes = ["TIME", "STW", "CDN", "ALARM"];
+        
+        let stopwatchInterval, countdownInterval, alarmFlashInterval;
+        let stopwatchTime = 0;
+        let isStwRunning = false;
+        let countdownTime = 300; 
+        let isCdnRunning = false;
+        let alarmHour = 7;
+        let alarmMinute = 0;
+        let alarmSet = false;
+        let isAlarmBeeping = false;
+
+        let graphTick = 0;
+
+        const watchFace = document.querySelector('.watch-face');
+        const mainDisplay = document.getElementById('main-display');
+        const subDisplay = document.getElementById('sub-display');
+        const modeLabel = document.getElementById('mode-label');
+        const status = document.getElementById('status');
+        
+        const seg1 = document.getElementById('seg-1');
+        const seg2 = document.getElementById('seg-2');
+        const seg3 = document.getElementById('seg-3');
+
+        let audioCtx = null;
+        function beep(freq = 2000, duration = 100) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + (duration / 1000));
+            } catch (e) {}
+        }
+
+        function updateTripleGraph() {
+            if (currentMode === 0) { 
+                const now = new Date();
+                const sec = now.getSeconds();
+                const ms = now.getMilliseconds();
+                
+                const eye1Deg = ((sec % 5) * 72) + (ms * 0.072);
+                seg1.style.background = `conic-gradient(from 0deg, #ffbb00 ${eye1Deg}deg, transparent 0deg)`;
+                
+                const eye2Deg = ((sec % 10) * 36) + (ms * 0.036);
+                seg2.style.background = `conic-gradient(from 0deg, #ffbb00 ${eye2Deg}deg, transparent 0deg)`;
+                
+                const eye3Deg = (sec * 6) + (ms * 0.006);
+                seg3.style.background = `conic-gradient(from 0deg, #ffbb00 ${eye3Deg}deg, transparent 0deg)`;
+            } 
+            else if ((currentMode === 1 && isStwRunning) || (currentMode === 2 && isCdnRunning)) {
+                graphTick += 15;
+                seg1.style.background = `conic-gradient(from ${graphTick}deg, #ffbb00 90deg, transparent 0deg)`;
+                seg2.style.background = `conic-gradient(from ${graphTick * -1.5}deg, #ffbb00 120deg, transparent 0deg)`;
+                seg3.style.background = `conic-gradient(from ${graphTick * 2}deg, #ffbb00 180deg, transparent 0deg)`;
+            }
+            else if (currentMode === 3 || (!isStwRunning && !isCdnRunning)) {
+                seg1.style.background = `conic-gradient(from 0deg, #ffbb00 180deg, transparent 0deg)`;
+                seg2.style.background = `conic-gradient(from 0deg, #ffbb00 180deg, transparent 0deg)`;
+                seg3.style.background = `conic-gradient(from 0deg, #ffbb00 180deg, transparent 0deg)`;
+            }
+        }
+
+        function updateTimeView() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            
+            if (currentMode === 0) {
+                mainDisplay.textContent = `${h}:${m}:${s}`;
+                subDisplay.textContent = now.toLocaleDateString('ja-JP', {month:'2-digit', day:'2-digit'}) + 
+                                       " " + now.toLocaleDateString('ja-JP', {weekday:'short'}).toUpperCase();
+                updateTripleGraph();
+            }
+        }
+
+        function checkAlarmTrigger() {
+            if (!alarmSet || isAlarmBeeping) return;
+            const now = new Date();
+            if (now.getHours() === alarmHour && now.getMinutes() === alarmMinute && now.getSeconds() === 0) {
+                triggerAlarm();
+            }
+        }
+
+        function triggerAlarm() {
+            isAlarmBeeping = true;
+            status.textContent = "!!! ALARM !!!";
+            watchFace.classList.add('alarm-active');
+            let beepCount = 0;
+            alarmFlashInterval = setInterval(() => {
+                beep(2500, 150);
+                beepCount++;
+                if (beepCount >= 20) stopAlarmSound();
+            }, 500);
+        }
+
+        function stopAlarmSound() {
+            clearInterval(alarmFlashInterval);
+            isAlarmBeeping = false;
+            watchFace.classList.remove('alarm-active');
+            switchMode(currentMode);
+        }
+
+        function updateStopwatchView() {
+            const ms = String(stopwatchTime % 1000).padStart(3, '0').slice(0,2);
+            const sec = String(Math.floor(stopwatchTime / 1000) % 60).padStart(2, '0');
+            const min = String(Math.floor(stopwatchTime / 60000)).padStart(2, '0');
+            mainDisplay.textContent = `${min}:${sec}`;
+            subDisplay.textContent = `.${ms}`;
+        }
+
+        function updateCountdownView() {
+            const min = String(Math.floor(countdownTime / 60)).padStart(2, '0');
+            const sec = String(countdownTime % 60).padStart(2, '0');
+            mainDisplay.textContent = `${min}:${sec}`;
+        }
+
+        function updateAlarmView() {
+            const h = String(alarmHour).padStart(2, '0');
+            const m = String(alarmMinute).padStart(2, '0');
+            mainDisplay.textContent = `${h}:${m}`;
+            subDisplay.textContent = alarmSet ? "AL.ON" : "AL.OFF";
+        }
+
+        function switchMode(targetMode = null) {
+            beep(1800, 50);
+            if (isAlarmBeeping) { stopAlarmSound(); return; }
+
+            currentMode = targetMode === null ? (currentMode + 1) % 4 : targetMode;
+            modeLabel.textContent = modes[currentMode];
+            
+            clearInterval(stopwatchInterval);
+            clearInterval(countdownInterval);
+
+            if (currentMode === 0) {
+                status.textContent = "NORMAL";
+                updateTimeView();
+            } 
+            else if (currentMode === 1) {
+                status.textContent = isStwRunning ? "RUNNING" : (stopwatchTime > 0 ? "PAUSED" : "STOPWATCH");
+                updateStopwatchView();
+                if (isStwRunning) startStwTimer();
+            } 
+            else if (currentMode === 2) {
+                status.textContent = isCdnRunning ? "RUNNING" : (countdownTime < 300 ? "PAUSED" : "COUNTDOWN");
+                subDisplay.textContent = "TIMER";
+                updateCountdownView();
+                if (isCdnRunning) startCdnTimer();
+            } 
+            else if (currentMode === 3) {
+                status.textContent = "RESET: HOUR / START: MIN";
+                updateAlarmView();
+            }
+            updateTripleGraph();
+        }
+
+        function startStwTimer() {
+            clearInterval(stopwatchInterval);
+            let lastTime = performance.now();
+            stopwatchInterval = setInterval(() => {
+                const now = performance.now();
+                stopwatchTime += (now - lastTime);
+                lastTime = now;
+                updateStopwatchView();
+                updateTripleGraph();
+            }, 10);
+        }
+
+        function startCdnTimer() {
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                if (countdownTime <= 0) {
+                    clearInterval(countdownInterval);
+                    isCdnRunning = false;
+                    status.textContent = "TIME UP";
+                    triggerAlarm();
+                    return;
+                }
+                countdownTime--;
+                updateCountdownView();
+                updateTripleGraph();
+            }, 1000);
+        }
+
+        // ==========================================
+        // イベントハンドラ
+        // ==========================================
+        document.getElementById('btn-mode').addEventListener('click', () => switchMode());
+
+        document.getElementById('btn-start').addEventListener('click', () => {
+            beep(2000, 50);
+            if (isAlarmBeeping) { stopAlarmSound(); return; }
+
+            if (currentMode === 1) {
+                isStwRunning = !isStwRunning;
+                if (isStwRunning) { startStwTimer(); status.textContent = "RUNNING"; }
+                else { clearInterval(stopwatchInterval); status.textContent = "PAUSED"; }
+            } 
+            else if (currentMode === 2) {
+                if (countdownTime <= 0) return;
+                isCdnRunning = !isCdnRunning;
+                if (isCdnRunning) { startCdnTimer(); status.textContent = "RUNNING"; }
+                else { clearInterval(countdownInterval); status.textContent = "PAUSED"; }
+            } 
+            else if (currentMode === 3) {
+                alarmMinute = (alarmMinute + 1) % 60;
+                updateAlarmView();
+            }
         });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            beep(2000, 50);
+            if (isAlarmBeeping) { stopAlarmSound(); return; }
+
+            if (currentMode === 1) {
+                isStwRunning = false;
+                clearInterval(stopwatchInterval);
+                stopwatchTime = 0;
+                status.textContent = "STOPWATCH";
+                updateStopwatchView();
+                updateTripleGraph();
+            } 
+            else if (currentMode === 2) {
+                isCdnRunning = false;
+                clearInterval(countdownInterval);
+                countdownTime = 300;
+                status.textContent = "COUNTDOWN";
+                updateCountdownView();
+                updateTripleGraph();
+            }
+            else if (currentMode === 3) {
+                alarmHour = (alarmHour + 1) % 24;
+                updateAlarmView();
+            }
+        });
+
+        document.getElementById('btn-light').addEventListener('click', () => {
+            if (isAlarmBeeping) { stopAlarmSound(); return; }
+
+            if (currentMode === 3) {
+                beep(2000, 50);
+                alarmSet = !alarmSet;
+                updateAlarmView();
+            } else {
+                beep(1200, 30);
+                // バックライトも強烈なゴールドに発光
+                watchFace.style.boxShadow = 'inset 0 0 80px rgba(255, 170, 0, 0.95)';
+                setTimeout(() => {
+                    watchFace.style.boxShadow = 'inset 0 0 50px rgba(255, 170, 0, 0.08)';
+                }, 1000);
+            }
+        });
+
+        setInterval(() => {
+            updateTimeView();
+            checkAlarmTrigger();
+        }, 100);
+
+        updateTimeView();
     </script>
 </body>
 </html>
