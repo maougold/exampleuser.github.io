@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィールリンク | Spring Special Edition</title>
+    <title>プロフィールリンク | Summer Beach Edition</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            /* 春らしい桜と新緑のグラデーション */
-            background: linear-gradient(-45deg, #ffc8dd, #ffafcc, #bde0fe, #cdb4db, #e2f0d9);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+            /* 夏のきらめく砂浜、ひまわり、澄んだ海をイメージしたグラデーション */
+            background: linear-gradient(-45deg, #fef08a, #7dd3fc, #38bdf8, #0ea5e9, #ccfbf1);
             background-size: 400% 400%;
-            animation: gradientBG 18s ease infinite;
-            color: #2d3436;
+            animation: gradientBG 15s ease infinite;
+            color: #1e293b;
             margin: 0;
             padding: 40px 20px;
-            line-height: 1.7;
+            line-height: 1.8;
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
@@ -27,7 +27,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 春の絵文字 */
+        /* 夏の絵文字パーティクル */
         .emojis-container {
             position: absolute;
             inset: 0;
@@ -39,15 +39,15 @@
         .emoji-particle {
             position: absolute;
             font-size: 32px;
-            opacity: 0.8;
-            animation: floatUpEmoji 16s linear infinite;
+            opacity: 0.7;
+            animation: floatUpEmoji 14s linear infinite;
         }
 
         @keyframes floatUpEmoji {
             0% { bottom: -120px; opacity: 0; transform: translateX(0) rotate(0deg); }
             20% { opacity: 0.8; }
             80% { opacity: 0.8; }
-            100% { bottom: 110%; opacity: 0; transform: translateX(60px) rotate(45deg); }
+            100% { bottom: 110%; opacity: 0; transform: translateX(70px) rotate(60deg); }
         }
 
         .emoji-particle:nth-child(1) { left: 5%; animation-delay: 0s; }
@@ -67,38 +67,43 @@
         }
 
         h1 {
-            font-size: 34px;
+            font-size: 36px;
             margin-bottom: 20px;
             color: #ffffff;
             opacity: 0;
             transform: translateY(-30px);
             animation: fadeInDown 1s ease forwards;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+            text-shadow: 2px 4px 10px rgba(14, 165, 233, 0.4);
         }
 
         p {
-            font-size: 18px;
+            font-size: 17px;
             margin-bottom: 20px;
-            color: #4a5568;
+            color: #334155;
             text-shadow: none;
         }
 
+        /* 涼しげなすりガラス風デザインに変更 */
         .section {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 30px;
-            border-radius: 16px;
+            border-radius: 20px;
             margin-bottom: 30px;
             text-align: left;
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1.2s ease forwards;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
         }
 
         .section:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            background-color: rgba(255, 255, 255, 0.85);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.15);
         }
 
         .section:nth-child(2) { animation-delay: 0.3s; }
@@ -116,37 +121,41 @@
             font-size: 22px;
             margin-top: 0;
             margin-bottom: 18px;
-            color: #db2777; /* 桜色に近い濃いピンク */
+            color: #ea580c; /* 真夏の太陽のような鮮やかなオレンジ */
         }
 
         .section p {
-            color: #2d3748;
+            color: #334155;
         }
 
         footer {
-            margin-top: 50px;
+            margin-top: 60px;
             font-size: 14px;
-            color: #718096;
+            color: #64748b;
             opacity: 0;
             animation: fadeInUp 1s ease forwards 0.9s;
         }
 
         /* ===== リンクまとめ ===== */
         .link-hub {
-            background-color: rgba(255, 255, 255, 0.92);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 36px;
-            border-radius: 18px;
+            border-radius: 24px;
             margin: 60px 0 40px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             text-align: left;
         }
 
         .link-hub h2 {
             text-align: center;
-            color: #db2777;
+            color: #0284c7; /* 深みのあるブルー */
             margin-top: 0;
             margin-bottom: 30px;
-            font-size: 24px;
+            font-size: 26px;
+            letter-spacing: 1px;
         }
 
         .link-grid {
@@ -156,26 +165,28 @@
         }
 
         .link-category h3 {
-            color: #059669; /* 新緑の緑 */
+            color: #0d9488; /* 涼しげなエメラルド・ターコイズ */
             font-size: 18px;
             margin-bottom: 14px;
-            border-bottom: 1px solid rgba(5, 150, 105, 0.2);
+            border-bottom: 2px solid rgba(13, 148, 136, 0.2);
             padding-bottom: 6px;
         }
 
         .link-category a {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            color: #2d3748;
+            margin-bottom: 12px;
+            color: #334155;
             font-weight: bold;
             text-decoration: none;
             font-size: 15px;
+            transition: color 0.2s ease, transform 0.2s ease;
         }
 
         .link-category a:hover {
-            text-decoration: underline;
-            color: #db2777;
+            text-decoration: none;
+            color: #0284c7;
+            transform: translateX(4px);
         }
 
         /* バッジ */
@@ -183,7 +194,7 @@
             display: inline-flex;
             font-size: 10px;
             font-weight: 900;
-            padding: 2px 8px;
+            padding: 3px 8px;
             border-radius: 50px;
             margin-right: 8px;
             white-space: nowrap;
@@ -191,41 +202,41 @@
         }
 
         .badge-pulse {
-            background: linear-gradient(135deg, #f472b6, #db2777);
+            background: linear-gradient(135deg, #f97316, #ea580c);
             color: white;
             animation: anim-pulse 2s infinite;
         }
         @keyframes anim-pulse {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(0.92); opacity: 0.9; }
             100% { transform: scale(1); opacity: 1; }
         }
 
         .badge-outline {
             background: transparent;
-            color: #db2777;
-            border: 1.5px solid #db2777;
+            color: #ea580c;
+            border: 1.5px solid #ea580c;
             animation: anim-blink 1.5s infinite;
         }
         @keyframes anim-blink {
             0% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.4; }
             100% { opacity: 1; }
         }
 
         .badge-neon {
-            background: #10b981;
+            background: #0d9488;
             color: white;
             animation: anim-neon 2s infinite;
         }
         @keyframes anim-neon {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(13, 148, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
         }
 
         .badge-shine {
-            background: #60a5fa;
+            background: #38bdf8;
             color: white;
             position: relative;
             overflow: hidden;
@@ -235,7 +246,7 @@
             position: absolute;
             top: -50%; left: -150%;
             width: 200%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
             transform: rotate(30deg);
             animation: anim-shine 3s infinite;
         }
@@ -299,16 +310,16 @@
 </style>
 
 <div class="emojis-container">
-    <div class="emoji-particle">🌸</div><div class="emoji-particle">🌱</div><div class="emoji-particle">🦋</div><div class="emoji-particle">🍡</div><div class="emoji-particle">🌷</div>
-    <div class="emoji-particle">🌸</div><div class="emoji-particle">🍃</div><div class="emoji-particle">🐝</div><div class="emoji-particle">🍀</div><div class="emoji-particle">🕊️</div>
+    <div class="emoji-particle">🐳</div><div class="emoji-particle">🌻</div><div class="emoji-particle">🏄</div><div class="emoji-particle">🍉</div><div class="emoji-particle">🏖️</div>
+    <div class="emoji-particle">🍦</div><div class="emoji-particle">🌴</div><div class="emoji-particle">🐬</div><div class="emoji-particle">🎆</div><div class="emoji-particle">☀️</div>
 </div>
 
     <div class="content">
-        <h1>Spring Special 🌸<br>Elise Vanessa のリンクページへようこそ</h1>
+        <h1>Summer Beach 🐳<br>Elise Vanessa のリンクページへようこそ</h1>
 
         <p>
             X（@ev0123456789）をご覧いただきありがとうございます。<br>
-            春の訪れとともに、新しい視点で世の中を眺めてみませんか？🍃<br>
+            輝く夏の光とともに、新しい視点で世の中を眺めてみませんか？☀️<br>
             メディアが語らない出来事や背景を、私なりの視点でまとめています。
         </p>
 
@@ -332,49 +343,49 @@
 
         <div class="link-grid">
 
-            <div class="link-category" style="background: rgba(5, 150, 105, 0.03); border-left: 4px solid #059669; padding-left: 15px; border-radius: 8px;">
+            <div class="link-category" style="background: rgba(13, 148, 136, 0.03); border-left: 4px solid #0d9488; padding-left: 15px; border-radius: 8px;">
                 <h3>📖 文芸・連載小説</h3>
                 <a href="THE_FOUR_KINGS.html">
                     <span class="badge badge-neon">新作</span> <b>ショートショート『四天王』全6話</b>
                     </a>
                 <a href="novel_complete.html">
-                    <span class="badge badge-pulse">第一章</span> <b>短編小説『沈黙の解剖』〜報道の死と再生〜</b>
+                    <span class="badge badge-pulse">第一章</span> <b>小説『沈黙の解剖』報道の死と再生</b>
                     </a>
                 <a href="novel_sabaku_02.html">
-                    <span class="badge badge-pulse">第二章</span> <b>短編小説『砂漠の落日』〜テロの連鎖を断つ大統領〜</b>
+                    <span class="badge badge-pulse">第二章</span> <b>小説『砂漠の落日』テロの連鎖を断つ大統領</b>
                     </a>
                 <a href="Episode_Zero.html">
-                    <span class="badge badge-neon">新作</span> <b>短編小説『沈黙の火種』窓越しの深淵 / Episode Zero</b>
+                    <span class="badge badge-neon">新作</span> <b>小説『沈黙の火種』窓越しの深淵/Episode Zero</b>
                 </a>
 
                                 <a href="kouryaku_7AB7AB7.html">
-                    <span class="badge badge-pulse">NEW</span> <b>『夏ゴージャススロット攻略ガイド』</b>
+                    <span class="badge badge-pulse">おすすめ</span> <b>『夏ゴージャススロット攻略ガイド』</b>
                 </a>
 
                                                 <a href="NMI_ARCHIVE.html">
-                    <span class="badge badge-pulse">NEW</span> <b>『ニャンコミッション・インポッシブル攻略ガイド』</b>
+                    <span class="badge badge-pulse">おすすめ</span> <b>『ニャンコミッション・インポッシブル攻略ガイド』</b>
                 </a>
-                                                                <a href="amida_guide_book.html">
-                    <span class="badge badge-shine">注目</span> <b>『極・阿弥陀占　17種の運勢 完全解説』</b>
+                                                                                <a href="amida_guide_book.html">
+                    <span class="badge badge-shine">占い</span> <b>『極・阿弥陀占　17種の運勢 完全解説』</b>
                 </a>
             </div>
 
      <div class="link-category">
             <h3>🎮 ブラウザゲーム・娯楽</h3>
-         <a href="Star_Terminal_2026.html"><span class="badge badge-outline">脱出ゲーム</span>スター・ターミナル v1.0.0</a>
-          <a href="Q22GATE_22ROYAL.html"><span class="badge badge-outline">1問60秒！</span>猫に関する全22問題 v1.0.0</a>
-         <a href="HAPPYPROTOCOL.html"><span class="badge badge-outline">クイズ！</span>ハッピー・プロトコル v1.0.0</a>
-            <a href="quiz.html"><span class="badge badge-outline">コイン獲得</span>クイズ・ミリオネア（通常版）</a>
-          <a href="77777.html"><span class="badge badge-outline">新台入替</span>夏ゴージャススロット🐳V1.2.0</a>
-         <a href="POPPOP_MOGURA.html"><span class="badge badge-outline">クリックゲーム</span>ポプポプ・モグラ叩き v1.0.0</a>
-         <a href="cat_tower.html"><span class="badge badge-outline">ゆるゆるRPG</span>にゃんこダンジョン🐻v2.2.1</a>
-         <a href="NYANKO_MISSION_IMF.html"><span class="badge badge-outline">おすすめ</span>ニャンコミッション・インポッシブル v3.1.3</a>
+         <a href="Star_Terminal_2026.html"><span class="badge badge-outline">脱出ゲーム</span>スター・ターミナル</a>
+          <a href="Q22GATE_22ROYAL.html"><span class="badge badge-outline">1問60秒！</span>猫に関する全22問題</a>
+         <a href="HAPPYPROTOCOL.html"><span class="badge badge-outline">クイズ！</span>ハッピー・プロトコル</a>
+            <a href="quiz.html"><span class="badge badge-outline">コイン獲得</span>クイズ・ミリオネア</a>
+          <a href="77777.html"><span class="badge badge-outline">新台入替</span>夏ゴージャススロット</a>
+         <a href="POPPOP_MOGURA.html"><span class="badge badge-outline">クリックゲーム</span>ポプポプ・モグラ叩き</a>
+         <a href="cat_tower.html"><span class="badge badge-outline">ゆるゆるRPG</span>にゃんこダンジョン</a>
+         <a href="NYANKO_MISSION_IMF.html"><span class="badge badge-outline">おすすめ</span>ニャンコミッション・インポッシブル</a>
         </div>
 
             <div class="link-category">
                 <h3>🏆 ランキング・まとめ</h3>
                 <a href="posts.html">バズった投稿トップ10（通常版）</a>
-                <a href="SpecialRanking.html">🌸 バズった投稿ランキング TOP10</a>
+                <a href="SpecialRanking.html">☀️ バズった投稿ランキング TOP10</a>
                 <a href="kiseki_a.html">
                     <span class="badge badge-shine">注目</span> ✨ 奇跡を掴み取る
                 </a>
@@ -382,11 +393,9 @@
 
             <div class="link-category">
                 <h3>⚠️ 議論・センシティブ</h3>
-                <a href="Noelia_Castillo_Ramos.html">
-                    <span class="badge badge-pulse">『尊厳死』</span> ノエリア・カスティーリョ・ラモス（25）
+                <a href="Noelia_Castillo_Ramos.html">「尊厳死」ノエリア・カスティーリョ・ラモス（25）
                 </a>
-                <a href="TDS_MELANIA.html">
-                    <span class="badge badge-pulse">『映画』</span> 映画『MELANIA』12億円の衝撃
+                <a href="TDS_MELANIA.html">映画『MELANIA』12億円の衝撃！
                 </a>
                 <a href="charlie-kirk-incident.html">チャーリー・カーク事件の構造分析</a>
                 <a href="jhonmaney.html">ジョン・マネー事例と医療リスク</a>
@@ -395,7 +404,7 @@
 
             <div class="link-category">
                 <h3>🧠 構造・メディア分析</h3>
-                <a href="worldnews_b.html">世界保守メディア大全まとめスレ★1</a>
+                <a href="worldnews_b.html">世界保守メディア大全まとめ</a>
                 <a href="media-bias.html">日本メディアと米国報道の構造的問題</a>
                 <a href="usaTrump2gdp.html">メディアの「経済音痴」を解剖する</a>
                 <a href="AIbadlite.html">AIの中立性と保守層離反リスク</a>
@@ -406,7 +415,7 @@
                 <h3>🌍 国・地域別分析</h3>
                 <a href="korea-policy-detailed.html">日韓関係・竹島問題の詳細考察</a>
                 <a href="settler-nation.html">「移民の国」は間違いである｜アメリカの本質</a>
-                <a href="Liberal_miss.html">リベラル・左派政権、世界中で大失敗してしまう★1</a>
+                <a href="Liberal_miss.html">リベラル・左派政権、世界中で大失敗してしまう</a>
             </div>
 
             <div class="link-category">
@@ -418,13 +427,11 @@
 
             <div class="link-category">
                 <h3>📺️ 落書き・風刺</h3>
-                <a href="tamakawa_fafo.html"><span class="badge badge-outline">NEW</span> 玉川徹氏の経済予測批判スレ【第1回】</a>
-                <a href="yahoo_ab001.html"><span class="badge badge-neon">NEW</span> 「脱炭素」への違和感はどこから【第1回】</a>
-                <a href="yahoo_003.html"><span class="badge badge-neon">NEW</span> 「「私が気候変動を怖がらなくなった理由」【第2回】</a>
-                <a href="2ch_model_maga01.html"><span class="badge badge-shine">NEW</span> ビルゲイツ、エプ島で真っ黒確定ww ★1</a>
-                            <a href="yahoo_ab002.html">
-                <span class="badge badge-neon">NEW</span> トランプ政権「GDP成長率4.4%」達成★1
-            </a>
+                <a href="tamakawa_fafo.html">玉川徹氏の経済予測批判</a>
+                <a href="yahoo_ab001.html">「脱炭素」への違和感はどこから</a>
+                <a href="yahoo_003.html">「私が気候変動を怖がらなくなった理由</a>
+                <a href="2ch_model_maga01.html">ビルゲイツ、エプ島で真っ黒確定</a>
+                <a href="yahoo_ab002.html">トランプ政権「GDP成長率4.4%」達成</a>
                 <br>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                     <a href="404status.html" style="font-size: 11px; opacity: 0.6;">[ 404 ]</a>
@@ -436,7 +443,7 @@
     </div>
 
         <section id="support" style="
-    border: 2px solid #ffcad4; 
+    border: 2px solid #bae6fd; 
     padding: 35px 25px; 
     text-align: center; 
     margin: 40px auto; 
@@ -444,26 +451,26 @@
     background: rgba(255, 255, 255, 0.7); 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px; 
-    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+    border-radius: 24px; 
+    box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);
     font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;">
 
-    <h3 style="color: #ff8fb1; margin-top: 0; font-size: 24px; letter-spacing: 1px;">
+    <h3 style="color: #0284c7; margin-top: 0; font-size: 24px; letter-spacing: 1px;">
         ✨ 交流用したらば掲示板 ✨
     </h3>
 
-    <p style="color: #7a5c61; line-height: 1.8; font-size: 15px;">
+    <p style="color: #334155; line-height: 1.8; font-size: 15px;">
         世界の出来事に高い関心を持つ方々が、自由に、<br>
-        そして建設的に語り合える特別な場所です。🍃<br>
-        <span style="display: block; margin-top: 10px; color: #ff8fb1; font-weight: bold;">
-            パステルカラーの魔法がかかったこの場所で、<br>
+        そして建設的に語り合える特別な場所です。☀️<br>
+        <span style="display: block; margin-top: 10px; color: #ea580c; font-weight: bold;">
+            さわやかな潮風が吹き抜けるこの場所で、<br>
             ゆっくりお話ししていきませんか？
         </span>
     </p>
 
     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
         <a href="https://jbbs.shitaraba.net/radio/14067/" style="
-            background: linear-gradient(45deg, #ff8fb1, #ffc2d1); 
+            background: linear-gradient(45deg, #0ea5e9, #38bdf8); 
             color: white; 
             padding: 14px 35px; 
             text-decoration: none; 
@@ -471,16 +478,16 @@
             font-weight: bold; 
             font-size: 16px;
             transition: all 0.3s ease; 
-            box-shadow: 0 4px 15px rgba(255, 143, 177, 0.4);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
             display: inline-block;">
-            掲示板へ遊びに行く 🌸
+            掲示板へ遊びに行く 🌊
         </a>
     </div>
 </section>
 
     <footer>
-        <p>ご質問やご意見はXのDMやリプライでどうぞ 🕊️<br>最終更新：2026年3月6日 Elise Vanessa [xyz]</p>
-        <p style="font-size: 10px; color: rgba(74, 85, 104, 0.5); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
+        <p>ご質問やご意見はXのDMやリプライでどうぞ ✉️<br>最終更新：2026年3月6日 Elise Vanessa [xyz]</p>
+        <p style="font-size: 10px; color: rgba(74, 85, 104, 0.6); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
     </footer>
 
 </div>
@@ -526,7 +533,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 ">
     <span onclick="applyTone('none')" style="cursor:pointer; color:#2d3748; font-weight: bold;">標準</span>
-    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#db2777; font-weight: bold;">ビビッド</span>
+    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#0284c7; font-weight: bold;">ビビッド</span>
     <span onclick="applyTone('mono')" style="cursor:pointer; color:#666;">白黒</span>
 </div>
 
@@ -544,8 +551,6 @@
         opacity: 0.7;
     }
 </style>
-
-
 
 <script>
     function applyTone(mode) {
