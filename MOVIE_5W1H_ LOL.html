@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5W1H 超バカ映画生成機</title>
+  <style>
+    body {
+      font-family: 'Arial Black', Impact, 'Hiragino Sans', sans-serif;
+      background: linear-gradient(#0a0a2a, #1a1a4a);
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 { 
+      font-size: 3rem; 
+      margin: 20px 0 10px; 
+      text-shadow: 5px 5px 12px #000; 
+      letter-spacing: 3px;
+      color: #ffd700;
+    }
+    .subtitle { 
+      font-size: 2rem; 
+      background: #000; 
+      display: inline-block; 
+      padding: 12px 50px; 
+      border-radius: 50px; 
+      margin-bottom: 30px; 
+      color: #ff00ff;
+    }
+
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 18px; 
+      max-width: 920px; 
+      margin: 0 auto 40px; 
+    }
+    .card {
+      background: #f5f0e1; 
+      color: #111; 
+      border: 7px solid #8b0000; 
+      border-radius: 20px;
+      padding: 22px 12px; 
+      min-height: 135px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      font-size: 1.25rem; 
+      font-weight: bold; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      cursor: pointer; 
+      transition: all 0.3s; 
+      position: relative;
+    }
+    .card:hover { 
+      transform: scale(1.1) rotate(2deg); 
+      background: #fff9c4; 
+    }
+    .card .label { 
+      font-size: 0.95rem; 
+      color: #8b0000; 
+      position: absolute; 
+      top: 12px; 
+    }
+
+    button {
+      margin: 20px;
+      padding: 20px 70px;
+      font-size: 1.9rem;
+      background: linear-gradient(#ff00aa, #ff8800);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 900;
+      box-shadow: 0 10px 0 #8b0000;
+    }
+    .result {
+      background: rgba(0,0,0,0.9);
+      max-width: 920px;
+      margin: 30px auto;
+      padding: 40px;
+      border-radius: 20px;
+      font-size: 1.52rem;
+      line-height: 1.85;
+      min-height: 220px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>5W1H 超バカ映画生成機</h1>
+  <div class="subtitle">頭おかしいレベルで笑えるやつ</div>
+
+  <div class="grid" id="grid"></div>
+
+  <button onclick="generateAllNew()">🎲 もっとバカな映画作る！</button>
+
+  <div class="result" id="result">
+    ここに超バカな物語が爆誕します…
+  </div>
+
+  <script>
+    const words = {
+      when: ["ミッション開始直前", "宇宙船が墜落した瞬間", "核戦争勃発の5分前", "最終回放送中", "二日酔いの朝", "UFOが着陸した瞬間", "結婚式の最中"],
+      where: ["敵の秘密基地", "宇宙ステーション内", "風呂の中", "夢の中", "UFOの中", "YouTubeコメント欄", "学校の屋上", "潜水艦の中"],
+      who: ["ジェームズ・ボンド", "イーサン・ハント", "巨乳美女", "トニー・スターク", "ドナルド・トランプ", "ターミネーター", "宇宙人", "大泉洋", "ウラジミール・プーチン"],
+      what: ["タピオカを鼻から吸引", "Wi-Fiのパスワードを世界中に暴露", "タンスの角に小指をぶつけて号泣する", "猫に向かって人生の苦悩をガチ相談する", "核ミサイルを発射", "オッパイをぱふぱふ", "配信する", "サイコロを振る", "倍プッシュする", "土下座する", "新党を作る", "記憶を消去する"],
+      why: ["人類を救うため", "クリック稼ぎ", "ネタ切れのため", "酒の勢いで", "金に物を言わせて", "面白そうだから", "ピー（放送禁止）", "ノリと勢いで", "ストレス発散で"],
+      how: ["完全に計算された", "TikTokでバズらせて", "勢いだけで", "無茶振りして", "AIに丸投げして", "土下座して", "爆笑しながら", "ディールして", "ノリで"]
+    };
+
+    let currentData = {};
+
+    const categories = [
+      { key: "when", label: "When（いつ）" },
+      { key: "where", label: "Where（どこで）" },
+      { key: "who", label: "Who（誰が）" },
+      { key: "what", label: "What（何を）" },
+      { key: "why", label: "Why（なぜ）" },
+      { key: "how", label: "How（どのように）" }
+    ];
+
+    // 効果音
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type = 'sine', duration = 0.1, vol = 0.3) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+// バカバカしい長め物語調（Gemini増量版：全8パターン）
+    function generateNaturalSentence(data) {
+      const templates = [
+        `ついに${data.when}、${data.where}で大事件が勃発した！ ${data.who}が${data.what}という意味不明の行動に出た。${data.why}という謎の理由で、${data.how}という頭おかしい方法で実行しちゃったらしい…。現場は大パニック！！`,
+        `${data.when}、${data.where}はすでにカオスだった。そこで${data.who}が突然${data.what}と言い出した。${data.why}という適当な理由で、${data.how}という破天荒すぎる手段を使い、銀河中の笑いを誘発した…。`,
+        `誰も止められなかった${data.when}、${data.where}。${data.who}はニヤニヤしながら${data.what}大作戦を開始。${data.why}とか言ってるけど完全にノリだったらしく、${data.how}というヤバい方法で全部台無しにした模様。`,
+        `超ヤバい${data.when}、${data.where}で${data.who}が${data.what}と叫びながら暴走した。${data.why}という訳の分からない動機で${data.how}という天才的なバカ技を繰り出し、歴史に残る大惨事（？）が発生した…。`,
+        // --- ここから追加・Gemini増量センス ---
+        `全米が震撼した――。まさかの${data.when}、${data.where}を舞台に、${data.who}による前代未聞の「${data.what}」が幕を開ける！全ては${data.why}のため。${data.how}という全人類の斜め上を行く狂気の作戦に、世界は涙した（爆笑で）。`,
+        `これは歴史から抹消された極秘記録。${data.when}、なんと${data.where}で${data.who}が目撃される。あろうことか${data.why}という超個人的な理由で、${data.what}という愚行に及んでいたのだ！しかも${data.how}という、神をも恐れぬスタイルで……。`,
+        `【速報】地球滅亡の危機!? ${data.when}、${data.where}に突如現れた${data.who}。奴の目的は${data.why}だった！「ならば、${data.what}までよ！」と叫び、${data.how}というIQゼロの戦術で世界を混沌の渦に叩き落とす！`,
+        `「信じられるか？これ、実話なんだぜ…」 ${data.when}の${data.where}。絶体絶命の状況下で、${data.who}が選択したのは${data.what}だった。${data.why}という狂った信念のもと、${data.how}と突き進む姿に、全銀河が「いや、そうはならんやろ」とツッコんだ。`
+      ];
+      // 助詞の微調整（「が」の重複などを防ぐため、一部テンプレート側のテキストを最適化しました）
+      return templates[Math.floor(Math.random() * templates.length)].replace(/\s+/g, ' ').trim();
+    }
+
+    function updateResult() {
+      const sentence = generateNaturalSentence(currentData);
+      document.getElementById('result').innerHTML = 
+        `完成した超バカ映画ストーリー：<br><br><strong>${sentence}</strong>`;
+    }
+
+    function updateCard(key) {
+      const word = random(words[key]);
+      currentData[key] = word;
+      const card = document.querySelector(`.card[data-key="${key}"]`);
+      if (card) card.querySelector('div:last-child').innerHTML = word;
+      updateResult();
+      playSound(850, 'triangle', 0.08);
+    }
+
+    function generateAllNew() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      currentData = {};
+
+      categories.forEach(cat => {
+        const word = random(words[cat.key]);
+        currentData[cat.key] = word;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.key = cat.key;
+        card.innerHTML = `<div class="label">${cat.label}</div><div style="margin-top:28px; line-height:1.35;">${word}</div>`;
+        card.onclick = () => updateCard(cat.key);
+        grid.appendChild(card);
+      });
+
+      updateResult();
+      playSound(1300, 'sine', 0.4);
+    }
+
+    // 起動
+    generateAllNew();
+  </script>
+</body>
+</html>
