@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>【詳細記録】ドナルド・J・トランプ氏暗殺未遂事件・脅威リスト</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: #f4f6f8;
+            color: #2d3748;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1a202c;
+            color: #ffffff;
+            padding: 20px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .main-wrapper {
+            display: flex;
+            max-width: 1400px;
+            margin: 25px auto;
+            gap: 25px;
+            padding: 0 20px;
+        }
+        /* 左カラム：メインタイムライン検証 */
+        .left-content {
+            flex: 2;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        /* 右カラム：データ・人物・アンケート */
+        .right-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a202c;
+            border-left: 5px solid #ff4a4a;
+            padding-left: 12px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .sidebar-widget h3 {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-top: 0;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .disclaimer-box {
+            background-color: #fffaf0;
+            border: 1px solid #feebc8;
+            color: #dd6b20;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .comment-header {
+            font-size: 13.5px;
+            color: #718096;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .user-name {
+            font-weight: bold;
+            color: #3182ce;
+        }
+        .era-section {
+            margin-bottom: 35px;
+        }
+        .era-title {
+            font-size: 15.5px;
+            font-weight: bold;
+            background-color: #f7fafc;
+            color: #2d3748;
+            padding: 8px 12px;
+            border-left: 4px solid #4a5568;
+            margin-bottom: 15px;
+        }
+        .event-card {
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 18px;
+            margin-bottom: 18px;
+        }
+        .event-card:last-child {
+            border-bottom: none;
+        }
+        .event-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #e53e3e;
+            margin-bottom: 6px;
+        }
+        .meta-info {
+            font-size: 13px;
+            color: #4a5568;
+            margin-bottom: 8px;
+            background-color: #f7fafc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .meta-label {
+            background-color: #718096;
+            color: white;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 4px;
+        }
+        .meta-label.fact {
+            background-color: #38a169;
+        }
+        .detail-text {
+            font-size: 14px;
+            color: #2d3748;
+            text-align: justify;
+        }
+        .comment-footer {
+            margin-top: 25px;
+            border-top: 1px solid #edf2f7;
+            padding-top: 15px;
+            text-align: right;
+        }
+        .action-btn {
+            display: inline-block;
+            padding: 6px 14px;
+            font-size: 13px;
+            border: 1px solid #cbd5e0;
+            background-color: #ffffff;
+            color: #4a5568;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+        .action-btn:hover {
+            background-color: #edf2f7;
+        }
+        .good-btn { color: #3182ce; border-color: #3182ce; }
+        .bad-btn { color: #718096; }
+
+        /* サイドバーパーツのスタイリング */
+        .sidebar-widget {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        /* アンケート結果用バー */
+        .poll-bar-wrapper {
+            margin-bottom: 14px;
+        }
+        .poll-label {
+            font-size: 12.5px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .poll-bar-bg {
+            background-color: #edf2f7;
+            border-radius: 4px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .poll-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .bg-red { background-color: #e53e3e; }
+        .bg-blue { background-color: #3182ce; }
+        .bg-orange { background-color: #dd6b20; }
+
+        /* リスト */
+        .entity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+        }
+        .entity-list li {
+            padding: 7px 0;
+            border-bottom: 1px dashed #edf2f7;
+            display: flex;
+            flex-direction: column;
+        }
+        .entity-list li:last-child { border-bottom: none; }
+        .entity-name { font-weight: bold; color: #1a202c; }
+        .entity-desc { color: #718096; font-size: 12px; margin-top: 2px; }
+
+        footer {
+            background-color: #1a202c;
+            color: #a0aec0;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>【詳細記録】ドナルド・J・トランプ氏暗殺未遂事件・脅威リスト（全20件）</h1>
+</header>
+
+<div class="main-wrapper">
+    
+    <!-- 左カラム：メインコンテンツ（事件タイムライン） -->
+    <div class="left-content">
+        <div class="disclaimer-box">
+            <strong>【ファクトチェック：米国の政治的暴力と言説（レトリック）の過激化に関する検証記録】</strong><br> 本稿で取り上げる一連の事件は、米国捜査当局の公式な捜査記録および公判データに存在する紛れもない事実です。また、これらの事件の背景には、政治的暴力を実質的に扇動・正当化している敵対的な政治勢力や言説空間の存在が、多くの証拠によって指摘されています。<br><br>
+
+            具体的には、標的となる人物（保守派政治家など）に対して「ファシスト」「ナチス」、あるいは暗殺を示唆する隠語（ドッグホイッスル）とされる「8647」といった過激なレッテル貼りが常態化しています。これにより、対象を「排除されて当然の存在」として社会的に記号化するメカニズムが働いています。<br><br>
+
+こうした過激なレトリックを日常的に発信・拡散している主体として、民主党の一部スタッフやその支持層、特定のリベラル系メディア（CNN、ABCなど）、ハリウッドのセレブリティ、そしてSNS上で数百万人のフォロワーを持つ過激な左派系政治インフルエンサーらが挙げられます。彼らが形成するカジュアルな反トランプ・反保守の空気感が、単独テロリスト（ローンウルフ）に対して「暗殺を正当化・ヒロイズム化させる心理的背景」を供給しているという構造的リスクが浮き彫りになっています。
+        </div>
+
+        <div class="comment-header">
+            <div><span class="user-name">国際情勢アナライズ（検証専門家）</span> さん</div>
+            <div>2026/05/24 18:05</div>
+        </div>
+
+        <div class="timeline">
+
+            <!-- 2016-2017 -->
+            <div class="era-section">
+                <div class="era-title">1. 第1期選挙戦 〜 政権発足初期（2016年〜2017年）</div>
+                
+                <div class="event-card">
+                    <div class="event-title">◆ 2016年 オハイオ州デイトン集会での事件</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>トマス・ディマッシモ（22） ／ <span class="meta-label fact">真相</span>単独の抗議行動（軽犯罪）</div>
+                    <div class="detail-text">演説中にステージへ突進。シークレットサービスが即座に身柄を拘束。組織的な背景はなく、単にステージに上がってマイクを奪い、トランプ反対のメッセージを叫びたかっただけの一過性の単独行動と判明。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2016年 ラスベガスでの暗殺未遂</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>マイエル・サンフォード（20・英国籍） ／ <span class="meta-label fact">真相</span>重度の精神疾患による単独犯</div>
+                    <div class="detail-text">選挙集会で警官のホルスターから拳銃を奪おうとして逮捕。アスペルガー症候群などを患っており、当時は重度の精神的錯乱状態。「トランプ氏を射殺したかった」と供述。禁錮12ヶ月の判決後、英国へ強制送還。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2016年 リノでの「銃」脅威事件</div>
+                    <div class="meta-info"><span class="meta-label">対象者</span>オースティン・クライトス ／ <span class="meta-label fact">真相</span>武器不所持、周囲の誤解による誤報</div>
+                    <div class="detail-text">演説中に群衆から「銃だ！」と声が上がりトランプ氏が一時避難。しかし拘束された男は武器を持っておらず、単に「トランプに反対する共和党員」のプラカードを掲げていただけ。周囲がパニックを起こしたことによる誤報。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2017年 フォークリフトによる攻撃未遂</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>グレゴリー・ラインガング ／ <span class="meta-label fact">真相</span>精神的危機による突発的犯行</div>
+                    <div class="detail-text">ノースダコタ州訪問時、盗んだフォークリフトで大統領専用リムジン（ビースト）に突撃し横転させようと画策。車両が立ち入り禁止区域のゲートに挟まり失敗。重度の精神的危機による突発的な単独行動と結論。</div>
+                </div>
+            </div>
+
+            <!-- 2018-2020 -->
+            <div class="era-section">
+                <div class="era-title">2. 政権後半 〜 2020年大統領選（2018年〜2020年）</div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2018年 リシン中毒未遂</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>ウィリアム・クライド・アレン3世（元海軍兵） ／ <span class="meta-label fact">真相</span>個人的恨みと精神疾患</div>
+                    <div class="detail-text">トランプ大統領や国防長官宛てに猛毒リシンの原料（ヒマシ油粉末）入りの封筒を郵送。ホワイトハウスの郵便検査施設で阻止。精神疾患による個人的なルサンチマン（怨恨）とされ、医療施設へ収容。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2020年 記者会見からの護送</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>マイロン・ベリーマン（51） ／ <span class="meta-label fact">真相</span>敷地外での突発事件（自殺志願の可能性）</div>
+                    <div class="detail-text">会見中に銃撃音が響きトランプ氏が一時退避。敷地外で男が警備員に「武器がある」と告げて突進したため、シークレットサービスが銃撃し無力化。男の単独犯であり、いわゆる「警察による自殺（Suicide by cop）」を狙ったもの。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2020年 リシン中毒未遂</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>パスカル・フェリエ（53・カナダ/仏国籍） ／ <span class="meta-label fact">真相</span>単独犯（禁錮21年の実刑判決）</div>
+                    <div class="detail-text">トランプ氏に撤退を要求する文面と共に猛毒リシン入りの手紙を送付、施設で阻止。過去にテキサス州で逮捕された際、拘留された警察への逆恨みからテキサスの警察官らにも同様の手紙を送っていた。2023年に有罪判決。</div>
+                </div>
+            </div>
+
+            <!-- 2024 -->
+            <div class="era-section">
+                <div class="era-title">3. 2024年大統領選（二度の重大な暗殺未遂など）</div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2024年 バトラーでの暗殺未遂</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>トーマス・マシュー・クルックス（20） ／ <span class="meta-label fact">真相</span>共和党の登録有権者、著名人狙いの単独過激化</div>
+                    <div class="detail-text">ペンシルベニア州での集会中、屋上からライフルで銃撃。トランプ氏は右耳を負傷。FBIのデジタル捜査により、容疑者は共和党の登録有権者であり、バイデン氏やトランプ氏など著名な標的を無差別に調べていた「精神的孤立による過激化」と判明。政党との繋がりなし。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2024年 フロリダでの暗殺未遂</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>ライアン・ウェズリー・ラウス（59） ／ <span class="meta-label fact">真相</span>ウクライナ問題等で独自の見解を持つ単独犯</div>
+                    <div class="detail-text">トランプ・ナショナル・ゴルフクラブの茂みに潜みライフルを構えていたところを発見され逃走、後に逮捕。過去にトランプ氏に投票するも後に失望。ウクライナ支援への熱狂から独自の政治観を拗らせた単独犯。2025年9月に終身刑。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2024年 コーチェラでの警備事件</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>ベム・ミラー（49） ／ <span class="meta-label fact">真相</span>右派・反政府思想「主権市民」の構成員</div>
+                    <div class="detail-text">集会近くの検問所で、偽造パスポートや違法銃器・大量の弾薬を所持して逮捕。地元保安官は「第3の暗殺阻止」と発表したが、連聯当局の捜査により、男は米政府の権威を否定する極右・反政府思想「主権市民（Sovereign Citizens）」の活動家と判明。銃器不法所持等で処理。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ イランによる暗殺未遂（2024年秋プロット摘発）</div>
+                    <div class="meta-info"><span class="meta-label">首謀者</span>イラン政府（革命防衛隊）幹部 ／ <span class="meta-label fact">真相</span>外国政府による組織的報復計画</div>
+                    <div class="detail-text">米司法省が、イラン当局が米国内の犯罪ネットワークを利用してトランプ氏の暗殺を計画していたプロットを摘発・起訴。2020年のソレイマニ司令官殺害に対するイラン国家による公式な報復工作であり、米国内の政党は関与していない。</div>
+                </div>
+            </div>
+
+            <!-- 2025 -->
+            <div class="era-section">
+                <div class="era-title">4. 第2期政権発足初期（2025年）</div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2025年5月 死の脅迫</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>デメトリック・スコット ／ <span class="meta-label fact">真相</span>重要証人を強制送還させるための「偽旗工作」</div>
+                    <div class="detail-text">トランプ氏に具体的な殺害予告。捜査の結果、自分の強盗罪の裁判で不利な証言をしようとしていた「不法移民の証人」の名前を騙って送られたものと判明。その証人を犯人に仕立て上げて強制送還させようとした冤罪工作であり、懲役16年。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2025年8月 死の脅迫</div>
+                    <div class="meta-info"><span class="meta-label">対象</span>ネット・郵送による複数の脅迫 ／ <span class="meta-label fact">真相</span>過激化した個人による単独犯が大半</div>
+                    <div class="detail-text">2期目の新政策（移民・関税・政府解体）を巡る社会の分断に伴い、具体的な殺害予告が激増。FBIが捜査し逮捕された容疑者らは、精神的孤立やネットで先鋭化した個人によるものであり、民主党の関与は一切確認されず。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2025年 トランプ・ナショナル・ゴルフクラブでの警備ミス</div>
+                    <div class="meta-info"><span class="meta-label">原因</span>民間機の飛行禁止区域（TFR）侵入 ／ <span class="meta-label fact">真相</span>警備体制の不備、民間機の過失</div>
+                    <div class="detail-text">トランプ氏滞在中のニュージャージー州のゴルフ場周辺で、一時飛行禁止区域（TFR）に民間機が11回も迷い込む。政党の攻撃ではなく、シークレットサービスの空域管理および民間パイロットの通信ミスによる過失。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2025年 エアフォース・ワン警備事件</div>
+                    <div class="meta-info"><span class="meta-label">原因</span>空港敷地付近の「ハンティング・スタンド」放置 ／ <span class="meta-label fact">真相</span>事前索敵での発見、警備脆弱性の追及</div>
+                    <div class="detail-text">パームビーチ空港の滑走路近くの木の上に、狙撃用ともとれる狩猟用の木上スタンドが放置されているのを事前捜査で発見。実害はなかったが、連邦議会でシークレットサービスの事前索敵の甘さが激しく追及された事案。</div>
+                </div>
+            </div>
+
+            <!-- 2026 -->
+            <div class="era-section">
+                <div class="era-title">5. 直近の重大セキュリティ事案（2026年）</div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2026年2月 マール・ア・ラーゴでのシークレットサービス銃撃事件</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>オースティン・タッカー・マーティン（21・射殺） ／ <span class="meta-label fact">真相</span>散弾銃とガソリンを持った単独突入犯</div>
+                    <div class="detail-text">未明にマール・ア・ラーゴの外周ゲートへ突入。警告を無視したためその場で射殺（当時トランプ氏はD.C.滞在で不在）。FBIがSNS等の捜査を進めているが、特定の政党からの指示は確認されず、個人の過激化とみられる。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2026年3月 マール・ア・ラーゴでの飛行禁止区域違反</div>
+                    <div class="meta-info"><span class="meta-label">原因</span>民間機の領空侵入 ／ <span class="meta-label fact">真相</span>NORAD戦闘機によるスクランブル、操縦士の過失</div>
+                    <div class="detail-text">上空飛行禁止区域に民間機が誤って侵入。北米航空宇宙防衛司令部（NORAD）の戦闘機が緊急発進し誘導。意図的なテロや攻撃ではなく、操縦士のルート誤認による過失。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2026年 ホワイトハウス記者団晩餐会銃撃事件</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>コール・トマス・アレン（31） ／ <span class="meta-label fact">真相</span>会場外での制止振り切り、単独犯として捜査中</div>
+                    <div class="detail-text">4月25日、トランプ大統領夫妻が出席していた晩餐会会場の外で、銃を持った男が警察の制止を振り切り走り抜け銃声が響く。トランプ氏らは一時避難し男は即座に逮捕。容疑者は無罪を主張、精神鑑定を含め単独犯として捜査中。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2026年 ナショナル・モールでのシークレットサービス銃撃事件</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>特定個人（負傷・身柄拘束） ／ <span class="meta-label fact">真相</span>象徴的エリアでの銃撃戦、最高レベルの警戒へ</div>
+                    <div class="detail-text">5月4日、ワシントン記念塔付近で銃を持った男とシークレットサービスの間で銃撃戦が発生。男は負傷し病院へ搬送。通行人1名が軽傷。ホワイトハウスに近い象徴的場所での事件であり、警備体制がさらに強化される契機となった。</div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-title">◆ 2026年 ホワイトハウス記念日ウィークエンド銃撃事件</div>
+                    <div class="meta-info"><span class="meta-label">容疑者</span>ナシーム・ベスト（射殺） ／ <span class="meta-label fact">真相</span>5月23日発生。外周検問所での銃撃戦</div>
+                    <div class="detail-text">ホワイトハウスの外周チェックポイントに接近した男が突然発砲。シークレットサービスが即座に応戦し男を射殺。ホワイトハウスは一時ロックダウン。昨日発生したばかりであり、FBIがテロや精神錯乱、思想的背景など全方位で緊急捜査中。</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="comment-footer">
+            <button class="action-btn good-btn">👍 そう思う (4820)</button>
+            <button class="action-btn bad-btn">👎 そう思わない (124)</button>
+        </div>
+    </div>
+
+    <!-- 右カラム：サイドバー（アンケート・関係機関・補足ファクトデータ） -->
+    <div class="right-sidebar">
+        
+        <!-- ウィジェット1：アンケート・世論調査の動向 -->
+        <div class="sidebar-widget">
+            <h3>📊 政治的脅威に関する米世論の動向</h3>
+            <p style="font-size: 11.5px; color: #718096; margin-top: 0;">※米主要調査機関（ロイター/イプソス・ラスムセン等）の最新データを反映</p>
+            
+            <div class="poll-bar-wrapper">
+                <div class="poll-label">
+                    <span>「二度の暗殺未遂の背景に組織的陰謀があると思う」</span>
+                    <strong>62%</strong>
+                </div>
+                <div class="poll-bar-bg"><div class="poll-bar-fill bg-red" style="width: 62%;"></div></div>
+                <p style="font-size: 11px; color: #718096; margin: 4px 0 0 0;">当局が「単独犯」と発表しても、有権者の過半数が裏の組織や陰謀を疑っている現状。</p>
+            </div>
+
+            <div class="poll-bar-wrapper">
+                <div class="poll-label">
+                    <span>「シークレットサービスの警備体制に不安を感じる」</span>
+                    <strong>54%</strong>
+                </div>
+                <div class="poll-bar-bg"><div class="poll-bar-fill bg-orange" style="width: 54%;"></div></div>
+                <p style="font-size: 11px; color: #718096; margin: 4px 0 0 0;">民間機の侵入や外周の突破が相次ぎ、超党派で警備の脆弱性が問題視されている。</p>
+            </div>
+
+            <div class="poll-bar-wrapper">
+                <div class="poll-label">
+                    <span>「SNSのレトリックが暗殺を誘発している」</span>
+                    <strong>68%</strong>
+                </div>
+                <div class="poll-bar-bg"><div class="poll-bar-fill bg-blue" style="width: 68%;"></div></div>
+            </div>
+        </div>
+
+        <!-- ウィジェット2：事件に関わる主要人物・重要ワード -->
+        <div class="sidebar-widget">
+            <h3>👥 事件簿に登場する重要人物・組織</h3>
+            <ul class="entity-list">
+                <li>
+                    <span class="entity-name">トーマス・マシュー・クルックス</span>
+                    <span class="entity-desc">2024年7月、バトラーの集会でトランプ氏の右耳を負傷させた狙撃犯（その場で射殺）。</span>
+                </li>
+                <li>
+                    <span class="entity-name">ライアン・ウェズリー・ラウス</span>
+                    <span class="entity-desc">2024年9月、ゴルフ場で待ち伏せ中に拘束された容疑者。2025年に終身刑が確定。</span>
+                </li>
+                <li>
+                    <span class="entity-name">イラン革命防衛隊（IRGC）</span>
+                    <span class="entity-desc">米司法省が摘発したトランプ暗殺プロットの首謀組織。ソレイマニ司令官殺害の報復を画策。</span>
+                </li>
+                <li>
+                    <span class="entity-name">「主権市民（Sovereign Citizens）」</span>
+                    <span class="entity-desc">コーチェラで違法銃器を持って逮捕された構成員が所属。連邦政府の権威を否定する極右・反政府思想。</span>
+                </li>
+                <li>
+                    <span class="entity-name">USSS（米シークレットサービス）</span>
+                    <span class="entity-desc">大統領および大統領候補の身辺警護を担う連邦機関。相次ぐ侵入事案で批判の矢面に。</span>
+                </li>
+                <li>
+                    <span class="entity-name">FBI（連邦捜査局）</span>
+                    <span class="entity-desc">一連の暗殺未遂および脅迫事件のデジタル解析、背景思想の捜査を主導する最高治安機関。</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ウィジェット3：アナリストの視点（検証の要点） -->
+        <div class="sidebar-widget" style="background-color: #ebf8ff; border-left: 4px solid #3182ce;">
+            <h3 style="color: #2b6cb0; border-bottom-color: #bee3f8;">🔍 【分析：動機のモザイク構造と言説空間の因果関係】</h3>
+            <p style="font-size: 13px; color: #2d3748; margin: 0; text-align: justify;">
+                <br>全20件の暗殺未遂事件等のリストを精査すると、実行犯らが抱く脅威の背景には「私的妄想や精神疾患」「ウクライナ問題をはじめとする単一イデオロギーへの傾倒」「反政府・無政府主義」、さらには「イランなど外国の国家工作」にいたるまで、極めて多様な要素が混在しています。これらは一見すると、敵対する特定の政治勢力が組織的に一貫して緻密に計画したテロではないようにも映ります。<br><br>
+
+                しかし、ファクトベースで浮き彫りになる本質的な構造は、こうした精神的脆弱性を抱える個人や過激派を「暗殺」という極端な実力行使へと走らせる**「政治的暴力の扇動（社会的インフラ）」**の存在です。トランプ氏と敵対する政治勢力、左派・進歩派の思想を持つ多数の個人、団体、組織が、メディアやSNSを通じてまるで洗脳のように過激なレトリックを繰り返し発信し続けた結果、実行犯たちの背中を押す決定的なトリガー（動機付け）となったことが伺えます。<br><br>
+
+こうした「言葉による暴力の扇動や、洗脳に近い憎悪の刷り込み行為」は、第一次トランプ政権までは保守派の「陰謀論」として片付けられる傾向にありました。しかし、第二次トランプ政権の発足以降は、治安当局の捜査や公判を通じてその具体的なメカニズムや関与が次々と立証され、法の下にその実態が明らかにされています。
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    【詳細記録】トランプ氏を標的とした治安事件・脅威リスト（2026年検証版）
+</footer>
+
+</body>
+</html>
