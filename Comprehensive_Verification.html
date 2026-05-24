@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>【総合検証アーカイブ】米国の政治的暴力レレトリックとテロリズム構造</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: #f4f6f8;
+            color: #2d3748;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1a202c;
+            color: #ffffff;
+            padding: 20px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .main-wrapper {
+            display: flex;
+            max-width: 1400px;
+            margin: 25px auto;
+            gap: 25px;
+            padding: 0 20px;
+        }
+        /* 左カラム：メイン検証エリア */
+        .left-content {
+            flex: 2;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        /* 右カラム：サイドバー（データ・事例・リスト） */
+        .right-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a202c;
+            border-left: 5px solid #3182ce;
+            padding-left: 12px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .section-danger h2 {
+            border-left-color: #e53e3e;
+        }
+        .sidebar-widget h3 {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-top: 0;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .intro-box {
+            background-color: #f7fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 4px;
+            padding: 15px;
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 25px;
+        }
+        .alert-box {
+            background-color: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+        }
+        .case-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .case-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .badge {
+            font-size: 11px;
+            font-weight: bold;
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        .badge-danger { background-color: #e53e3e; }
+        .badge-info { background-color: #3182ce; }
+        .badge-dark { background-color: #4a5568; }
+
+        .post-content {
+            background-color: #f7fafc;
+            border-left: 3px solid #718096;
+            padding: 10px 12px;
+            font-size: 13.5px;
+            color: #4a5568;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13.5px;
+        }
+        .data-table th {
+            background-color: #edf2f7;
+            color: #2d3748;
+            font-weight: bold;
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+        }
+        .data-table td {
+            padding: 10px 8px;
+            border: 1px solid #cbd5e0;
+            vertical-align: top;
+        }
+        .data-table tr:nth-child(even) { background-color: #f7fafc; }
+
+        /* サイドバーパーツのスタイリング */
+        .sidebar-widget {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        /* アンケート・世論チャート風表示 */
+        .poll-bar-wrapper {
+            margin-bottom: 12px;
+        }
+        .poll-label {
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .poll-bar-bg {
+            background-color: #edf2f7;
+            border-radius: 4px;
+            height: 12px;
+            overflow: hidden;
+        }
+        .poll-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .bg-red { background-color: #e53e3e; }
+        .bg-blue { background-color: #3182ce; }
+        .bg-gray { background-color: #a0aec0; }
+
+        /* 人物・組織リスト */
+        .entity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+        }
+        .entity-list li {
+            padding: 6px 0;
+            border-bottom: 1px dashed #edf2f7;
+            display: flex;
+            flex-direction: column;
+        }
+        .entity-list li:last-child { border-bottom: none; }
+        .entity-name { font-weight: bold; color: #1a202c; }
+        .entity-desc { color: #718096; font-size: 12px; }
+
+        .analysis-box {
+            background-color: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: #2b6cb0;
+        }
+        footer {
+            background-color: #2d3748;
+            color: #a0aec0;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>【統合検証記録】米国政治におけるレトリックの過激化と言葉の暴力・暗殺容認のメカニズム</h1>
+</header>
+
+<div class="main-wrapper">
+    
+    <!-- 左カラム：メインコンテンツ -->
+    <div class="left-content">
+    <div class="intro-box">
+        <strong>【総合アーカイブ概要】</strong><br>
+        本ドキュメントは、米国の政治空間における「言葉の暴力・暗殺を容認するレトリック」が実社会の治安にいかなる影響を与えているかを包括的に検証した記録です。近年（2024〜2026年）に発生した右派・保守派への物理的脅威、ネット上での左派系インフルエンサー・政治スタッフによる扇動事例、そして過去数十年間に及ぶ「狂気のイデオロギー構造」を多角的な視点、時系列データ、及び世論の認知傾向（風刺的アンケート）と共に保存しています。
+    </div>
+
+        <!-- セクション1: インフルエンサー・著名人による扇動 -->
+        <div class="section-danger">
+            <h2>1. インフルエンサー・政治スタッフによる暴力の容認と暗殺コード</h2>
+            <div class="alert-box">
+                「標的が保守派やMAGAであれば、死を願い、暗殺コードを再生産しても『コメディ』や『表現の自由』として許される」という歪んだ空気が、過激派の背中を押しているという実態の記録です。
+            </div>
+
+            <div class="case-card">
+                <div class="case-header">
+                    <div class="case-title">ジミー・キンメル（Jimmy Kimmel）の「未来の未亡人」発言</div>
+                    <span class="badge badge-danger">メディアの冷笑</span>
+                </div>
+                <p style="margin: 0; font-size: 13.5px; color: #2d3748;">
+                    2024年7月の共和党全国大会の際、深夜番組『ジミー・キンメル・ライブ！』にてメラニア・トランプ夫人を「将来の未亡人（future widow）」と揶揄。その**わずか数日後にペンシルベニア州でトランプ氏への暗殺未遂事件が発生**したため、「テロや死をカジュアルに扱う悪質なアジテーションだ」として凄まじい大炎上を招いた。
+                </p>
+            </div>
+
+            <div class="case-card">
+                <div class="case-header">
+                    <div class="case-title">ジャクリーン * マーズ（Jacqueline Marsack）の銃撃煽り</div>
+                    <span class="badge badge-danger">民主党補佐官</span>
+                </div>
+                <p style="margin: 0; font-size: 13.5px; color: #2d3748;">
+                    ベニー * トンプソン下院議員（民主党）の最高補佐官。2024年7月13日の暗殺未遂直後に、自身のFacebookでテロの失敗を公然と惜しむ発言を連投し、即座に解雇・更迭された。
+                </p>
+                <div class="post-content">
+                    「暴力を容認するわけではないが、次は外さないように射撃のレッスンを受けておくべきだった」
+                </div>
+            </div>
+
+            <div class="case-card">
+                <div class="case-header">
+                    <div class="case-title">ブライアン・クラッセンスタイン（Brian Krassenstein）による「8647」暗殺コードのリレー</div>
+                    <span class="badge badge-danger">トップインフルエンサー</span>
+                </div>
+                <p style="margin: 0; font-size: 13.5px; color: #2d3748;">
+                    ジェームズ・コミー元FBI長官が、トランプ暗殺の隠語とされる「8647」を投稿した容疑で司法省に電撃起訴された直後、数百万人規模のフォロワーを持つブライアン氏が自ら進んでこの数字をXに再投稿。「発信源が絶たれた暗殺コードを確信犯的に引き継ぎ、ネット上の単独過激派へシグナルを維持した」として治安当局から厳しくマークされている。
+                </p>
+            </div>
+        </div>
+
+        <!-- セクション2: 歴史データとイデオロギーの多様性 -->
+        <div>
+            <h2>2. トランプ氏暗殺未遂および第二次トランプ政権前後から現在（2026年）にかけて発生した、過激左派・進歩派イデオロギー（アイデンティティ・ポリティクス、トランスジェンダー過激派など）に起因する、右派への政治的暴力・テロ事件</h2>
+            <p style="font-size: 14px; color: #4a5568; margin-bottom: 15px;">
+                現在まさに進行している、過激左派・進歩派（トランスジェンダー等）による右派・保守派への実力行使と、トランプ氏暗殺未遂事件の連鎖という本質的な現代の構図・タイムラインを可視化。
+            </p>
+
+<div class="incident-box">
+    <div class="box-title" style="background-color: #721c24; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 1.1em; border-radius: 4px 4px 0 0;">
+        🔍 現代の政治的暴力：トランプ暗殺未遂と過激左派・進歩派イデオロギーによる右派襲撃のタイムライン
+    </div>
+    <table class="data-table" style="width: 100%; border-collapse: collapse; border: 1px solid #dee2e6;">
+        <thead>
+            <tr style="background-color: #f8f9fa;">
+                <th style="width: 25%; padding: 12px; border: 1px solid #dee2e6; text-align: left;">事件名 / 年</th>
+                <th style="width: 25%; padding: 12px; border: 1px solid #dee2e6; text-align: left;">実行犯の属性・イデオロギー</th>
+                <th style="width: 50%; padding: 12px; border: 1px solid #dee2e6; text-align: left;">事件の概要と保守派への実害の本質</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>トランプ大統領暗殺未遂事件（第1打）</strong><br>(2024年7月)</td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><span class="badge badge-danger" style="background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em;">反トランプ・政治的嫌悪</span></td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;">ペンシルベニア州の選挙集会でトランプ氏が耳を撃たれ、聴衆の保守派男性が死亡した未曾有の政治テロ。メディアとリベラル陣営が長年培った「トランプ＝ナチス」という悪魔化レトリックが、若者を過激なローンウルフへ駆り立てた決定的な瞬間。</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>フロリダ州ゴルフ場 暗殺未遂事件（第2打）</strong><br>(2024年9月)</td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><span class="badge badge-danger" style="background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em;">ウクライナ支援過激派・民主党支持</span></td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;">トランプ氏のゴルフ場にライフルを持った男が潜伏。犯人は民主党の主張（ウクライナへの無制限支援）に熱狂し、「トランプは民主主義を滅ぼす」というリベラルメディアの言説をそのまま犯行声明に利用。政治的洗脳の生々しい実態が露呈した。</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>ナッシュビル・キリスト教学校銃撃事件</strong><br>(第二次政権前哨期)</td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><span class="badge badge-danger" style="background-color: #9b5de5; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em;">過激進歩派（トランスジェンダー）</span></td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;">トランスジェンダー当事者の犯人が、保守的なキリスト教系私立学校を襲撃し児童ら6人を虐殺。犯行声明（マニフェスト）には、伝統的価値観を持つ右派・キリスト教コミュニティへの深い憎悪と、進歩派思想による被害妄想的な怒りが綴られていた。</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>保守派指導者C・カーク氏 暗殺・テロ事件</strong><br>(2025年秋)</td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><span class="badge badge-danger" style="background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em;">Antifa・過激左派インフルエンサー</span></td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;">若手保守派のリーダーであるチャーリー・カーク氏が狙撃された最悪の事件。リベラル系セレブや左派インフルエンサーが、SNS上で彼を「ファシスト」とレッテル貼りし、排除（抹殺）を呼びかけるカジュアルな暴力を日常化した結果、テロが実体化した。</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>WH記者夕食会周辺銃撃 ＆ 暗殺コードリレー</strong><br>(2026年現在)</td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;"><span class="badge badge-danger" style="background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em;">ディープステート擁護派・過激左派</span></td>
+                <td style="padding: 12px; border: 1px solid #dee2e6;">第二次トランプ政権司法省による公権力の武器化（コミー元長官らの起訴）への反発からワシントンで発砲事件が発生。これに呼応し、クラッセンスタイン兄弟ら過激左派がネット上でトランプ暗殺を示唆する隠語「8647」のドッグホイッスルを拡散。現在進行形の組織的アジテーション。</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+                    
+                </tbody>
+            </table>
+
+<div class="analysis-box" style="border-left: 5px solid #dc3545; background-color: #fdf2f2; padding: 15px; margin: 15px 0; border-radius: 0 4px 4px 0;">
+                <strong style="color: #b21f2d; font-size: 1.1em;">【治安シンクタンク（CSIS等）による深層分析と警告】</strong><br>
+                <p style="margin-top: 5px; line-height: 1.6; color: #333;">
+                    過去の統計では反政府・極右過激派による牧歌的な事件数が注視されていましたが、<strong>2024年のトランプ氏暗殺未遂事件の連鎖、および第二次トランプ政権発足以降は、潮目が完全に変わった</strong>ことが警告されています。
+                </p>
+                <p style="margin-top: 5px; line-height: 1.6; color: #333;">
+                    現在、最も警戒すべき脅威として急増しているのは、政権の法秩序回復（公権力の武器化追及）や伝統的価値観への復帰に反発する、<strong>過激左派（Antifa等）や急進的進歩派（トランスジェンダー過激派など）による右派・保守派を標的とした政治的テロ</strong>です。
+                </p>
+                <p style="margin-top: 5px; line-height: 1.6; color: #333; font-size: 0.95em;">
+                    シンクタンクの分析によれば、これらは単なる偶発的な単独犯（ローンウルフ）ではなく、リベラルメディアや左派インフルエンサーが日常的に流布する「ファシスト」「ナチス」といったレッテル貼りや、ネット上に隠語として拡散される暗殺コード（「8647」など）といった<strong>過激な言説のインフラ（社会的扇動）に依存した『動キのモザイク構造』</strong>を持っています。言葉の暴力によって「暗殺を正当化」された精神的異常者や思想的狂信者が、保守派指導者（チャーリー・カーク氏等）の襲撃やトランプ氏への実力行使へと駆り立てられる「確信犯的テロのサプライチェーン」が社会的に完成しつつあると、強い警鐘が鳴らされています。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右カラム：サイドバー（アンケート・具体例・登場人物一覧） -->
+    <div class="right-sidebar">
+        
+        <!-- ウィジェット1：世論・アンケート結果 -->
+        <div class="sidebar-widget">
+            <h3>📊 注目すべき世論・アンケート結果</h3>
+            <p style="font-size: 12px; color: #718096; margin-top: 0;">※主要世論調査（ラスムセン・シカゴ大CPOST等）のデータを基にした傾向</p>
+            
+            <div class="poll-bar-wrapper">
+                <div class="poll-label">
+                    <span>「政治家に対する暴力は時として正当化される」</span>
+                    <strong>12%</strong>
+                </div>
+                <div class="poll-bar-bg"><div class="poll-bar-fill bg-red" style="width: 12%;"></div></div>
+                <p style="font-size: 11px; color: #718096; margin: 4px 0 0 0;">米国民の約1割強が政治的暴力に潜在的な理解を示している衝撃のデータ。</p>
+            </div>
+
+            <div class="poll-bar-wrapper">
+                <div class="poll-label">
+                    <span>「メディアの過激な表現が暗殺を誘発している」</span>
+                    <strong>72%</strong>
+                </div>
+                <div class="poll-bar-bg"><div class="poll-bar-fill bg-blue" style="width: 72%;"></div></div>
+                <p style="font-size: 11px; color: #718096; margin: 4px 0 0 0;">共和党支持者の8割、独立層の5割以上がメディアのレトリックを問題視。</p>
+            </div>
+
+            <div class="poll-bar-wrapper">
+                <div class="poll-label">
+                    <span>「SNS上の政治陰謀論を信じるか」</span>
+                    <strong>34%</strong>
+                </div>
+                <div class="poll-bar-bg"><div class="poll-bar-fill bg-gray" style="width: 34%;"></div></div>
+                <p style="font-size: 11px; color: #718096; margin: 4px 0 0 0;">第二次トランプ政権以前は「陰謀論」と言われていた「オバマ政権によるロシア疑惑捏造」「ヒラリー精神疾患疑惑」「バイデン認知症」「エプスタイン陰謀論」「気候変動詐欺」「ＣＯＶＩＤ−１９武漢起源説」など多くの陰謀論が事実である事が判明。</p>
+            </div>
+        </div>
+
+        <!-- ウィジェット2：さらなる具体的事例・隠れたエピソード -->
+        <div class="sidebar-widget">
+            <h3>🔍 さらなる具体的事例・付随エピソード</h3>
+            
+            <div style="font-size: 12.5px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;">
+                <strong style="color: #c53030;">● カイル・ガスの「次は外すな」発言</strong><br>
+                2024年7月14日、暗殺未遂の翌日。ジャック・ブラック率いるバンド「テネイシャスD」のメンバーがステージ上で「来年はトランプを外さないように」と抱負を語り大炎上。ワールドツアーが全て中止に追い込まれた。
+            </div>
+
+            <div style="font-size: 12.5px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;">
+                <strong style="color: #2b6cb0;">● 「BlueAnon（ブルーアノン）」の台頭</strong><br>
+                右派の陰謀論「Qアノン」の左派リベラル版として定着。トランプ暗殺未遂を「トランプが自ら仕組んだ偽旗作戦だ」と主張するハッシュタグを数百万規模で拡散させ、事件の深刻さを隠蔽した。
+            </div>
+
+            <div style="font-size: 12.5px;">
+                <strong style="color: #2d3748;">● トランプ氏による公式な非難（2025年9月）</strong><br>
+                トランプ大統領（当時）はイギリス首相との共同記者会見の席で、ジミー・キンメル氏のレトリックを「恐ろしい暴言」と公式に指弾し、メディアの責任を厳しく追及した。
+            </div>
+        </div>
+
+        <!-- ウィジェット3：登場する主要人物・企業（組織）一覧 -->
+        <div class="sidebar-widget">
+            <h3>👥 登場する主要人物・組織・メディア</h3>
+            <ul class="entity-list">
+                <li>
+                    <span class="entity-name">ジミー・キンメル（Jimmy Kimmel）</span>
+                    <span class="entity-desc">米ABC放送の深夜トーク番組司会者。反トランプの急先鋒。ジョークが面白くなく、政治的ドーピングで注目を集める。エンタメ界では「終わったひと」と呼ばれる。</span>
+                </li>
+                <li>
+                    <span class="entity-name">ブライアン・クラッセンスタイン（Brian Krassenstein）</span>
+                    <span class="entity-desc">Xで数百万人規模の影響力を持つ過激左派インフルエンサー。批判の仕方が「卑怯・姑息」なことで左派右派共に嫌悪されている人物。</span>
+                </li>
+                <li>
+                    <span class="entity-name">ジェームズ・コミー（James Comey）</span>
+                    <span class="entity-desc">オバマ政権元FBI長官。暗殺隠語「8647」の投稿容疑で司法省から刑事訴追。DSの手先として知られる。</span>
+                </li>
+                <li>
+                    <span class="entity-name">チャーリー・カーク（Charlie Kirk）</span>
+                    <span class="entity-desc">保守派若者組織「TPUSA」創設者。左派メディアから日常的にレッテルを貼られて標的とされた。将来の米国大統領候補と期待されていた人物。過激左派トランスジェンダーの暗殺者に殺害される。</span>
+                </li>
+                <li>
+                    <span class="entity-name">ABC放送（American Broadcasting Co.）</span>
+                    <span class="entity-desc">ディズニー傘下の米大手地上波テレビ局。キンメルの番組を放送。経営的に大赤字。進歩派リベラルに寄った番組で視聴者が逃げる。</span>
+                </li>
+                <li>
+                    <span class="entity-name">CSIS（戦略国際問題研究所）</span>
+                    <span class="entity-desc">米国の著名な治安・外交シンクタンク。テロデータの統計分析を行う。</span>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    【総合検証アーカイブ】政治的レレトリックとテロリズムの構造分析（2026年版）
+</footer>
+
+</body>
+</html>
