@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MYSTERY ART GENERATOR - [ULTIMATE EDITION Ver 4.0]</title>
+    <style>
+        :root {
+            --bg-color: #06080c;
+            --panel-color: #11141e;
+            --accent-color: #f59e0b;
+            --text-color: #f8fafc;
+        }
+
+        body {
+            margin: 0; padding: 20px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-position: center; background-size: cover; background-repeat: no-repeat; background-attachment: fixed;
+            transition: background-image 0.9s ease-in-out;
+        }
+
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(6, 8, 12, 0.65); z-index: 0; pointer-events: none;
+        }
+
+        .container {
+            position: relative; z-index: 1;
+            background-color: rgba(17, 20, 30, 0.75);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+            padding: 30px; width: 100%; max-width: 480px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h1 { font-size: 1.2rem; letter-spacing: 3px; margin-top: 0; margin-bottom: 5px; color: #cbd5e1; }
+        .subtitle { font-size: 0.75rem; color: #526175; margin-bottom: 20px; }
+
+        #style-badge {
+            display: inline-block; padding: 6px 16px; font-size: 0.75rem; font-weight: bold; border-radius: 20px;
+            margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4); color: #fff;
+        }
+
+        .canvas-container {
+            width: 100%; height: 240px; border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.4); background-color: #000;
+        }
+
+        canvas { width: 100%; height: 100%; display: block; }
+
+        #mystery-text {
+            background-color: rgba(0, 0, 0, 0.4); border-left: 4px solid var(--accent-color);
+            padding: 15px; min-height: 50px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; border-radius: 0 8px 8px 0; color: #e2e8f0; font-style: italic;
+        }
+
+        #seed-display { font-family: monospace; font-size: 0.75rem; color: #475569; margin-bottom: 20px; }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-color), #ef4444); color: white; border: none;
+            padding: 15px 30px; font-size: 1rem; font-weight: bold; border-radius: 12px; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); transition: transform 0.1s, filter 0.2s; width: 100%; letter-spacing: 1px;
+        }
+        .btn:hover { filter: brightness(1.1); }
+        .btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MYSTERY ART GENERATOR</h1>
+    <div class="subtitle">ULTIMATE EDITION [Ver 4.0] - 9-Style Engine</div>
+
+    <div id="style-badge">Loading...</div>
+
+    <div class="canvas-container">
+        <canvas id="artCanvas" width="1920" height="1080"></canvas>
+    </div>
+
+    <div id="seed-display">SEED: <span id="seed-value">INIT-START-403</span></div>
+    <div id="mystery-text">世界の美を再構成中...</div>
+
+    <button class="btn" onclick="generateMystery()">GENERATE & PROJECT ART</button>
+</div>
+
+<script>
+    const subjects = ["その鍵穴は", "観測された星屑は", "未開封の境界線は", "灰の中から目覚めた翼は", "ストリートの残響は", "解体された横顔は", "爆発する生命は", "複製されたアンディは", "計算された格子は", "うねる夜空の記憶は", "撒き散らされた感情は", "光に溶ける水面は"];
+    const locations = ["記憶の向こう側で", "無限に繰り返されるリポストの果てに", "16:9の宇宙の中で", "箱の中に閉じ込められたまま", "呪術的な原色の炎の中で", "三原色の厳密な直線の中で", "混沌のキャンバスの上で", "淡く眩しい光の粒子の中で"];
+    const actions = ["静かなる真実を隠している。", "新しいパズルを紡ぎ始める。", "スーパーカーのように加速する。", "永遠のログとして刻まれる。", "アートの琴線を震わせている。", "迷わず爆発する道を選んだ。", "バラバラの視点から世界を睨みつけている。", "純粋な抽象へと昇華された。", "うねるタッチで夜を支配する。", "予測不能な軌跡を描いている。"];
+
+    const popColors = [
+        ['#ff007f', '#00f0ff', '#fff000', '#000000'],
+        ['#7bf1a8', '#ff5e7e', '#a084dc', '#f7d060'],
+        ['#ff4a4a', '#3b82f6', '#10b981', '#f59e0b']
+    ];
+
+    function generateMystery() {
+        const canvas = document.getElementById('artCanvas');
+        const ctx = canvas.getContext('2d');
+        const textElement = document.getElementById('mystery-text');
+        const seedElement = document.getElementById('seed-value');
+        const badge = document.getElementById('style-badge');
+
+        // 豪華9種類のスタイルガチャ
+        const styles = [
+            "PICASSO CUBISM", "TARO OKAMOTO", "WARHOL POP", "GEOMETRIC", "COSMIC NEBULA",
+            "MONDRIAN ABS", "VAN GOGH SWIRL", "POLLOCK DRIP", "MONET IMPRESSION"
+        ];
+        const currentStyle = styles[Math.floor(Math.random() * styles.length)];
+        
+        const randomHex = Math.floor(Math.random()*16777215).toString(16).toUpperCase();
+        seedElement.innerText = `403-${currentStyle.split(' ')[0]}-${randomHex}`;
+
+        const s = subjects[Math.floor(Math.random() * subjects.length)];
+        const l = locations[Math.floor(Math.random() * locations.length)];
+        const a = actions[Math.floor(Math.random() * actions.length)];
+        textElement.innerText = `「${s}${l}${a}」`;
+
+        // バッジ＆UIカラーの切り替え設定
+        const styleMeta = {
+            "PICASSO CUBISM": "#845edb", "TARO OKAMOTO": "#e11d48", "WARHOL POP": "#ff007f",
+            "GEOMETRIC": "#10b981", "COSMIC NEBULA": "#3b82f6", "MONDRIAN ABS": "#facc15",
+            "VAN GOGH SWIRL": "#0284c7", "POLLOCK DRIP": "#78350f", "MONET IMPRESSION": "#ec4899"
+        };
+        const activeColor = styleMeta[currentStyle];
+        badge.style.backgroundColor = activeColor;
+        document.documentElement.style.setProperty('--accent-color', activeColor);
+        badge.innerText = currentStyle;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // --- 9大描画アルゴリズム・エンジン ---
+
+        if (currentStyle === "PICASSO CUBISM") {
+            ctx.fillStyle = "#d7ccc8"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const cubismColors = ["#8d6e63", "#5d4037", "#afb42b", "#455a64", "#f57c00", "#b0bec5"];
+            for (let i = 0; i < 12; i++) {
+                ctx.fillStyle = cubismColors[Math.floor(Math.random() * cubismColors.length)];
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                for(let j=0; j<3; j++) ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#2d1500"; ctx.lineWidth = 4; ctx.stroke();
+            }
+            ctx.strokeStyle = "#000000"; ctx.lineWidth = 6; ctx.beginPath();
+            ctx.arc(canvas.width / 2 - 100, canvas.height / 2, 80, 0, Math.PI, true);
+            ctx.arc(canvas.width / 2 + 120, canvas.height / 2 - 40, 60, 0, Math.PI * 2);
+            ctx.moveTo(canvas.width / 2, canvas.height / 2 - 150);
+            ctx.lineTo(canvas.width / 2 - 50, canvas.height / 2 + 100); ctx.stroke();
+
+        } else if (currentStyle === "TARO OKAMOTO") {
+            ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const colors = ["#e11d48", "#2563eb", "#f59e0b"];
+            for (let i = 0; i < 5; i++) {
+                ctx.fillStyle = colors[i % colors.length]; ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.quadraticCurveTo(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.closePath(); ctx.fill();
+            }
+            ctx.strokeStyle = "#000000"; ctx.lineCap = "round";
+            for (let i = 0; i < 4; i++) {
+                ctx.lineWidth = 20 + Math.random() * 30; ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.bezierCurveTo(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+            const eyeCount = 2 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < eyeCount; i++) {
+                const eyeX = 200 + Math.random() * (canvas.width - 400);
+                const eyeY = 200 + Math.random() * (canvas.height - 400);
+                const eyeSize = 60 + Math.random() * 60;
+                ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 15;
+                ctx.beginPath(); ctx.arc(eyeX, eyeY, eyeSize, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(eyeX, eyeY, eyeSize / 2, 0, Math.PI * 2); ctx.fill();
+            }
+
+        } else if (currentStyle === "WARHOL POP") {
+            const w = canvas.width / 2; const h = canvas.height / 2;
+            const schemes = popColors[Math.floor(Math.random() * popColors.length)];
+            const positions = [{x:0, y:0}, {x:w, y:0}, {x:0, y:h}, {x:w, y:h}];
+            positions.forEach((pos, index) => {
+                ctx.fillStyle = schemes[(index) % schemes.length]; ctx.fillRect(pos.x, pos.y, w, h);
+                ctx.fillStyle = schemes[(index + 1) % schemes.length]; ctx.beginPath();
+                ctx.arc(pos.x + w/2, pos.y + h/2, Math.min(w,h)/3.2, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = schemes[(index + 2) % schemes.length]; ctx.lineWidth = 15;
+                ctx.strokeRect(pos.x + w/5, pos.y + h/5, w/1.6, h/1.6);
+            });
+
+        } else if (currentStyle === "GEOMETRIC") {
+            ctx.fillStyle = "#0f172a"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < 30; i++) {
+                ctx.fillStyle = `hsla(${Math.random() * 360}, 80%, 50%, 0.25)`;
+                ctx.strokeStyle = `hsla(${Math.random() * 360}, 90%, 60%, 0.6)`; ctx.lineWidth = 3;
+                ctx.beginPath();
+                if (Math.random() > 0.5) {
+                    ctx.rect(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 400, Math.random() * 400);
+                } else {
+                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                }
+                ctx.closePath(); ctx.fill(); ctx.stroke();
+            }
+
+        } else if (currentStyle === "COSMIC NEBULA") {
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#020617'); grad.addColorStop(1, '#1e1b4b');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < 8; i++) {
+                const radius = 300 + Math.random() * 400;
+                const radGrad = ctx.createRadialGradient(Math.random() * canvas.width, Math.random() * canvas.height, 50, Math.random() * canvas.width, Math.random() * canvas.height, radius);
+                radGrad.addColorStop(0, `hsla(${Math.random() * 360}, 85%, 50%, 0.35)`); radGrad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            ctx.fillStyle = "#ffffff";
+            for (let i = 0; i < 150; i++) {
+                ctx.beginPath(); ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 4, 0, Math.PI*2); ctx.fill();
+            }
+
+        } else if (currentStyle === "MONDRIAN ABS") {
+            // 【モンドリアン：グリッド分割と赤黄青の抽象配置】
+            ctx.fillStyle = "#f8fafc"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const mColors = ["#ef4444", "#3b82f6", "#facc15", "#f8fafc", "#f8fafc", "#0f172a"];
+            const xLines = [0, 200, 500, 900, 1300, 1600, canvas.width];
+            const yLines = [0, 150, 400, 700, 900, canvas.height];
+            
+            // 四角形ブロックの描画
+            for(let i=0; i<xLines.length-1; i++) {
+                for(let j=0; j<yLines.length-1; j++) {
+                    ctx.fillStyle = mColors[Math.floor(Math.random() * mColors.length)];
+                    ctx.fillRect(xLines[i], yLines[j], xLines[i+1]-xLines[i], yLines[j+1]-yLines[j]);
+                }
+            }
+            // 太い黒線のグリッドを上書き
+            ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 16;
+            xLines.forEach(x => { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); });
+            yLines.forEach(y => { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); });
+
+        } else if (currentStyle === "VAN GOGH SWIRL") {
+            // 【ゴッホ：短い無数のタッチ（線）のうねりと重なり】
+            ctx.fillStyle = "#030712"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const vgColors = ["#1d4ed8", "#1e3a8a", "#1e40af", "#f59e0b", "#d97706", "#fef08a", "#06b6d4"];
+            
+            // うねる波のような規則性を持った線の束を無数にプロット
+            for(let i=0; i<800; i++) {
+                ctx.strokeStyle = vgColors[Math.floor(Math.random() * vgColors.length)];
+                ctx.lineWidth = 4 + Math.random() * 4;
+                ctx.lineCap = "round";
+                const startX = Math.random() * canvas.width;
+                const startY = Math.random() * canvas.height;
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                // サインカーブによるうねりのシミュレート
+                ctx.lineTo(startX + Math.cos(startY/100)*60 + (Math.random()*20-10), startY + Math.sin(startX/100)*40);
+                ctx.stroke();
+            }
+
+        } else if (currentStyle === "POLLOCK DRIP") {
+            // 【ポロック：飛び散るインク、複雑なドリッピングレイヤー】
+            ctx.fillStyle = "#1e293b"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const pColors = ["#000000", "#ffffff", "#ea580c", "#eab308", "#16a34a", "#dc2626"];
+            
+            pColors.forEach(color => {
+                ctx.strokeStyle = color; ctx.fillStyle = color;
+                // 糸のような細い線の重なり
+                for(let i=0; i<30; i++) {
+                    ctx.lineWidth = 1 + Math.random() * 4;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    for(let j=0; j<5; j++) {
+                        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    }
+                    ctx.stroke();
+                }
+                // 飛び散った液滴のドット
+                for(let i=0; i<60; i++) {
+                    ctx.beginPath();
+                    ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 8, 0, Math.PI*2);
+                    ctx.fill();
+                }
+            });
+
+        } else if (currentStyle === "MONET IMPRESSION") {
+            // 【モネ：淡いパステル調の光、重なり合う色彩の斑点】
+            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, "#a5f3fc"); grad.addColorStop(1, "#fbcfe8");
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const monetColors = ["rgba(165,180,252,0.15)", "rgba(244,180,217,0.15)", "rgba(110,231,183,0.12)", "rgba(253,224,71,0.15)", "rgba(255,255,255,0.2)"];
+            // 抽象的な筆の跡（平筆のような横長の楕円）を大量にスタンプ
+            for(let i=0; i<1500; i++) {
+                ctx.fillStyle = monetColors[Math.floor(Math.random() * monetColors.length)];
+                ctx.beginPath();
+                const rx = 30 + Math.random() * 80;
+                const ry = 10 + Math.random() * 25;
+                ctx.ellipse(Math.random() * canvas.width, Math.random() * canvas.height, rx, ry, (Math.random()*10 - 5) * Math.PI/180, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+
+        // 出来上がったフルHDアートを全画面の背景にハイクオリティ投影
+        const dataUrl = canvas.toDataURL();
+        document.body.style.backgroundImage = `url(${dataUrl})`;
+    }
+
+    // 初回自動起動
+    generateMystery();
+</script>
+
+</body>
+</html>
