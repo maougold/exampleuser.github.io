@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ニュース速報ジェネレーター【縦型・改行完全修正版】</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            overflow: hidden;
+            font-family: 'Noto Sans JP', sans-serif;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 🎬 9:16 ビデオエリア（スマホ縦型・グリーンバック） */
+        #video-area {
+            position: relative;
+            width: 337.5px; 
+            height: 600px;
+            max-height: 70vh;
+            background-color: #00ff00; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            margin-top: 10px;
+            overflow: hidden; 
+            z-index: 1;
+        }
+
+        /* 🚨 演出1：BREAKING NEWS（縦型特化） */
+        #breaking-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(160, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #breaking-overlay.active {
+            opacity: 1;
+            animation: flash-bg 0.5s ease infinite alternate;
+        }
+        .breaking-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 38px; 
+            color: #fff;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            letter-spacing: 2px;
+            line-height: 1.1;
+            transform: scale(0.8);
+        }
+        .breaking-subtitle {
+            font-size: 20px;
+            color: #ffcc00;
+            font-weight: 900;
+            margin-top: 15px;
+            letter-spacing: 6px;
+        }
+        #breaking-overlay.active .breaking-title {
+            animation: zoom-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes flash-bg {
+            0% { background: rgba(140, 0, 0, 0.95); }
+            100% { background: rgba(200, 0, 0, 0.95); }
+        }
+        @keyframes zoom-in { to { transform: scale(1); } }
+
+        /* 📺 演出2：ニュース番組UI */
+        #news-ui-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #news-ui-container.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 左上の報道バッジ */
+        .news-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
+            color: #000;
+            font-weight: 900;
+            font-size: 16px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            border: 1px solid #fff;
+        }
+        .badge-blue { background: linear-gradient(135deg, #00ccff, #0066cc) !important; color: #fff !important; }
+        .badge-red { background: linear-gradient(135deg, #ff3333, #cc0000) !important; color: #fff !important; }
+        .badge-purple { background: linear-gradient(135deg, #cc33ff, #8800cc) !important; color: #fff !important; }
+
+        /* 右上のLIVEバッジ */
+        .news-live-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #cc0000;
+            color: #fff;
+            font-weight: 900;
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            animation: pulse 0.8s infinite alternate;
+        }
+
+        /* 📱 縦型テロップエリア（TikTok等のUI被りを避ける位置） */
+        .news-ticker-area {
+            position: absolute;
+            bottom: 110px; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-sizing: border-box;
+        }
+
+        /* 大見出し（赤座布団：【改良】長文の時は綺麗に自動改行して読める設計に！） */
+        .ticker-main-row {
+            background: linear-gradient(to right, #cc0000, #990000);
+            color: #ffffff;
+            font-size: 18px; 
+            font-weight: 900;
+            padding: 8px 12px;
+            border-left: 6px solid #ffcc00;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            
+            /* ここを完全修正：はみ出さずに自動で折り返して読めるように変更 */
+            white-space: normal; 
+            word-break: break-all;
+            overflow-wrap: break-word;
+            
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+            text-align: left; /* 複数行の時は左詰めが見やすい */
+            box-sizing: border-box;
+        }
+
+        /* 詳細（白座布団） */
+        .ticker-sub-row {
+            background: rgba(255, 255, 255, 0.96);
+            color: #111111;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 12px;
+            border-left: 6px solid #444;
+            min-height: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            line-height: 1.4;
+            word-break: break-all; 
+            overflow-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        /* 🛠️ コントロールパネル */
+        #control-panel {
+            width: 98vw;
+            max-width: 1200px;
+            height: calc(30vh - 20px);
+            min-height: 180px;
+            background: rgba(0, 0, 0, 0.95);
+            margin: 10px 0;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 2px solid #cc0000;
+            display: grid;
+            grid-template-columns: 1.1fr 1.6fr 0.9fr; 
+            gap: 15px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-right: 1px solid #333;
+            padding-right: 15px;
+            justify-content: center;
+        }
+        .panel-section:last-child { border-right: none; padding-right: 0; }
+        .panel-section-title { color: #ff4444; font-weight: bold; font-size: 12px; border-bottom: 1px solid #444; padding-bottom: 4px; margin-bottom: 3px; }
+        .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; color: #ccc; }
+        select, input[type="text"] { padding: 5px; background: #111; color: #fff; border: 1px solid #444; font-size: 12px; border-radius: 4px; box-sizing: border-box; }
+        
+        .strike-input-row { display: flex; gap: 6px; align-items: center; width: 100%; }
+        .strike-input-row .in-t { flex: 1.2; }
+        .strike-input-row .in-d { flex: 2; }
+        
+        .manual-shoot-btn {
+            background: linear-gradient(135deg, #cc0000, #880000);
+            color: white;
+            border: 1px solid #ff6666;
+            border-radius: 4px;
+            padding: 5px 12px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        #random-strike-btn { background: linear-gradient(135deg, #ff9900, #ff5500); color: white; border: 1px solid #fff; border-radius: 6px; padding: 10px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .action-btn { width: 100%; padding: 8px; font-size: 14px; font-weight: bold; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #start-btn { background-color: #0088ff; }
+        #stop-btn { background-color: #ff3333; display: none; }
+        .status-timer-container { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        #timer-disp { font-family: monospace; font-size: 14px; color: #ff4444; font-weight: bold; background: #111; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <div id="video-area">
+        
+        <div id="breaking-overlay">
+            <div class="breaking-title">BREAKING<br>NEWS</div>
+            <div class="breaking-subtitle">報道特報</div>
+        </div>
+
+        <div id="news-ui-container">
+            <div class="news-badge" id="news-badge-text">速報</div>
+            <div class="news-live-badge"><div class="live-dot"></div>LIVE</div>
+            
+            <div class="news-ticker-area">
+                <div class="ticker-main-row" id="ticker-title">【速報】待機中</div>
+                <div class="ticker-sub-row" id="ticker-desc">システムを起動してください。</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="control-panel">
+        
+        <div class="panel-section">
+            <div class="panel-section-title">⚙️ 縦型オプション</div>
+            <div>
+                <label style="font-size:11px; color:#aaa;">報道バッジ:</label>
+                <select id="badge-select" style="width: 100%; margin-top: 2px;">
+                    <option value="速報">速報</option>
+                    <option value="独自">独自</option>
+                    <option value="中継">中継</option>
+                    <option value="警告">警告</option>
+                    <option value="デマ">デマ</option>
+                </select>
+            </div>
+            <label class="checkbox-label" style="margin-top: 5px;">
+                <input type="checkbox" id="enable-auto-hide" checked> 7秒後に自動格納
+            </label>
+            <button id="random-strike-btn" style="margin-top: auto;">🎲 嘘ニュース発射！</button>
+        </div>
+
+        <div class="panel-section">
+            <div class="panel-section-title">🚨 カスタムニュース（縦型・改行修正版）</div>
+            <div class="strike-input-row">
+                <input type="text" class="in-t" id="custom-title-1" value="【長文テスト】どれだけ長い見出し文字でも絶対に潰れず、綺麗に自動改行されて読める新型システムを完全実装！" placeholder="見出し">
+                <input type="text" class="in-d" id="custom-desc-1" value="横幅の狭いスマホ縦型動画でも、文字が重なって読めなくなるバグを完全に克服しました。完璧な表示をご確認ください。" placeholder="詳細説明">
+                <button class="manual-shoot-btn" onclick="triggerNewsStrike(1)">💥</button>
+            </div>
+            <div class="strike-input-row">
+                <input type="text" class="in-t" id="custom-title-2" value="【大論争】「何でもいい」の正解見つからず" placeholder="見出し">
+                <input type="text" class="in-d" id="custom-desc-2" value="今日の夕飯について「何でもいい」と言った妻に対し、提案した全候補が却下され現場は緊迫しています。" placeholder="詳細説明">
+                <button class="manual-shoot-btn" onclick="triggerNewsStrike(2)">💥</button>
+            </div>
+            <div class="strike-input-row">
+                <input type="text" class="in-t" id="custom-title-3" value="【悲報】週明けの月曜日、誰の許可を得て始まったのか物議" placeholder="見出し">
+                <input type="text" class="in-d" id="custom-desc-3" value="現時点で月曜日が開始された明確な理由は判明しておらず、二度寝をキメる市民が多発しています。" placeholder="詳細説明">
+                <button class="manual-shoot-btn" onclick="triggerNewsStrike(3)">💥</button>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="panel-section-title">▶ system制御</div>
+            <div style="width:100%; display:flex; flex-direction:column; gap:4px;">
+                <button id="start-btn" class="action-btn">放送システム起動 🚀</button>
+                <button id="stop-btn" class="action-btn">放送終了 🛑</button>
+            </div>
+            <div class="status-timer-container">
+                <div id="status-disp" style="font-size: 11px; color: #888;">待機中</div>
+                <div id="timer-disp">⏱ 00:00</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const randomNewsDB = [
+            { t: "【速報】日曜日、体感4秒で終了したと発表。市民からは「まだ何もしていない」と悲痛な声広がる", d: "現実を受け入れられない声が相次いでおり、月曜日の到来を拒むデモに発展する恐れがあります。" },
+            { t: "【大惨事】ポテトチップス、中身のほぼ8割が「ただの空気」であったことが専門機関の調査で判明", d: "開けた瞬間の絶望感について、製造元は「ポテトの鮮度と、開けた瞬間のワクワクを守るための愛です」と回答しました。" },
+            { t: "【独自】猫の集会が深夜に緊急開催、議題は「カリカリの減量について」激しい抗議のニャー相次ぐ", d: "現場には緊迫した空気が流れており、参加した猫からは「断固として要求が通るまで鳴き続ける」との声明が出されました。" },
+            { t: "【怪奇現象】入室した瞬間「何を取りに来たか完全に忘れる現象」が全国の一般家庭で多発", d: "リビングや台所に足を踏み入れた途端、記憶が消去されるこの現象に対し、ネットでは未知の電磁波説が浮上しています。" }
+        ];
+
+        const breakingOverlay = document.getElementById('breaking-overlay');
+        const newsUi = document.getElementById('news-ui-container');
+        const tickerTitle = document.getElementById('ticker-title');
+        const tickerDesc = document.getElementById('ticker-desc');
+        const badgeSelect = document.getElementById('badge-select');
+        const badgeText = document.getElementById('news-badge-text');
+        const chkAutoHide = document.getElementById('enable-auto-hide');
+        
+        const btnRandom = document.getElementById('random-strike-btn');
+        const btnStart = document.getElementById('start-btn');
+        const btnStop = document.getElementById('stop-btn');
+        const statusDisp = document.getElementById('status-disp');
+        const timerDisp = document.getElementById('timer-disp');
+
+        let isRunning = false;
+        let startTime = 0;
+        let clockInterval = null;
+        let typeInterval = null;
+        let hideTimer = null;
+
+        function updateBadgeStyle(type) {
+            badgeText.textContent = type;
+            badgeText.className = "news-badge";
+            if (type === "中継") badgeText.classList.add('badge-blue');
+            if (type === "警告") badgeText.classList.add('badge-red');
+            if (type === "デマ") badgeText.classList.add('badge-purple');
+        }
+
+        function typeWriterEffect(element, text, speed = 40) {
+            clearInterval(typeInterval);
+            element.textContent = "";
+            let i = 0;
+            
+            typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                    if (chkAutoHide.checked) {
+                        clearTimeout(hideTimer);
+                        hideTimer = setTimeout(() => { newsUi.classList.remove('show'); }, 7000);
+                    }
+                }
+            }, speed);
+        }
+
+        function playNewsSequence(titleText, descText) {
+            clearTimeout(hideTimer);
+            newsUi.classList.remove('show');
+            breakingOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                breakingOverlay.classList.remove('active');
+                updateBadgeStyle(badgeSelect.value);
+                newsUi.classList.add('show');
+
+                // タイトルをセット（自動で綺麗に改行されます）
+                tickerTitle.textContent = titleText;
+                typeWriterEffect(tickerDesc, descText, 45);
+                
+            }, 1500);
+        }
+
+        function triggerNewsStrike(slotNumber) {
+            if (!isRunning) {
+                alert('「システム起動」を押してください！');
+                return;
+            }
+            const titleVal = document.getElementById(`custom-title-${slotNumber}`).value.trim();
+            const descVal = document.getElementById(`custom-desc-${slotNumber}`).value.trim();
+            
+            if (titleVal !== "" && descVal !== "") {
+                playNewsSequence(titleVal, descVal);
+            } else {
+                alert("見出しと詳細説明を入力してください！");
+            }
+        }
+
+        btnRandom.addEventListener('click', () => {
+            if (!isRunning) return alert('「システム起動」を押してください！');
+            const item = randomNewsDB[Math.floor(Math.random() * randomNewsDB.length)];
+            const r = Math.random();
+            if (r < 0.4) badgeSelect.value = "速報";
+            else if (r < 0.7) badgeSelect.value = "独自";
+            else badgeSelect.value = "デマ";
+            playNewsSequence(item.t, item.d);
+        });
+
+        btnStart.addEventListener('click', () => {
+            isRunning = true; btnStart.style.display = 'none'; btnStop.style.display = 'block';
+            statusDisp.textContent = "🔴 ON AIR";
+            startTime = Date.now();
+            clockInterval = setInterval(() => {
+                const totalSeconds = Math.floor((Date.now() - startTime) / 1000);
+                timerDisp.textContent = `⏱ ${String(Math.floor(totalSeconds / 60)).padStart(2, '0')}:${String(totalSeconds % 60).padStart(2, '0')}`;
+            }, 250);
+        });
+
+        btnStop.addEventListener('click', () => {
+            isRunning = false; btnStart.style.display = 'block'; btnStop.style.display = 'none';
+            statusDisp.textContent = "⏹ 放送休止";
+            clearInterval(clockInterval); clearInterval(typeInterval); clearTimeout(hideTimer);
+            breakingOverlay.classList.remove('active'); newsUi.classList.remove('show');
+        });
+    </script>
+</body>
+</html>
