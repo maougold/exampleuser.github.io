@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ライブ風UI ＆ 3連手動ツッコミ・経過時間タイマー付き完全版</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Mochiy+Pop+One&family=Rampart+One&family=Noto+Sans+JP:wght=900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px 0;
+            background-color: #222;
+            font-family: 'Noto Sans JP', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* 🎬 16:9 ビデオエリア（800x450に固定） */
+        #video-area {
+            position: relative;
+            width: 800px;
+            height: 450px;
+            background-color: #00ff00; /* グリーンバック */
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            overflow: hidden; 
+            z-index: 1;
+            border-radius: 4px;
+        }
+
+        /* 🔴 ライブ視聴者数UI（画面右上） */
+        #live-counter-ui {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 6px 14px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 100;
+            display: none;
+        }
+        #live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ff3333;
+            border-radius: 50%;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* 💥 格ゲー風・巨大ツッコミテロップ */
+        .huge-strike-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0) scale(1);
+            font-size: 56px;
+            font-weight: 900;
+            color: #ffff00;
+            white-space: nowrap;
+            text-shadow: 
+                4px 4px 0 #000, -4px -4px 0 #000,
+                4px -4px 0 #000, -4px 4px 0 #000,
+                0 0 25px rgba(255,0,0,0.8);
+            z-index: 50;
+            opacity: 0;
+            animation: strike-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes strike-in {
+            0% { transform: translate3d(-50%, -50%, 0) scale(3); opacity: 0; letter-spacing: 10px; }
+            50% { transform: translate3d(-50%, -50%, 0) scale(0.9); opacity: 1; letter-spacing: 0px; }
+            100% { transform: translate3d(-50%, -50%, 0) scale(1); opacity: 1; }
+        }
+        .huge-strike-text.fade-out {
+            animation: strike-out 0.2s ease-in forwards;
+        }
+        @keyframes strike-out {
+            0% { transform: translate3d(-50%, -50%, 0) scale(1); opacity: 1; }
+            100% { transform: translate3d(-50%, -40%, 0) scale(0.8); opacity: 0; }
+        }
+
+        /* 🛠️ コントロールパネル（800pxに同期） */
+        #control-panel {
+            width: 800px;
+            background: rgba(0, 0, 0, 0.95);
+            margin: 15px 0;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid #d4af37;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: 240px 1fr; /* 入力欄（右側）のスペースを最大化 */
+            gap: 20px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+        /* 左セクションの区切り線 */
+        .panel-section-left {
+            border-right: 1px solid #333;
+            padding-right: 20px;
+        }
+
+        .panel-section-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 12px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 4px;
+            margin-bottom: 3px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .checkbox-label input {
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        select, input[type="text"] {
+            padding: 8px;
+            background: #111;
+            color: #fff;
+            border: 1px solid #444;
+            font-size: 13px;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* 縦並びの入力行用スタイル */
+        .strike-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+        .strike-input-row input {
+            flex: 1; /* 親要素の幅いっぱいに広げる */
+            font-weight: bold;
+        }
+        
+        /* 手動撃ち込みボタン */
+        .manual-shoot-btn {
+            background: linear-gradient(135deg, #0055ff, #0022aa);
+            color: white;
+            border: 1px solid #88b3ff;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .manual-shoot-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* おまかせランダム専用ボタン */
+        #random-strike-btn {
+            background: linear-gradient(135deg, #ff0055, #ff5500);
+            color: white;
+            border: 1px solid #fff;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 0, 85, 0.3);
+            margin-top: auto; /* 一番下に配置固定 */
+        }
+        #random-strike-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* スタート・ストップ */
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #start-btn { background-color: #0088ff; }
+        #stop-btn { background-color: #ff3333; display: none; }
+
+        /* タイマー＆ステータスエリア */
+        .status-timer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 5px;
+        }
+        #timer-disp {
+            font-family: monospace;
+            font-size: 14px;
+            color: #d4af37;
+            font-weight: bold;
+            background: #111;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="video-area">
+        <div id="live-counter-ui">
+            <div id="live-dot"></div>
+            <span>LIVE</span>
+            <span id="live-count-number">0</span>
+        </div>
+    </div>
+
+    <div id="control-panel">
+        
+        <div class="panel-section panel-section-left">
+            <div class="panel-section-title">🤖 全自動・基本設定</div>
+            <label class="checkbox-label">
+                <input type="checkbox" id="enable-live-ui" checked> 🔴 ライブUI（人数自動増減）
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="enable-auto-strike" checked> ⚡ ゲリラテロップ（自動ツッコミ）
+            </label>
+            <div style="margin-top: 2px;">
+                <label style="font-size:11px; color:#aaa;">テロップフォント:</label>
+                <select id="font-select" style="width: 100%; margin-top: 2px;">
+                    <option value="'Black Han Sans', sans-serif">Black Han Sans（格ゲー風・絶対潰れない）</option>
+                    <option value="'Noto Sans JP', sans-serif">極太モダンゴシック</option>
+                    <option value="'Mochiy Pop One', sans-serif">もちぽっぷ（テレビ風・超クッキリ）</option>
+                    <option value="'Rampart One', sans-serif">ランパート3D（立体影付き・ド迫力）</option>
+                    <option value="'MS UI Gothic', sans-serif">ニコニコ風UI</option>
+                </select>
+            </div>
+            
+            <div style="margin-top: auto; width:100%;">
+                <button id="start-btn" class="action-btn">システム起動 🚀</button>
+                <button id="stop-btn" class="action-btn">一時停止 🛑</button>
+            </div>
+            <div class="status-timer-container">
+                <div id="status-disp" style="font-size: 11px; color: #888;">待機中</div>
+                <div id="timer-disp">⏱ 00:00</div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="panel-section-title">🚨 事前入力ツッコミ（ワイド仕様）</div>
+            
+            <div class="strike-input-row">
+                <input type="text" id="custom-text-1" value="ここでまさかの実家特定ｗｗ" placeholder="ツッコミ1を入力" maxlength="25">
+                <button class="manual-shoot-btn" onclick="triggerPresetStrike(1)">撃つ 💥</button>
+            </div>
+            
+            <div class="strike-input-row">
+                <input type="text" id="custom-text-2" value="※個人の妄想です" placeholder="ツッコミ2を入力" maxlength="25">
+                <button class="manual-shoot-btn" onclick="triggerPresetStrike(2)">撃つ 💥</button>
+            </div>
+            
+            <div class="strike-input-row">
+                <input type="text" id="custom-text-3" value="おい編集、そこカットしろ！" placeholder="ツッコミ3を入力" maxlength="25">
+                <button class="manual-shoot-btn" onclick="triggerPresetStrike(3)">撃つ 💥</button>
+            </div>
+
+            <button id="random-strike-btn">🎲 空欄おまかせランダム発射！</button>
+        </div>
+
+    </div>
+
+    <script>
+        // 自動巡回＆ランダム用のワード
+        const strikeWords = [
+            "天才現るｗｗｗ", "※特殊な訓練を受けています", "謎の技術",
+            "視聴者がバク増中（↗）", "ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!!", "情報量が多すぎる",
+            "宇宙人かよ", "ここテストに出ます", "画面がうるさいｗｗw", "伝説の始まり"
+        ];
+
+        const videoArea = document.getElementById('video-area');
+        const liveUi = document.getElementById('live-counter-ui');
+        const liveCountNum = document.getElementById('live-count-number');
+        const chkLive = document.getElementById('enable-live-ui');
+        const chkAutoStrike = document.getElementById('enable-auto-strike');
+        const fontSelect = document.getElementById('font-select');
+        const btnRandom = document.getElementById('random-strike-btn');
+        const btnStart = document.getElementById('start-btn');
+        const btnStop = document.getElementById('stop-btn');
+        const statusDisp = document.getElementById('status-disp');
+        const timerDisp = document.getElementById('timer-disp');
+
+        let isRunning = false;
+        let currentViewerCount = 0;
+        let liveTimer = null;
+        let autoStrikeTimer = null;
+        let startTime = 0;
+        let clockInterval = null;
+
+        // 🔴 1. ライブ視聴者数のジュワジュワ増減
+        function startLiveCounter() {
+            currentViewerCount = Math.floor(8000 + Math.random() * 7000);
+            liveCountNum.textContent = currentViewerCount.toLocaleString();
+            if (chkLive.checked) liveUi.style.display = 'flex';
+
+            function loop() {
+                if (!isRunning) return;
+                let change = Math.floor(-50 + Math.random() * 200);
+                if (Math.random() < 0.2) change = Math.floor(1000 + Math.random() * 1500); // 大バズ
+                currentViewerCount += change;
+                if (currentViewerCount < 100) currentViewerCount = 100;
+                liveCountNum.textContent = currentViewerCount.toLocaleString();
+                liveTimer = setTimeout(loop, 1500 + Math.random() * 1500);
+            }
+            loop();
+        }
+
+        // 💥 2. 巨大テロップ生成
+        function spawnHugeStrikeText(manualText = null) {
+            const oldText = document.querySelector('.huge-strike-text');
+            if (oldText) oldText.remove();
+
+            const text = manualText || strikeWords[Math.floor(Math.random() * strikeWords.length)];
+
+            const el = document.createElement('div');
+            el.className = 'huge-strike-text';
+            el.textContent = text;
+            el.style.fontFamily = fontSelect.value;
+
+            const textColors = ['#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
+            el.style.color = textColors[Math.floor(Math.random() * textColors.length)];
+
+            videoArea.appendChild(el);
+
+            setTimeout(() => {
+                el.classList.add('fade-out');
+                setTimeout(() => el.remove(), 200);
+            }, 1500);
+        }
+
+        // 🤖 3. 全自動ゲリラテロップシステム
+        function startAutoStrikeSystem() {
+            function loop() {
+                if (!isRunning) return;
+                autoStrikeTimer = setTimeout(() => {
+                    if (chkAutoStrike.checked) spawnHugeStrikeText();
+                    loop();
+                }, 5000 + Math.random() * 4000);
+            }
+            loop();
+        }
+
+        // ⏱️ 4. 経過時間カウント
+        function startClock() {
+            startTime = Date.now();
+            clockInterval = setInterval(() => {
+                const elapsedMs = Date.now() - startTime;
+                const totalSeconds = Math.floor(elapsedMs / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                timerDisp.textContent = `⏱ ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 250);
+        }
+
+        // 🚨 5. 3連カスタム入力欄の個別発射システム
+        function triggerPresetStrike(slotNumber) {
+            if (!isRunning) {
+                alert('先に「システム起動」ボタンを押してください！');
+                return;
+            }
+            const inputEl = document.getElementById(`custom-text-${slotNumber}`);
+            const inputVal = inputEl.value.trim();
+
+            if (inputVal !== "") {
+                spawnHugeStrikeText(inputVal);
+            } else {
+                alert(`ツッコミ${slotNumber}のテキストが空っぽです！文字を入れてください。`);
+            }
+        }
+
+        // 🎲 6. 独立おまかせランダムボタンの処理
+        btnRandom.addEventListener('click', () => {
+            if (!isRunning) {
+                alert('先に「システム起動」ボタンを押してください！');
+                return;
+            }
+            spawnHugeStrikeText(); 
+        });
+
+        // 🚀 7. 起動・停止
+        btnStart.addEventListener('click', () => {
+            isRunning = true;
+            btnStart.style.display = 'none';
+            btnStop.style.display = 'block';
+            statusDisp.textContent = "🔴 演出中...";
+            startLiveCounter();
+            startAutoStrikeSystem();
+            startClock();
+        });
+
+        btnStop.addEventListener('click', () => {
+            isRunning = false;
+            btnStart.style.display = 'block';
+            btnStop.style.display = 'none';
+            statusDisp.textContent = "⏹ 一時停止中";
+            clearTimeout(liveTimer);
+            clearTimeout(autoStrikeTimer);
+            clearInterval(clockInterval);
+            liveUi.style.display = 'none';
+            const text = document.querySelector('.huge-strike-text');
+            if (text) text.remove();
+        });
+    </script>
+</body>
+</html>
