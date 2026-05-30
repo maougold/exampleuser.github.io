@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ニコニコ風弾幕ジェネレーター (16:9画面固定・下部パネル版)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222; /* 背景はダークグレー */
+            overflow-x: hidden;
+            font-family: sans-serif;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column; /* 上下に分割 */
+            justify-content: flex-start;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* 🎬 【改良】16:9 横型ビデオエリア（横800px×縦450pxに完全固定） */
+        #video-area {
+            position: relative;
+            width: 800px;
+            height: 450px;
+            background-color: #00ff00; /* 透過用のグリーンバック */
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            margin-top: 20px;
+            overflow: hidden; 
+            z-index: 1;
+            max-width: 95vw;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            container-type: inline-size;
+        }
+
+        /* 🛠️ コントロールパネル */
+        #control-panel {
+            width: 98vw;
+            max-width: 1400px;
+            height: calc(30vh - 30px);
+            min-height: 180px;
+            background: rgba(0, 0, 0, 0.95);
+            margin: 10px 0;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #d4af37; /* ゴールド */
+            display: grid;
+            grid-template-columns: 1.2fr 1.2fr 1.5fr 2fr 1fr; /* 横に5分割 */
+            gap: 15px;
+            color: white;
+            font-size: 12px;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-right: 1px solid #333;
+            padding-right: 10px;
+        }
+        .panel-section:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .panel-section-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 3px;
+        }
+
+        select, input[type="range"] {
+            padding: 4px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            font-size: 12px;
+        }
+
+        /* 横長に最適化したテキストエリア */
+        #bulk-textarea {
+            width: 100%;
+            height: calc(100% - 35px);
+            font-size: 11px;
+            padding: 6px;
+            box-sizing: border-box;
+            background: #111;
+            color: #fff;
+            border: 1px solid #444;
+            font-family: monospace;
+            resize: none;
+        }
+
+        /* ボタンデザイン */
+        .btn-block {
+            width: 100%;
+            padding: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        
+        .btn-gacha-long { background-color: #d4af37; color: #000; border: 1px solid #fff; }
+        .btn-gacha-long:hover { background-color: #fff; }
+        
+        .btn-gacha-short { background-color: #a67c00; color: #fff; border: 1px solid #d4af37; }
+        .btn-gacha-short:hover { background-color: #d4af37; color: #000; }
+
+        #start-btn { background-color: #0088ff; font-size: 14px; padding: 12px; height: 50px; margin-top: 5px; }
+        #start-btn:hover { background-color: #0066cc; }
+        
+        #stop-btn { background-color: #ff3333; font-size: 14px; padding: 12px; height: 50px; margin-top: 5px; display: none; }
+        #stop-btn:hover { background-color: #cc0000; }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 2px 0;
+        }
+
+        /* 🎬 【改良】弾幕文字（コンテナクエリ cqw/cqh を使用してビデオエリアに対して完全に等倍化） */
+        .comment {
+            position: absolute;
+            white-space: nowrap;
+            color: #ffffff; 
+            font-weight: bold;
+            line-height: 1;
+            text-shadow: 
+                0.3cqw 0.3cqw 0 #000, -0.3cqw -0.3cqw 0 #000,
+                0.3cqw -0.3cqw 0 #000, -0.3cqw 0.3cqw 0 #000;
+            z-index: 5;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+        }
+
+        /* 📌 現れて消える用アニメーション */
+        @keyframes fade-and-zoom {
+            0% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.8); }
+            10% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1); }
+            90% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.8); }
+        }
+
+        .comment-fixed {
+            position: absolute;
+            white-space: nowrap;
+            color: #ffffff; 
+            font-weight: bold;
+            line-height: 1;
+            text-shadow: 
+                0.3cqw 0.3cqw 0 #000, -0.3cqw -0.3cqw 0 #000,
+                0.3cqw -0.3cqw 0 #000, -0.3cqw 0.3cqw 0 #000;
+            z-index: 10;
+            animation: fade-and-zoom 2s forwards linear;
+            will-change: opacity, transform;
+        }
+
+        .status-text {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="video-area"></div>
+
+    <div id="control-panel">
+        
+        <div class="panel-section">
+            <div class="panel-section-title">🎲 文章ガチャ</div>
+            <button id="gacha-long-btn" class="btn-block btn-gacha-long">カオス長文を100件生成 ⚡</button>
+            <button id="gacha-short-btn" class="btn-block btn-gacha-short">突発ツッコミ（短文）生成 💬</button>
+        </div>
+
+        <div class="panel-section">
+            <div class="panel-section-title">✨ 特殊エフェクト設定</div>
+            <label class="checkbox-label">
+                <input type="checkbox" id="mode-center"> 📌 短文を中央に固定
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="mode-scatter"> 🌍 短文を全体に分散（重なり防止）
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="mode-reverse"> 🔄 弾幕を「左から右」へ逆流
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="mode-huge" checked> 🦖 10個に1個「超巨大文字」
+            </label>
+        </div>
+
+        <div class="panel-section">
+            <div class="panel-section-title">⚙️ 基本設定</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                    <label>フォント:</label><br>
+                    <select id="font-select" style="width:100%;">
+                        <option value="'Noto Sans JP', sans-serif">極太ゴシック</option>
+                        <option value="'Dela Gothic One', sans-serif">デラ・ゴシック</option>
+                        <option value="'MS UI Gothic', sans-serif">ニコニコ風</option>
+                    </select>
+                </div>
+                <div>
+                    <label>タイマー:</label><br>
+                    <select id="duration-select" style="width:100%;">
+                        <option value="30">30秒</option>
+                        <option value="45">45秒</option>
+                        <option value="60" selected>1分間</option>
+                        <option value="75">1分15秒</option>
+                        <option value="90">1分30秒</option>
+                        <option value="120">2分間</option>
+                        <option value="180">3分間</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 5px;">
+                <label>スピード（秒）:</label>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <input type="range" id="global-speed" min="2" max="10" step="0.5" value="6" style="width:70%;">
+                    <span id="speed-val">6秒</span>
+                </div>
+            </div>
+
+            <div>
+                <label>文字の色:</label>
+                <select id="global-color" style="width:100%;">
+                    <option value="random">ランダム（合成安全色）</option>
+                    <option value="#ffffff">白</option>
+                    <option value="#ffff00">黄</option>
+                    <option value="#ff0000">赤</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="panel-section-title">📝 現在の文字リスト</div>
+            <textarea id="bulk-textarea" placeholder="ガチャを引くか、直接入力してください。"></textarea>
+            <div id="line-count" style="font-size:10px; color:#aaa; text-align:right;">現在: 0個</div>
+        </div>
+
+        <div class="panel-section" style="justify-content: center;">
+            <button id="start-btn" class="btn-block">弾幕スタート 🚀</button>
+            <button id="stop-btn" class="btn-block">一時停止 🛑</button>
+            <div id="playback-status" class="status-text"></div>
+        </div>
+    </div>
+
+    <script>
+        // 大絶賛単語データベース
+        const subjects = [
+            "全米がスタンディングオベーションで", "神絵師と神編集者が手を組んで", "AIすら嫉嫉する天才が", "ウチのオカンが涙を流しながら", "実家のじいちゃんがスタンバって",
+            "通りすがりのガチプロが", "画面前の全視聴者が", "古参のニコ厨たちが", "運営が公式認定ボタンを構えて", "筋肉モリモリのイケメンが",
+            "学校中のギャルたちが", "推しのVTuberが限界化して", "語彙力を失ったオタクが", "伝説の職人が全力を出して", "世界中のクリエイターが"
+        ];
+        const places = [
+            "大草原の上でお祭り騒ぎしながら", "1分15秒の神クオリティの中で", "Vrewのタイムラインが震える熱量で", "実家のような最高の安心感の中で", "全人類が歴史の目撃者となった瞬間に",
+            "涙で画面が見えなくなる感動の中で", "あまりの尊さに理性を失いながら", "拍手喝采が鳴り止まないド真ん中で", "鳥肌が立ちすぎて寒気すらする空間で", "深夜3時のテンションを遥かに超えて",
+            "脳汁がドバドバ溢れ出る神回の中で", "16:9の常識をぶち破る縦画面の中で", "非の打ち所がない完璧な世界線で", "全会一致のブラボーが響く場所で", "リピート再生の手が止まらない沼の中で"
+        ];
+        const actions = [
+            "最高すぎて一生ついていくと誓った", "神編集すぎて脳をバグらせてきた", "野生のプロの恐ろしい意地を見せつけた", "違和感を完全にあの世に葬り去った", "涙目で感動を要求した",
+            "全財産をはたいて大人買いした", "猛スピードでアイスを食べて頭がキーンとなった", "1秒残らず神曲すぎて天を仰いだ", "もっと評価されるべきだと叫び散らかした", "作業用BGMとして家宝にすることを決めた",
+            "ブラボー！とお借りする手を震わせた", "神動画すぎていいねを連打した", "あまりの天才っぷりに脱帽した", "クオリティの暴力を容赦なく叩き込んできた", "全画面を888888で埋め尽くした",
+            "もうこれ公式だろとツッコミを入れた", "目からウロコバスターを全弾発射した", "これを見に来たと確信のドヤ顔をした", "異次元のセンスでタイムラインを圧倒した", "静かにリスペクトの涙を拭った"
+        ];
+        const shortWords = [
+            "ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!!", "(ﾉ∀`)ｱﾁｬー", "（*´▽｀*）", "(`・ω・´)ｼｬｷｰﾝ", "工工工ｴｴｴｴｴ(ﾟДﾟ)ｴｴｴｴｴ工工工",
+            "( ﾟ∀ﾟ)o彡°うおおおおお！", "おk（・∀）b", "（・∀・）ﾆﾔﾆﾔ", "(ﾟ∀ﾟ)神の予感!!", "うぽつ（　＾ω＾）",
+            "わこつ( ﾟдﾟ )", "88888888888", "ブラボー！！👏", "天才かｗｗｗ", "神編集すぐる",
+            "ここすき成分強め", "野生のプロ降臨", "もうこれ公式（確信）", "実家のような安心感", "伸びろおおおおお"
+        ];
+
+        const videoArea = document.getElementById('video-area');
+        const fontSelect = document.getElementById('font-select');
+        const durationSelect = document.getElementById('duration-select');
+        const globalSpeed = document.getElementById('global-speed');
+        const speedVal = document.getElementById('speed-val');
+        const globalColor = document.getElementById('global-color');
+        const bulkTextarea = document.getElementById('bulk-textarea');
+        const lineCountDisp = document.getElementById('line-count');
+        
+        const gachaLongBtn = document.getElementById('gacha-long-btn');
+        const gachaShortBtn = document.getElementById('gacha-short-btn');
+        const modeCenter = document.getElementById('mode-center');
+        const modeScatter = document.getElementById('mode-scatter');
+        const modeReverse = document.getElementById('mode-reverse');
+        const modeHuge = document.getElementById('mode-huge');
+
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const statusDisp = document.getElementById('playback-status');
+
+        // 🛠️ 【改良】固定サイズ（縦450px）に合わせてレーン高さを32pxに固定
+        const LANE_HEIGHT = 32; 
+        let totalLanes = 0;
+        let activeTimers = []; 
+        let fixedGridSlots = [];
+
+        globalSpeed.addEventListener('input', () => { speedVal.textContent = globalSpeed.value + '秒'; });
+
+        gachaLongBtn.addEventListener('click', () => {
+            let res = [];
+            for (let i = 0; i < 100; i++) {
+                res.push(`${subjects[Math.floor(Math.random() * subjects.length)]}${places[Math.floor(Math.random() * places.length)]}${actions[Math.floor(Math.random() * actions.length)]}`);
+            }
+            bulkTextarea.value = res.join('\n'); updateLineCount();
+            statusDisp.textContent = "🎲 長文100件生成！";
+        });
+
+        gachaShortBtn.addEventListener('click', () => {
+            let res = [];
+            for (let i = 0; i < 100; i++) {
+                res.push(shortWords[Math.floor(Math.random() * shortWords.length)]);
+            }
+            bulkTextarea.value = res.join('\n'); updateLineCount();
+            statusDisp.textContent = "💬 短文100件生成！";
+        });
+
+        function getCommentsArray() {
+            return bulkTextarea.value.split('\n').map(line => line.trim()).filter(line => line !== '');
+        }
+        function updateLineCount() {
+            lineCountDisp.textContent = `現在: ${getCommentsArray().length}個`;
+        }
+        bulkTextarea.addEventListener('input', updateLineCount);
+        window.addEventListener('load', () => { updateLaneSettings(); updateLineCount(); });
+        window.addEventListener('resize', updateLaneSettings);
+
+        function updateLaneSettings() {
+            // 固定されたvideoAreaの高さからレーン数を算出（約14レーン）
+            totalLanes = Math.floor(videoArea.offsetHeight / LANE_HEIGHT);
+            
+            fixedGridSlots = [];
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 6; col++) {
+                    fixedGridSlots.push({
+                        left: 12 + col * 15, 
+                        top: 20 + row * 20,  
+                        isBusy: false
+                    });
+                }
+            }
+        }
+
+        function triggerComment(text, colorType, speedSec, index) {
+            const font = fontSelect.value;
+            let color = colorType;
+            if (colorType === 'random') {
+                const safeColors = ['#ffffff', '#ffff00', '#ff0000', '#ff00ff', '#00ffff', '#ff9900', '#e6b800', '#ff66cc'];
+                color = safeColors[Math.floor(Math.random() * safeColors.length)];
+            }
+
+            // 🛠️ 【改良】コンテナサイズに対する比率（cqw）でフォントサイズを指定。大画面化しても絶対にはみ出さない
+            const isHuge = modeHuge.checked && (index % 10 === 0);
+            const fontSize = isHuge ? '8cqw' : '3.8cqw';
+
+            // 固定系モードの処理
+            if (modeCenter.checked || modeScatter.checked) {
+                let targetLeft = 50;
+                let targetTop = 50;
+                let reservedSlot = null;
+
+                if (modeCenter.checked) {
+                    const centerOffsets = [40, 45, 50, 55, 60];
+                    targetTop = centerOffsets[index % centerOffsets.length];
+                } else {
+                    const freeSlots = fixedGridSlots.filter(s => !s.isBusy);
+                    if (freeSlots.length > 0) {
+                        reservedSlot = freeSlots[Math.floor(Math.random() * freeSlots.length)];
+                        reservedSlot.isBusy = true;
+                        targetLeft = reservedSlot.left;
+                        targetTop = reservedSlot.top;
+                    } else {
+                        return; // 満席なら重なり防止のためスキップ
+                    }
+                }
+
+                const comment = document.createElement('div');
+                comment.className = 'comment-fixed';
+                comment.textContent = text;
+                comment.style.fontFamily = font;
+                comment.style.color = color;
+                comment.style.fontSize = fontSize;
+                comment.style.left = targetLeft + '%';
+                comment.style.top = targetTop + '%';
+                comment.style.transform = 'translate3d(-50%, -50%, 0)';
+
+                videoArea.appendChild(comment);
+
+                setTimeout(() => {
+                    comment.remove();
+                    if (reservedSlot) reservedSlot.isBusy = false;
+                }, 2000);
+                return;
+            }
+
+            // 流れるモードの処理
+            const comment = document.createElement('div');
+            comment.className = 'comment';
+            comment.textContent = text;
+            comment.style.fontFamily = font;
+            comment.style.color = color;
+            comment.style.fontSize = fontSize;
+            comment.style.visibility = 'hidden';
+            videoArea.appendChild(comment);
+            
+            const commentWidth = comment.offsetWidth;
+            comment.style.visibility = 'visible'; 
+
+            const areaWidth = videoArea.offsetWidth;
+            const duration = speedSec * 1000;
+
+            if (totalLanes <= 2) return;
+            let chosenLane = Math.floor(1 + Math.random() * (totalLanes - 2));
+            if (isHuge) { chosenLane = Math.floor(totalLanes / 2); }
+
+            comment.style.top = (chosenLane * LANE_HEIGHT) + 'px';
+
+            const isReverse = modeReverse.checked;
+            const startLeft = isReverse ? -commentWidth : areaWidth;
+            comment.style.left = startLeft + 'px';
+
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = elapsed / duration;
+                if (progress < 1) {
+                    let currentLeft = isReverse 
+                        ? startLeft + (areaWidth + commentWidth) * progress
+                        : startLeft - (startLeft + commentWidth) * progress;
+                    comment.style.transform = `translateX(${currentLeft - startLeft}px)`;
+                    requestAnimationFrame(animate);
+                } else {
+                    comment.remove();
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // スタート・ストップ
+        startBtn.addEventListener('click', () => {
+            const comments = getCommentsArray();
+            if (comments.length === 0) {
+                alert('ガチャボタンを押すか、文字を入力してください！'); return;
+            }
+            stopAllTimers();
+            updateLaneSettings();
+
+            const totalDurationSec = parseInt(durationSelect.value); 
+            const speedSec = parseFloat(globalSpeed.value);
+            const colorType = globalColor.value;
+
+            statusDisp.textContent = `▶ 再生中...`;
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+
+            comments.forEach((text, index) => {
+                const randomDelayMs = Math.random() * (totalDurationSec - 3) * 1000;
+                const timerId = setTimeout(() => {
+                    triggerComment(text, colorType, speedSec, index);
+                }, randomDelayMs);
+                activeTimers.push(timerId);
+            });
+
+            const endTimerId = setTimeout(() => {
+                statusDisp.textContent = '⏹ 終了';
+                startBtn.style.display = 'block';
+                stopBtn.style.display = 'none';
+            }, totalDurationSec * 1000);
+            activeTimers.push(endTimerId);
+        });
+
+        function stopAllTimers() {
+            activeTimers.forEach(timerId => clearTimeout(timerId));
+            activeTimers = [];
+            fixedGridSlots.forEach(s => s.isBusy = false);
+        }
+
+        stopBtn.addEventListener('click', () => {
+            stopAllTimers();
+            statusDisp.textContent = '⏹ 一時停止';
+            startBtn.style.display = 'block';
+            stopBtn.style.display = 'none';
+            document.querySelectorAll('.comment, .comment-fixed').forEach(el => el.remove());
+        });
+    </script>
+</body>
+</html>
