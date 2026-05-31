@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYSTERY ART GENERATOR - [ULTIMATE EDITION Ver 4.0]</title>
+    <title>MYSTERY ART GENERATOR - [ULTIMATE EDITION Ver 5.1]</title>
     <style>
         :root {
             --bg-color: #06080c;
@@ -58,11 +58,31 @@
 
         #seed-display { font-family: monospace; font-size: 0.75rem; color: #475569; margin-bottom: 20px; }
 
-        .btn {
-            background: linear-gradient(135deg, var(--accent-color), #ef4444); color: white; border: none;
-            padding: 15px 30px; font-size: 1rem; font-weight: bold; border-radius: 12px; cursor: pointer;
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); transition: transform 0.1s, filter 0.2s; width: 100%; letter-spacing: 1px;
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
         }
+
+        .btn {
+            color: white; border: none;
+            padding: 15px 10px; font-size: 0.95rem; font-weight: bold; border-radius: 12px; cursor: pointer;
+            transition: transform 0.1s, filter 0.2s; letter-spacing: 1px;
+        }
+        
+        .btn-generate {
+            background: linear-gradient(135deg, var(--accent-color), #ef4444);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+            flex: 2;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #334155, #1e293b);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex: 1;
+        }
+
         .btn:hover { filter: brightness(1.1); }
         .btn:active { transform: scale(0.98); }
     </style>
@@ -71,7 +91,7 @@
 
 <div class="container">
     <h1>MYSTERY ART GENERATOR</h1>
-    <div class="subtitle">ULTIMATE EDITION [Ver 4.0] - 9-Style Engine</div>
+    <div class="subtitle">ULTIMATE EDITION [Ver 5.1] - 11-Style Engine</div>
 
     <div id="style-badge">Loading...</div>
 
@@ -82,7 +102,10 @@
     <div id="seed-display">SEED: <span id="seed-value">INIT-START-403</span></div>
     <div id="mystery-text">世界の美を再構成中...</div>
 
-    <button class="btn" onclick="generateMystery()">GENERATE & PROJECT ART</button>
+    <div class="btn-group">
+        <button class="btn btn-generate" onclick="generateMystery()">GENERATE ART</button>
+        <button class="btn btn-save" onclick="downloadArt()">SAVE 📥</button>
+    </div>
 </div>
 
 <script>
@@ -103,10 +126,10 @@
         const seedElement = document.getElementById('seed-value');
         const badge = document.getElementById('style-badge');
 
-        // 豪華9種類のスタイルガチャ
         const styles = [
             "PICASSO CUBISM", "TARO OKAMOTO", "WARHOL POP", "GEOMETRIC", "COSMIC NEBULA",
-            "MONDRIAN ABS", "VAN GOGH SWIRL", "POLLOCK DRIP", "MONET IMPRESSION"
+            "MONDRIAN ABS", "VAN GOGH SWIRL", "POLLOCK DRIP", "MONET IMPRESSION",
+            "BANKSY STREET", "HOKUSAI WAVE"
         ];
         const currentStyle = styles[Math.floor(Math.random() * styles.length)];
         
@@ -118,11 +141,11 @@
         const a = actions[Math.floor(Math.random() * actions.length)];
         textElement.innerText = `「${s}${l}${a}」`;
 
-        // バッジ＆UIカラーの切り替え設定
         const styleMeta = {
             "PICASSO CUBISM": "#845edb", "TARO OKAMOTO": "#e11d48", "WARHOL POP": "#ff007f",
             "GEOMETRIC": "#10b981", "COSMIC NEBULA": "#3b82f6", "MONDRIAN ABS": "#facc15",
-            "VAN GOGH SWIRL": "#0284c7", "POLLOCK DRIP": "#78350f", "MONET IMPRESSION": "#ec4899"
+            "VAN GOGH SWIRL": "#0284c7", "POLLOCK DRIP": "#78350f", "MONET IMPRESSION": "#ec4899",
+            "BANKSY STREET": "#4b5563", "HOKUSAI WAVE": "#0f172a"
         };
         const activeColor = styleMeta[currentStyle];
         badge.style.backgroundColor = activeColor;
@@ -131,7 +154,7 @@
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // --- 9大描画アルゴリズム・エンジン ---
+        // --- 11大描画アルゴリズム・エンジン ---
 
         if (currentStyle === "PICASSO CUBISM") {
             ctx.fillStyle = "#d7ccc8"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -219,30 +242,25 @@
             }
 
         } else if (currentStyle === "MONDRIAN ABS") {
-            // 【モンドリアン：グリッド分割と赤黄青の抽象配置】
             ctx.fillStyle = "#f8fafc"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             const mColors = ["#ef4444", "#3b82f6", "#facc15", "#f8fafc", "#f8fafc", "#0f172a"];
             const xLines = [0, 200, 500, 900, 1300, 1600, canvas.width];
             const yLines = [0, 150, 400, 700, 900, canvas.height];
             
-            // 四角形ブロックの描画
             for(let i=0; i<xLines.length-1; i++) {
                 for(let j=0; j<yLines.length-1; j++) {
                     ctx.fillStyle = mColors[Math.floor(Math.random() * mColors.length)];
                     ctx.fillRect(xLines[i], yLines[j], xLines[i+1]-xLines[i], yLines[j+1]-yLines[j]);
                 }
             }
-            // 太い黒線のグリッドを上書き
             ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 16;
             xLines.forEach(x => { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); });
             yLines.forEach(y => { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); });
 
         } else if (currentStyle === "VAN GOGH SWIRL") {
-            // 【ゴッホ：短い無数のタッチ（線）のうねりと重なり】
             ctx.fillStyle = "#030712"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             const vgColors = ["#1d4ed8", "#1e3a8a", "#1e40af", "#f59e0b", "#d97706", "#fef08a", "#06b6d4"];
             
-            // うねる波のような規則性を持った線の束を無数にプロット
             for(let i=0; i<800; i++) {
                 ctx.strokeStyle = vgColors[Math.floor(Math.random() * vgColors.length)];
                 ctx.lineWidth = 4 + Math.random() * 4;
@@ -252,19 +270,16 @@
                 
                 ctx.beginPath();
                 ctx.moveTo(startX, startY);
-                // サインカーブによるうねりのシミュレート
                 ctx.lineTo(startX + Math.cos(startY/100)*60 + (Math.random()*20-10), startY + Math.sin(startX/100)*40);
                 ctx.stroke();
             }
 
         } else if (currentStyle === "POLLOCK DRIP") {
-            // 【ポロック：飛び散るインク、複雑なドリッピングレイヤー】
             ctx.fillStyle = "#1e293b"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             const pColors = ["#000000", "#ffffff", "#ea580c", "#eab308", "#16a34a", "#dc2626"];
             
             pColors.forEach(color => {
                 ctx.strokeStyle = color; ctx.fillStyle = color;
-                // 糸のような細い線の重なり
                 for(let i=0; i<30; i++) {
                     ctx.lineWidth = 1 + Math.random() * 4;
                     ctx.beginPath();
@@ -274,7 +289,6 @@
                     }
                     ctx.stroke();
                 }
-                // 飛び散った液滴のドット
                 for(let i=0; i<60; i++) {
                     ctx.beginPath();
                     ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 8, 0, Math.PI*2);
@@ -283,13 +297,11 @@
             });
 
         } else if (currentStyle === "MONET IMPRESSION") {
-            // 【モネ：淡いパステル調の光、重なり合う色彩の斑点】
             const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             grad.addColorStop(0, "#a5f3fc"); grad.addColorStop(1, "#fbcfe8");
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             const monetColors = ["rgba(165,180,252,0.15)", "rgba(244,180,217,0.15)", "rgba(110,231,183,0.12)", "rgba(253,224,71,0.15)", "rgba(255,255,255,0.2)"];
-            // 抽象的な筆の跡（平筆のような横長の楕円）を大量にスタンプ
             for(let i=0; i<1500; i++) {
                 ctx.fillStyle = monetColors[Math.floor(Math.random() * monetColors.length)];
                 ctx.beginPath();
@@ -298,11 +310,119 @@
                 ctx.ellipse(Math.random() * canvas.width, Math.random() * canvas.height, rx, ry, (Math.random()*10 - 5) * Math.PI/180, 0, Math.PI*2);
                 ctx.fill();
             }
+
+        } else if (currentStyle === "BANKSY STREET") {
+            ctx.fillStyle = "#374151"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(0,0,0,0.15)";
+            for(let i=0; i<400; i++) { ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 4, 4); }
+            
+            const sprayColors = ["#ef4444", "#ec4899", "#22c55e", "#3b82f6"];
+            ctx.fillStyle = sprayColors[Math.floor(Math.random()*sprayColors.length)];
+            for(let i=0; i<6; i++) {
+                const dripX = Math.random()*canvas.width; const dripY = Math.random()*canvas.height;
+                ctx.beginPath(); ctx.arc(dripX, dripY, 20+Math.random()*30, 0, Math.PI*2); ctx.fill();
+                ctx.fillRect(dripX-2, dripY, 4+Math.random()*6, 100+Math.random()*150);
+            }
+
+            ctx.fillStyle = "#111827";
+            for(let i=0; i<4; i++) {
+                ctx.fillRect(200+Math.random()*(canvas.width-600), 300+Math.random()*400, 150+Math.random()*200, 300);
+            }
+
+            ctx.fillStyle = "#dc2626";
+            ctx.beginPath();
+            const balloonX = 150 + Math.random() * 400; // 風船の位置もちょっと可変に
+            const balloonY = 150 + Math.random() * 200;
+            ctx.moveTo(balloonX, balloonY);
+            ctx.bezierCurveTo(balloonX-60, balloonY-70, balloonX-90, balloonY+30, balloonX, balloonY+70);
+            ctx.bezierCurveTo(balloonX+90, balloonY+30, balloonX+60, balloonY-70, balloonX, balloonY);
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.beginPath();
+            ctx.moveTo(balloonX, balloonY+70); ctx.bezierCurveTo(balloonX-10, balloonY+150, balloonX+20, balloonY+220, balloonX, balloonY+320);
+            ctx.stroke();
+
+        } else if (currentStyle === "HOKUSAI WAVE") {
+            // 🌊 【大改良・超可変北斎エンジン】
+            ctx.fillStyle = "#f3edd8"; ctx.fillRect(0, 0, canvas.width, canvas.height); // 和紙ベース
+
+            // 🗻 富士山（位置・高さ・広がりを毎回完全ランダム化）
+            const fujiX = canvas.width / 2 + (Math.random() * 400 - 200); 
+            const fujiY = canvas.height / 2 + (Math.random() * 100 - 50);
+            const fujiWidthLeft = 150 + Math.random() * 150;
+            const fujiWidthRight = 200 + Math.random() * 200;
+            const fujiHeight = 150 + Math.random() * 150;
+
+            ctx.fillStyle = "#a82c2c"; ctx.beginPath();
+            ctx.moveTo(fujiX - fujiWidthLeft, fujiY + 150);
+            ctx.bezierCurveTo(fujiX, fujiY + 100, fujiX - 30, fujiY - fujiHeight, fujiX, fujiY - fujiHeight);
+            ctx.bezierCurveTo(fujiX + 30, fujiY - fujiHeight, fujiX, fujiY + 100, fujiX + fujiWidthRight, fujiY + 150);
+            ctx.closePath(); ctx.fill();
+
+            // 山頂の残雪を表現する白いキャップ
+            ctx.fillStyle = "#ffffff"; ctx.beginPath();
+            ctx.moveTo(fujiX - 25, fujiY - fujiHeight + 25);
+            ctx.lineTo(fujiX, fujiY - fujiHeight);
+            ctx.lineTo(fujiX + 25, fujiY - fujiHeight + 25);
+            ctx.lineTo(fujiX + 10, fujiY - fujiHeight + 40);
+            ctx.lineTo(fujiX - 10, fujiY - fujiHeight + 35);
+            ctx.closePath(); ctx.fill();
+
+            // 🌊 多層のランダム・サインウェーブ（周期、揺れ幅、ベース高度をランダムにブレンド）
+            const waveColors = ["#073655", "#0b537c", "#0284c7", "#7dd3fc", "#ffffff"];
+            
+            // レイヤーごとに完全に独立した周波数と振幅をシードとして生成
+            const waveSeeds = waveColors.map(() => ({
+                freq: 0.005 + Math.random() * 0.01,   // 波の細かさ
+                amp: 40 + Math.random() * 70,         // 波の高さ
+                phase: Math.random() * Math.PI * 2,   // 波のズレ位置
+                heightOffset: Math.random() * 60 - 30 // 全体的な上下のズレ
+            }));
+
+            waveColors.forEach((wColor, idx) => {
+                const seed = waveSeeds[idx];
+                ctx.fillStyle = wColor; ctx.beginPath();
+                ctx.moveTo(0, canvas.height);
+                
+                for (let x = 0; x <= canvas.width; x += 15) {
+                    // 数学的に毎回違ううねりを合成
+                    const y = canvas.height - 130 - (idx * 60) + seed.heightOffset + 
+                              Math.sin(x * seed.freq + seed.phase) * seed.amp * (1.6 - idx / 3);
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(canvas.width, canvas.height); ctx.closePath(); ctx.fill();
+            });
+
+            // 🌌 飛び散る白波のしぶき（数も位置も完全ランダム）
+            ctx.fillStyle = "#ffffff";
+            const splashCount = 60 + Math.floor(Math.random() * 80);
+            for(let i = 0; i < splashCount; i++) {
+                ctx.beginPath();
+                // 下半分の波が起きているエリアを中心にランダムにプロット
+                const sX = Math.random() * canvas.width;
+                const sY = canvas.height - 400 + Math.random() * 350;
+                const sRadius = 2 + Math.random() * 10;
+                ctx.arc(sX, sY, sRadius, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
-        // 出来上がったフルHDアートを全画面の背景にハイクオリティ投影
         const dataUrl = canvas.toDataURL();
         document.body.style.backgroundImage = `url(${dataUrl})`;
+    }
+
+    function downloadArt() {
+        const canvas = document.getElementById('artCanvas');
+        const seedText = document.getElementById('seed-value').innerText;
+        
+        const imageURL = canvas.toDataURL('image/png');
+        
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageURL;
+        downloadLink.download = `${seedText}.png`;
+        
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     }
 
     // 初回自動起動
