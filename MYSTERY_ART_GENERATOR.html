@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYSTERY ART GENERATOR - [ULTIMATE EDITION Ver 5.1]</title>
+    <title>MYSTERY ART GENERATOR - [ULTIMATE EDITION Ver 5.6]</title>
     <style>
         :root {
             --bg-color: #06080c;
@@ -91,7 +91,7 @@
 
 <div class="container">
     <h1>MYSTERY ART GENERATOR</h1>
-    <div class="subtitle">ULTIMATE EDITION [Ver 5.1] - 11-Style Engine</div>
+    <div class="subtitle">ULTIMATE EDITION [Ver 5.6] - Pollock Drip Paint Engine</div>
 
     <div id="style-badge">Loading...</div>
 
@@ -113,10 +113,10 @@
     const locations = ["記憶の向こう側で", "無限に繰り返されるリポストの果てに", "16:9の宇宙の中で", "箱の中に閉じ込められたまま", "呪術的な原色の炎の中で", "三原色の厳密な直線の中で", "混沌のキャンバスの上で", "淡く眩しい光の粒子の中で"];
     const actions = ["静かなる真実を隠している。", "新しいパズルを紡ぎ始める。", "スーパーカーのように加速する。", "永遠のログとして刻まれる。", "アートの琴線を震わせている。", "迷わず爆発する道を選んだ。", "バラバラの視点から世界を睨みつけている。", "純粋な抽象へと昇華された。", "うねるタッチで夜を支配する。", "予測不能な軌跡を描いている。"];
 
-    const popColors = [
-        ['#ff007f', '#00f0ff', '#fff000', '#000000'],
-        ['#7bf1a8', '#ff5e7e', '#a084dc', '#f7d060'],
-        ['#ff4a4a', '#3b82f6', '#10b981', '#f59e0b']
+    const popNeonColors = [
+        '#ff007f', '#00f0ff', '#fff000', '#ff5e7e', 
+        '#22c55e', '#3b82f6', '#a084dc', '#f59e0b',
+        '#ffffff', '#000000', '#9333ea', '#ea580c'
     ];
 
     function generateMystery() {
@@ -200,31 +200,136 @@
 
         } else if (currentStyle === "WARHOL POP") {
             const w = canvas.width / 2; const h = canvas.height / 2;
-            const schemes = popColors[Math.floor(Math.random() * popColors.length)];
             const positions = [{x:0, y:0}, {x:w, y:0}, {x:0, y:h}, {x:w, y:h}];
-            positions.forEach((pos, index) => {
-                ctx.fillStyle = schemes[(index) % schemes.length]; ctx.fillRect(pos.x, pos.y, w, h);
-                ctx.fillStyle = schemes[(index + 1) % schemes.length]; ctx.beginPath();
-                ctx.arc(pos.x + w/2, pos.y + h/2, Math.min(w,h)/3.2, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = schemes[(index + 2) % schemes.length]; ctx.lineWidth = 15;
-                ctx.strokeRect(pos.x + w/5, pos.y + h/5, w/1.6, h/1.6);
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            positions.forEach((pos) => {
+                let colors = [...popNeonColors].sort(() => 0.5 - Math.random());
+                const bgColor = colors[0];
+                const canColorTop = colors[1];
+                const canColorBottom = colors[2];
+                const labelColor = colors[3];
+                const textColor = colors[4];
+
+                ctx.fillStyle = bgColor; ctx.fillRect(pos.x, pos.y, w, h);
+
+                const canW = w * 0.35; const canH = h * 0.7;
+                const canX = pos.x + (w - canW) / 2; const canY = pos.y + (h - canH) / 2;
+
+                ctx.fillStyle = canColorTop; ctx.beginPath(); ctx.roundRect(canX, canY, canW, canH, [16, 16, 16, 16]); ctx.fill();
+
+                ctx.save(); ctx.beginPath(); ctx.rect(canX, canY + canH / 2, canW, canH / 2); ctx.clip();
+                ctx.fillStyle = canColorBottom; ctx.beginPath(); ctx.roundRect(canX, canY, canW, canH, [16, 16, 16, 16]); ctx.fill(); ctx.restore();
+
+                const lblW = canW * 0.85; const lblH = canH * 0.22;
+                const lblX = canX + (canW - lblW) / 2; const lblY = canY + (canH - lblH) / 2;
+                ctx.fillStyle = labelColor; ctx.fillRect(lblX, lblY, lblW, lblH);
+
+                const randChar1 = letters[Math.floor(Math.random() * letters.length)];
+                const randChar2 = letters[Math.floor(Math.random() * letters.length)];
+                const displayWord = randChar1 + randChar2;
+
+                ctx.fillStyle = textColor; ctx.font = `bold ${lblH * 0.75}px 'Impact', 'Arial Black', sans-serif`;
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillText(displayWord, lblX + lblW / 2, lblY + lblH / 2);
+
+                ctx.strokeStyle = labelColor; ctx.lineWidth = 6; ctx.beginPath();
+                ctx.moveTo(canX, canY + 15); ctx.lineTo(canX + canW, canY + 15);
+                ctx.moveTo(canX, canY + canH - 15); ctx.lineTo(canX + canW, canY + canH - 15); ctx.stroke();
             });
 
-        } else if (currentStyle === "GEOMETRIC") {
-            ctx.fillStyle = "#0f172a"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < 30; i++) {
-                ctx.fillStyle = `hsla(${Math.random() * 360}, 80%, 50%, 0.25)`;
-                ctx.strokeStyle = `hsla(${Math.random() * 360}, 90%, 60%, 0.6)`; ctx.lineWidth = 3;
-                ctx.beginPath();
-                if (Math.random() > 0.5) {
-                    ctx.rect(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 400, Math.random() * 400);
-                } else {
-                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+} else if (currentStyle === "GEOMETRIC") {
+            // 📐 【大進化：幾何学ステップ・グラデーション・エンジン】
+            // 1. ソリッドでディープな背景色
+            ctx.fillStyle = "#090d16"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // テーマとなるベース色相を決定（1つのコヒーレンスを持たせる）
+            const baseHue = Math.random() * 360;
+            
+            // 2. 階段状（ステップ構造）の連続グリッドを描画
+            const cols = 8;
+            const rows = 5;
+            const cellW = canvas.width / cols;
+            const cellH = canvas.height / rows;
+
+            // 背景レイヤー：連続するグリッド段差
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    // 階段状の位置エネルギー（cとrの組み合わせ）を算出
+                    const stepVal = (c + r) / (cols + rows);
+                    
+                    ctx.fillStyle = `hsla(${(baseHue + stepVal * 60) % 360}, 75%, ${15 + stepVal * 30}%, 0.4)`;
+                    ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
+                    
+                    // グリッド境界線
+                    ctx.strokeStyle = `hsla(${(baseHue + 180) % 360}, 50%, 40%, 0.1)`;
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(c * cellW, r * cellH, cellW, cellH);
                 }
-                ctx.closePath(); ctx.fill(); ctx.stroke();
             }
+
+            // 3. メイン構造：等高線・階段状にビルドアップする幾何学ポリゴン
+            const structureCount = 3 + Math.floor(Math.random() * 3);
+            for (let s = 0; s < structureCount; s++) {
+                const steps = 6 + Math.floor(Math.random() * 8); // 階段の段数
+                const startX = Math.random() * (canvas.width - 400) + 200;
+                const startY = Math.random() * (canvas.height - 400) + 200;
+                
+                // 階段が伸びる方向ベクトル
+                const dirX = Math.random() > 0.5 ? 1 : -1;
+                const dirY = Math.random() > 0.5 ? 1 : -1;
+                
+                // 各段（ステップ）のサイズ
+                const stepW = (40 + Math.random() * 60);
+                const stepH = (30 + Math.random() * 50);
+
+                const polyHue = (baseHue + s * 45) % 360;
+
+                // 階段のインサイド（塗り）をプログレッシブに重ねる
+                for (let i = 0; i < steps; i++) {
+                    const progress = i / steps;
+                    ctx.fillStyle = `hsla(${polyHue}, 85%, ${25 + progress * 45}%, ${0.6 - s * 0.1})`;
+                    ctx.strokeStyle = `hsla(${(polyHue + 30) % 360}, 90%, 65%, 0.8)`;
+                    ctx.lineWidth = 3;
+
+                    const curX = startX + i * stepW * dirX;
+                    const curY = startY + i * stepH * dirY;
+                    const blockW = stepW * (steps - i);
+                    const blockH = stepH * (steps - i);
+
+                    ctx.beginPath();
+                    // 階段状マウンテン型、またはピラミッド状の斜めポリゴン
+                    if (s % 2 === 0) {
+                        // 直角ステップブロック
+                        ctx.rect(curX, curY, blockW, blockH);
+                    } else {
+                        // 連続3角形（アイソメトリック風の陰影ステップ）
+                        ctx.moveTo(curX, curY);
+                        ctx.lineTo(curX + blockW, curY);
+                        ctx.lineTo(curX, curY + blockH);
+                        ctx.closePath();
+                    }
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+
+            // 4. アクセント：構造を貫く、または平行に走るアイソメトリックな太い並行線群
+            ctx.strokeStyle = `hsla(${(baseHue + 120) % 360}, 100%, 70%, 0.4)`;
+            ctx.lineWidth = 8;
+            const lineSteps = 5;
+            const offset = 40;
+            const lineStartX = Math.random() * canvas.width;
+            const lineStartY = Math.random() * canvas.height;
+            const length = 500 + Math.random() * 500;
+            
+            ctx.beginPath();
+            for (let i = 0; i < lineSteps; i++) {
+                // 階段状の連続性を際立たせる45度（または等角）の平行線
+                ctx.moveTo(lineStartX + (i * offset), lineStartY);
+                ctx.lineTo(lineStartX + length + (i * offset), lineStartY + length);
+            }
+            ctx.stroke();
 
         } else if (currentStyle === "COSMIC NEBULA") {
             const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -275,40 +380,114 @@
             }
 
         } else if (currentStyle === "POLLOCK DRIP") {
-            ctx.fillStyle = "#1e293b"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            const pColors = ["#000000", "#ffffff", "#ea580c", "#eab308", "#16a34a", "#dc2626"];
-            
-            pColors.forEach(color => {
-                ctx.strokeStyle = color; ctx.fillStyle = color;
-                for(let i=0; i<30; i++) {
-                    ctx.lineWidth = 1 + Math.random() * 4;
+            // 🎨 【大進化：アクション・ペインティング・ポロックエンジン】
+            // 1. 本格的なキャンバス背景色をランダム決定（赤・オフホワイト・ダークグレー）
+            const pollockBackgrounds = ["#a81e1e", "#fcfaf2", "#181a1e"];
+            const chosenBg = pollockBackgrounds[Math.floor(Math.random() * pollockBackgrounds.length)];
+            ctx.fillStyle = chosenBg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 背景色に応じて、映える絵の具パレットを最適化
+            let paintColors = ["#000000", "#ffffff", "#ea580c", "#eab308", "#16a34a", "#1e3a8a", "#b45309"];
+            if (chosenBg === "#a81e1e") {
+                // 赤キャンバス：黒・白・黄・アルミシルバー系が引き立つ構成
+                paintColors = ["#09090b", "#fafafa", "#facc15", "#4b5563", "#78350f"];
+            } else if (chosenBg === "#fcfaf2") {
+                // オフホワイト：黒、強烈な赤、青、オレンジの重厚なドリップ
+                paintColors = ["#09090b", "#b91c1c", "#1d4ed8", "#ea580c", "#15803d"];
+            }
+
+            // 絵の具のレイヤーを何層も重ねる（パレットをシャッフルして順にドリップ）
+            paintColors.sort(() => 0.5 - Math.random());
+
+            paintColors.forEach((color, layerIdx) => {
+                ctx.strokeStyle = color; 
+                ctx.fillStyle = color;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+
+                // 2. うねるようなドリップ線（ベジエ曲線）の描画
+                const totalSplines = 15 + Math.floor(Math.random() * 10);
+                for (let i = 0; i < totalSplines; i++) {
+                    // 各ストロークごとに太さをランダム変化させ、リアルな飛び散り感を演出
+                    ctx.lineWidth = (1 + Math.random() * 7) * (1 + layerIdx * 0.2);
+
                     ctx.beginPath();
-                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                    for(let j=0; j<5; j++) {
-                        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    let startX = Math.random() * canvas.width;
+                    let startY = Math.random() * canvas.height;
+                    ctx.moveTo(startX, startY);
+
+                    // 数回激しくベジエ曲線でキャンバスをのたうつ
+                    const nodes = 4 + Math.floor(Math.random() * 4);
+                    for (let j = 0; j < nodes; j++) {
+                        let cp1x = Math.random() * canvas.width;
+                        let cp1y = Math.random() * canvas.height;
+                        let cp2x = Math.random() * canvas.width;
+                        let cp2y = Math.random() * canvas.height;
+                        let destX = Math.random() * canvas.width;
+                        let destY = Math.random() * canvas.height;
+                        
+                        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destX, destY);
                     }
                     ctx.stroke();
                 }
-                for(let i=0; i<60; i++) {
+
+                // 3. 叩きつけられた絵の具の斑点（スプラッター効果）
+                const splatterCount = 80 + Math.floor(Math.random() * 80);
+                for (let i = 0; i < splatterCount; i++) {
                     ctx.beginPath();
-                    ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 8, 0, Math.PI*2);
+                    const sX = Math.random() * canvas.width;
+                    const sY = Math.random() * canvas.height;
+                    // 超微細な飛沫から、ボタッと落ちた大きな塊まで
+                    const sRadius = Math.random() > 0.92 ? (10 + Math.random() * 18) : (1 + Math.random() * 8);
+                    
+                    ctx.arc(sX, sY, sRadius, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
 
         } else if (currentStyle === "MONET IMPRESSION") {
-            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, "#a5f3fc"); grad.addColorStop(1, "#fbcfe8");
-            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            const monetColors = ["rgba(165,180,252,0.15)", "rgba(244,180,217,0.15)", "rgba(110,231,183,0.12)", "rgba(253,224,71,0.15)", "rgba(255,255,255,0.2)"];
-            for(let i=0; i<1500; i++) {
-                ctx.fillStyle = monetColors[Math.floor(Math.random() * monetColors.length)];
+            const waterGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            const baseThemes = [
+                {c1: "#1e295d", c2: "#4a3b75", c3: "#9c6085", c4: "#df979e"},
+                {c1: "#0f3a40", c2: "#225a5b", c3: "#6f9e87", c4: "#c2d3a8"},
+                {c1: "#101b3a", c2: "#1a365d", c3: "#4a7c59", c4: "#eed7a1"}
+            ];
+            const theme = baseThemes[Math.floor(Math.random() * baseThemes.length)];
+            waterGrad.addColorStop(0, theme.c1); waterGrad.addColorStop(0.4, theme.c2); waterGrad.addColorStop(0.7, theme.c3); waterGrad.addColorStop(1, theme.c4);
+            ctx.fillStyle = waterGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const strokeColors = ["rgba(255,255,255,0.08)", "rgba(253,224,71,0.08)", "rgba(147,197,253,0.08)", "rgba(167,243,208,0.06)"];
+            for(let i=0; i<1200; i++) {
+                ctx.fillStyle = strokeColors[Math.floor(Math.random() * strokeColors.length)];
                 ctx.beginPath();
-                const rx = 30 + Math.random() * 80;
-                const ry = 10 + Math.random() * 25;
-                ctx.ellipse(Math.random() * canvas.width, Math.random() * canvas.height, rx, ry, (Math.random()*10 - 5) * Math.PI/180, 0, Math.PI*2);
+                const rx = 40 + Math.random() * 100; const ry = 4 + Math.random() * 12;
+                ctx.ellipse(Math.random() * canvas.width, Math.random() * canvas.height, rx, ry, (Math.random()*4 - 2) * Math.PI/180, 0, Math.PI*2);
                 ctx.fill();
+            }
+
+            const leafCount = 50 + Math.floor(Math.random() * 25);
+            const leafColors = ["#2d5a27", "#1f441e", "#3a6332", "#4e7c41", "#556b2f", "#6b8e23", "#483d8b", "#2e8b57"];
+
+            for(let i=0; i<leafCount; i++) {
+                const ly = Math.random() * canvas.height; const lx = Math.random() * canvas.width;
+                const depthScale = 0.15 + (ly / canvas.height) * 0.85;
+                const rX = (25 + Math.random() * 35) * depthScale; const rY = (14 + Math.random() * 16) * depthScale;
+                const angle = Math.random() * Math.PI * 2; const cutAngle = 0.2 + Math.random() * 0.25;
+
+                ctx.save(); ctx.translate(lx, ly); ctx.rotate(angle); ctx.scale(rX / rY, 1);
+                ctx.fillStyle = leafColors[Math.floor(Math.random() * leafColors.length)];
+                ctx.shadowBlur = 4 * depthScale; ctx.shadowColor = "rgba(0,0,0,0.3)";
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, rY, cutAngle, Math.PI * 2 - cutAngle, false); ctx.closePath(); ctx.fill(); ctx.restore();
+
+                if(Math.random() < 0.3) {
+                    const fCount = 5 + Math.floor(Math.random()*4);
+                    const flowerColor = Math.random() > 0.5 ? "rgba(255,192,203,0.45)" : "rgba(255,255,255,0.55)";
+                    ctx.save(); ctx.translate(lx + (Math.random()*20-10)*depthScale, ly - (10*depthScale)); ctx.fillStyle = flowerColor;
+                    for(let f=0; f<fCount; f++) {
+                        ctx.beginPath(); ctx.ellipse(Math.random()*6-3, Math.random()*6-3, (4+Math.random()*6)*depthScale, (2+Math.random()*4)*depthScale, Math.random(), 0, Math.PI*2); ctx.fill();
+                    }
+                    ctx.fillStyle = "rgba(253,224,71,0.6)"; ctx.beginPath(); ctx.arc(0, 0, 3*depthScale, 0, Math.PI*2); ctx.fill(); ctx.restore();
+                }
             }
 
         } else if (currentStyle === "BANKSY STREET") {
@@ -325,14 +504,14 @@
             }
 
             ctx.fillStyle = "#111827";
-            for(let i=0; i<4; i++) {
+            for(let i=0; i<3; i++) {
                 ctx.fillRect(200+Math.random()*(canvas.width-600), 300+Math.random()*400, 150+Math.random()*200, 300);
             }
 
             ctx.fillStyle = "#dc2626";
             ctx.beginPath();
-            const balloonX = 150 + Math.random() * 400; // 風船の位置もちょっと可変に
-            const balloonY = 150 + Math.random() * 200;
+            const balloonX = canvas.width - 400 - Math.random() * 200;
+            const balloonY = 200 + Math.random() * 150;
             ctx.moveTo(balloonX, balloonY);
             ctx.bezierCurveTo(balloonX-60, balloonY-70, balloonX-90, balloonY+30, balloonX, balloonY+70);
             ctx.bezierCurveTo(balloonX+90, balloonY+30, balloonX+60, balloonY-70, balloonX, balloonY);
@@ -341,66 +520,103 @@
             ctx.moveTo(balloonX, balloonY+70); ctx.bezierCurveTo(balloonX-10, balloonY+150, balloonX+20, balloonY+220, balloonX, balloonY+320);
             ctx.stroke();
 
-        } else if (currentStyle === "HOKUSAI WAVE") {
-            // 🌊 【大改良・超可変北斎エンジン】
-            ctx.fillStyle = "#f3edd8"; ctx.fillRect(0, 0, canvas.width, canvas.height); // 和紙ベース
-
-            // 🗻 富士山（位置・高さ・広がりを毎回完全ランダム化）
-            const fujiX = canvas.width / 2 + (Math.random() * 400 - 200); 
-            const fujiY = canvas.height / 2 + (Math.random() * 100 - 50);
-            const fujiWidthLeft = 150 + Math.random() * 150;
-            const fujiWidthRight = 200 + Math.random() * 200;
-            const fujiHeight = 150 + Math.random() * 150;
-
-            ctx.fillStyle = "#a82c2c"; ctx.beginPath();
-            ctx.moveTo(fujiX - fujiWidthLeft, fujiY + 150);
-            ctx.bezierCurveTo(fujiX, fujiY + 100, fujiX - 30, fujiY - fujiHeight, fujiX, fujiY - fujiHeight);
-            ctx.bezierCurveTo(fujiX + 30, fujiY - fujiHeight, fujiX, fujiY + 100, fujiX + fujiWidthRight, fujiY + 150);
-            ctx.closePath(); ctx.fill();
-
-            // 山頂の残雪を表現する白いキャップ
-            ctx.fillStyle = "#ffffff"; ctx.beginPath();
-            ctx.moveTo(fujiX - 25, fujiY - fujiHeight + 25);
-            ctx.lineTo(fujiX, fujiY - fujiHeight);
-            ctx.lineTo(fujiX + 25, fujiY - fujiHeight + 25);
-            ctx.lineTo(fujiX + 10, fujiY - fujiHeight + 40);
-            ctx.lineTo(fujiX - 10, fujiY - fujiHeight + 35);
-            ctx.closePath(); ctx.fill();
-
-            // 🌊 多層のランダム・サインウェーブ（周期、揺れ幅、ベース高度をランダムにブレンド）
-            const waveColors = ["#073655", "#0b537c", "#0284c7", "#7dd3fc", "#ffffff"];
+            ctx.save();
+            const scale = 1.0 + Math.random() * 0.8; 
+            const girlX = 300 + Math.random() * 400;
+            const girlY = 650 + Math.random() * 100;
+            const angle = (Math.random() * 14 - 7) * Math.PI / 180;
             
-            // レイヤーごとに完全に独立した周波数と振幅をシードとして生成
-            const waveSeeds = waveColors.map(() => ({
-                freq: 0.005 + Math.random() * 0.01,   // 波の細かさ
-                amp: 40 + Math.random() * 70,         // 波の高さ
-                phase: Math.random() * Math.PI * 2,   // 波のズレ位置
-                heightOffset: Math.random() * 60 - 30 // 全体的な上下のズレ
-            }));
+            ctx.translate(girlX, girlY);
+            ctx.rotate(angle);
+            ctx.scale(scale, scale);
+
+            ctx.fillStyle = Math.random() > 0.15 ? "#090d16" : "#f1f5f9";
+            ctx.strokeStyle = ctx.fillStyle;
+            ctx.lineWidth = 14; ctx.lineCap = "round"; ctx.lineJoin = "round";
+
+            const poses = ["WALK", "STRETCH", "JUMP"];
+            const selectedPose = poses[Math.floor(Math.random() * poses.length)];
+
+            let headX = 0, headY = -120, headR = 22;
+            let bodyTopX = 0, bodyTopY = -85;
+            let bodyLeftX = -35, bodyLeftY = 0;
+            let bodyRightX = 35, bodyRightY = 0;
+
+            if (selectedPose === "WALK") {
+                bodyTopX = 5; bodyLeftX = -30; bodyLeftY = 5; bodyRightX = 35; bodyRightY = -5;
+                ctx.beginPath(); ctx.arc(headX, headY, headR, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(bodyTopX, bodyTopY); ctx.lineTo(bodyLeftX, bodyLeftY); ctx.lineTo(bodyRightX, bodyRightY); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-15, -60); ctx.lineTo(-45, -30); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(15, -60); ctx.lineTo(40, -25); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(-35, 55); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(15, 0); ctx.lineTo(35, 50); ctx.stroke();
+            } else if (selectedPose === "STRETCH") {
+                bodyTopX = 10;
+                ctx.beginPath(); ctx.arc(headX+5, headY-10, headR, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(bodyTopX, bodyTopY); ctx.lineTo(bodyLeftX, bodyLeftY); ctx.lineTo(bodyRightX, bodyRightY); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(15, -65); ctx.lineTo(65, -130); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-15, -60); ctx.lineTo(-30, -10); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(-15, 60); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(5, 60); ctx.stroke();
+            } else if (selectedPose === "JUMP") {
+                headY = -140; bodyTopY = -105; bodyLeftY = -20; bodyRightY = -20;
+                ctx.beginPath(); ctx.arc(headX, headY, headR, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(bodyTopX, bodyTopY); ctx.lineTo(bodyLeftX, bodyLeftY); ctx.lineTo(bodyRightX, bodyRightY); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-15, -80); ctx.lineTo(-65, -70); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(15, -80); ctx.lineTo(65, -70); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-15, -20); ctx.lineTo(-40, 25); ctx.lineTo(-20, 45); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(15, -20); ctx.lineTo(40, 25); ctx.lineTo(20, 45); ctx.stroke();
+            }
+            ctx.restore();
+
+        } else if (currentStyle === "HOKUSAI WAVE") {
+            ctx.fillStyle = "#eaddbf"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const fujiX = canvas.width * 0.65 + (Math.random() * 150 - 75);
+            const fujiY = canvas.height * 0.4 + (Math.random() * 60 - 30);
+            const fujiWidthLeft = 500 + Math.random() * 100;
+            const fujiWidthRight = 600 + Math.random() * 150;
+            const fujiHeight = 300 + Math.random() * 80;
+
+            ctx.fillStyle = "#b62525"; ctx.beginPath();
+            ctx.moveTo(fujiX - fujiWidthLeft, canvas.height);
+            ctx.bezierCurveTo(fujiX - 150, fujiY + 200, fujiX - 50, fujiY, fujiX, fujiY);
+            ctx.bezierCurveTo(fujiX + 50, fujiY, fujiX + 150, fujiY + 200, fujiX + fujiWidthRight, canvas.height);
+            ctx.closePath(); ctx.fill();
+
+            ctx.fillStyle = "#f8fafc"; ctx.beginPath();
+            ctx.moveTo(fujiX - 45, fujiY + 45); ctx.lineTo(fujiX, fujiY); ctx.lineTo(fujiX + 45, fujiY + 45);
+            ctx.lineTo(fujiX + 20, fujiY + 70); ctx.lineTo(fujiX, fujiY + 50); ctx.lineTo(fujiX - 20, fujiY + 65);
+            ctx.closePath(); ctx.fill();
+
+            const waveColors = ["#041e33", "#0a3a5c", "#0277bd", "#4fc3f7", "#ffffff"];
+            const waveConfigs = [
+                { freq: 0.003, amp: 100, phase: Math.random(), baseY: canvas.height * 0.55 },
+                { freq: 0.004, amp: 140, phase: Math.random(), baseY: canvas.height * 0.62 },
+                { freq: 0.005, amp: 180, phase: Math.random(), baseY: canvas.height * 0.70 },
+                { freq: 0.007, amp: 220, phase: Math.random(), baseY: canvas.height * 0.78 },
+                { freq: 0.009, amp: 260, phase: Math.random(), baseY: canvas.height * 0.85 }
+            ];
 
             waveColors.forEach((wColor, idx) => {
-                const seed = waveSeeds[idx];
+                const conf = waveConfigs[idx];
                 ctx.fillStyle = wColor; ctx.beginPath();
                 ctx.moveTo(0, canvas.height);
-                
                 for (let x = 0; x <= canvas.width; x += 15) {
-                    // 数学的に毎回違ううねりを合成
-                    const y = canvas.height - 130 - (idx * 60) + seed.heightOffset + 
-                              Math.sin(x * seed.freq + seed.phase) * seed.amp * (1.6 - idx / 3);
-                    ctx.lineTo(x, y);
+                    const leftBoost = 1.8 - (x / canvas.width) * 1.3; 
+                    const y = conf.baseY + Math.sin(x * conf.freq + conf.phase) * conf.amp * leftBoost;
+                    ctx.lineTo(x, Math.min(canvas.height, y));
                 }
                 ctx.lineTo(canvas.width, canvas.height); ctx.closePath(); ctx.fill();
             });
 
-            // 🌌 飛び散る白波のしぶき（数も位置も完全ランダム）
             ctx.fillStyle = "#ffffff";
-            const splashCount = 60 + Math.floor(Math.random() * 80);
+            const splashCount = 100 + Math.floor(Math.random() * 70);
             for(let i = 0; i < splashCount; i++) {
                 ctx.beginPath();
-                // 下半分の波が起きているエリアを中心にランダムにプロット
-                const sX = Math.random() * canvas.width;
-                const sY = canvas.height - 400 + Math.random() * 350;
-                const sRadius = 2 + Math.random() * 10;
+                const sX = Math.random() * (canvas.width * 0.7);
+                const sY = canvas.height * 0.2 + Math.random() * (canvas.height * 0.6);
+                const sRadius = 3 + Math.random() * 12;
                 ctx.arc(sX, sY, sRadius, 0, Math.PI * 2);
                 ctx.fill();
             }
@@ -413,19 +629,15 @@
     function downloadArt() {
         const canvas = document.getElementById('artCanvas');
         const seedText = document.getElementById('seed-value').innerText;
-        
         const imageURL = canvas.toDataURL('image/png');
-        
         const downloadLink = document.createElement('a');
         downloadLink.href = imageURL;
         downloadLink.download = `${seedText}.png`;
-        
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
     }
 
-    // 初回自動起動
     generateMystery();
 </script>
 
