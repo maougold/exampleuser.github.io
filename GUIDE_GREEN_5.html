@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【公式マニュアル】グリーンバック・謎ジェネレーターシリーズ 使い方ガイド</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --chromakey-green: #00ff00; /* 🟢 完全なグリーンバック */
+            --main-panel-bg: #1a1a1a;   /* 📦 中央マニュアルの不透明な背景色 */
+            --card-bg: #242424;         /* 各ツールのカード背景 */
+            --panel-border: #3c3c3c;
+            --accent-gold: #d4af37;
+            --text-main: #ffffff;
+            --text-sub: #b3b3b3;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--chromakey-green);
+            color: var(--text-main);
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 🐠 背景で絵文字がバラバラに泳ぐシステム */
+        .emoji-ocean {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .swimming-emoji {
+            position: absolute;
+            right: -150px;
+            white-space: nowrap;
+            user-select: none;
+            opacity: 0.3; /* ほどよい存在感の薄さに調整 */
+            animation: swimLeft linear infinite;
+        }
+
+        /* 個別に高さ、サイズ、速度、ディレイ（開始のズレ）を散らす */
+        .e1 { top: 5%;  font-size: 140px; animation-duration: 18s; animation-delay: 0s; }
+        .e2 { top: 22%; font-size: 80px;  animation-duration: 25s; animation-delay: -5s; }
+        .e3 { top: 40%; font-size: 110px; animation-duration: 21s; animation-delay: -2s; }
+        .e4 { top: 58%; font-size: 70px;  animation-duration: 28s; animation-delay: -10s; }
+        .e5 { top: 75%; font-size: 130px; animation-duration: 19s; animation-delay: -4s; }
+        .e6 { top: 90%; font-size: 90px;  animation-duration: 23s; animation-delay: -7s; }
+
+        @keyframes swimLeft {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            50% {
+                transform: translateX(-60vw) translateY(-20px); /* 途中でちょっと上下に揺らす */
+            }
+            100% {
+                transform: translateX(-120vw) translateY(0);
+            }
+        }
+
+        /* 📦 中央のマニュアル（上から下まで透過なしの1つの強固なパネル） */
+        .main-panel {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: var(--main-panel-bg);
+            border-radius: 12px;
+            border: 2px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            padding: 40px 50px 60px 50px;
+            position: relative;
+            z-index: 1; /* 絵文字の上に配置 */
+        }
+
+        @media (max-width: 768px) {
+            .main-panel {
+                margin: 20px 10px;
+                padding: 25px 20px 40px 20px;
+            }
+        }
+
+        /* 👑 ヘッダーデザイン */
+        header {
+            text-align: center;
+            padding-bottom: 35px;
+            border-bottom: 2px dashed #3c3c3c;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin: 0 0 12px 0;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* 💡 概要ボックス */
+        .intro-box {
+            background: #202020;
+            border-left: 6px solid var(--accent-gold);
+            padding: 22px;
+            border-radius: 4px;
+            margin-bottom: 45px;
+            border-top: 1px solid #2a2a2a;
+            border-right: 1px solid #2a2a2a;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .intro-box p {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+
+        .intro-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight-green-text {
+            color: #00ff00;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        h2 {
+            font-size: 20px;
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 12px;
+            color: var(--accent-gold);
+            margin-top: 45px;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        /* 🛠️ 基本操作ステップ */
+        .step-table {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 15px 0;
+            margin: 0 -15px 45px -15px;
+        }
+
+        .step-card {
+            display: table-cell;
+            width: 33.333%;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--panel-border);
+            text-align: center;
+            vertical-align: top;
+        }
+
+        @media (max-width: 640px) {
+            .step-table, .step-card {
+                display: block;
+                width: 100%;
+                margin: 0 0 15px 0;
+            }
+        }
+
+        .step-num {
+            background: var(--accent-gold);
+            color: #000;
+            font-weight: 900;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 12px auto;
+            line-height: 26px;
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--text-sub);
+            text-align: left;
+        }
+
+        /* 🎬 各ジェネレーター解説カード */
+        .gen-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+            margin-bottom: 35px;
+            overflow: hidden;
+            display: table;
+            width: 100%;
+        }
+
+        .gen-row {
+            display: table-row;
+        }
+
+        .gen-img-wrapper, .gen-info {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .gen-img-wrapper {
+            width: 360px;
+            background: #0b0b0b;
+            text-align: center;
+            border-right: 1px solid var(--panel-border);
+            line-height: 0;
+        }
+
+        .gen-img-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .gen-info {
+            padding: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .gen-card, .gen-row, .gen-img-wrapper, .gen-info {
+                display: block;
+                width: 100%;
+            }
+            .gen-img-wrapper {
+                border-right: none;
+                border-bottom: 1px solid var(--panel-border);
+            }
+        }
+
+        .gen-badge {
+            background: #1a1a1a;
+            color: var(--accent-gold);
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 12px;
+            border: 1px solid #444;
+        }
+
+        .gen-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 12px 0;
+            color: #ffffff;
+            border-bottom: 1px dashed #444;
+            padding-bottom: 8px;
+        }
+
+        .gen-desc {
+            font-size: 13px;
+            color: #e0e0e0;
+            margin: 0 0 10px 0;
+        }
+
+        .gen-points {
+            margin: 10px 0 0 0;
+            padding-left: 18px;
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .gen-points li {
+            margin-bottom: 4px;
+        }
+
+        /* 🔗 最下部リンクボタンセクション */
+        .link-section {
+            background: #111111;
+            padding: 35px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-gold);
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .link-section h3 {
+            margin: 0 0 25px 0;
+            color: var(--accent-gold);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .btn-row {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 12px;
+        }
+
+        .btn-cell {
+            display: table-cell;
+            width: 50%;
+        }
+
+        .btn-cell-full {
+            display: block;
+            width: 100%;
+            padding: 0 12px 12px 12px;
+        }
+
+        @media (max-width: 600px) {
+            .btn-row, .btn-cell {
+                display: block;
+                width: 100%;
+            }
+            .btn-cell {
+                padding-bottom: 12px;
+            }
+            .btn-cell-full {
+                padding: 0;
+            }
+        }
+
+        .gen-btn {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 13px;
+            border: 1px solid #444;
+            transition: all 0.2s ease;
+            display: block;
+            text-align: center;
+        }
+
+        .gen-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), #b59226);
+            color: #000000;
+            border-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🐠 背景：それぞれがバラバラの速度・高さ・大きさで右から左へ泳いでいく絵文字たち -->
+    <div class="emoji-ocean">
+        <div class="swimming-emoji e1">😀</div>
+        <div class="swimming-emoji e2">😂</div>
+        <div class="swimming-emoji e3">🤣</div>
+        <div class="swimming-emoji e4">😀</div>
+        <div class="swimming-emoji e5">😂</div>
+        <div class="swimming-emoji e6">🤣</div>
+    </div>
+
+    <!-- 📦 メインコンテンツ（上から下まで完全不透明な1枚のソリッドパネル） -->
+    <div class="main-panel">
+        
+        <header>
+            <h1>謎ジェネレーターシリーズ マニュアル</h1>
+            <p>クロマキー合成・動画編集用グリーンバックツール 総合使い方ガイド</p>
+        </header>
+
+        <!-- 💡 概要 -->
+        <div class="intro-box">
+            <p>本ツール群は、動画編集やライブ配信の演出素材として活用するために開発された<strong>グリーンバック（クロマキー）専用の特殊ジェネレーター</strong>です。</p>
+            <p>ブラウザ上の画面をパソコンの画面録画でキャプチャし、お使いの動画編集ソフトやOBS Studio等で<span class="highlight-green-text">「グリーン（#00ff00）」を透過（クロマキー合成）</span>して、メイン動画に重ねてお使いください。</p>
+            <p>※ 各ツールにはあらかじめ開発者厳選の「おもしろ文章・各種ネタ」がプリセットされていますが、すべての入力欄はカスタム可能です。自分の好きなテキストを入力して自由な演出を行えます。</p>
+        </div>
+
+        <!-- 🛠️ 基本操作 -->
+        <h2>💡 基本的な操作手順</h2>
+        <div class="step-table">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <div class="step-title">文字の入力・設定</div>
+                <div class="step-desc">画面に表示させたい文字を自由に入力します。フォントの切り替えや、表示スピード、演出オプション等もここで好みに調整します。</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <div class="step-title">システム起動（放送開始）</div>
+                <div class="step-desc">各コントロールパネル内にある「システム起動」や「開始」ボタンをクリックし、ジェネレーターをアクティブ（待機状態）にします。</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <div class="step-title">テロップ射出・流し込み</div>
+                <div class="step-desc">「撃つ」「流す」「緊急速報を射出する」等の手動ボタン、または自動巡回をONにすることで、動画内にダイナミックな演出が実行されます。</div>
+            </div>
+        </div>
+
+        <!-- 🎬 各ジェネレーター解説 -->
+        <h2>🎬 各ジェネレーターの特徴と個別解説</h2>
+
+        <!-- 1. ニュース速報 -->
+        <div class="gen-card">
+            <div class="gen-row">
+                <div class="gen-img-wrapper">
+                    <img src="images/news001.jpeg" alt="ニュース速報ジェネレーター 画面">
+                </div>
+                <div class="gen-info">
+                    <div class="gen-badge">G-01 / 横型 16:9</div>
+                    <h3 class="gen-title">１．ニュース速報（BREAKING NEWS）ジェネレーター</h3>
+                    <p class="gen-desc">テレビの報道番組さながらの緊迫したニュース画面を作り出すツールです。動画内で「重大な発表」をしたい時や、コミカルな大スクープを演出したい時に絶大な威力を発揮します。</p>
+                    <ul class="gen-points">
+                        <li><strong>2行構成のリアルテロップ：</strong>太字の「見出し」と、下部の「詳細説明テキスト」が綺麗に連動。</li>
+                        <li><strong>報道バッジ切り替え：</strong>「独自」「速報」「スクープ」など、状況に合わせたバッジを選択可能。</li>
+                        <li><strong>自動格納機能：</strong>テロップ射出後、指定時間（7秒後など）に自動でスマートに閉じるオプション付き。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 緊急災害速報 -->
+        <div class="gen-card">
+            <div class="gen-row">
+                <div class="gen-img-wrapper">
+                    <img src="images/news002.jpeg" alt="緊急災害速報ジェネレーター 画面">
+                </div>
+                <div class="gen-info">
+                    <div class="gen-badge">G-02 / 横型 16:9</div>
+                    <h3 class="gen-title">２．緊急災害速報風ジェネレーター</h3>
+                    <p class="gen-desc">テレビで突ろ流れるあの不穏で緊張感のある「災害速報」の画面をパロディ化・演出できるツールです。動画内で大ハプニングや大ピンチが発生した場面を盛り上げます。</p>
+                    <ul class="gen-points">
+                        <li><strong>3つの内蔵報道モード：</strong>【地震速報風(L字枠)】【訃報風(上部静寂)】【津波情報風(右下マップ)】をワンクリックで瞬時に切り替え可能。</li>
+                        <li><strong>日本地図連動ピン：</strong>津波情報風モードでは、右下にドット絵風の日本地図が出現し、特定の地域がランダムに赤く緊急点滅するこだわり仕様。</li>
+                        <li><strong>無限横スクロール：</strong>下部のニュース帯テキストがエンドレスで左へと滑らかにスクロールし続けます。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 縦型ニコニココメ -->
+        <div class="gen-card">
+            <div class="gen-row">
+                <div class="gen-img-wrapper">
+                    <img src="images/niko_tate001.jpg" alt="縦型ニコニココメジェネレーター 画面">
+                </div>
+                <div class="gen-info">
+                    <div class="gen-badge">G-03 / 縦型（Shorts / TikTok用）</div>
+                    <h3 class="gen-title">３．縦型ニコニココメジェネレーター</h3>
+                    <p class="gen-desc">YouTubeショート、TikTok、Instagramリールなどの「スマホ縦画面動画」のサイズ（9:16）に完全特化したコメント流しツールです。縦長動画の枠内だけをコメントが綺麗に横断します。</p>
+                    <ul class="gen-points">
+                        <li><strong>文章ガチャ機能：</strong>「カオス長文」や「突発ツッコミ」を100件ワンクリックで自動生成し、即座に賑やかな画面を構築。</li>
+                        <li><strong>多彩なエフェクト設定：</strong>「中央に固定して消す」「全体に分散」「左右逆流（左から右へ流す）」等の特殊な動きを網羅。</li>
+                        <li><strong>超巨大文字：</strong>「10個に1個『超巨大文字』を混ぜる」にチェックを入れると、弾幕の中に特大のパワーワードを紛れ込ませてアクセントをつけられます。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 横型ニコニコ弾幕コメ -->
+        <div class="gen-card">
+            <div class="gen-row">
+                <div class="gen-img-wrapper">
+                    <img src="images/niko_yoko002.jpg" alt="横型ニコニコ弾幕コメジェネレーター 画面">
+                </div>
+                <div class="gen-info">
+                    <div class="gen-badge">G-04 / 横型 16:9</div>
+                    <h3 class="gen-title">４．16対9横型ニコニコ弾幕コメジェネレーター</h3>
+                    <p class="gen-desc">パソコンやテレビの大画面動画（16:9）に対応した、おなじみのコメント流しツールです。ネット動画特有のお祭り感や視聴者の一体感を手軽に合成できます。</p>
+                    <ul class="gen-points">
+                        <li><strong>圧倒的な弾幕感：</strong>登録された最大100個のネットスラングやアスキーアート（AA）、絵文字が重なりを自動防止しながら画面いっぱいに押し寄せます。</li>
+                        <li><strong>合成安全色カラー：</strong>文字色はランダム（クロマキーの緑に溶けない安全な配色）で出力され、文字のフチ取りも非常にクッキリしています。</li>
+                        <li><strong>スピード調整：</strong>スライダーを動かすことで、コメントが画面を通り抜ける速度を自由にコントロールできます。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 中央ドデカコメ -->
+        <div class="gen-card">
+            <div class="gen-row">
+                <div class="gen-img-wrapper">
+                    <img src="images/Impact001.jpeg" alt="中央ドデカコメジェネレーター 画面">
+                </div>
+                <div class="gen-info">
+                    <div class="gen-badge">G-05 / 横型 16:9（画面同期最新版）</div>
+                    <h3 class="gen-title">５．中央ドデカコメジェネレーター</h3>
+                    <p class="gen-desc">画面サイズを『800×450』、操作幅を完全に同期させた最新のインパクト特化ツールです。格闘ゲームのコンボフィニッシュやテレビのバラエティ番組のような、画面中央に突き刺さる超巨大ツッコミを演出できます。</p>
+                    <ul class="gen-points">
+                        <li><strong>3連カスタム事前入力（ワイドスロット）：</strong>よく使う長いツッコミテキストをあらかじめ3パターン登録しておき、右側の「撃つ💥」ボタンで狙った瞬間に個別発射できます。</li>
+                        <li><strong>ライブ配信UI連動：</strong>画面右上にリアルタイム風の「LIVE視聴者数」が表示され、起動すると数千〜数万人規模で人数がリアルにジュワジュワ増減するギミック付き。</li>
+                        <li><strong>ゲリラテロップ（全自動）：</strong>「自動ツッコミ」を有効にすると、おまかせワードがランダムな色彩（黄色・水色・ピンク等）とド迫力のポップアニメーションで自動的に次々と出現します。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔗 各ページへのリンクボタン群 -->
+        <div class="link-section">
+            <h3>🚀 対象のジェネレーターを起動する</h3>
+            <div class="btn-grid">
+                <div class="btn-row">
+                    <div class="btn-cell"><a href="BREAKING_NEWS_LOL.html" class="gen-btn">1. ニュース速報風ツール へ 🔗</a></div>
+                    <div class="btn-cell"><a href="RANDOM_MAP_NEWS.html" class="gen-btn">2. 緊急災害速報風ツール へ 🔗</a></div>
+                </div>
+                <div class="btn-row">
+                    <div class="btn-cell"><a href="YOUTUBE_SHORT_NEWS.html" class="gen-btn">3. 縦型ニコニココメント へ 🔗</a></div>
+                    <div class="btn-cell"><a href="NIKONIKO_MOJI_SHOT.html" class="gen-btn">4. 横型ニコニコ弾幕コメ へ 🔗</a></div>
+                </div>
+                <div class="btn-cell-full">
+                    <a href="LIVE_MOJI_FUNNY.html" class="gen-btn" style="background: linear-gradient(135deg, #1f2a44, #111a2e); border-color: #3b5998; margin-top: 12px;">5. 中央ドデカコメ（800x450・同期版）へ 🔗</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
