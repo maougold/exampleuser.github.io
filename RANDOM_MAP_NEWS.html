@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ニュース速報ジェネレーター【速報流れるテロップ強化版】</title>
+    <title>ニュース速報ジェネレーター【クロマキー領域確保版】</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
             position: relative;
             width: 711px; 
             height: 400px;
-            max-height: 55vh;
+            max-height: 50vh;
             background-color: #00ff00; 
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
             margin-top: 10px;
@@ -35,7 +35,7 @@
         }
 
         /* ==========================================
-           🚨 モード1：地震速報風 UI (L字枠 ＆ 流れる上部テロップ)
+            🚨 モード1：地震速報風 UI (L字枠：スリム＆自動改行仕様)
            ========================================== */
         #earthquake-layout {
             position: absolute;
@@ -75,7 +75,6 @@
             z-index: 5;
             box-shadow: 3px 0 10px #111;
         }
-        /* 上部ニュースをループスクロールさせるコンテナ */
         .eq-scroll-container {
             flex: 1;
             overflow: hidden;
@@ -93,42 +92,73 @@
             will-change: transform;
             animation: marquee-loop 20s linear infinite;
         }
+        
+        /* 🎬 クロマキー領域確保：幅を250px（元の3分の2程度）に制限 */
         .eq-left-box {
             position: absolute;
             top: 45px;
             left: 0;
-            width: 180px;
+            width: 250px; /* 幅をスリムに固定して動画エリアを死守 */
             height: calc(100% - 45px);
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             border-right: 3px solid #ffcc00;
             color: white;
-            padding: 8px 10px;
+            padding: 6px 10px;
             box-sizing: border-box;
-            font-size: 12px;
+            font-size: 10px; /* 改行が入るため少しだけ文字をスマートに */
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            justify-content: space-between; 
+            gap: 2px;
         }
         .eq-list-title {
             color: #ffcc00;
             font-weight: 900;
+            font-size: 12px;
             border-bottom: 1px solid #444;
             padding-bottom: 2px;
             margin-bottom: 2px;
             text-align: center;
+            white-space: nowrap;
         }
         .eq-row {
             display: flex;
-            justify-content: space-between;
-            background: #222;
-            padding: 3px 6px;
+            align-items: flex-start; /* 上揃えにして複数行になっても崩れないように */
+            gap: 6px;
+            background: #1a1a1a;
+            padding: 4px 6px;
             border-radius: 2px;
+            border: 1px solid #292929;
+        }
+        .eq-row span:first-child {
+            font-weight: 900;
+            white-space: nowrap;
+            background: #cc0000;
+            color: #fff;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 9px;
+            margin-top: 1px; /* 文字の高さ調整 */
+        }
+        .eq-row:nth-child(n+5) span:first-child {
+            background: #333; 
+        }
+        
+        /* 💡 綺麗に自動改行させる設定 */
+        .eq-row span:last-child {
+            line-height: 1.3;
+            white-space: normal; /* 横に突き抜けず自動改行 */
+            word-break: break-all; /* 必要に応じてどこでも折れるように */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* 最大2行まで表示（はみ出し絶対防止ガード） */
+            -webkit-box-orient: vertical;
         }
         .shindo-high { color: #ff3333; font-weight: 900; }
         .shindo-mid { color: #ff9900; font-weight: 900; }
 
         /* ==========================================
-           🚨 モード2：訃報速報風 UI (枠なし・上部白黒枠文字点滅＆スクロール)
+            🚨 モード2：訃報速報風 UI
            ========================================== */
         #obituary-layout {
             position: absolute;
@@ -139,7 +169,6 @@
             display: none;
             z-index: 20;
         }
-        /* 白文字・黒フチを再現するためのデザイン */
         .obi-ticker-area {
             position: absolute;
             top: 25px;
@@ -162,38 +191,24 @@
         .obi-scroll-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 26px; /* ニュース文字として目立つサイズ */
+            font-size: 26px; 
             font-weight: 900;
             color: #ffffff;
-            /* 📺 テレビ特有の強固な黒フチ（袋文字）をCSSのtext-shadowで再現 */
             text-shadow: 
                 -2px -2px 0 #000,  2px -2px 0 #000,
                 -2px  2px 0 #000,  2px  2px 0 #000,
                 -2px  0px 0 #000,  2px  0px 0 #000,
                  0px -2px 0 #000,  0px  2px 0 #000,
                  3px  3px 5px rgba(0,0,0,0.8);
-            padding-left: 100%;
             display: inline-block;
             will-change: transform;
-        }
-        /* 発射時、最初の文字点滅アニメーション */
-        .obi-blink-active {
-            animation: obi-text-blink 0.3s ease 3 forwards;
-        }
-        /* 点滅が終わった後に横スクロールさせるアニメーション */
-        .obi-marquee-active {
-            animation: marquee-loop 22s linear infinite;
-        }
-
-        @keyframes obi-text-blink {
-            0% { opacity: 0; transform: scale(0.95); }
-            49% { opacity: 0; }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 1; }
+            transform: translate3d(0, 0, 0);
+            left: 0;
+            padding-left: 100%;
         }
 
         /* ==========================================
-           🚨 モード3：津波情報風 UI
+            🚨 モード3：津波情報風 UI
            ========================================== */
         #tsunami-layout {
             position: absolute;
@@ -227,16 +242,16 @@
             display: none;
             animation: map-blink 0.4s infinite alternate;
         }
-        #ping-hokkaido { top: 15%; right: 25%; }
-        #ping-tohoku   { top: 40%; right: 30%; }
-        #ping-kanto    { top: 60%; right: 32%; }
-        #ping-chubu    { top: 58%; right: 48%; }
-        #ping-kansai   { top: 68%; left: 40%; }
-        #ping-chugoku  { top: 68%; left: 25%; }
-        #ping-kyushu   { top: 78%; left: 12%; }
+        #ping-hokkaido     { top: 15%; right: 25%; }
+        #ping-tohoku       { top: 40%; right: 30%; }
+        #ping-kanto        { top: 60%; right: 32%; }
+        #ping-chubu        { top: 58%; right: 48%; }
+        #ping-kansai       { top: 68%; left: 40%; }
+        #ping-chugoku      { top: 68%; left: 25%; }
+        #ping-kyushu       { top: 78%; left: 12%; }
 
         /* ==========================================
-           共通アニメーション＆エフェクト
+            共通アニメーション
            ========================================== */
         @keyframes marquee-loop {
             0% { transform: translate3d(0, 0, 0); }
@@ -294,7 +309,6 @@
             will-change: transform;
             animation: marquee-loop 25s linear infinite; 
         }
-
         .flash-effect {
             animation: screen-flash 0.2s ease 2;
         }
@@ -308,108 +322,107 @@
             100% { opacity: 1; }
         }
 
-        /* 🛠️ コントロールパネル */
+        /* ==========================================
+            🛠️ コントロールパネル 
+           ========================================== */
         #control-panel {
-            width: 98vw;
-            max-width: 1100px;
-            height: calc(45vh - 20px);
-            background: #111;
-            margin-top: 10px;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 2px solid #555;
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr; 
-            gap: 15px;
-            color: white;
-            font-size: 13px;
+            width: 98vw; max-width: 1100px; height: calc(50vh - 30px);
+            background: #111; margin-top: 10px; padding: 12px;
+            box-sizing: border-box; border: 2px solid #555;
+            display: grid; grid-template-columns: 280px 1fr; 
+            gap: 15px; color: white; font-size: 13px;
         }
-        .panel-section {
+        
+        .panel-left {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             border-right: 1px solid #333;
             padding-right: 15px;
-        }
-        .panel-section:last-child { border-right: none; padding-right: 0; }
-        .panel-section-title { color: #00ccff; font-weight: bold; font-size: 13px; border-bottom: 1px solid #333; padding-bottom: 4px; }
-        
-        .mode-btn {
-            background: #222;
-            color: #ccc;
-            border: 1px solid #444;
-            padding: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: left;
-            border-radius: 4px;
-        }
-        .mode-btn.active {
-            background: #0088ff;
-            color: white;
-            border-color: #00ccff;
+            height: 100%;
+            overflow-y: auto;
         }
         
-        .input-group {
+        .panel-right {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 10px;
+            height: 100%;
         }
+
+        .panel-section-title { color: #00ccff; font-weight: bold; font-size: 13px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+         
+        .mode-btn {
+            background: #222; color: #ccc; border: 1px solid #444;
+            padding: 8px; font-weight: bold; cursor: pointer;
+            text-align: left; border-radius: 4px; width: 100%;
+        }
+        .mode-btn.active { background: #0088ff; color: white; border-color: #00ccff; }
+         
+        .input-group { display: flex; flex-direction: column; gap: 4px; }
         input[type="text"], textarea {
-            padding: 6px; background: #222; color: #fff; border: 1px solid #444; font-size: 12px; border-radius: 4px; font-family: inherit;
+            padding: 7px; background: #222; color: #fff; border: 1px solid #444;
+            font-size: 12px; border-radius: 4px; font-family: inherit;
             width: 100%; box-sizing: border-box;
         }
-        textarea { resize: none; height: 55px; }
+        
+        .marquee-huge-input {
+            height: 65px;
+            border: 1px solid #00ccff !important;
+            background: #18222d !important; 
+            font-size: 13px !important;
+            line-height: 1.4;
+        }
 
         .random-btn {
             background: linear-gradient(135deg, #ff8c00, #e52d27);
-            color: white;
-            border: 1px solid #ffaa44;
-            padding: 5px 10px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 3px;
-            margin-left: auto;
+            color: white; border: 1px solid #ffaa44;
+            padding: 5px 12px; font-size: 12px; font-weight: bold;
+            cursor: pointer; border-radius: 3px; margin-left: auto;
         }
         .random-btn:hover { filter: brightness(1.2); }
-        .random-btn:active { transform: scale(0.95); }
-        
+         
         .shoot-btn {
             background: linear-gradient(135deg, #cc0000, #880000);
-            color: white;
-            border: 1px solid #ff4444;
-            padding: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-top: auto;
+            color: white; border: 1px solid #ff4444;
+            padding: 10px; font-weight: bold; font-size: 15px;
+            cursor: pointer; border-radius: 4px; margin-top: auto;
+            width: 100%;
         }
-        .sys-btn { padding: 10px; font-weight: bold; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .sys-btn { padding: 8px; font-weight: bold; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
         #start-btn { background-color: #28a745; }
         #stop-btn { background-color: #dc3545; display: none; }
+
+        .desc-box-area {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11.5px;
+            color: #aaa;
+            line-height: 1.4;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <div id="video-area">
-        
         <div id="earthquake-layout">
             <div class="eq-header">
-                <span class="eq-header-badge">地震速報</span>
+                <span class="eq-header-badge">精神速報</span>
                 <div class="eq-scroll-container">
-                    <div class="eq-scroll-text" id="eq-header-text">○○地方で地震情報</div>
+                    <div class="eq-scroll-text" id="eq-header-text">○○地方で現実逃避情報</div>
                 </div>
             </div>
             <div class="eq-left-box">
-                <div class="eq-list-title">各地の震度情報</div>
-                <div class="eq-row"><span>震度６</span><span class="shindo-high" id="eq-place-1">布団沼東部</span></div>
-                <div class="eq-row"><span>震度５</span><span class="shindo-mid" id="eq-place-2">コタツ市</span></div>
-                <div class="eq-row"><span>震度４</span><span id="eq-place-3">二度寝町</span></div>
-                <div class="eq-row"><span>震度３</span><span id="eq-place-4">ベッド村</span></div>
-                <div class="eq-row"><span>震度２</span><span id="eq-place-5">アラーム無視区</span></div>
-                <div class="eq-row"><span>震度１</span><span id="eq-place-6">現実逃避海岸</span></div>
+                <div class="eq-list-title" id="eq-box-title">各地の精神震度</div>
+                <div class="eq-row"><span>震度６</span><span class="shindo-high" id="eq-place-1">テキスト1</span></div>
+                <div class="eq-row"><span>震度５</span><span class="shindo-mid" id="eq-place-2">テキスト2</span></div>
+                <div class="eq-row"><span>震度４</span><span id="eq-place-3">テキスト3</span></div>
+                <div class="eq-row"><span>震度３</span><span id="eq-place-4">テキスト4</span></div>
+                <div class="eq-row"><span>震度２</span><span id="eq-place-5">テキスト5</span></div>
+                <div class="eq-row"><span>震度１</span><span id="eq-place-6">テキスト6</span></div>
             </div>
         </div>
 
@@ -442,86 +455,122 @@
     </div>
 
     <div id="control-panel">
-        
-        <div class="panel-section">
+        <div class="panel-left">
             <div class="panel-section-title">📺 報道モード切り替え</div>
-            <button class="mode-btn active" onclick="switchMode('earthquake')">🌋 1. 地震速報風 (L字枠拡大)</button>
-            <button class="mode-btn" onclick="switchMode('obituary')">🖤 2. 訃報速報風 (上部袋文字)</button>
-            <button class="mode-btn" onclick="switchMode('tsunami')">🌊 3. 津波情報風 (右下マップ)</button>
-            
-            <div style="margin-top: auto; display: flex; flex-direction: column; gap: 5px;">
+            <button class="mode-btn active" onclick="switchMode('earthquake')">🌋 1. 地震速報風 (L字枠スリム化)</button>
+            <button class="mode-btn" onclick="switchMode('obituary')">🖤 2. 訃報速報風 (フチ取り文字)</button>
+            <button class="mode-btn" onclick="switchMode('tsunami')">🌊 3. 津波情報風 (地図点滅)</button>
+             
+            <div style="margin-top: 5px; display: flex; flex-direction: column;">
                 <button id="start-btn" class="sys-btn" onclick="toggleSystem(true)">システム起動 🚀</button>
                 <button id="stop-btn" class="sys-btn" onclick="toggleSystem(false)">放送終了 🛑</button>
             </div>
+
+            <div class="panel-section-title" style="margin-top: auto; color:#888;">💡 各モード解説</div>
+            <div class="desc-box-area">
+                <div id="desc-earthquake"><strong>【地震速報風】</strong><br>【改良】枠幅を250pxにスリム化！右側の動画表示スペースをしっかり守りつつ、長文は美しく自動改行されます。</div>
+                <div id="desc-obituary" style="display:none;"><strong>// 訃報速報風 //</strong><br>座布団なしの白黒フチ取りテロップ仕様。射出後、余計な前兆なしで最初から上部をループスクロールします。</div>
+                <div id="desc-tsunami" style="display:none;"><strong>【津波情報風】</strong><br>右下のマップワイプが自動起動。射出するたびに全国7大エリアからどこかがランダムに緊急パルス点滅します。</div>
+            </div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-right">
             <div class="panel-section-title" style="display: flex; align-items: center;">
-                <span>✍️ 速報テキスト入力</span>
-                <button class="random-btn" onclick="generateRandomJoke()">🎲 面白いネタを自動生成</button>
+                <span>✍️ 速報テキスト入力＆カスタム</span>
+                <button class="random-btn" onclick="generateRandomJoke()">🎲 次のプリセットネタを読み込む</button>
             </div>
-            
-            <div id="input-earthquake" class="mode-inputs">
-                <div class="input-group">
-                    <label style="color:#aaa; font-size:11px;">上部流れるヘッダー文章 (自動ループ再生):</label>
-                    <input type="text" id="in-eq-header" value="【ニュース速報】全国的な「やる気大気圧」の低下を観測　気象庁は不要不急の起き上がりを控えるよう呼びかけています。">
-                </div>
-                <div class="input-group" style="margin-top:6px; display:grid; grid-template-columns: 1fr 1fr; gap:4px;">
-                    <div><label style="color:#aaa; font-size:11px;">震度6:</label><input type="text" id="in-eq-p1" value="全日本布団沼東部"></div>
-                    <div><label style="color:#aaa; font-size:11px;">震度5:</label><input type="text" id="in-eq-p2" value="ダラダラ市"></div>
-                    <div><label style="color:#aaa; font-size:11px;">震度4:</label><input type="text" id="in-eq-p3" value="スマホ見すぎ町"></div>
-                    <div><label style="color:#aaa; font-size:11px;">震度3:</label><input type="text" id="in-eq-p4" value="現実逃避村"></div>
-                    <div><label style="color:#aaa; font-size:11px;">震度2:</label><input type="text" id="in-eq-p5" value="アラーム無視区"></div>
-                    <div><label style="color:#aaa; font-size:11px;">震度1:</label><input type="text" id="in-eq-p6" value="二度寝海岸"></div>
-                </div>
-            </div>
-
-            <div id="input-obituary" class="mode-inputs" style="display:none;">
-                <div class="input-group">
-                    <label style="color:#aaa; font-size:11px;">流れる訃報・緊急テキスト (最初「緊急 訃報 速報」が点滅したあと左へ流れます):</label>
-                    <textarea id="in-obi-text">【緊急・訃報・速報】弊アカウントの「今週のやる気」氏（享年5日）は、本日午後、週末の解放感を前に息を引き取りました。ここに謹んで哀悼の意を表し、土日の完全引きこもりをお知らせいたします。</textarea>
-                </div>
-            </div>
-
-            <div id="input-tsunami" class="mode-inputs" style="display:none;">
-                <div class="input-group">
-                    <label style="color:#aaa; font-size:11px;">左下帯バッジ:</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="in-tsu-badge2" value="黒歴史警報">
+             
+            <div id="input-earthquake" class="mode-inputs" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px;">
+                    <div class="input-group">
+                        <label style="color:#ffcc00; font-weight:bold; font-size:11px;">左側枠の見出し:</label>
+                        <input type="text" id="in-eq-title" value="週明けサラリーマン絶望度">
+                    </div>
+                    <div class="input-group">
+                        <label style="color:#00ccff; font-weight:bold; font-size:11px;">【最重要】上部を流れる速報テロップテキスト：</label>
+                        <textarea id="in-eq-header" class="marquee-huge-input">【メンタル崩壊】日曜夕方から月曜昼にかけて、全国の社会人の間で「深刻な出社拒否衝動」を観測。週休3日制の待望論が急上昇しています。</textarea>
                     </div>
                 </div>
-                <div class="input-group" style="margin-top:6px;">
-                    <label style="color:#aaa; font-size:11px;">下部スクロール文章（エンドレス横スクロール）:</label>
-                    <textarea id="in-tsu-text">【注意報】現在、タイムライン全域に「過去の恥ずかしい記憶」が押し寄せるリスクが高まっています。沿岸部（ベッドの上）にいる方は、枕に顔を埋めて叫ぶなど、直ちに身の安全を確保してください。今後のリプ欄の動向に警戒を。</textarea>
+                
+                <label style="color:#aaa; font-size:11px; margin-top: 2px; font-weight: bold;">📊 各震度の詳細エピソード（長文自動改行）：</label>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                    <div class="input-group"><label style="color:#ff3333; font-size:11px;">震度6 (最悪の絶望):</label><input type="text" id="in-eq-p1" value="16:55に急ぎの仕事を振られて脳が震える"></div>
+                    <div class="input-group"><label style="color:#ff9900; font-size:11px;">震度5:</label><input type="text" id="in-eq-p2" value="PCの起動画面を見ながら魂が抜ける(09時)"></div>
+                    <div class="input-group"><label style="color:#ccc; font-size:11px;">震度4:</label><input type="text" id="in-eq-p3" value="満員電車で乗客全員が死んだ目をする(08時)"></div>
+                    <div class="input-group"><label style="color:#ccc; font-size:11px;">震度3:</label><input type="text" id="in-eq-p4" value="アラーム鳴動、現実を拒絶しフリーズ(06時)"></div>
+                    <div class="input-group"><label style="color:#ccc; font-size:11px;">震度2:</label><input type="text" id="in-eq-p5" value="布団に入るが明日を拒絶し目が冴える(22時)"></div>
+                    <div class="input-group"><label style="color:#ccc; font-size:11px;">震度1 (初期微動):</label><input type="text" id="in-eq-p6" value="サザエさんの予告を見て心が微かに揺れる(17時)"></div>
                 </div>
             </div>
 
-            <button class="shoot-btn" onclick="triggerFlashAndStrike()">💥 緊急速報を射出する</button>
-        </div>
+            <div id="input-obituary" class="mode-inputs" style="display:none; width: 100%;">
+                <div class="input-group">
+                    <label style="color:#00ccff; font-weight:bold; font-size:11px;">【最重要】上部をエンドレス横スクロールする白黒お悔やみ文章:</label>
+                    <textarea id="in-obi-text" class="marquee-huge-input" style="height: 140px;">【緊急・訃報・速報】弊アカウントの「今週のやる気」氏（享年5日）は、本日午後、週末の解放感を前に息を引き取りました。ここに謹んで哀悼の意を表し、土日の完全引きこもりをお知らせいたします。</textarea>
+                </div>
+            </div>
 
-        <div class="panel-section" style="font-size:12px; color:#aaa; justify-content: center; line-height: 1.5;">
-            <div class="panel-section-title" style="color:#aaa;">💡 演出のこだわり</div>
-            <div id="desc-earthquake"><strong>【地震速報風】</strong><br>画面の上と左が固定枠になるL字画面。各地の震度が1〜6まで網羅され、上部のヘッダーテキストもエンドレスでループする超本格仕様です。</div>
-            <div id="desc-obituary" style="display:none;"><strong>// 訃報速報風 //</strong><br>【改良版】従来の白枠座布団を完全廃止！発射時に「緊急 訃報 速報」の文字がテレビのように3回激しく点滅したのち、美しい白黒フチ取り文字テロップが画面上部を優雅に流れます。</div>
-            <div id="desc-tsunami" style="display:none;"><strong>【津波情報風】</strong><br>右下に提供されたドット絵日本地図が出現！速報を射出するたびに、全国どこかの地域がランダムで赤く激しく緊急点滅します。</div>
-        </div>
+            <div id="input-tsunami" class="mode-inputs" style="display:none; width: 100%; flex-direction: column; gap: 8px;">
+                <div class="input-group" style="width: 200px;">
+                    <label style="color:#ff00ff; font-weight:bold; font-size:11px;">左下帯バッジ名称:</label>
+                    <input type="text" id="in-tsu-badge2" value="黒歴史警報">
+                </div>
+                <div class="input-group" style="margin-top:4px;">
+                    <label style="color:#00ccff; font-weight:bold; font-size:11px;">【最重要】下部をエンドレス横スクロールする津波風警告文章:</label>
+                    <textarea id="in-tsu-text" class="marquee-huge-input" style="height: 100px;">【注意報】現在、タイムライン全域に「過去の恥ずかしい記憶」が押し寄せるリスクが高まっています。沿岸部（ベッドの上）にいる方は、枕に顔を埋めて叫ぶなど、直ちに身の安全を確保してください。今後のリプ欄の動向に警戒を。</textarea>
+                </div>
+            </div>
 
+            <button class="shoot-btn" onclick="triggerFlashAndStrike()">💥 上記の設定で緊急速報をタイムラインに射出する</button>
+        </div>
     </div>
 
     <script>
         let currentMode = 'earthquake';
         let isSystemOn = false;
-        let lastIndices = { earthquake: -1, obituary: -1, tsunami: -1 };
+        let currentIndices = { earthquake: 0, obituary: 0, tsunami: 0 };
 
         const jokeDatabase = {
             earthquake: [
                 {
-                    header: "【ニュース速報】我が家の冷房設定温度を巡る第一宇宙速度級の激しい対立が発生。事態は混迷を極めています。",
-                    p1: "リビング極寒沼", p2: "ガタガタ震え市", p3: "電気代ヤバい町", p4: "設定28度派村", p5: "中間26度区", p6: "うちわ仰ぎ隊"
+                    title: "週明けサラリーマン絶望度",
+                    header: "【メンタル崩壊】日曜夕方から月曜昼にかけて、全国の社会人の間で「深刻な出社拒否衝動」を観測。週休3日制の待望論が急上昇しています。",
+                    p1: "16:55に急ぎの仕事を振られて脳が震える", 
+                    p2: "PCの起動画面を見ながら魂が抜ける(09時)", 
+                    p3: "満員電車で乗客全員が死んだ目をする(08時)", 
+                    p4: "アラーム鳴動、現実を拒絶しフリーズ(06時)", 
+                    p5: "布団に入るが明日を拒絶し目が冴える(22時)", 
+                    p6: "サザエさんの予告を見て心が微かに揺れる(17時)"
                 },
                 {
+                    title: "エアコン設定温度の対立",
+                    header: "【ニュース速報】我が家のリビングにおいて、冷房設定温度を巡る第一宇宙速度級の激しい冷戦が発生。事態は混混を極めています。",
+                    p1: "リビング極寒沼（設定23度・南極化）", 
+                    p2: "ガタガタ震え市（毛布を被る者が出現）", 
+                    p3: "電気代ヤバい町（家計の悲鳴）", 
+                    p4: "設定28度派村（絶対に下げさせない構え）", 
+                    p5: "中間26度区（妥協案の模索）", 
+                    p6: "うちわ仰ぎ隊（文明の利器を諦めた層）"
+                },
+                {
+                    title: "スマホ充電ケーブル災害",
                     header: "【臨時報道】スマホの充電ケーブルが「絶妙に届かない」局所的災害を広範囲で観測。無理な体勢による腰痛に警戒してください。",
-                    p1: "ベッドの端限界集落", p2: "あと5センチ届か市", p3: "コード突っ張り町", p4: "姿勢バグり村", p5: "タップ引き抜け区", p6: "諦め就寝エリア"
+                    p1: "ベッドの端限界集落（体半分落ちてる）", 
+                    p2: "あと5センチ届か市（指先を伸ばす攻防）", 
+                    p3: "コード突っ張り町（断線の危機）", 
+                    p4: "姿勢バグり村（首が変な角度に曲がる）", 
+                    p5: "タップ引き抜け区（大元のコンセント脱落）", 
+                    p6: "諦め就寝エリア（充電12%で夜を迎える）"
+                },
+                {
+                    title: "気象庁発表「胸震度階級」",
+                    header: "【緊急速報】某所で「胸震度」観測史上最大の揺れを記録！！気象庁が緊急発表した「胸震度階級」はこちらです↓。現地からは悲鳴続出。",
+                    p1: "Fカップ激揺れ（視線が釘付けになる災害）", 
+                    p2: "Eカップ大揺れ（周囲の空気が歪む）", 
+                    p3: "Dカップ縦揺れ（重力との戦い）", 
+                    p4: "Cカップ横揺れ（確かな存在感）", 
+                    p5: "Bカップも揺れる（微かな希望）", 
+                    p6: "Aカップ悔しがる（自己申告による震度0）"
                 }
             ],
             obituary: [
@@ -530,57 +579,72 @@
                 },
                 {
                     text: "【緊急・お悔やみ】本日分の「外出する気力」氏、玄関の靴を履こうとした瞬間に急激なめんどくささの乱れを観測し完全消滅。遺族からは「知ってた」「アマプラ観よう」との声が上がっています。"
+                },
+                {
+                    text: "【訃報・速報】今月のお給料、口座に着金してからわずか数日という若さで、家賃・光熱費・クレカ決済のトリプルコンボを被弾し永眠いたしました。葬儀は自宅でのもやしパーティーをもって執り行われます。"
+                },
+                {
+                    text: "【哀悼・臨時】昨日誓ったはずの「今日こそ早寝する」という固い決意は、布団の中で開いたYouTubeショートおよびSNS巡回（おすすめ欄）の波に呑まれ、午前3時20分、帰らぬ人となりました。"
                 }
             ],
             tsunami: [
                 {
                     badge2: "黒歴史警報",
-                    text: "【拡散希望】中学時代に書いたポエム、および過去の痛いSNS投稿が脳裏に逆流するリスクが高まっています。タイムラインの皆様は直ちに現実逃避の措置をとり、猫の動画を見るなどして自我を保ってください。"
+                    text: "【注意報】現在、タイムライン全域に「過去の恥ずかしい記憶」が押し寄せるリスクが高まっています。沿岸部（ベッドの上）にいる方は、枕に顔を埋めて叫ぶなど、直ちに身の安全を確保してください。"
+                },
+                {
+                    badge2: "物欲大津波",
+                    text: "【警報発令】限定フィギュアおよびガジェットの新製品発表に伴い、脳内サイフ口座の防波堤を遥かに超える「物欲大津波」が接近中。クレカの限度額が崩壊する恐れがあります。ただちに理性を確保してください。"
+                },
+                {
+                    badge2: "睡魔特別警報",
+                    text: "【緊急事態】午後2時過ぎのデスクワークエリア全域に、猛烈な睡魔の津波が襲来。白目をむく、ガクッと首が折れるなどの被害が相次んでいます。ただちにカフェインを摂取し、上司の視線から避難してください。"
+                },
+                {
+                    badge2: "通知大洪水",
+                    text: "【速報】SNSでちょっとした失言、または渾身のネタツイートがバズったことにより、スマホの「いいね・リプ通知」が堤防を決壊させて押し寄せています。バッテリーが熱を帯びる恐れがあり警戒が必要です。"
                 }
             ]
         };
 
         function generateRandomJoke() {
             const list = jokeDatabase[currentMode];
-            let pickIndex = Math.floor(Math.random() * list.length);
+            let idx = currentIndices[currentMode];
             
-            if (pickIndex === lastIndices[currentMode]) {
-                pickIndex = (pickIndex + 1) % list.length;
-            }
-            lastIndices[currentMode] = pickIndex;
-            const randomPick = list[pickIndex];
+            idx = (idx + 1) % list.length;
+            currentIndices[currentMode] = idx;
+            const item = list[idx];
 
             if (currentMode === 'earthquake') {
-                document.getElementById('in-eq-header').value = randomPick.header;
-                document.getElementById('in-eq-p1').value = randomPick.p1;
-                document.getElementById('in-eq-p2').value = randomPick.p2;
-                document.getElementById('in-eq-p3').value = randomPick.p3;
-                document.getElementById('in-eq-p4').value = randomPick.p4;
-                document.getElementById('in-eq-p5').value = randomPick.p5;
-                document.getElementById('in-eq-p6').value = randomPick.p6;
+                document.getElementById('in-eq-title').value = item.title;
+                document.getElementById('in-eq-header').value = item.header;
+                document.getElementById('in-eq-p1').value = item.p1;
+                document.getElementById('in-eq-p2').value = item.p2;
+                document.getElementById('in-eq-p3').value = item.p3;
+                document.getElementById('in-eq-p4').value = item.p4;
+                document.getElementById('in-eq-p5').value = item.p5;
+                document.getElementById('in-eq-p6').value = item.p6;
             } else if (currentMode === 'obituary') {
-                document.getElementById('in-obi-text').value = randomPick.text;
+                document.getElementById('in-obi-text').value = item.text;
             } else if (currentMode === 'tsunami') {
-                document.getElementById('in-tsu-badge2').value = randomPick.badge2;
-                document.getElementById('in-tsu-text').value = randomPick.text;
+                document.getElementById('in-tsu-badge2').value = item.badge2;
+                document.getElementById('in-tsu-text').value = item.text;
             }
         }
 
         function switchMode(mode) {
             currentMode = mode;
-            
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             if(mode === 'earthquake') document.querySelectorAll('.mode-btn')[0].classList.add('active');
             if(mode === 'obituary') document.querySelectorAll('.mode-btn')[1].classList.add('active');
             if(mode === 'tsunami') document.querySelectorAll('.mode-btn')[2].classList.add('active');
-
+            
             document.querySelectorAll('.mode-inputs').forEach(div => div.style.display = 'none');
-            document.getElementById(`input-${mode}`).style.display = 'block';
-
+            document.getElementById(`input-${mode}`).style.display = mode === 'tsunami' ? 'flex' : 'block';
+            
             document.getElementById('desc-earthquake').style.display = mode === 'earthquake' ? 'block' : 'none';
             document.getElementById('desc-obituary').style.display = mode === 'obituary' ? 'block' : 'none';
             document.getElementById('desc-tsunami').style.display = mode === 'tsunami' ? 'block' : 'none';
-
             hideAllLayouts();
         }
 
@@ -588,11 +652,10 @@
             document.getElementById('earthquake-layout').style.display = 'none';
             document.getElementById('obituary-layout').style.display = 'none';
             document.getElementById('tsunami-layout').style.display = 'none';
-            
-            // アニメーションのリセット用クラス削除
-            document.getElementById('eq-header-text').style.animation = 'none';
-            document.getElementById('obi-text-disp').classList.remove('obi-blink-active', 'obi-marquee-active');
-            
+            const eqText = document.getElementById('eq-header-text');
+            if(eqText) eqText.style.animation = 'none';
+            const obiText = document.getElementById('obi-text-disp');
+            if(obiText) obiText.style.animation = 'none';
             document.querySelectorAll('.map-ping').forEach(ping => ping.style.display = 'none');
         }
 
@@ -610,61 +673,41 @@
 
         function triggerFlashAndStrike() {
             if (!isSystemOn) return alert('「システム起動 🚀」を押してから発射してください！');
-
             const videoArea = document.getElementById('video-area');
-            
-            // 画面フラッシュエフェクト
             videoArea.classList.remove('flash-effect');
             void videoArea.offsetWidth; 
             videoArea.classList.add('flash-effect');
-
             hideAllLayouts();
-
             setTimeout(() => {
                 if (currentMode === 'earthquake') {
+                    document.getElementById('eq-box-title').textContent = document.getElementById('in-eq-title').value;
                     const eqText = document.getElementById('eq-header-text');
                     eqText.textContent = document.getElementById('in-eq-header').value;
-                    
                     document.getElementById('eq-place-1').textContent = document.getElementById('in-eq-p1').value;
                     document.getElementById('eq-place-2').textContent = document.getElementById('in-eq-p2').value;
                     document.getElementById('eq-place-3').textContent = document.getElementById('in-eq-p3').value;
                     document.getElementById('eq-place-4').textContent = document.getElementById('in-eq-p4').value;
                     document.getElementById('eq-place-5').textContent = document.getElementById('in-eq-p5').value;
                     document.getElementById('eq-place-6').textContent = document.getElementById('in-eq-p6').value;
-                    
                     document.getElementById('earthquake-layout').style.display = 'block';
-                    
-                    // 地震スクロールをトリガー
                     eqText.style.animation = 'none';
                     void eqText.offsetWidth;
                     eqText.style.animation = 'marquee-loop 20s linear infinite';
-
                 } else if (currentMode === 'obituary') {
                     const obiText = document.getElementById('obi-text-disp');
                     obiText.textContent = document.getElementById('in-obi-text').value;
-                    
                     document.getElementById('obituary-layout').style.display = 'block';
-                    
-                    // 🌟 演出：まず文字を3回激しく「点滅」させ、終わった瞬間に「スクロール（横流れ）」へ切り替える
-                    obiText.classList.add('obi-blink-active');
-                    
-                    setTimeout(() => {
-                        obiText.classList.remove('obi-blink-active');
-                        obiText.classList.add('obi-marquee-active');
-                    }, 900); // 0.3秒×3回＝900ms
-
+                    obiText.style.animation = 'none';
+                    void obiText.offsetWidth;
+                    obiText.style.animation = 'marquee-loop 22s linear infinite';
                 } else if (currentMode === 'tsunami') {
                     document.getElementById('tsunami-badge-text').textContent = document.getElementById('in-tsu-badge2').value;
-                    
                     const scrollText = document.getElementById('tsunami-text-disp');
                     scrollText.textContent = document.getElementById('in-tsu-text').value;
-                    
                     scrollText.style.animation = 'none';
                     void scrollText.offsetWidth;
                     scrollText.style.animation = 'marquee-loop 25s linear infinite';
-
                     document.getElementById('tsunami-layout').style.display = 'block';
-
                     const pings = ['ping-hokkaido', 'ping-tohoku', 'ping-kanto', 'ping-chubu', 'ping-kansai', 'ping-chugoku', 'ping-kyushu'];
                     const randomPingId = pings[Math.floor(Math.random() * pings.length)];
                     document.getElementById(randomPingId).style.display = 'block';
