@@ -50,25 +50,48 @@
             animation: fade-and-zoom 2s forwards linear;
         }
         @keyframes fade-and-zoom {
-            0% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.8); }
-            10% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1); }
-            90% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1); }
-            100% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.8); }
+            0% { 
+                opacity: 0; 
+                transform: translate3d(-50%, -50%, 0) scale(0.8) translate(0, 0); 
+            }
+            10% { 
+                opacity: 1; 
+                transform: translate3d(-50%, -50%, 0) scale(1) translate(0, 0); 
+            }
+            90% { 
+                opacity: 1; 
+                transform: translate3d(-50%, -50%, 0) scale(1) translate(var(--dx), var(--dy)); /* 円形に移動 */
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate3d(-50%, -50%, 0) scale(0.8) translate(var(--dx), var(--dy)); 
+            }
         }
-        /* コントロールパネル */
+        
+        /* コントロールパネルの修正（widthを100%にして、box-sizingを徹底） */
         #control-panel {
-            width: 98vw; max-width: 1400px; height: calc(30vh - 30px); min-height: 180px;
-            background: rgba(0, 0, 0, 0.95); margin: 10px 0; padding: 12px;
-            box-sizing: border-box; border: 1px solid #d4af37;
-            display: grid; grid-template-columns: 1.2fr 1.2fr 1.5fr 2fr 1fr; gap: 15px;
-            color: white; font-size: 12px; overflow-y: auto;
+            width: 100%;                  /* 📄 100vwから100%に修正してはみ出しを防止 */
+            max-width: 950px; 
+            height: calc(30vh - 30px); 
+            min-height: 200px;
+            background: rgba(0, 0, 0, 0.95); 
+            margin: 10px 0; 
+            padding: 12px;
+            box-sizing: border-box;       /* 📄 パディングや枠線を幅計算に含める */
+            border: 1px solid #d4af37;
+            display: grid; 
+            grid-template-columns: 1.2fr 1.2fr 1.2fr 2fr; 
+            gap: 15px;                    /* 📄 隙間を18pxから15pxに少し詰めてゆとりを持たせました */
+            color: white; 
+            font-size: 12px; 
+            overflow-y: auto;
         }
         .panel-section { display: flex; flex-direction: column; gap: 6px; border-right: 1px solid #333; padding-right: 10px; }
         .panel-section:last-child { border-right: none; padding-right: 0; }
         .panel-section-title { color: #d4af37; font-weight: bold; font-size: 11px; text-transform: uppercase; margin-bottom: 2px; }
         select, input[type="range"] { padding: 4px; background: #222; color: #fff; border: 1px solid #444; font-size: 12px; }
-        #bulk-textarea { width: 100%; height: calc(100% - 35px); font-size: 11px; padding: 6px; background: #111; color: #fff; border: 1px solid #444; resize: none; }
-        .btn-block { width: 100%; padding: 6px; font-size: 11px; font-weight: bold; color: white; border: none; cursor: pointer; }
+        #bulk-textarea { width: 100%; height: calc(100% - 35px); font-size: 11px; padding: 6px; background: #111; color: #fff; border: 1px solid #444; resize: none; box-sizing: border-box; }
+        .btn-block { width: 100%; padding: 6px; font-size: 11px; font-weight: bold; color: white; border: none; cursor: pointer; box-sizing: border-box; }
         .btn-gacha-long { background-color: #d4af37; color: #000; }
         .btn-gacha-short { background-color: #a67c00; color: #fff; }
         #start-btn { background-color: #0088ff; font-size: 14px; padding: 12px; height: 50px; margin-top: 5px; }
@@ -83,10 +106,15 @@
             <div class="panel-section-title">🎲 文章ガチャ</div>
             <button id="gacha-long-btn" class="btn-block btn-gacha-long">カオス長文を100件生成 ⚡</button>
             <button id="gacha-short-btn" class="btn-block btn-gacha-short">突発ツッコミ（短文）生成 💬</button>
+            
+            <hr style="border: 0; border-top: 1px solid #333; margin: 5px 0;"> 
+            <button id="start-btn" class="btn-block">弾幕スタート 🚀</button>
+            <button id="stop-btn" class="btn-block">一時停止 🛑</button>
+            <div id="playback-status" style="text-align: center; margin-top: 5px; font-weight: bold;"></div>
         </div>
         <div class="panel-section">
             <div class="panel-section-title">✨ 特殊エフェクト設定</div>
-            <label class="checkbox-label"><input type="checkbox" id="mode-center"> 📌 短文を中央に固定</label>
+            <label class="checkbox-label"><input type="checkbox" id="mode-center"> 📌 短文を中央に円形分散固定</label>
             <label class="checkbox-label"><input type="checkbox" id="mode-scatter"> 🌍 短文を全体に分散（重なり防止）</label>
             <label class="checkbox-label"><input type="checkbox" id="mode-reverse"> 🔄 弾幕を「左から右」へ逆流</label>
             <label class="checkbox-label"><input type="checkbox" id="mode-huge" checked> 🦖 10個に1個「超巨大文字」</label>
@@ -132,11 +160,6 @@
             <textarea id="bulk-textarea" placeholder="ガチャを引くか、直接入力してください。"></textarea>
             <div id="line-count" style="font-size:10px; color:#aaa; text-align:right;">現在: 0個</div>
         </div>
-        <div class="panel-section" style="justify-content: center;">
-            <button id="start-btn" class="btn-block">弾幕スタート 🚀</button>
-            <button id="stop-btn" class="btn-block">一時停止 🛑</button>
-            <div id="playback-status" style="text-align: center; margin-top: 5px; font-weight: bold;"></div>
-        </div>
     </div>
 
     <script>
@@ -147,9 +170,8 @@
 
         const videoArea = document.getElementById('video-area');
         const NUM_LANES = 12;
-        let activeTimers = []; // 全てのアクティブなタイマーを管理
+        let activeTimers = [];
 
-        // 各種要素の取得
         const gachaLongBtn = document.getElementById('gacha-long-btn');
         const gachaShortBtn = document.getElementById('gacha-short-btn');
         const bulkTextarea = document.getElementById('bulk-textarea');
@@ -166,12 +188,10 @@
         const modeReverse = document.getElementById('mode-reverse');
         const modeHuge = document.getElementById('mode-huge');
 
-        // スピードスライダーのリアルタイム表示
         globalSpeed.addEventListener('input', () => {
             document.getElementById('speed-val').textContent = globalSpeed.value + '秒';
         });
 
-        // ガチャ機能
         gachaLongBtn.addEventListener('click', () => {
             let res = [];
             for (let i = 0; i < 100; i++) {
@@ -197,13 +217,11 @@
         }
         bulkTextarea.addEventListener('input', updateLineCount);
 
-        // レーンのY座標計算（文字がはみ出さないようにマージンを調整）
         function getLaneY(lane) {
             const laneHeight = videoArea.offsetHeight / (NUM_LANES + 1);
             return (lane * laneHeight) + (laneHeight / 2);
         }
 
-        // コメント生成・アニメーション関数
         function triggerComment(text, colorType, speedSec, index, lane) {
             const font = fontSelect.value;
             let color = colorType === 'random' 
@@ -212,7 +230,6 @@
 
             const isHuge = modeHuge.checked && (index % 10 === 0);
             
-            // 📌 エフェクト1: 中央固定モードの処理
             if (modeCenter.checked && text.length <= 15) {
                 const fixedComment = document.createElement('div');
                 fixedComment.className = 'comment-fixed';
@@ -220,15 +237,22 @@
                 fixedComment.style.fontFamily = font;
                 fixedComment.style.color = color;
                 fixedComment.style.fontSize = isHuge ? '50px' : '28px';
-                // 画面中央付近のレーンに配置
                 fixedComment.style.top = getLaneY(Math.floor(NUM_LANES / 2)) + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 60 + Math.random() * 80;
+                const dx = Math.cos(angle) * radius;
+                const dy = Math.sin(angle) * radius;
+                
+                fixedComment.style.setProperty('--dx', `${dx}px`);
+                fixedComment.style.setProperty('--dy', `${dy}px`);
+                
                 videoArea.appendChild(fixedComment);
                 
                 setTimeout(() => fixedComment.remove(), 2000);
                 return;
             }
 
-            // 通常の流れ弾幕
             const comment = document.createElement('div');
             comment.className = 'comment';
             comment.textContent = text;
@@ -236,19 +260,16 @@
             comment.style.color = color;
             comment.style.fontSize = isHuge ? '48px' : '24px';
 
-            // 📌 エフェクト2: 全体に分散モード or 通常12レーン
             if (modeScatter.checked) {
                 comment.style.top = Math.random() * (videoArea.offsetHeight - 50) + 'px';
             } else {
                 comment.style.top = getLaneY(lane) + 'px';
             }
 
-            // 初期位置を設定（まずは画面外に隠す）
             const isReverse = modeReverse.checked;
             comment.style.left = isReverse ? '-999px' : '999px';
             videoArea.appendChild(comment);
 
-            // 🛑 横幅（offsetWidth）を正確に取得するために1フレーム待つ
             requestAnimationFrame(() => {
                 const commentWidth = comment.offsetWidth;
                 const areaWidth = videoArea.offsetWidth;
@@ -260,7 +281,7 @@
                 const startTime = performance.now();
 
                 function animate(now) {
-                    if (!comment.isConnected) return; // 途中で削除されたらアニメーションを止める
+                    if (!comment.isConnected) return;
                     const elapsed = now - startTime;
                     const progress = elapsed / duration;
 
@@ -278,7 +299,6 @@
             });
         }
 
-        // 基本システム停止
         function stopSystem() {
             activeTimers.forEach(t => clearTimeout(t));
             activeTimers = [];
@@ -288,7 +308,6 @@
             stopBtn.style.display = 'none';
         }
 
-        // 弾幕スタート
         startBtn.addEventListener('click', () => {
             const comments = getCommentsArray();
             if (comments.length === 0) {
@@ -296,7 +315,7 @@
                 return;
             }
 
-            stopSystem(); // 既存の再生をクリア
+            stopSystem();
 
             const totalDuration = parseInt(durationSelect.value);
             const speedSec = parseFloat(globalSpeed.value);
@@ -306,13 +325,10 @@
             startBtn.style.display = 'none';
             stopBtn.style.display = 'block';
 
-            // 指定されたタイマー時間（例: 60秒）の間に、コメントを均等に分散させて発射する
             const intervalTime = (totalDuration * 1000) / comments.length;
 
             comments.forEach((text, index) => {
-                // 12レーンを順番に割り当てて、同じレーンの連続を防ぐ
                 const lane = index % NUM_LANES; 
-                // 少しだけ発射タイミングを前後に散らして自然にする
                 const jitter = (Math.random() - 0.5) * (intervalTime * 0.8);
                 const launchTime = Math.max(0, (index * intervalTime) + jitter);
 
@@ -323,20 +339,16 @@
                 activeTimers.push(t);
             });
 
-            // 全体終了タイマー
             const endTimer = setTimeout(() => {
                 statusDisp.textContent = '⏹ 終了';
                 startBtn.style.display = 'block';
                 stopBtn.style.display = 'none';
-            }, totalDuration * 1000 + (speedSec * 1000)); // スピード分の余韻を持たせる
+            }, totalDuration * 1000 + (speedSec * 1000));
             
             activeTimers.push(endTimer);
         });
 
-        // 停止ボタンのイベント
         stopBtn.addEventListener('click', stopSystem);
-
-        // 初期化
         window.addEventListener('load', updateLineCount);
     </script>
 </body>
