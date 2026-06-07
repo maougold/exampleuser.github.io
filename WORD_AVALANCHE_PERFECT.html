@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORD AVALANCHE - PERFECT STUDIO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&family=Mochi+YDrop&family=Lilita+One&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #121416;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        h1.logo {
+            font-family: 'Bangers', cursive;
+            font-size: 38px;
+            letter-spacing: 3px;
+            margin: 0 0 20px 0;
+            color: #fff;
+            text-shadow: 3px 3px 0px #ff007f, -3px -3px 0px #00d2ff;
+        }
+        
+        .studio-container {
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            max-width: 1400px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* 🛠️ コントロールパネルを横に広げて2列（Grid）を受け入れる形状に変更 */
+        .controls-vertical {
+            background: #25282a;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 480px; /* 少し幅を広げて2列にしやすく */
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        /* 🛠️ テキストエリア以外の設定項目を綺麗に2列に並べるグリッド */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        /* テキストエリアだけは横幅いっぱい（2列分）に使う */
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #b0b5bb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        textarea, select {
+            padding: 8px 10px;
+            font-size: 13px;
+            border: 2px solid #3a3f44;
+            border-radius: 6px;
+            background: #1a1c1e;
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        textarea {
+            height: 85px; /* 高さを少しだけ抑えてコンパクトに */
+            resize: none;
+        }
+        textarea:focus, select:focus {
+            border-color: #ff007f;
+        }
+        
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+        button {
+            padding: 10px;
+            font-size: 13px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, background 0.2s;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            flex: 1;
+        }
+        button:active { transform: scale(0.96); }
+        .btn-main { background-color: #ff007f; }
+        .btn-main:hover { background-color: #e6006f; }
+        .btn-random { background-color: #a855f7; color: #fff; }
+        .btn-random:hover { background-color: #9333ea; }
+        .btn-save { background-color: #10b981; }
+        .btn-save:hover { background-color: #059669; }
+        .btn-clear { background-color: #4a5568; }
+        .btn-clear:hover { background-color: #2d3748; }
+
+        .view-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1a1c1e;
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            transition: width 0.3s ease, height 0.3s ease; 
+        }
+
+        canvas {
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            background-color: #ffffff;
+        }
+
+        @media (max-width: 950px) {
+            .studio-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .controls-vertical {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+        @media (max-width: 480px) {
+            /* スマホなどの極小画面では自動的に1列に戻す */
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="logo">⚡ WORD AVALANCHE: PERFECT ⚡</h1>
+
+    <div class="studio-container">
+        <div class="controls-vertical">
+            <!-- 🛠️ グリッドラップを導入して、内部のアイテムをきれいに左右へ分配 -->
+            <div class="controls-grid">
+                
+                <div class="control-group full-width">
+                    <label for="textInput">テキスト（改行 or 半角スペース区切り）</label>
+                    <textarea id="textInput">GLITCH POP 吾輩は 猫である 名前は まだ無い ニャー たかし君は １個 70円のりんごと 30円のみかんを 握りつぶして こう言いました 次はお前が こうなるバンダ ニャー はじめまして いきなりですが 助けて欲しいんです 私は原野恵理子 31歳のOLです 他に頼れる人がいなくて  実は伝説の男が 3年ぶりに 来日するという件で 困っています いきなり言っても 何のことやら 分からないと思うので 説明します 私が以前 勤めていた会社の 同僚で 全く空気を読まない 男性でした 3年前のある日 突然 海外に行ったのですが その来月来日するんです 何故この期に及んで 当時 私に猛モーションを 仕掛けてきて 今でも忘れずに 連絡きたんです 何度断っても 空気を読まないので 諦めずに アタックしてくるんです 私に彼氏がいれば あの諦めると どうか偽装でいいので 彼氏のフリを していただけないでしょうか？ お願いします</textarea>
+                </div>
+
+                <div class="control-group">
+                    <label for="screenSizeSelect">📐 画面サイズ（比率）</label>
+                    <select id="screenSizeSelect">
+                        <option value="vertical" selected>🎵 縦型 (9:16)</option>
+                        <option value="square">🟩 真四角 (1:1)</option>
+                        <option value="horizontal">📺 横型 (16:9)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSelect">フォント</label>
+                    <select id="fontSelect">
+                        <option value="'Dela Gothic One', sans-serif">デラゴシック</option>
+                        <option value="'Mochiy Pop One', sans-serif">✍️ もちがポップ</option>
+                        <option value="'Lilita One', sans-serif">Lilita One</option>
+                        <option value="'Mochi YDrop', sans-serif">モチドロップ</option>
+                        <option value="'Bangers', cursive">Bangers</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="modeSelect">描画モード（カラー）</label>
+                    <select id="modeSelect">
+                        <option value="glitch" selected>🔮 GLITCH（ネオン半透明）</option>
+                        <option value="classic">🎨 通常（ソリッド）</option>
+                        <option value="grayGlitch">⚙️ サイバーグレー</option>
+                        <option value="grayClassic">⛓️ モノトーン</option>
+                        <option value="retroWarm">🍂 レトロウォーム</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="sizeSelect">文字サイズ</label>
+                    <select id="sizeSelect">
+                        <option value="120">超特大</option>
+                        <option value="90" selected>特大</option>
+                        <option value="60">大</option>
+                        <option value="45">📐 中（おすすめ）</option>
+                        <option value="30">🔎 小（砂嵐）</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="strokeColorSelect">🌈 縁取りカラー</label>
+                    <select id="strokeColorSelect">
+                        <option value="none">❌ 縁取り無し</option>
+                        <option value="#000000" selected>⬛ 漆黒</option>
+                        <option value="#ffffff">⬜ 純白</option>
+                        <option value="#ff003c">🟥 爆発レッド</option>
+                        <option value="#0055ff">🟦 電撃ブルー</option>
+                        <option value="#ff6a00">🟧 オレンジ</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="strokeWeightSelect">縁取りの太さ</label>
+                    <select id="strokeWeightSelect">
+                        <option value="14">極太</option>
+                        <option value="8" selected>普通</option>
+                        <option value="4">細め</option>
+                        <option value="1.5">極細</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="bgSelect">背景デザイン</label>
+                    <select id="bgSelect">
+                        <option value="white">無地ホワイト</option>
+                        <option value="dark">漆黒（ダーク）</option>
+                        <option value="dots">🔴 アメコミドット</option>
+                        <option value="sunburst">⚡ サンバースト</option>
+                        <option value="neongrid" selected>🔮 サイバー方眼</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="giantModeSelect">🦖 ジャイアント</label>
+                    <select id="giantModeSelect">
+                        <option value="off" selected>❌ 通常どおり</option>
+                        <option value="random">🎲 7個に1個ビッグ！</option>
+                    </select>
+                </div>
+
+                <div class="control-group full-width">
+                    <label for="speedSelect">落下スピード</label>
+                    <select id="speedSelect">
+                        <option value="6">じっくり</option>
+                        <option value="14" selected>通常落下</option>
+                        <option value="35">超高速</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="btn-container">
+                <div class="btn-row">
+                    <button id="startBtn" class="btn-main">🎨 降らせる</button>
+                    <button id="randomBtn" class="btn-random">🎲 おまかせ</button>
+                </div>
+                <div class="btn-row">
+                    <button id="saveBtn" class="btn-save">💾 保存</button>
+                    <button id="clearBtn" class="btn-clear">🗑️ クリア</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-screen">
+            <canvas id="avalancheCanvas" width="450" height="800"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // (JavaScriptロジックは軽量化・最適化しつつ、機能は完全にそのまま維持しています)
+        const canvas = document.getElementById('avalancheCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const screenSizeSelect = document.getElementById('screenSizeSelect');
+        const textInput = document.getElementById('textInput');
+        const fontSelect = document.getElementById('fontSelect');
+        const modeSelect = document.getElementById('modeSelect');
+        const strokeWeightSelect = document.getElementById('strokeWeightSelect');
+        const strokeColorSelect = document.getElementById('strokeColorSelect');
+        const bgSelect = document.getElementById('bgSelect');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const giantModeSelect = document.getElementById('giantModeSelect');
+        const speedSelect = document.getElementById('speedSelect');
+        const startBtn = document.getElementById('startBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        const glitchColors = ['rgba(255, 0, 127, 0.6)', 'rgba(0, 210, 255, 0.55)', 'rgba(255, 235, 0, 0.65)', 'rgba(57, 255, 20, 0.55)'];
+        const neonColors = ['rgba(255, 0, 255, 0.6)', 'rgba(0, 255, 255, 0.6)', 'rgba(50, 255, 50, 0.6)', 'rgba(255, 235, 0, 0.7)'];
+        const classicColors = ['#ff007f', '#00d2ff', '#ffea00', '#39ff14', '#ff6700', '#bf00ff'];
+        const grayGlitchColors = ['rgba(220, 225, 230, 0.55)', 'rgba(160, 165, 170, 0.55)', 'rgba(110, 115, 120, 0.6)', 'rgba(70, 75, 80, 0.65)'];
+        const grayClassicColors = ['#f1f3f5', '#cfd4da', '#adb5bd', '#6c757d', '#495057', '#343a40'];
+        const retroWarmColors = ['rgba(255, 140, 0, 0.6)', 'rgba(218, 165, 32, 0.65)', 'rgba(139, 69, 19, 0.55)', 'rgba(244, 164, 96, 0.6)'];
+
+        let textQueue = [];       
+        let fallingText = null;    
+        let settledTexts = [];    
+        let isStrokeApplied = false; 
+
+        const resolution = 60; 
+        let groundY = [];
+
+        function resizeCanvas() {
+            const sizeType = screenSizeSelect.value;
+            if (sizeType === 'vertical') {
+                canvas.width = 450; canvas.height = 800;
+            } else if (sizeType === 'square') {
+                canvas.width = 800; canvas.height = 800;
+            } else {
+                canvas.width = 850; canvas.height = 480;
+            }
+            resetGround();
+            settledTexts = [];
+            fallingText = null;
+        }
+
+        function resetGround() {
+            groundY = Array(resolution).fill(canvas.height - 25);
+        }
+
+        class FallingWord {
+            constructor(text, font, size, mode, bgType) {
+                this.text = text; this.font = font; this.size = size; this.mode = mode;
+                
+                if (this.mode === 'glitch') {
+                    this.color = (bgType === 'dark' || bgType === 'neongrid') ? neonColors[Math.floor(Math.random() * neonColors.length)] : glitchColors[Math.floor(Math.random() * glitchColors.length)];
+                } else if (this.mode === 'grayGlitch') {
+                    this.color = grayGlitchColors[Math.floor(Math.random() * grayGlitchColors.length)];
+                } else if (this.mode === 'grayClassic') {
+                    this.color = grayClassicColors[Math.floor(Math.random() * grayClassicColors.length)];
+                } else if (this.mode === 'retroWarm') {
+                    this.color = retroWarmColors[Math.floor(Math.random() * retroWarmColors.length)];
+                } else {
+                    this.color = classicColors[Math.floor(Math.random() * classicColors.length)];
+                }
+                
+                this.angle = (Math.random() * 24 - 12) * Math.PI / 180;
+                ctx.font = `bold ${this.size}px ${this.font}`;
+                this.width = ctx.measureText(this.text).width;
+                this.height = this.size * 0.8;
+
+                const margin = Math.max(15, this.width / 2);
+                this.centerX = margin + Math.random() * (canvas.width - margin * 2);
+                this.y = -60;
+            }
+
+            update(speed) {
+                this.y += speed;
+                let colIndex = Math.floor(this.centerX / (canvas.width / resolution));
+                colIndex = Math.max(0, Math.min(resolution - 1, colIndex));
+                let currentGround = groundY[colIndex];
+
+                if (this.y >= currentGround) {
+                    this.y = currentGround; 
+                    let leftX = this.centerX - this.width / 2;
+                    let rightX = this.centerX + this.width / 2;
+                    let startCol = Math.max(0, Math.min(resolution - 1, Math.floor(leftX / (canvas.width / resolution))));
+                    let endCol = Math.max(0, Math.min(resolution - 1, Math.floor(rightX / (canvas.width / resolution))));
+
+                    for (let i = startCol; i <= endCol; i++) {
+                        groundY[i] = Math.min(groundY[i], this.y - this.height * 0.72);
+                    }
+                    return true; 
+                }
+                return false;
+            }
+
+            drawBody() {
+                ctx.save(); ctx.translate(this.centerX, this.y); ctx.rotate(this.angle);
+                ctx.font = `bold ${this.size}px ${this.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+
+                const isSolidMode = (this.mode === 'classic' || this.mode === 'grayClassic' || this.mode === 'retroWarm');
+                if (isSolidMode && strokeColorSelect.value !== 'none') {
+                    ctx.strokeStyle = strokeColorSelect.value;
+                    ctx.lineWidth = parseFloat(strokeWeightSelect.value) / 2 || 4;
+                    ctx.lineJoin = 'round'; ctx.strokeText(this.text, 0, 0);
+                }
+                ctx.fillStyle = this.color; ctx.fillText(this.text, 0, 0); ctx.restore();
+            }
+
+            drawOutline() {
+                if (strokeColorSelect.value === 'none') return;
+                ctx.save(); ctx.translate(this.centerX, this.y); ctx.rotate(this.angle);
+                ctx.font = `bold ${this.size}px ${this.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+                ctx.strokeStyle = strokeColorSelect.value; ctx.lineWidth = parseFloat(strokeWeightSelect.value);
+                ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeText(this.text, 0, 0); ctx.restore();
+            }
+        }
+
+        function drawBackground() {
+            const bgType = bgSelect.value;
+            if (bgType === 'white') { ctx.fillStyle = '#fcfdfd'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+            else if (bgType === 'dark') { ctx.fillStyle = '#0b0c10'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+            else if (bgType === 'dots') {
+                ctx.fillStyle = '#fcfdfd'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                for (let x = 15; x < canvas.width; x += 30) { for (let y = 15; y < canvas.height; y += 30) { ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2); ctx.fill(); } }
+            } else if (bgType === 'sunburst') {
+                const cx = canvas.width / 2; const cy = canvas.height / 2;
+                ctx.fillStyle = '#fcfdfd'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'rgba(0, 0, 0, 0.025)';
+                const rays = 36; const angleStep = (Math.PI * 2) / rays;
+                for (let i = 0; i < rays; i += 2) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, Math.max(canvas.width, canvas.height) * 1.5, i * angleStep, (i + 1) * angleStep); ctx.lineTo(cx, cy); ctx.fill(); }
+            } else if (bgType === 'neongrid') {
+                ctx.fillStyle = '#0d0f12'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = 'rgba(0, 210, 255, 0.15)'; ctx.lineWidth = 1;
+                for (let x = 30; x < canvas.width; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+                for (let y = 30; y < canvas.height; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+            }
+        }
+
+        function initSimulation() {
+            settledTexts = []; resetGround(); fallingText = null; isStrokeApplied = false;
+            const rawText = textInput.value;
+            textQueue = rawText.split(/[\n\s]+/).map(line => line.trim()).filter(line => line.length > 0);
+        }
+
+        function spawnWord() {
+            if (textQueue.length === 0) {
+                const isGlitchMode = (modeSelect.value === 'glitch' || modeSelect.value === 'grayGlitch');
+                if (settledTexts.length > 0 && isGlitchMode) isStrokeApplied = true;
+                return;
+            }
+            const nextText = textQueue.shift();
+            let finalSize = parseInt(sizeSelect.value);
+            if (giantModeSelect.value === 'random' && Math.random() < (1 / 7)) finalSize = Math.floor(finalSize * 1.5);
+            fallingText = new FallingWord(nextText, fontSelect.value, finalSize, modeSelect.value, bgSelect.value);
+        }
+
+        function updateScene() {
+            const speed = parseInt(speedSelect.value);
+            if (!fallingText) spawnWord();
+            if (fallingText) { let hit = fallingText.update(speed); if (hit) { settledTexts.push(fallingText); fallingText = null; } }
+        }
+
+        function drawScene() {
+            const currentMode = modeSelect.value; const bgType = bgSelect.value;
+            drawBackground();
+            const isGlitchMode = (currentMode === 'glitch' || currentMode === 'grayGlitch');
+            if (isGlitchMode && isStrokeApplied) { ctx.globalCompositeOperation = 'source-over'; settledTexts.forEach(t => t.drawOutline()); }
+            if (isGlitchMode) { ctx.globalCompositeOperation = (bgType === 'dark' || bgType === 'neongrid') ? 'screen' : 'multiply'; } 
+            else { ctx.globalCompositeOperation = 'source-over'; }
+            settledTexts.forEach(t => t.drawBody());
+            ctx.globalCompositeOperation = 'source-over'; 
+            if (fallingText) fallingText.drawBody();
+        }
+
+        function mainLoop() { updateScene(); drawScene(); requestAnimationFrame(mainLoop); }
+
+        randomBtn.addEventListener('click', () => {
+            const randomSelect = (sel) => { sel.selectedIndex = Math.floor(Math.random() * sel.options.length); };
+            randomSelect(fontSelect); randomSelect(modeSelect); randomSelect(strokeWeightSelect);
+            randomSelect(strokeColorSelect); randomSelect(bgSelect); randomSelect(sizeSelect);
+            randomSelect(giantModeSelect); randomSelect(speedSelect); drawScene();
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const link = document.createElement('a'); link.download = `word-avalanche-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png'); link.click();
+        });
+
+        screenSizeSelect.addEventListener('change', resizeCanvas);
+        startBtn.addEventListener('click', () => { initSimulation(); });
+        clearBtn.addEventListener('click', () => {
+            settledTexts = []; resetGround(); fallingText = null; textQueue = []; isStrokeApplied = false;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        [strokeWeightSelect, strokeColorSelect, bgSelect, modeSelect, fontSelect, sizeSelect].forEach(el => el.addEventListener('change', drawScene));
+
+        resizeCanvas(); mainLoop();
+    </script>
+</body>
+</html>
