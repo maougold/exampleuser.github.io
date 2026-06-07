@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLITCH ARTIST - Premium Pop Art Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&family=Lilita+One&family=Permanent+Marker&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+        body.dark-mode-body {
+            background-color: #1a1c1e;
+            color: #eee;
+        }
+        h1.logo {
+            font-family: 'Bangers', cursive;
+            font-size: 42px;
+            letter-spacing: 2px;
+            margin: 0 0 15px 0;
+            color: #111;
+            text-shadow: 3px 3px 0px #ff007f, -3px -3px 0px #00d2ff;
+            transition: color 0.3s;
+        }
+        body.dark-mode-body h1.logo {
+            color: #fff;
+        }
+        .controls {
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 950px;
+            justify-content: center;
+            align-items: flex-start;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        body.dark-mode-body .controls {
+            background: #2d3033;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+        }
+        body.dark-mode-body label {
+            color: #aaa;
+        }
+        textarea, select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 2px solid #eee;
+            border-radius: 6px;
+            background: #fafafa;
+            outline: none;
+            box-sizing: border-box;
+            height: 38px;
+            transition: border-color 0.2s, background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode-body textarea, body.dark-mode-body select {
+            background: #3a3d42;
+            border-color: #4a4e54;
+            color: #fff;
+        }
+        textarea {
+            width: 180px;
+            height: 100px;
+            resize: none;
+            white-space: pre;
+            overflow-y: auto;
+        }
+        textarea:focus, select:focus {
+            border-color: #ff007f;
+        }
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 17px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+        button {
+            padding: 10px 16px;
+            font-size: 14px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s, transform 0.1s;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        button:active { transform: scale(0.96); }
+        
+        .btn-main { background-color: #ff007f; }
+        .btn-main:hover { background-color: #e6006f; }
+        
+        .btn-secondary { background-color: #4a5568; }
+        .btn-secondary:hover { background-color: #2d3748; }
+
+        .btn-success { background-color: #38a169; }
+        .btn-success:hover { background-color: #2f855a; }
+
+        .btn-warning { background-color: #dd6b20; }
+        .btn-warning:hover { background-color: #c05621; }
+
+        .view-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0,0,0,0.05);
+            body.dark-mode-body & { background-color: rgba(0,0,0,0.4); }
+            padding: 15px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        canvas {
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="logo">⚡ GLITCH ARTIST ⚡</h1>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="screenSizeSelect">📐 画面サイズ</label>
+            <select id="screenSizeSelect">
+                <option value="horizontal" selected>📺 横型 (800×450)</option>
+                <option value="square">🟩 真四角 (550×550)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="textInput">テキスト（改行可）</label>
+            <textarea id="textInput" placeholder="文字を入力してください">GLITCH&#10;ARTIST</textarea>
+        </div>
+
+        <div class="control-group">
+            <label for="fontSelect">フォント</label>
+            <select id="fontSelect">
+                <option value="'Bangers', cursive">Bangers (アメコミ)</option>
+                <option value="'Dela Gothic One', sans-serif">デラゴシック (日本語)</option>
+                <option value="'Lilita One', sans-serif">Lilita One (ポップ)</option>
+                <option value="'Permanent Marker', cursive">Marker (手書き)</option>
+                <option value="Impact, sans-serif">Impact (力強い)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="sizeSelect">文字の大きさ</label>
+            <select id="sizeSelect">
+                <option value="minimal">最小（すっきり）</option>
+                <option value="normal" selected>普通（バランス）</option>
+                <option value="huge">特大（ド迫力）</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="weightSelect">縁取りの太さ</label>
+            <select id="weightSelect">
+                <option value="1.5">超極細</option>
+                <option value="4">極細</option>
+                <option value="8" selected>普通</option>
+                <option value="16">極太</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="strokeColorSelect">🌈 縁取りのカラー</label>
+            <select id="strokeColorSelect">
+                <option value="#111111" selected>⬛ 漆黒 (Black)</option>
+                <option value="#ffffff">⬜ 純白 (White)</option>
+                <option value="#ff003c">🟥 爆発レッド (Red)</option>
+                <option value="#0055ff">🟦 電撃ブルー (Blue)</option>
+                <option value="#ff6a00">🟧 ネオンオレンジ (Orange)</option>
+                <option value="none">❌ 縁取り無し (None)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="paletteSelect">パレット</label>
+            <select id="paletteSelect">
+                <option value="original">オリジナル</option>
+                <option value="neon">サイバーネオン</option>
+                <option value="pastel">ゆめかわパステル</option>
+                <option value="sunset">サンセットビタミン</option>
+                <option value="monochrome">ダークモノクローム</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="bgSelect">背景デザイン</label>
+            <select id="bgSelect">
+                <option value="dots" selected>🔴 アメコミ風ドット(網点・大)</option>
+                <option value="white">無地ホワイト</option>
+                <option value="sunburst">⚡ 爆発サンバースト(放射)</option>
+                <option value="neongrid">🔮 ネオン・サイバー方眼</option>
+                <option value="notebook">ノートの罫線</option>
+                <option value="grid">普通の方眼紙</option>
+                <option value="dark">漆黒（ダークモード用）</option>
+            </select>
+        </div>
+
+        <div class="btn-container">
+            <div class="btn-row">
+                <button id="startBtn" class="btn-main">🎨 描く</button>
+                <button id="randomBtn" class="btn-warning">🎲 SHIFT</button>
+            </div>
+            <div class="btn-row">
+                <button id="saveBtn" class="btn-success">💾 保存</button>
+                <button id="modeBtn" class="btn-secondary">🌙 輝く</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="view-screen">
+        <canvas id="artCanvas" width="800" height="450"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('artCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const screenSizeSelect = document.getElementById('screenSizeSelect');
+        const textInput = document.getElementById('textInput');
+        const fontSelect = document.getElementById('fontSelect');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const weightSelect = document.getElementById('weightSelect');
+        const strokeColorSelect = document.getElementById('strokeColorSelect'); // 🚀 カラー要素取得
+        const paletteSelect = document.getElementById('paletteSelect');
+        const bgSelect = document.getElementById('bgSelect');
+        const startBtn = document.getElementById('startBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const modeBtn = document.getElementById('modeBtn');
+
+        let isNeonGlowMode = false; 
+
+        const palettes = {
+            original: ['rgba(255, 0, 127, 0.55)', 'rgba(255, 235, 0, 0.55)', 'rgba(0, 210, 255, 0.5)'],
+            neon: ['rgba(255, 0, 255, 0.5)', 'rgba(0, 255, 255, 0.5)', 'rgba(50, 255, 50, 0.5)'],
+            pastel: ['rgba(255, 182, 193, 0.8)', 'rgba(255, 253, 208, 0.8)', 'rgba(176, 224, 230, 0.8)'],
+            sunset: ['rgba(255, 69, 0, 0.75)', 'rgba(255, 140, 0, 0.75)', 'rgba(255, 215, 0, 0.75)'],
+            monochrome: ['rgba(120, 120, 120, 0.7)', 'rgba(170, 170, 170, 0.7)', 'rgba(210, 210, 210, 0.7)']
+        };
+
+        let animationFrameId = null;
+
+        // 🚀 画面サイズリサイズ処理
+        function resizeCanvas() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            const sizeType = screenSizeSelect.value;
+            if (sizeType === 'square') {
+                canvas.width = 550; canvas.height = 550;
+            } else {
+                canvas.width = 800; canvas.height = 450;
+            }
+            drawScene();
+        }
+
+        function drawBackground() {
+            const bgType = bgSelect.value;
+            ctx.restore(); ctx.save(); 
+            
+            if (bgType === 'white') {
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (bgType === 'dark') {
+                ctx.fillStyle = '#111315'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (bgType === 'notebook') {
+                ctx.fillStyle = '#fcfbfa'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+                for (let y = 30; y < canvas.height; y += 25) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+                ctx.strokeStyle = 'rgba(255, 100, 100, 0.4)'; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(80, 0); ctx.lineTo(80, canvas.height); ctx.stroke();
+            } else if (bgType === 'grid') {
+                ctx.fillStyle = '#fafafa'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#edf2f7'; ctx.lineWidth = 1;
+                for (let x = 20; x < canvas.width; x += 20) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for (let y = 20; y < canvas.height; y += 20) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+            } else if (bgType === 'dots') {
+                ctx.fillStyle = isNeonGlowMode ? '#15171c' : '#fdfdfd'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = isNeonGlowMode ? 'rgba(255,255,255,0.08)' : 'rgba(0, 0, 0, 0.05)';
+                const radius = 5.5; 
+                const gap = 28;     
+                for (let x = gap / 2; x < canvas.width; x += gap) {
+                    for (let y = gap / 2; y < canvas.height; y += gap) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            } else if (bgType === 'sunburst') {
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+                ctx.fillStyle = isNeonGlowMode ? '#15171c' : '#ffffff'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = isNeonGlowMode ? 'rgba(255, 255, 255, 0.025)' : 'rgba(0, 0, 0, 0.025)';
+                const rays = 36; 
+                const angleStep = (Math.PI * 2) / rays;
+                
+                for (let i = 0; i < rays; i += 2) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, Math.max(canvas.width, canvas.height) * 1.2, i * angleStep, (i + 1) * angleStep);
+                    ctx.lineTo(cx, cy);
+                    ctx.fill();
+                }
+            } else if (bgType === 'neongrid') {
+                ctx.fillStyle = '#0d0f12'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = 'rgba(0, 210, 255, 0.15)'; ctx.lineWidth = 1;
+                ctx.shadowBlur = 4; ctx.shadowColor = 'rgba(0, 210, 255, 0.5)';
+                for (let x = 30; x < canvas.width; x += 30) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for (let y = 30; y < canvas.height; y += 30) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+                ctx.shadowBlur = 0; 
+            }
+        }
+
+        function drawMarkerText(line, x, y, color, progress) {
+            ctx.fillStyle = color;
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 0, canvas.width * progress, canvas.height);
+            ctx.clip();
+
+            ctx.fillText(line, x, y);
+
+            ctx.save();
+            ctx.globalAlpha = 0.15;
+            ctx.fillText(line, x, y + 0.5);
+            ctx.fillText(line, x, y - 0.5);
+            if (progress > 0.02) {
+                ctx.globalAlpha = 0.05;
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = color;
+                ctx.fillText(line, x, y);
+            }
+            ctx.restore();
+            ctx.restore();
+        }
+
+        function drawMultiLineText(lines, font, fontSize, color, isStroke, strokeWidth, xOffset, yOffset, progress, currentPhase, currentLayerIndex, strokeStartTime, elapsed, durationPerPhase) {
+            ctx.font = `italic ${fontSize}px ${font}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const lineHeight = fontSize * 0.95; 
+            const totalHeight = lineHeight * (lines.length - 1);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            lines.forEach((line, index) => {
+                const x = centerX + xOffset;
+                const y = centerY + yOffset - (totalHeight / 2) + (index * lineHeight);
+
+                if (isStroke) {
+                    // 🚀 縁取り無し(none)が選ばれている場合はフチをスキップ
+                    if (strokeColorSelect.value === 'none') return;
+
+                    ctx.strokeStyle = strokeColorSelect.value;
+                    ctx.lineWidth = strokeWidth;
+                    ctx.lineJoin = 'round';
+                    ctx.lineCap = 'round';
+
+                    // 輝くモードの場合はうっすらと白や指定色の発光をプラス
+                    if (isNeonGlowMode) {
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = strokeColorSelect.value;
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
+
+                    const strokeEndTime = strokeStartTime + durationPerPhase;
+                    if (elapsed >= strokeEndTime) {
+                        ctx.strokeText(line, x, y);
+                    } else if (elapsed >= strokeStartTime) {
+                        const prog = (elapsed - strokeStartTime) / durationPerPhase;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.rect(0, 0, canvas.width * prog, canvas.height);
+                        ctx.clip();
+                        ctx.strokeText(line, x, y);
+                        ctx.restore();
+                    }
+                } else {
+                    if (currentPhase > currentLayerIndex) {
+                        drawMarkerText(line, x, y, color, 1.0);
+                    } else if (currentPhase === currentLayerIndex) {
+                        drawMarkerText(line, x, y, color, progress);
+                    }
+                }
+            });
+        }
+
+        function drawScene() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            
+            const rawText = textInput.value || "GLITCH ARTIST";
+            const lines = rawText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            if (lines.length === 0) return;
+
+            const font = fontSelect.value;
+            const strokeWidth = parseFloat(weightSelect.value);
+            const selectedPalette = palettes[paletteSelect.value];
+
+            const sizeMode = sizeSelect.value;
+            let baseFontSize = lines.length > 1 ? 80 : 105; 
+            
+            if (sizeMode === 'normal') {
+                baseFontSize = lines.length > 1 ? 110 : 145; 
+            } else if (sizeMode === 'huge') {
+                baseFontSize = lines.length > 1 ? 140 : 185; 
+            }
+
+            let fontSize = baseFontSize;
+            ctx.font = `italic ${fontSize}px ${font}`;
+            let maxWidth = 0;
+            lines.forEach(line => { maxWidth = Math.max(maxWidth, ctx.measureText(line).width); });
+            let totalHeight = (fontSize * 0.95) * lines.length;
+            
+            while ((maxWidth > canvas.width - 80 || totalHeight > canvas.height - 60) && fontSize > 20) {
+                fontSize -= 3;
+                ctx.font = `italic ${fontSize}px ${font}`;
+                maxWidth = 0;
+                lines.forEach(line => { maxWidth = Math.max(maxWidth, ctx.measureText(line).width); });
+                totalHeight = (fontSize * 0.95) * lines.length;
+            }
+
+            const maxShift = fontSize * 0.35; 
+            const minShift = fontSize * 0.15; 
+
+            const offset1 = { x: 0, y: 0 };
+
+            const dirX2 = Math.random() > 0.5 ? 1 : -1;
+            const dirY2 = Math.random() > 0.5 ? 1 : -1;
+            const shiftRange = maxShift - minShift;
+            const offset2 = {
+                x: (minShift + Math.random() * shiftRange) * dirX2,
+                y: (minShift + Math.random() * shiftRange) * dirY2
+            };
+
+            const dirX3 = -dirX2; 
+            const dirY3 = -dirY2; 
+            const offset3 = {
+                x: (minShift + Math.random() * shiftRange) * dirX3,
+                y: (minShift + Math.random() * shiftRange) * dirY3
+            };
+
+            const generatedOffsets = [offset1, offset2, offset3];
+
+            let startTime = null;
+            const durationPerPhase = 1400; 
+            const colorLayersCount = selectedPalette.length;
+
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+
+                drawBackground();
+
+                const currentPhase = Math.floor(elapsed / durationPerPhase);
+                const phaseElapsed = elapsed % durationPerPhase;
+                const progress = Math.min(phaseElapsed / durationPerPhase, 1);
+
+                ctx.globalCompositeOperation = (isNeonGlowMode || bgSelect.value === 'neongrid') ? 'screen' : 'multiply'; 
+                
+                for (let i = 0; i < colorLayersCount; i++) {
+                    const layerTargetTime = i * durationPerPhase;
+                    if (elapsed >= layerTargetTime) {
+                        let drawColor = selectedPalette[i];
+                        if (isNeonGlowMode || bgSelect.value === 'neongrid') {
+                            ctx.shadowBlur = 15;
+                            ctx.shadowColor = drawColor.replace('0.55', '0.9').replace('0.45', '0.9').replace('0.5', '0.9');
+                        } else {
+                            ctx.shadowBlur = 0;
+                        }
+                        drawMultiLineText(lines, font, fontSize, drawColor, false, 0, generatedOffsets[i].x, generatedOffsets[i].y, progress, currentPhase, i, 0, elapsed, durationPerPhase);
+                    }
+                }
+
+                ctx.globalCompositeOperation = 'source-over';
+                const strokeStartTime = colorLayersCount * durationPerPhase;
+                const strokeEndTime = strokeStartTime + durationPerPhase;
+
+                if (elapsed >= strokeStartTime) {
+                    drawMultiLineText(lines, font, fontSize, null, true, strokeWidth, generatedOffsets[0].x, generatedOffsets[0].y, progress, currentPhase, 0, strokeStartTime, elapsed, durationPerPhase);
+                }
+
+                if (elapsed >= strokeEndTime) {
+                    ctx.shadowBlur = 0; 
+                    return; 
+                }
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // 🎲 SHIFT ボタン (ランダム切り替え)
+        randomBtn.addEventListener('click', () => {
+            fontSelect.selectedIndex = Math.floor(Math.random() * fontSelect.options.length);
+            sizeSelect.selectedIndex = Math.floor(Math.random() * sizeSelect.options.length); 
+            weightSelect.selectedIndex = Math.floor(Math.random() * weightSelect.options.length);
+            strokeColorSelect.selectedIndex = Math.floor(Math.random() * strokeColorSelect.options.length); // 🚀 フチ色もシャッフル
+            paletteSelect.selectedIndex = Math.floor(Math.random() * paletteSelect.options.length);
+            bgSelect.selectedIndex = Math.floor(Math.random() * bgSelect.options.length);
+            if (bgSelect.value === 'neongrid' || bgSelect.value === 'dark') {
+                isNeonGlowMode = true; modeBtn.innerText = '☀️ 通常';
+                document.body.classList.add('dark-mode-body');
+            }
+            drawScene();
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `glitch-artist-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        modeBtn.addEventListener('click', () => {
+            isNeonGlowMode = !isNeonGlowMode;
+            if (isNeonGlowMode) {
+                modeBtn.innerText = '☀️ 通常'; bgSelect.value = 'dark';
+                document.body.classList.add('dark-mode-body');
+            } else {
+                modeBtn.innerText = '🌙 輝く'; bgSelect.value = 'dots';
+                document.body.classList.remove('dark-mode-body');
+            }
+            drawScene();
+        });
+
+        screenSizeSelect.addEventListener('change', resizeCanvas); // 🚀 サイズ切り替えトリガー
+        sizeSelect.addEventListener('change', drawScene);
+        fontSelect.addEventListener('change', drawScene);
+        weightSelect.addEventListener('change', drawScene);
+        strokeColorSelect.addEventListener('change', drawScene); // 🚀 カラー変更即時反映
+        paletteSelect.addEventListener('change', drawScene);
+        bgSelect.addEventListener('change', drawScene);
+
+        startBtn.addEventListener('click', drawScene);
+        document.fonts.ready.then(() => { drawScene(); });
+    </script>
+</body>
+</html>
