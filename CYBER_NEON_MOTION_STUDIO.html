@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER NEON: MOTION PERFECT STUDIO - VIDEO EXPORTER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #07080a;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        h1.logo {
+            font-family: 'Bangers', cursive;
+            font-size: 38px;
+            letter-spacing: 3px;
+            margin: 0 0 15px 0;
+            color: #fff;
+            text-shadow: 0 0 10px #ff007f, 0 0 20px #00d2ff;
+        }
+        
+        .studio-container {
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            max-width: 1450px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .controls-vertical {
+            background: #121519;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 500px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            border: 1px solid #20252d;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #8c96a4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        select, input[type="range"], textarea {
+            padding: 8px 10px;
+            font-size: 13px;
+            border: 2px solid #252b35;
+            border-radius: 6px;
+            background: #090b0e;
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        textarea {
+            height: 55px;
+            resize: none;
+        }
+        select:focus, textarea:focus {
+            border-color: #ff007f;
+        }
+        
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .range-val {
+            font-size: 12px;
+            color: #00d2ff;
+            min-width: 25px;
+            text-align: right;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+        button {
+            padding: 10px;
+            font-size: 13px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, background 0.2s, box-shadow 0.2s;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            flex: 1;
+        }
+        button:active { transform: scale(0.96); }
+        .btn-main { background-color: #00d2ff; color: #000; }
+        .btn-main:hover { background-color: #00b8e0; box-shadow: 0 0 15px rgba(0,210,255,0.3); }
+        
+        /* 🎬 動画書き出しボタン用スタイル */
+        .btn-export { background-color: #ff007f; color: #fff; }
+        .btn-export:hover { background-color: #e60072; box-shadow: 0 0 15px rgba(255,0,127,0.5); }
+        
+        .btn-random { background-color: #a855f7; color: #fff; }
+        .btn-random:hover { background-color: #9333ea; }
+        .btn-clear { background-color: #343a40; }
+        .btn-clear:hover { background-color: #23272b; }
+
+        .view-screen-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: auto;
+        }
+
+        .view-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            border: 1px solid #16191d;
+        }
+
+        canvas {
+            display: block;
+            border-radius: 8px;
+            background-color: #000000;
+        }
+
+        .timer-bar-container {
+            background: #121519;
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #20252d;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .timer-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-family: monospace;
+            color: #00d2ff;
+        }
+        .progress-bg {
+            background: #090b0e;
+            height: 6px;
+            border-radius: 3px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #ff007f, #00d2ff);
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 8px #00d2ff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="logo">⚡ CYBER NEON: STUDIO PRO & EXPORTER ⚡</h1>
+
+    <div class="studio-container">
+        <div class="controls-vertical">
+            <div class="controls-grid">
+                
+                <div class="control-group full-width">
+                    <label for="motionModeSelect">🌀 モーションエフェクト（演出モード）</label>
+                    <select id="motionModeSelect" style="border-color: #00d2ff; font-weight: bold;">
+                        <option value="tunnel" selected>▲ 3D TUNNEL（奥行き吸い込み）</option>
+                        <option value="side">➡️ SIDE STREAM（サイド流動）</option>
+                        <option value="vortex">🌀 COSMIC VORTEX（★とハートの光の渦）</option>
+                        <option value="wordWhirl">🔤 WORD TYPO-WHIRL（単語テキストの列渦）</option>
+                    </select>
+                </div>
+
+                <div class="control-group full-width">
+                    <label for="textInput">テキスト（改行 or スペース区切り ※タイポ渦モード用）</label>
+                    <textarea id="textInput">CYBER PUNK NEON ART TOKYO SHIBUYA EMOTIONAL GLITCH MATRIX VJ MOTION DIGITAL SENSATION PERFECT FUTURE FAST TRACK</textarea>
+                </div>
+
+                <div class="control-group">
+                    <label for="screenSizeSelect">📐 画面サイズ（比率）</label>
+                    <select id="screenSizeSelect">
+                        <option value="vertical" selected>🎵 縦型 (9:16)</option>
+                        <option value="square">🟩 真四角 (1:1)</option>
+                        <option value="horizontal">📺 横型 (16:9)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="timeLimitSelect">⏱️ タイムリミット設定</label>
+                    <select id="timeLimitSelect">
+                        <option value="10" selected>10 秒 (お勧め書き出し)</option>
+                        <option value="15">15 秒</option>
+                        <option value="30">30 秒</option>
+                        <option value="45">45 秒</option>
+                        <option value="60">1 分 (60秒)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="colorModeSelect">🎨 カラーテーマ</label>
+                    <select id="colorModeSelect">
+                        <option value="cyber" selected>🔮 サイバー（ピンク×ブルー）</option>
+                        <option value="rainbow">🌈 ネオンレインボー</option>
+                        <option value="emerald">🟢 エメラルドマトリクス</option>
+                        <option value="gold">💛 ラグジュアリーゴールド</option>
+                        <option value="monochrome">⛓️ 鈍色のメタルグレー</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="glowSelect">✨ グロー（輝き）の強さ</label>
+                    <select id="glowSelect">
+                        <option value="25" selected>超爆光（サイバーブルーム）</option>
+                        <option value="12">通常ネオン</option>
+                        <option value="0">発光なし</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="shapeSelect">🔷 幾何学ベース形状（トンネル・サイド用）</label>
+                    <select id="shapeSelect">
+                        <option value="triangle" selected>▲ トライアングル</option>
+                        <option value="square">■ スクエア</option>
+                        <option value="circle">● サークル</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSelect">🔤 フォント（タイポ渦用）</label>
+                    <select id="fontSelect">
+                        <option value="'Dela Gothic One', sans-serif" selected>デラゴシック</option>
+                        <option value="Impact, sans-serif">Impact (硬派)</option>
+                        <option value="'Arial Black', sans-serif">Arial Black</option>
+                    </select>
+                </div>
+
+                <div class="control-group full-width">
+                    <label for="speedRange">🚀 モーションスピード</label>
+                    <div class="range-container">
+                        <input id="speedRange" type="range" min="1" max="10" value="4" step="0.5">
+                        <span id="speedVal" class="range-val">4</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="btn-container">
+                <button id="exportVideoBtn" class="btn-export">🎬 指定秒数で動画を書き出す (.webm)</button>
+                <div class="btn-row">
+                    <button id="startBtn" class="btn-main">▶ プレビュー再生</button>
+                    <button id="randomBtn" class="btn-random">🎲 シャッフル</button>
+                </div>
+                <button id="clearBtn" class="btn-clear">⏸️ 一時停止 / リセット</button>
+            </div>
+        </div>
+
+        <div class="view-screen-wrapper">
+            <div class="view-screen">
+                <canvas id="neonCanvas" width="450" height="800"></canvas>
+            </div>
+            
+            <div class="timer-bar-container">
+                <div class="timer-info">
+                    <span id="timerStatus">READY</span>
+                    <span id="timerClock">00:00.00 / 00:10.00</span>
+                </div>
+                <div class="progress-bg">
+                    <div id="progressBar" class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('neonCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // UI設定
+        const motionModeSelect = document.getElementById('motionModeSelect');
+        const textInput = document.getElementById('textInput');
+        const screenSizeSelect = document.getElementById('screenSizeSelect');
+        const timeLimitSelect = document.getElementById('timeLimitSelect');
+        const colorModeSelect = document.getElementById('colorModeSelect');
+        const glowSelect = document.getElementById('glowSelect');
+        const shapeSelect = document.getElementById('shapeSelect');
+        const fontSelect = document.getElementById('fontSelect');
+        const speedRange = document.getElementById('speedRange');
+        const speedVal = document.getElementById('speedVal');
+        const startBtn = document.getElementById('startBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exportVideoBtn = document.getElementById('exportVideoBtn');
+        
+        // タイマーUI
+        const timerStatus = document.getElementById('timerStatus');
+        const timerClock = document.getElementById('timerClock');
+        const progressBar = document.getElementById('progressBar');
+
+        // アニメーション・時間管理フラグ
+        let animationId = null;
+        let isPlaying = false;
+        let startTime = 0;
+        let elapsedMilli = 0; 
+        let internalFrame = 0;
+
+        // 🎬 録画（MediaRecorder）用変数
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        // モーション用オブジェクト配列
+        let items = [];
+        let parsedWords = [];
+
+        const cyberColors = ['#ff007f', '#00d2ff'];
+        const goldColors = ['#fff3a8', '#ffd700', '#cca100'];
+
+        function resizeCanvas() {
+            const sizeType = screenSizeSelect.value;
+            if (sizeType === 'vertical') {
+                canvas.width = 450; canvas.height = 800;
+            } else if (sizeType === 'square') {
+                canvas.width = 800; canvas.height = 800;
+            } else {
+                canvas.width = 850; canvas.height = 480;
+            }
+            initSimulation();
+        }
+
+        function formatTime(milli) {
+            const totalSec = milli / 1000;
+            const m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+            const s = Math.floor(totalSec % 60).toString().padStart(2, '0');
+            const f = Math.floor((milli % 1000) / 10).toString().padStart(2, '0');
+            return `${m}:${s}.${f}`;
+        }
+
+        function initSimulation() {
+            items = [];
+            internalFrame = 0;
+            
+            const mode = motionModeSelect.value;
+            const rawText = textInput.value;
+            parsedWords = rawText.split(/[\n\s]+/).map(w => w.trim()).filter(w => w.length > 0);
+            if(parsedWords.length === 0) parsedWords = ["NEON"];
+
+            if (mode === 'tunnel') {
+                for(let i = 0; i < 12; i++) items.push({ z: i / 12, seed: Math.random() });
+            } else if (mode === 'side') {
+                for(let i = 0; i < 16; i++) {
+                    items.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        z: Math.random(),
+                        speedFactor: Math.random() * 0.5 + 0.5
+                    });
+                }
+            } else if (mode === 'vortex') {
+                for(let i = 0; i < 80; i++) {
+                    items.push({
+                        angle: Math.random() * Math.PI * 2,
+                        radius: Math.random() * Math.max(canvas.width, canvas.height),
+                        z: Math.random(),
+                        type: Math.random() > 0.5 ? 'star' : 'heart',
+                        size: Math.random() * 12 + 6,
+                        rotSpeed: (Math.random() - 0.5) * 0.04
+                    });
+                }
+            } else if (mode === 'wordWhirl') {
+                for(let i = 0; i < 45; i++) {
+                    items.push({
+                        wordIndex: i % parsedWords.length,
+                        angleOffset: (i * 0.28),
+                        z: 1 - (i * 0.022) 
+                    });
+                }
+            }
+            updateTimerUI(0);
+        }
+
+        function updateTimerUI(milli) {
+            const limitSec = parseInt(timeLimitSelect.value);
+            const limitMilli = limitSec * 1000;
+            timerClock.textContent = `${formatTime(milli)} / ${formatTime(limitMilli)}`;
+            progressBar.style.width = `${(milli / limitMilli) * 100}%`;
+        }
+
+        function project3D(x3d, y3d, z) {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const scale = 1 / (1 - z * 0.96 + 0.04);
+            return { x: cx + x3d * scale, y: cy + y3d * scale, scale: scale };
+        }
+
+        function getNeonColor(mode, index, t) {
+            const hue = (index * 25 + t * 0.4) % 360;
+            if (mode === 'cyber') return cyberColors[index % cyberColors.length];
+            if (mode === 'rainbow') return `hsl(${hue}, 100%, 60%)`;
+            if (mode === 'emerald') return `hsl(145, 100%, ${50 + Math.sin(index + t*0.05)*15}%)`;
+            if (mode === 'gold') return goldColors[index % goldColors.length];
+            return `hsl(210, 10%, ${45 + (index % 3) * 20}%)`;
+        }
+
+        function drawStar(x, y, r, p, m) {
+            ctx.beginPath(); ctx.moveTo(x, y - r);
+            for (let i = 0; i < p; i++) {
+                ctx.rotate(Math.PI / p); ctx.lineTo(x, y - (r * m));
+                ctx.rotate(Math.PI / p); ctx.lineTo(x, y - r);
+            }
+            ctx.closePath(); ctx.stroke();
+        }
+
+        function drawHeart(x, y, size) {
+            ctx.beginPath(); ctx.moveTo(x, y + size / 4);
+            ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size * 0.9);
+            ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y + size / 4);
+            ctx.closePath(); ctx.stroke();
+        }
+
+        // メイン描画・計算処理
+        function renderLoop(timestamp) {
+            if (!startTime) startTime = timestamp;
+            
+            elapsedMilli = timestamp - startTime;
+            const limitSec = parseInt(timeLimitSelect.value);
+            const limitMilli = limitSec * 1000;
+
+            if (elapsedMilli >= limitMilli) {
+                elapsedMilli = limitMilli;
+                isPlaying = false;
+                updateTimerUI(limitMilli);
+                
+                // 🎬 もし録画中ならここで自動ストップして書き出す
+                if (isRecording) {
+                    stopRecordingAndDownload();
+                } else {
+                    timerStatus.textContent = "FINISHED";
+                    timerStatus.style.color = "#ff007f";
+                }
+                cancelAnimationFrame(animationId);
+                return;
+            }
+
+            updateTimerUI(elapsedMilli);
+            internalFrame++;
+            drawScene();
+
+            if (isPlaying) {
+                animationId = requestAnimationFrame(renderLoop);
+            }
+        }
+
+        function drawScene() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const mode = motionModeSelect.value;
+            const colorMode = colorModeSelect.value;
+            const glowStrength = parseInt(glowSelect.value);
+            const speed = parseFloat(speedRange.value) * 0.0035;
+            const shape = shapeSelect.value;
+
+            ctx.shadowBlur = glowStrength;
+            ctx.globalCompositeOperation = 'screen';
+
+            if (mode === 'tunnel') {
+                items.sort((a,b) => a.z - b.z);
+                items.forEach((ring, idx) => {
+                    if (isPlaying) {
+                        ring.z += speed; if (ring.z >= 1) ring.z = 0;
+                    }
+                    const col = getNeonColor(colorMode, idx, internalFrame);
+                    ctx.strokeStyle = col; ctx.shadowColor = col;
+                    ctx.lineWidth = 1 + ring.z * 5;
+                    ctx.globalAlpha = 0.2 + ring.z * 0.8;
+
+                    const bw = canvas.width * 0.38; const bh = canvas.height * 0.22;
+
+                    if (shape === 'triangle') {
+                        const pt = project3D(0, -bh*1.4, ring.z); const pl = project3D(-bw, bh, ring.z); const pr = project3D(bw, bh, ring.z);
+                        ctx.beginPath(); ctx.moveTo(pt.x, pt.y); ctx.lineTo(pl.x, pl.y); ctx.lineTo(pr.x, pr.y); ctx.closePath(); ctx.stroke();
+                        ctx.fillStyle = '#fff'; ctx.shadowColor = '#fff';
+                        [pt, pl, pr].forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 2 + ring.z * 4, 0, Math.PI*2); ctx.fill(); });
+                    } else if (shape === 'square') {
+                        const ptl = project3D(-bw, -bh, ring.z); const ptr = project3D(bw, -bh, ring.z);
+                        const pbl = project3D(-bw, bh, ring.z); const pbr = project3D(bw, bh, ring.z);
+                        ctx.beginPath(); ctx.moveTo(ptl.x, ptl.y); ctx.lineTo(ptr.x, ptr.y); ctx.lineTo(pbr.x, pbr.y); ctx.lineTo(pbl.x, pbl.y); ctx.closePath(); ctx.stroke();
+                    } else {
+                        const cpt = project3D(0,0, ring.z); const rpt = project3D(bw, 0, ring.z);
+                        ctx.beginPath(); ctx.arc(cpt.x, cpt.y, Math.abs(rpt.x - cpt.x), 0, Math.PI*2); ctx.stroke();
+                    }
+                });
+
+            } else if (mode === 'side') {
+                items.forEach((item, idx) => {
+                    if (isPlaying) {
+                        item.x += speed * 400 * item.speedFactor;
+                        if (item.x > canvas.width + 100) { item.x = -100; item.y = Math.random() * canvas.height; }
+                    }
+                    const col = getNeonColor(colorMode, idx, internalFrame);
+                    ctx.strokeStyle = col; ctx.shadowColor = col; ctx.lineWidth = 2 + item.z * 4;
+                    const size = (30 + item.z * 60);
+                    ctx.save(); ctx.translate(item.x, item.y);
+                    if(shape === 'triangle') {
+                        ctx.beginPath(); ctx.moveTo(0, -size/2); ctx.lineTo(-size/2, size/2); ctx.lineTo(size/2, size/2); ctx.closePath(); ctx.stroke();
+                    } else if(shape === 'square') {
+                        ctx.strokeRect(-size/2, -size/2, size, size);
+                    } else {
+                        ctx.beginPath(); ctx.arc(0,0, size/2, 0, Math.PI*2); ctx.stroke();
+                    }
+                    ctx.restore();
+                });
+
+            } else if (mode === 'vortex') {
+                items.sort((a,b) => a.z - b.z);
+                items.forEach((part, idx) => {
+                    if (isPlaying) {
+                        part.z += speed * 0.8; part.angle += part.rotSpeed + (speed * 0.5);
+                        if (part.z >= 1) { part.z = 0; part.radius = Math.random() * Math.max(canvas.width, canvas.height); }
+                    }
+                    const currentRadius = part.radius * part.z;
+                    const x3d = Math.cos(part.angle) * currentRadius; const y3d = Math.sin(part.angle) * currentRadius;
+                    const pt = project3D(x3d, y3d, part.z);
+                    const col = getNeonColor(colorMode, idx, internalFrame);
+                    ctx.strokeStyle = col; ctx.shadowColor = col; ctx.lineWidth = 1.5 + part.z * 4; ctx.globalAlpha = 0.1 + part.z * 0.9;
+
+                    ctx.save(); ctx.translate(pt.x, pt.y); ctx.rotate(part.angle * 0.5);
+                    if (part.type === 'star') { drawStar(0, 0, part.size * pt.scale * 0.25, 5, 0.4); } 
+                    else { drawHeart(0, 0, part.size * pt.scale * 0.25); }
+                    ctx.restore();
+                });
+
+            } else if (mode === 'wordWhirl') {
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                items.forEach((item, idx) => {
+                    if (isPlaying) {
+                        item.z += speed * 0.9; if (item.z >= 1) item.z = 0.01;
+                    }
+                    const spiralRadius = canvas.width * 0.48 * item.z;
+                    const currentAngle = item.angleOffset + (internalFrame * 0.022); 
+                    const x3d = Math.cos(currentAngle) * spiralRadius; const y3d = Math.sin(currentAngle) * spiralRadius;
+                    const pt = project3D(x3d, y3d, item.z);
+                    const col = getNeonColor(colorMode, idx, internalFrame);
+                    ctx.fillStyle = col; ctx.shadowColor = col; ctx.globalAlpha = 0.1 + item.z * 0.9;
+                    
+                    const dynamicFontSize = Math.max(8, Math.floor(14 * pt.scale * 0.5));
+                    ctx.font = `bold ${dynamicFontSize}px ${fontSelect.value}`;
+
+                    ctx.save(); ctx.translate(pt.x, pt.y); ctx.rotate(currentAngle + Math.PI/2);
+                    ctx.fillText(parsedWords[item.wordIndex], 0, 0); ctx.restore();
+                });
+            }
+
+            ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1.0; ctx.shadowBlur = 0;
+        }
+
+        // 🎬 【超重要】動画の録画・書き出しコアロジック
+        function startRecordingWorkflow() {
+            if (isRecording) return;
+            
+            recordedChunks = [];
+            // Canvasから毎秒60フレームのビデオストリームを取得
+            const stream = canvas.captureStream(60); 
+            
+            // 各ブラウザで対応している最適なビデオコーデックを選択
+            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm;codecs=vp8' };
+            }
+
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+            } catch (e) {
+                alert('このブラウザは動画の書き出し機能に対応していません。ChromeやEdge等をお試しください。');
+                return;
+            }
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                // 録画終了時、結合して即座にダウンロード
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cyber-neon-motion-${Date.now()}.webm`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // 後片付け
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+
+                timerStatus.textContent = "🎬 EXPORTED!";
+                timerStatus.style.color = "#10b981";
+            };
+
+            // 状態をセットしてスタート
+            isRecording = true;
+            isPlaying = true;
+            startTime = 0;
+            timerStatus.textContent = "🎬 RECORDING...";
+            timerStatus.style.color = "#ff007f";
+            
+            initSimulation();
+            mediaRecorder.start(); // 録画開始
+            animationId = requestAnimationFrame(renderLoop); // モーション開始
+        }
+
+        function stopRecordingAndDownload() {
+            if (!isRecording) return;
+            isRecording = false;
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop(); // これにより上の onstop 内の処理がトリガーされます
+            }
+        }
+
+        // コントロールイベント群
+        speedRange.addEventListener('input', () => { speedVal.textContent = speedRange.value; });
+        motionModeSelect.addEventListener('change', initSimulation);
+        screenSizeSelect.addEventListener('change', resizeCanvas);
+        timeLimitSelect.addEventListener('change', () => updateTimerUI(0));
+
+        startBtn.addEventListener('click', () => {
+            if (isPlaying) return;
+            isRecording = false;
+            isPlaying = true;
+            startTime = 0;
+            timerStatus.textContent = "PLAYING";
+            timerStatus.style.color = "#00d2ff";
+            initSimulation();
+            animationId = requestAnimationFrame(renderLoop);
+        });
+
+        // 🎬 書き出しボタンクリック時の発火
+        exportVideoBtn.addEventListener('click', () => {
+            // 一度停止させてから、録画専用フローを開始
+            isPlaying = false;
+            if (animationId) cancelAnimationFrame(animationId);
+            startRecordingWorkflow();
+        });
+
+        randomBtn.addEventListener('click', () => {
+            const randomSelect = (sel) => { sel.selectedIndex = Math.floor(Math.random() * sel.options.length); };
+            randomSelect(motionModeSelect); randomSelect(colorModeSelect); randomSelect(glowSelect);
+            randomSelect(shapeSelect); randomSelect(fontSelect);
+
+            const randSpeed = (Math.random() * 7 + 3).toFixed(1);
+            speedRange.value = randSpeed; speedVal.textContent = randSpeed;
+
+            initSimulation();
+            if(!isPlaying) startBtn.click();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            isRecording = false;
+            isPlaying = false;
+            if (animationId) cancelAnimationFrame(animationId);
+            timerStatus.textContent = "STOPPED";
+            timerStatus.style.color = "#8c96a4";
+            initSimulation();
+        });
+
+        // 初回ロード起動
+        resizeCanvas();
+    </script>
+</body>
+</html>
