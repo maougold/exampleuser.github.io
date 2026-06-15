@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スポーツ新報 - 国際超常現象特別リポート</title>
+    <style>
+        body {
+            font-family: 'Georgia', 'Times New Roman', 'Hiragino Mincho ProN', 'MS P明朝', serif;
+            background-color: #f4f4f0;
+            color: #111;
+            margin: 0;
+            padding: 20px;
+        }
+        .newspaper-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        /* 新聞ヘッダー */
+        header {
+            border-bottom: 5px double #111;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .paper-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-bottom: 1px solid #111;
+            padding-bottom: 5px;
+        }
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            font-family: 'Impact', 'Hiragino Kaku Gothic ProN', sans-serif;
+            margin: 15px 0;
+            letter-spacing: -1px;
+            color: #c00;
+            text-shadow: 1px 1px 0px #000;
+        }
+        
+        /* 【追加】流出スクープ画像エリア */
+        .article-image-box {
+            text-align: center;
+            margin-bottom: 25px;
+            border: 3px solid #111;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+        .article-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .image-caption {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 8px;
+            padding: 5px;
+            background: #eee;
+            border-top: 1px solid #ccc;
+        }
+
+        /* 大見出し */
+        .headline-box {
+            background: #111;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .headline-box h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            line-height: 1.3;
+        }
+        .sub-headline {
+            font-size: 1.5rem;
+            color: #ffcc00;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        /* レイアウト */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
+        /* 記事本文 */
+        article {
+            border-right: 1px solid #ccc;
+            padding-right: 20px;
+        }
+        article p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-indent: 1em;
+            margin-bottom: 15px;
+        }
+        .lead-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #fff8e7;
+            padding: 15px;
+            border-left: 5px solid #c00;
+            text-indent: 0;
+        }
+        /* 世界の反応セクション */
+        .world-section {
+            margin-top: 30px;
+            border-top: 3px solid #111;
+            padding-top: 20px;
+        }
+        .section-title {
+            background: #c00;
+            color: #fff;
+            display: inline-block;
+            padding: 5px 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .country-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .country-grid { grid-template-columns: 1fr; }
+        }
+        .country-card {
+            background: #f9f9f5;
+            padding: 15px;
+            border: 1px dashed #999;
+        }
+        .country-name {
+            font-weight: bold;
+            color: #c00;
+            border-bottom: 1px solid #c00;
+            padding-bottom: 3px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        /* サイドバー */
+        sidebar {
+            background: #f4f4f0;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 2px solid #111;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .poll-box {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .poll-num {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #c00;
+        }
+        .footer-banner {
+            margin-top: 30px;
+            border-top: 1px solid #111;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="newspaper-container">
+
+    <header>
+        <div class="paper-meta">
+            <span>第XXXX号 / 発行所：スポーツ新報</span>
+            <span>【国際・超常現象特別面】</span>
+            <span>2026年6月15日（月）</span>
+        </div>
+        <div class="main-title">スポーツ新報 GLOBAL</div>
+    </header>
+
+    <div class="article-image-box">
+        <img src="Images/UFO_WH.png" alt="ホワイトハウス世界各国の反応リポート" class="article-image">
+        <div class="image-caption">▲ネット上に流出し、世界中で大論争を巻き起こしている『各国の反応まとめマップ』</div>
+    </div>
+
+    <div class="headline-box">
+        <h1>【世界震撼】トランプ氏の「庭園会談」に地球平伏！？<br>全惑星がツッコミ乱発、各国メディアの反応を徹底追跡！</h1>
+        <div class="sub-headline">「アメリカ出し抜かれた」「オタクの聖地化」地球大混乱</div>
+    </div>
+
+    <div class="main-content">
+        
+        <article>
+            <p class="lead-text">
+                ホワイトハウスの庭園で目撃された、ドナルド・トランプ氏と「異星人・セーラー戦士・サイボーグ」による謎の首脳会談。この前代未聞のスクープ画像がネット上に流出するや否や、地球社会はかつてないパニックと爆笑に包まれている。世界各国の政府、メディア、そしてネット民はどう動いたのか！？
+            </p>
+
+            <p>
+                事態を重く見た（？）、あるいは単にお祭り騒ぎに便乗したい世界各国のトップメディアは、一斉にこのニュースを報じた。ホワイトハウスが公式コメントを拒否し、沈黙を深める中、事態は政治問題からサブカルチャー論争へと急速にシフトしている。
+            </p>
+
+            <div class="world-section">
+                <div class="section-title">地球大混乱！ 各国のリアル（？）な反応</div>
+                
+                <div class="country-grid">
+                    <div class="country-card">
+                        <div class="country-name">■ アメリカ（本国）：国家の沈黙にネット民激論</div>
+                        <p style="font-size:0.95rem; text-indent:0;">
+                            ワシントンは沈黙を貫いているが、市民の意見は真っ二つ。「これは次の大統領選に向けた壮大なスタンドプレー（コスプレ大会）だ」という冷ややかな声がある一方、ガチのUFO信者たちは「ついに情報開示（ディスクロージャー）が始まった！」とホワイトハウス周辺に集結し始めている。
+                        </p>
+                    </div>
+
+                    <div class="country-card">
+                        <div class="country-name">■ イギリス：議会で「FBIとの連携」を追及</div>
+                        <p style="font-size:0.95rem; text-indent:0;">
+                            ロンドンでは、伝統あるBBCが「謎の特捜官コンビの同席」に注目。「米国政府がFBIの最高機密であるXファイルを本当に運用していた証拠だ」として、イギリス議会でも「我が国の未確認飛行物体調査班は機能しているのか」と無駄に熱い論争が勃発した。
+                        </p>
+                    </div>
+
+                    <div class="country-card">
+                        <div class="country-name">■ 日本：コミケ・アニメ界隈が「聖地巡礼」を計画</div>
+                        <p style="font-size:0.95rem; text-indent:0;">
+                            東京の秋葉原は大熱狂。「まさか月野うさぎがワシントンで外交をしていたとは」「トランプ氏、推し活の一環か？」とネット上がお祭り騒ぎに。アニメ業界関係者は「次回のコミックマーケットでホワイトハウス風の背景でのコスプレが流行る」と確信している。
+                        </p>
+                    </div>
+
+                    <div class="country-card">
+                        <div class="country-name">■ フランス：これは「文化の盗用」か「前衛芸術」か</div>
+                        <p style="font-size:0.95rem; text-indent:0;">
+                            パリの知識人たちは哲学的な論争を開始。「トランプという存在自体がポストモダンの一種であり、黒衣のアンドロイドとの対話は、現代社会の終焉を表現したアバンギャルド・パフォーマンスである」と、難解なレビューを新聞に寄稿している。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px;">
+                地球外生命体（あるいは未来人）とのファーストコンタクトが、まさかこれほどカラフルでカオスなものになるとは誰が予想しただろうか。全地球が固唾をのんで見守る中、トランプ氏の次の一手に注目が集まる。
+            </p>
+        </article>
+
+        <sidebar>
+            <div class="sidebar-title">世論調査＆データ</div>
+            
+            <div class="poll-box">
+                <p><b>Q. 一番驚いた同席者は？</b></p>
+                <p class="poll-num">48%</p>
+                <p>セーラー戦士団<br><small>（日本での得票率が圧倒的）</small></p>
+                <hr>
+                <p class="poll-num">22%</p>
+                <p>黒衣のAI兵器・美女</p>
+            </div>
+
+            <div class="poll-box" style="background: #fff8e7;">
+                <p><b>【緊急世論調査】<br>画像は本物だと思う？</b></p>
+                <p>・絶対に本物 ── 30%</p>
+                <p>・高度なジョーク ── 50%</p>
+                <p>・トランプ氏の夢 ── 20%</p>
+            </div>
+
+            <div style="text-align: center; font-size: 0.9rem; font-weight: bold; color: #666;">
+                <p>【トレンドワード】</p>
+                <p>#ホワイトハウスの怪<br>#トランプ異星人会談<br>#地球防衛軍シークレットサービス</p>
+            </div>
+        </sidebar>
+
+    </div>
+
+    <div class="footer-banner">
+        ※この記事は完全なるフィクションであり、実在の人物、団体、宇宙防衛組織とは一切関係ありません。続報はたぶんありません。
+    </div>
+
+</div>
+
+</body>
+</html>
