@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ニコニコ風弾幕ジェネレーター（重なり防止・交互ランダム版）</title>
+    <title>ニコニコ風弾幕ジェネレーター（重なり防止・円形拡散強化版）</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
@@ -47,17 +47,18 @@
                 2px -2px 0 #000, -2px 2px 0 #000;
             z-index: 10;
             left: 50%;
+            top: 50%;
             transform: translate(-50%, -50%);
-            animation: fade-and-zoom 2s forwards linear;
+            animation: fade-and-zoom 2s forwards ease-out;
         }
         @keyframes fade-and-zoom {
             0% { 
                 opacity: 0; 
-                transform: translate3d(-50%, -50%, 0) scale(0.8) translate(0, 0); 
+                transform: translate3d(-50%, -50%, 0) scale(0.6) translate(0, 0); 
             }
-            10% { 
+            15% { 
                 opacity: 1; 
-                transform: translate3d(-50%, -50%, 0) scale(1) translate(0, 0); 
+                transform: translate3d(-50%, -50%, 0) scale(1.1) translate(calc(var(--dx) * 0.3), calc(var(--dy) * 0.3)); 
             }
             90% { 
                 opacity: 1; 
@@ -170,14 +171,10 @@
 
         const videoArea = document.getElementById('video-area');
         
-        /* 
-           レーン数を12→8に変更し、文字上下の安全マージンを広く確保。
-           巨大文字（60px）も被りにくくしています。
-        */
         const NUM_LANES = 8; 
-        const MARGIN_Y = 40; // 上下の安全端マージン(px)
+        const MARGIN_Y = 40; 
         let activeTimers = [];
-        let lastLaneIndex = -1; // 前回のレーン保持用変数
+        let lastLaneIndex = -1;
 
         const gachaLongBtn = document.getElementById('gacha-long-btn');
         const gachaShortBtn = document.getElementById('gacha-short-btn');
@@ -224,26 +221,21 @@
         }
         bulkTextarea.addEventListener('input', updateLineCount);
 
-        // 安全マージンを加味してレーンのY座標を均等計算
         function getLaneY(lane) {
             const usableHeight = videoArea.offsetHeight - (MARGIN_Y * 2);
             const step = usableHeight / (NUM_LANES - 1);
             return MARGIN_Y + (lane * step);
         }
 
-        // 前の文字が下なら上、上なら下へと「交互にランダム」レーンを選択する関数
         function getNextAlternatingLane() {
             const halfLanes = Math.floor(NUM_LANES / 2);
             let nextLane;
 
             if (lastLaneIndex === -1) {
-                // 初回は完全ランダム
                 nextLane = Math.floor(Math.random() * NUM_LANES);
             } else if (lastLaneIndex < halfLanes) {
-                // 直前が「上半分」にいた場合 ➔ 次は「下半分」からランダム選出
                 nextLane = halfLanes + Math.floor(Math.random() * (NUM_LANES - halfLanes));
             } else {
-                // 直前が「下半分」にいた場合 ➔ 次は「上半分」からランダム選出
                 nextLane = Math.floor(Math.random() * halfLanes);
             }
 
@@ -259,17 +251,19 @@
 
             const isHuge = modeHuge.checked && (index % 10 === 0);
             
+            // 短文の中央円形分散表示の改善（より大きく均等に弾け飛ぶように設定）
             if (modeCenter.checked && text.length <= 15) {
                 const fixedComment = document.createElement('div');
                 fixedComment.className = 'comment-fixed';
                 fixedComment.textContent = text;
                 fixedComment.style.fontFamily = font;
                 fixedComment.style.color = color;
-                fixedComment.style.fontSize = isHuge ? '60px' : '32px';
-                fixedComment.style.top = (videoArea.offsetHeight / 2) + 'px';
+                fixedComment.style.fontSize = isHuge ? '55px' : '30px';
                 
+                // 360度ランダムな方向に配置
                 const angle = Math.random() * Math.PI * 2;
-                const radius = 60 + Math.random() * 80;
+                // 半径を大きめに設定（120px 〜 260px の幅で広範囲へ散乱）
+                const radius = 120 + Math.random() * 140;
                 const dx = Math.cos(angle) * radius;
                 const dy = Math.sin(angle) * radius;
                 
@@ -286,13 +280,11 @@
             comment.textContent = text;
             comment.style.fontFamily = font;
             comment.style.color = color;
-            comment.style.fontSize = isHuge ? '60px' : '28px'; // 文字サイズ調整
+            comment.style.fontSize = isHuge ? '60px' : '28px';
 
             if (modeScatter.checked) {
-                // 完全ランダム分散時も上下の安全マージンを考慮
                 comment.style.top = (MARGIN_Y + Math.random() * (videoArea.offsetHeight - (MARGIN_Y * 2))) + 'px';
             } else {
-                // 交互かつランダムに取得したレーンY座標を指定
                 const lane = getNextAlternatingLane();
                 comment.style.top = getLaneY(lane) + 'px';
             }
