@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ニコニコ風弾幕ジェネレーター（12レーン・クロマキー完全対応版）</title>
+    <title>ニコニコ風弾幕ジェネレーター（重なり防止・交互ランダム版）</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
@@ -34,6 +34,7 @@
                 2px -2px 0 #000, -2px 2px 0 #000;
             z-index: 5;
             will-change: transform;
+            transform: translateY(-50%); /* Y軸の中心点をテキストの中央に合わせる */
         }
         .comment-fixed {
             position: absolute;
@@ -60,7 +61,7 @@
             }
             90% { 
                 opacity: 1; 
-                transform: translate3d(-50%, -50%, 0) scale(1) translate(var(--dx), var(--dy)); /* 円形に移動 */
+                transform: translate3d(-50%, -50%, 0) scale(1) translate(var(--dx), var(--dy)); 
             }
             100% { 
                 opacity: 0; 
@@ -68,20 +69,19 @@
             }
         }
         
-        /* コントロールパネルの修正（widthを100%にして、box-sizingを徹底） */
         #control-panel {
-            width: 100%;                  /* 📄 100vwから100%に修正してはみ出しを防止 */
+            width: 100%;
             max-width: 950px; 
             height: calc(30vh - 30px); 
             min-height: 200px;
             background: rgba(0, 0, 0, 0.95); 
             margin: 10px 0; 
             padding: 12px;
-            box-sizing: border-box;       /* 📄 パディングや枠線を幅計算に含める */
+            box-sizing: border-box;
             border: 1px solid #d4af37;
             display: grid; 
             grid-template-columns: 1.2fr 1.2fr 1.2fr 2fr; 
-            gap: 15px;                    /* 📄 隙間を18pxから15pxに少し詰めてゆとりを持たせました */
+            gap: 15px;
             color: white; 
             font-size: 12px; 
             overflow-y: auto;
@@ -115,7 +115,7 @@
         <div class="panel-section">
             <div class="panel-section-title">✨ 特殊エフェクト設定</div>
             <label class="checkbox-label"><input type="checkbox" id="mode-center"> 📌 短文を中央に円形分散固定</label>
-            <label class="checkbox-label"><input type="checkbox" id="mode-scatter"> 🌍 短文を全体に分散（重なり防止）</label>
+            <label class="checkbox-label"><input type="checkbox" id="mode-scatter"> 🌍 短文を全体に分散（完全ランダム）</label>
             <label class="checkbox-label"><input type="checkbox" id="mode-reverse"> 🔄 弾幕を「左から右」へ逆流</label>
             <label class="checkbox-label"><input type="checkbox" id="mode-huge" checked> 🦖 10個に1個「超巨大文字」</label>
         </div>
@@ -169,8 +169,15 @@
         const shortWords = ["ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!!", "(ﾉ∀`)ｱﾁｬー", "（*´▽｀*）", "(`・ω・´)ｼｬｷｰﾝ", "( ﾟ∀ﾟ)o彡°うおおおおお！", "88888888888", "ブラボー！！👏", "天才かｗｗｗ"];
 
         const videoArea = document.getElementById('video-area');
-        const NUM_LANES = 12;
+        
+        /* 
+           レーン数を12→8に変更し、文字上下の安全マージンを広く確保。
+           巨大文字（60px）も被りにくくしています。
+        */
+        const NUM_LANES = 8; 
+        const MARGIN_Y = 40; // 上下の安全端マージン(px)
         let activeTimers = [];
+        let lastLaneIndex = -1; // 前回のレーン保持用変数
 
         const gachaLongBtn = document.getElementById('gacha-long-btn');
         const gachaShortBtn = document.getElementById('gacha-short-btn');
@@ -217,12 +224,34 @@
         }
         bulkTextarea.addEventListener('input', updateLineCount);
 
+        // 安全マージンを加味してレーンのY座標を均等計算
         function getLaneY(lane) {
-            const laneHeight = videoArea.offsetHeight / (NUM_LANES + 1);
-            return (lane * laneHeight) + (laneHeight / 2);
+            const usableHeight = videoArea.offsetHeight - (MARGIN_Y * 2);
+            const step = usableHeight / (NUM_LANES - 1);
+            return MARGIN_Y + (lane * step);
         }
 
-        function triggerComment(text, colorType, speedSec, index, lane) {
+        // 前の文字が下なら上、上なら下へと「交互にランダム」レーンを選択する関数
+        function getNextAlternatingLane() {
+            const halfLanes = Math.floor(NUM_LANES / 2);
+            let nextLane;
+
+            if (lastLaneIndex === -1) {
+                // 初回は完全ランダム
+                nextLane = Math.floor(Math.random() * NUM_LANES);
+            } else if (lastLaneIndex < halfLanes) {
+                // 直前が「上半分」にいた場合 ➔ 次は「下半分」からランダム選出
+                nextLane = halfLanes + Math.floor(Math.random() * (NUM_LANES - halfLanes));
+            } else {
+                // 直前が「下半分」にいた場合 ➔ 次は「上半分」からランダム選出
+                nextLane = Math.floor(Math.random() * halfLanes);
+            }
+
+            lastLaneIndex = nextLane;
+            return nextLane;
+        }
+
+        function triggerComment(text, colorType, speedSec, index) {
             const font = fontSelect.value;
             let color = colorType === 'random' 
                 ? ['#ffffff','#ffff00','#ff0000','#ff00ff','#00ffff','#ff9900'][Math.floor(Math.random()*6)] 
@@ -236,8 +265,8 @@
                 fixedComment.textContent = text;
                 fixedComment.style.fontFamily = font;
                 fixedComment.style.color = color;
-                fixedComment.style.fontSize = isHuge ? '50px' : '28px';
-                fixedComment.style.top = getLaneY(Math.floor(NUM_LANES / 2)) + 'px';
+                fixedComment.style.fontSize = isHuge ? '60px' : '32px';
+                fixedComment.style.top = (videoArea.offsetHeight / 2) + 'px';
                 
                 const angle = Math.random() * Math.PI * 2;
                 const radius = 60 + Math.random() * 80;
@@ -248,7 +277,6 @@
                 fixedComment.style.setProperty('--dy', `${dy}px`);
                 
                 videoArea.appendChild(fixedComment);
-                
                 setTimeout(() => fixedComment.remove(), 2000);
                 return;
             }
@@ -258,11 +286,14 @@
             comment.textContent = text;
             comment.style.fontFamily = font;
             comment.style.color = color;
-            comment.style.fontSize = isHuge ? '48px' : '24px';
+            comment.style.fontSize = isHuge ? '60px' : '28px'; // 文字サイズ調整
 
             if (modeScatter.checked) {
-                comment.style.top = Math.random() * (videoArea.offsetHeight - 50) + 'px';
+                // 完全ランダム分散時も上下の安全マージンを考慮
+                comment.style.top = (MARGIN_Y + Math.random() * (videoArea.offsetHeight - (MARGIN_Y * 2))) + 'px';
             } else {
+                // 交互かつランダムに取得したレーンY座標を指定
+                const lane = getNextAlternatingLane();
                 comment.style.top = getLaneY(lane) + 'px';
             }
 
@@ -289,7 +320,7 @@
                         let currentLeft = isReverse
                             ? startLeft + (areaWidth + commentWidth) * progress
                             : startLeft - (areaWidth + commentWidth) * progress;
-                        comment.style.transform = `translateX(${currentLeft - startLeft}px)`;
+                        comment.style.transform = `translate(${currentLeft - startLeft}px, -50%)`;
                         requestAnimationFrame(animate);
                     } else {
                         comment.remove();
@@ -306,6 +337,7 @@
             statusDisp.textContent = '⏹ 停止中';
             startBtn.style.display = 'block';
             stopBtn.style.display = 'none';
+            lastLaneIndex = -1;
         }
 
         startBtn.addEventListener('click', () => {
@@ -328,12 +360,11 @@
             const intervalTime = (totalDuration * 1000) / comments.length;
 
             comments.forEach((text, index) => {
-                const lane = index % NUM_LANES; 
                 const jitter = (Math.random() - 0.5) * (intervalTime * 0.8);
                 const launchTime = Math.max(0, (index * intervalTime) + jitter);
 
                 const t = setTimeout(() => {
-                    triggerComment(text, colorType, speedSec, index, lane);
+                    triggerComment(text, colorType, speedSec, index);
                 }, launchTime);
                 
                 activeTimers.push(t);
