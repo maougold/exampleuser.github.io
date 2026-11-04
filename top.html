@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィールリンク | Summer Beach Edition</title>
+    <title>プロフィールリンク | Christmas Edition</title>
     <style>
+        :root {
+            --gold: #d4af37;
+            --gold-bright: #fff380;
+            --bg: #05070a;
+        }
+
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
-            /* 夏のきらめく砂浜、ひまわり、澄んだ海をイメージしたグラデーション */
-            background: linear-gradient(-45deg, #fef08a, #7dd3fc, #38bdf8, #0ea5e9, #ccfbf1);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-color: var(--bg);
+            /* 鮮やかなクリスマスレッドとワインレッドの透過グラデーション */
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.4) 0%, rgba(127, 29, 29, 0.85) 100%), #05070a;
             color: #1e293b;
             margin: 0;
             padding: 40px 20px;
@@ -19,60 +24,19 @@
             margin: 0 auto;
             text-align: center;
             position: relative;
+            overflow-x: hidden;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* 夏のクジラパーティクル（巨大化＆超広範囲移動） */
-        .emojis-container {
-            position: fixed; /* 画面全体に対して固定して広範囲を泳がせる */
+        /* ゴージャスなゴールド背景用のCanvas */
+        #gold-matrix {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
+            width: 100%;
+            height: 100%;
             z-index: 0;
-            overflow: hidden;
+            pointer-events: none;
         }
-
-        .emoji-particle {
-            position: absolute;
-            opacity: 0;
-            left: -250px; /* 巨大化したクジラがしっかり隠れる位置からスタート */
-            animation: swimAcross 25s linear infinite;
-        }
-
-        /* 左の画面外から右の画面外まで、上下にゆったり波打ちながら目一杯泳ぐ */
-        @keyframes swimAcross {
-            0% { 
-                left: -250px; 
-                transform: translateY(0px) scaleX(-1); /* 右向き */
-                opacity: 0; 
-            }
-            10% { opacity: 0.28; } /* 文字の邪魔をしない最適な薄さに調整 */
-            90% { opacity: 0.28; }
-            100% { 
-                left: 120vw; /* 画面右外まで突き抜ける */
-                transform: translateY(-40px) scaleX(-1); 
-                opacity: 0; 
-            }
-        }
-
-        /* 各クジラの【超巨大サイズ設定（120px〜200px）】と出現位置・スピードのバラつき */
-        .emoji-particle:nth-child(1) { top: 5%;  font-size: 150px; animation-duration: 28s; animation-delay: 0s; }
-        .emoji-particle:nth-child(2) { top: 15%; font-size: 120px; animation-duration: 22s; animation-delay: 5s; }
-        .emoji-particle:nth-child(3) { top: 25%; font-size: 18px;  display: none; } /* スタイル維持用の予備 */
-        .emoji-particle:nth-child(4) { top: 32%; font-size: 180px; animation-duration: 32s; animation-delay: 2s; }
-        .emoji-particle:nth-child(5) { top: 45%; font-size: 130px; animation-duration: 25s; animation-delay: 11s; }
-        .emoji-particle:nth-child(6) { top: 55%; font-size: 160px; animation-duration: 29s; animation-delay: 7s; }
-        .emoji-particle:nth-child(7) { top: 68%; font-size: 200px; animation-duration: 35s; animation-delay: 14s; } /* 最大サイズ */
-        .emoji-particle:nth-child(8) { top: 78%; font-size: 140px; animation-duration: 24s; animation-delay: 4s; }
-        .emoji-particle:nth-child(9) { top: 88%; font-size: 160px; animation-duration: 30s; animation-delay: 9s; }
-        .emoji-particle:nth-child(10){ top: 12%; font-size: 140px; animation-duration: 26s; animation-delay: 18s; }
 
         .content {
             position: relative;
@@ -86,19 +50,18 @@
             opacity: 0;
             transform: translateY(-30px);
             animation: fadeInDown 1s ease forwards;
-            text-shadow: 2px 4px 10px rgba(14, 165, 233, 0.4);
+            text-shadow: 0 0 15px rgba(254, 240, 138, 0.9), 0 0 30px var(--gold), 2px 4px 10px rgba(0, 0, 0, 0.6);
         }
 
         p {
             font-size: 17px;
             margin-bottom: 20px;
-            color: #334155;
-            text-shadow: none;
+            color: #f8fafc;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
         }
 
-        /* 涼しげなすりガラス風デザイン（白く濃い・角は直角） */
         .section {
-            background-color: rgba(255, 255, 255, 0.92); 
+            background-color: rgba(255, 255, 255, 0.94); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 30px;
@@ -108,15 +71,15 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1.2s ease forwards;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(254, 240, 138, 0.6);
             transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
         }
 
         .section:hover {
-            background-color: rgba(255, 255, 255, 0.97);
+            background-color: rgba(255, 255, 255, 0.98);
             transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.15);
+            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
         }
 
         .section:nth-child(2) { animation-delay: 0.3s; }
@@ -134,37 +97,39 @@
             font-size: 22px;
             margin-top: 0;
             margin-bottom: 18px;
-            color: #ea580c; /* 真夏の太陽のような鮮やかなオレンジ */
+            color: #dc2626;
         }
 
         .section p {
             color: #334155;
+            text-shadow: none;
         }
 
         footer {
             margin-top: 60px;
             font-size: 14px;
-            color: #64748b;
+            color: #fef08a;
             opacity: 0;
             animation: fadeInUp 1s ease forwards 0.9s;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         /* ===== リンクまとめ ===== */
         .link-hub {
-            background-color: rgba(255, 255, 255, 0.94); 
+            background-color: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 36px;
             border-radius: 0px; 
             margin: 60px 0 40px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.06);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border: 1.5px solid rgba(254, 240, 138, 0.7);
             text-align: left;
         }
 
         .link-hub h2 {
             text-align: center;
-            color: #0284c7; /* 深みのあるブルー */
+            color: #dc2626;
             margin-top: 0;
             margin-bottom: 30px;
             font-size: 26px;
@@ -178,10 +143,10 @@
         }
 
         .link-category h3 {
-            color: #0d9488; /* 涼しげなエメラルド・ターコイズ */
+            color: #b91c1c;
             font-size: 18px;
             margin-bottom: 14px;
-            border-bottom: 2px solid rgba(13, 148, 136, 0.2);
+            border-bottom: 2px solid rgba(185, 28, 28, 0.2);
             padding-bottom: 6px;
         }
 
@@ -198,7 +163,7 @@
 
         .link-category a:hover {
             text-decoration: none;
-            color: #0284c7;
+            color: #dc2626;
             transform: translateX(4px);
         }
 
@@ -215,7 +180,7 @@
         }
 
         .badge-pulse {
-            background: linear-gradient(135deg, #f97316, #ea580c);
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
             color: white;
             animation: anim-pulse 2s infinite;
         }
@@ -227,8 +192,8 @@
 
         .badge-outline {
             background: transparent;
-            color: #ea580c;
-            border: 1.5px solid #ea580c;
+            color: #dc2626;
+            border: 1.5px solid #dc2626;
             animation: anim-blink 1.5s infinite;
         }
         @keyframes anim-blink {
@@ -238,18 +203,18 @@
         }
 
         .badge-neon {
-            background: #0d9488;
+            background: #d97706;
             color: white;
             animation: anim-neon 2s infinite;
         }
         @keyframes anim-neon {
-            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(13, 148, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
         }
 
         .badge-shine {
-            background: #38bdf8;
+            background: #2563eb;
             color: white;
             position: relative;
             overflow: hidden;
@@ -259,7 +224,7 @@
             position: absolute;
             top: -50%; left: -150%;
             width: 200%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
             transform: rotate(30deg);
             animation: anim-shine 3s infinite;
         }
@@ -307,6 +272,9 @@
 </head>
 <body>
 
+<!-- ゴールドマトリックス用Canvas -->
+<canvas id="gold-matrix"></canvas>
+
 <a href="dungeon.html" id="hidden-door" title=""></a>
 <style>
     #hidden-door {
@@ -322,17 +290,12 @@
     @keyframes fadeIn { to { opacity: 1; } }
 </style>
 
-<div class="emojis-container">
-    <div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div>
-    <div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div><div class="emoji-particle">🐳</div>
-</div>
-
     <div class="content">
-        <h1>Summer Beach 🐳<br>Elise Vanessa のリンクページへようこそ</h1>
+        <h1>Christmas Edition 🌟<br>Elise Vanessa のリンクページへようこそ</h1>
 
         <p>
             X（@ev0123456789）をご覧いただきありがとうございます。<br>
-            輝く夏の光とともに、新しい視点で世の中を眺めてみませんか？☀️<br>
+            温かなキャンドルの光とともに、新しい視点で世の中を眺めてみませんか？✨<br>
             メディアが語らない出来事や背景を、私なりの視点でまとめています。
         </p>
 
@@ -348,7 +311,7 @@
                3. 投稿文をよくお読みいただき、前後の投稿（スレッド）も併せてご確認いただけると、より文脈が理解しやすいかと思います。<br>
                4. 異なるご意見をお持ちの方も歓迎いたしますが、攻撃的な表現やヘイトスピーチには対応いたしません。<br>
                5. 万一、誤った情報があった場合は訂正いたしますので、丁寧なご指摘をいただければ幸いです。<br>
-           6. ご意見やご感想につきましては、ページ内に「したらば掲示板」のスレッドをご用意しております。フィードバックやご感想がございましたら、ぜひそちらへお寄せいただけますと幸いです。</p>
+               6. ご意見やご感想につきましては、ページ内に「したらば掲示板」のスレッドをご用意しております。フィードバックやご感想がございましたら、ぜひそちらへお寄せいただけますと幸いです。</p>
         </div>
 
 
@@ -357,7 +320,7 @@
 
         <div class="link-grid">
 
-            <div class="link-category" style="background: rgba(13, 148, 136, 0.03); border-left: 4px solid #0d9488; padding-left: 15px; border-radius: 0px;">
+            <div class="link-category" style="background: rgba(220, 38, 38, 0.03); border-left: 4px solid #dc2626; padding-left: 15px; border-radius: 0px;">
                 <h3>📖 文芸・連載小説スレ</h3>
                 <a href="THE_FOUR_KINGS.html">
                     <span class="badge badge-neon"> >>NEW</span> <b>ショートショート『四天王』全6話</b>
@@ -416,7 +379,7 @@
             <div class="link-category">
                 <h3>🏆 祭・バズ投稿ランキング</h3>
                 <a href="posts.html">バズった投稿トップ10（通常版）</a>
-                <a href="SpecialRanking.html">☀️バズった投稿ランキング TOP10</a>
+                <a href="SpecialRanking.html">🎄バズった投稿ランキング TOP10</a>
                 <a href="RANKING_top10_20260555.html">❤️バズった投稿トップ10（2026.05.22.）</a>
                 <a href="RANKING_JAPAN_TV.html">バズった投稿ランキング 日本版</a>
                 <a href="kiseki_a.html">
@@ -499,33 +462,33 @@
 
     <!-- 支援・欲しいものリストセクション -->
     <section id="support" style="
-        border: 2px solid #fde68a; 
+        border: 2px solid #fef08a; 
         padding: 35px 25px; 
         text-align: center; 
         margin: 40px auto; 
         max-width: 700px;
-        background: rgba(255, 255, 255, 0.94); 
+        background: rgba(255, 255, 255, 0.95); 
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border-radius: 0px; 
-        box-shadow: 0 10px 30px rgba(245, 158, 11, 0.15);
+        box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25);
         font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;">
 
-        <h3 style="color: #d97706; margin-top: 0; font-size: 24px; letter-spacing: 1px;">
+        <h3 style="color: #dc2626; margin-top: 0; font-size: 24px; letter-spacing: 1px;">
             🎁 Wishlist / 欲しいものリスト 🎁
         </h3>
 
         <p style="color: #334155; line-height: 1.8; font-size: 15px;">
             日頃のコンテンツ制作や創作活動を温かく応援していただける方は、<br>
             Amazonの欲しいものリストからご支援いただけると大変励みになります！✨<br>
-            <span style="display: block; margin-top: 10px; color: #ea580c; font-weight: bold;">
-                温かいお気持ち・ご支援、いつも本当にありがとうございます！☀️
+            <span style="display: block; margin-top: 10px; color: #dc2626; font-weight: bold;">
+                温かいお気持ち・ご支援、いつも本当にありがとうございます！🌟✨
             </span>
         </p>
 
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
             <a href="https://www.amazon.co.jp/hz/wishlist/ls/204FNL7FFUQPZ" target="_blank" rel="noopener noreferrer" style="
-                background: linear-gradient(45deg, #f59e0b, #d97706); 
+                background: linear-gradient(45deg, #ef4444, #dc2626); 
                 color: white; 
                 padding: 14px 35px; 
                 text-decoration: none; 
@@ -533,7 +496,7 @@
                 font-weight: bold; 
                 font-size: 16px;
                 transition: all 0.3s ease; 
-                box-shadow: 0 4px 15px rgba(217, 119, 6, 0.35);
+                box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
                 display: inline-block;">
                 Amazon 欲しいものリストを見る 📦
             </a>
@@ -541,8 +504,8 @@
     </section>
 
     <footer>
-        <p>ご質問やご意見はXのDMやリプライでどうぞ ✉️<br>最終更新：2026年3月6日 Elise Vanessa [xyz]</p>
-        <p style="font-size: 10px; color: rgba(74, 85, 104, 0.6); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
+        <p>ご質問やご意見はXのDMやリプライでどうぞ ✉️<br>最終更新：2026年12月 Elise Vanessa [xyz]</p>
+        <p style="font-size: 10px; color: rgba(254, 240, 138, 0.8); margin-top: -10px;">左下の隅に隠しボタンがあります。</p>
     </footer>
 
 </div>
@@ -553,7 +516,7 @@
 <style>
     .secret-trigger {
         display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;
-        background: rgba(0, 0, 0, 0.05); color: rgba(0, 0, 0, 0.2); text-decoration: none; border-radius: 0px; 
+        background: rgba(0, 0, 0, 0.05); color: rgba(255, 255, 255, 0.3); text-decoration: none; border-radius: 0px; 
         font-family: 'Courier New', monospace; font-size: 12px; transition: all 0.5s ease; border: 1px solid transparent;
     }
     .secret-trigger:hover { background: rgba(0, 0, 0, 0.8); color: #0f0; border: 1px solid #0f0; box-shadow: 0 0 15px #0f0; transform: scale(1.2); }
@@ -577,7 +540,7 @@
     z-index: 10000;
     font-family: serif;
     font-size: 11px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     padding: 4px 12px;
@@ -588,7 +551,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 ">
     <span onclick="applyTone('none')" style="cursor:pointer; color:#2d3748; font-weight: bold;">標準</span>
-    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#0284c7; font-weight: bold;">ビビッド</span>
+    <span onclick="applyTone('vivid')" style="cursor:pointer; color:#dc2626; font-weight: bold;">ビビッド</span>
     <span onclick="applyTone('mono')" style="cursor:pointer; color:#666;">白黒</span>
 </div>
 
@@ -608,6 +571,47 @@
 </style>
 
 <script>
+    /* ゴールドマトリックス背景処理 */
+    const canvas = document.getElementById('gold-matrix');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const stars = ["⭐️", "✨", "🌟", "✧", "°"];
+    const fontSize = 20;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(0);
+
+    function draw() {
+        // 残像背景塗りつぶし
+        ctx.fillStyle = 'rgba(5, 7, 10, 0.15)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < drops.length; i++) {
+            const star = stars[Math.floor(Math.random() * stars.length)];
+            
+            // 黄金の輝きをランダムに設定
+            const opacity = Math.random();
+            ctx.fillStyle = `rgba(212, 175, 55, ${opacity})`;
+            ctx.font = fontSize + "px serif";
+            
+            ctx.fillText(star, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    setInterval(draw, 50);
+
+    /* トーン切り替え処理 */
     function applyTone(mode) {
         const overlay = document.getElementById('tone-overlay');
         const switcher = document.getElementById('tone-switcher');
@@ -619,9 +623,9 @@
             switcher.style.background = "rgba(0, 0, 0, 0.1)";
         } else if (mode === 'vivid') {
             overlay.classList.add('filter-vivid');
-            switcher.style.background = "rgba(255, 255, 255, 0.7)";
+            switcher.style.background = "rgba(255, 255, 255, 0.8)";
         } else {
-            switcher.style.background = "rgba(255, 255, 255, 0.5)";
+            switcher.style.background = "rgba(255, 255, 255, 0.6)";
         }
     }
 </script>
